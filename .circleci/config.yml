@@ -1,0 +1,29 @@
+version: 2.1
+
+# テスト実施のための準備
+orbs:
+  codecov: codecov/codecov@1.0.4
+
+jobs:
+  python_test:
+    docker:
+      - image: circleci/python:3.7
+        environment:
+          PIPENV_VENV_IN_PROJECT: true
+    steps:
+      - checkout  # ソースコードを作業ディレクトリにチェックアウトします
+      - run:
+          command: |  # Pipenv を使用して依存関係をインストールします
+            sudo pip install pipenv
+            pipenv install
+      # circleCI上ではpipenv shellは動かない
+      - run: pipenv run pytest ./test -vv --cov=./pystock_private_dev --cov-report=xml
+      - codecov/upload:
+        file: ./test/coverage.xml
+
+
+workflows:
+  version: 2
+  process_pipeline:
+    jobs:
+      - python_test
