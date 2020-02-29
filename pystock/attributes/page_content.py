@@ -45,6 +45,7 @@ class PageContent(object):
         if value is None:
             raise ValueError(f"The field is required and none is invalid")
 
+        set_value = None
         # tag1から取得
         if self.tag1 is not None:
             if self._class1['class'] is not None:

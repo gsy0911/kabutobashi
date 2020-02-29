@@ -13,9 +13,9 @@ from pystock.method.api import (
 
 from pystock.core import (
     # technical analysis function
-    analysis_with,
+    analysis_with
     # visualize analysis df
-    visualize_with
+    # visualize_with
 )
 
 # functions to load or save files
@@ -70,7 +70,6 @@ analysis methods, such as MACD, SMA, etc.
 Main Features
 -------------
 Here are the things that pystock does well:
-
+ - Easy crawl.
  - Easy analysis.
- - Easy visualize.
 """

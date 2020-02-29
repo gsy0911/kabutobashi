@@ -1,8 +1,8 @@
 from pystock.attributes.attribute import Field, StockDf
 import pandas as pd
 import logging
-from matplotlib.dates import date2num
-import mpl_finance as mpf
+# from matplotlib.dates import date2num
+# import mpl_finance as mpf
 import numpy as np
 
 
@@ -77,14 +77,14 @@ class Method(AbstractMethod):
     def signal(self, _df: pd.DataFrame) -> pd.DataFrame:
         raise NotImplementedError("please implement your code")
 
-    def visualize(self, _df: pd.DataFrame):
-        raise NotImplementedError("please implement your code")
+    # def visualize(self, _df: pd.DataFrame):
+    #     raise NotImplementedError("please implement your code")
 
-    @staticmethod
-    def add_ax_candlestick(ax, _df: pd.DataFrame):
-        # datetime -> float
-        ohlc = np.vstack((date2num(_df.index), _df.values.T)).T
-        mpf.candlestick_ohlc(ax, ohlc, width=0.7, colorup='g', colordown='r')
+    # @staticmethod
+    # def add_ax_candlestick(ax, _df: pd.DataFrame):
+    #     # datetime -> float
+    #     ohlc = np.vstack((date2num(_df.index), _df.values.T)).T
+    #     mpf.candlestick_ohlc(ax, ohlc, width=0.7, colorup='g', colordown='r')
 
     @staticmethod
     def cross(_s: pd.Series) -> pd.Series:

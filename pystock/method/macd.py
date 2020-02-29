@@ -1,6 +1,6 @@
 import pandas as pd
 from pystock.method.method import Method
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 from pystock.attributes.attribute import Field
 
 
@@ -50,19 +50,19 @@ class MACD(Method):
         })
         return _df
 
-    def visualize(self, _df: pd.DataFrame):
-        fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1, gridspec_kw={'height_ratios': [3, 1]}, figsize=(6, 5))
-        # x軸のオートフォーマット
-        fig.autofmt_xdate()
-
-        # set candlestick
-        self.add_ax_candlestick(ax1, _df)
-
-        # plot macd
-        ax2.plot(_df.index, _df['macd'], label="macd")
-        ax2.plot(_df.index, _df['signal'], label="signal")
-        ax2.bar(_df.index, _df['histogram'], label="histogram")
-        ax2.legend(loc="center left")  # 各線のラベルを表示
-
-        ax1.legend(loc="best")  # 各線のラベルを表示
-        return fig
+    # def visualize(self, _df: pd.DataFrame):
+    #     fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1, gridspec_kw={'height_ratios': [3, 1]}, figsize=(6, 5))
+    #     # x軸のオートフォーマット
+    #     fig.autofmt_xdate()
+    #
+    #     # set candlestick
+    #     self.add_ax_candlestick(ax1, _df)
+    #
+    #     # plot macd
+    #     ax2.plot(_df.index, _df['macd'], label="macd")
+    #     ax2.plot(_df.index, _df['signal'], label="signal")
+    #     ax2.bar(_df.index, _df['histogram'], label="histogram")
+    #     ax2.legend(loc="center left")  # 各線のラベルを表示
+    #
+    #     ax1.legend(loc="best")  # 各線のラベルを表示
+    #     return fig

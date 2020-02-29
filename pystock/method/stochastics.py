@@ -1,8 +1,8 @@
 import math
 import pandas as pd
 from pystock.method.method import Method
-import matplotlib.pyplot as plt
-from pystock.attributes.attribute import Field
+# import matplotlib.pyplot as plt
+# from pystock.attributes.attribute import Field
 
 
 class Stochastics(Method):
@@ -102,14 +102,14 @@ class Stochastics(Method):
                             + math.pow(current_d - 20, 2) / 100
                             + math.pow(current_sd - 20, 2) / 100)
 
-    def visualize(self, _df: pd.DataFrame):
-        fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(6, 5))
-        # x軸のオートフォーマット
-        fig.autofmt_xdate()
-
-        # set candlestick
-        self.add_ax_candlestick(ax, _df)
-
-        # plot macd
-        ax.legend(loc="best")  # 各線のラベルを表示
-        return fig
+    # def visualize(self, _df: pd.DataFrame):
+    #     fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(6, 5))
+    #     # x軸のオートフォーマット
+    #     fig.autofmt_xdate()
+    #
+    #     # set candlestick
+    #     self.add_ax_candlestick(ax, _df)
+    #
+    #     # plot macd
+    #     ax.legend(loc="best")  # 各線のラベルを表示
+    #     return fig
