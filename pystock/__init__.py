@@ -57,7 +57,7 @@ ichimoku = Ichimoku()
 momentum = Momentum()
 psycho_logical = PsychoLogical()
 
-__version__ = "0.0.1"
+__version__ = "0.1.0"
 
 # module level doc-string
 __doc__ = """
