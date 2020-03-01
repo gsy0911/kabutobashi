@@ -17,6 +17,7 @@ class StockBrandAllIndustryController:
         :params base_url: 取得したいベースのページ番号
         :params crawl_page_list: 0 ~ 34, 37までの値を含むリストで、取得したいページの番号を表している。
         """
+        super().__init__()
         self.target_url_list = []
         if crawl_page_list is None:
             # default値の場合は、全ての業種の上場銘柄を取得する

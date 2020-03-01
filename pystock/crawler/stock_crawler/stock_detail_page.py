@@ -18,6 +18,7 @@ class StockBoard(Page):
     close = PageContent(tag1="div", _class1="stock_price")
 
     def __init__(self, stock_board: BeautifulSoup):
+        super().__init__()
         self.stock_label = stock_board
         self.name = stock_board
         self.date = stock_board

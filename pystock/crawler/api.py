@@ -45,7 +45,19 @@ def get_ipo_list_from_year(year: Union[str, int]) -> dict:
     """
     IPOのリストを取得する関数
     """
-    url = f"https://www.ipokiso.com/company/{year}.html"
+    base_url = "https://96ut.com/ipo/list.php"
+    year_str = None
+    if type(year) is int:
+        year_str = str(year)
+    else:
+        year_str = year
+
+    if year_str == "2020":
+        # 実行年の場合
+        url = base_url
+    else:
+        # 過去年の場合
+        url = f"{base_url}?year={year}"
     ipo_list_crawler = IPOListCrawler(url=url)
     return ipo_list_crawler.crawl()
 

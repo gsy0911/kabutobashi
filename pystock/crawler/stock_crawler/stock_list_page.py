@@ -14,6 +14,7 @@ class LinkContent(Page):
     url_format = "https://minkabu.jp{}"
 
     def __init__(self, next_page_link: BeautifulSoup):
+        super().__init__()
         # 行先: link からなるdict
 
         self.link_dict = {}
