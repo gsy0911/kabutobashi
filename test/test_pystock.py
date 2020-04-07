@@ -17,6 +17,31 @@ def test_example_data(var_stock_df):
     assert "low" in columns
 
 
+def test_read_stock_data():
+    none_paths = []
+    df = ps.read_stock_csv(none_paths)
+    assert df is None
+
+    paths = [
+        "../data/dt=2020-02-29.csv",
+        "../data/dt=2020-03-01.csv"
+        ]
+    df = ps.read_stock_csv(paths)
+    columns = df.columns
+    assert "code" in columns
+    assert "close" in columns
+    assert "open" in columns
+    assert "high" in columns
+    assert "low" in columns
+    assert "per" in columns
+    assert "pbr" in columns
+    assert "psr" in columns
+    assert "unit" in columns
+    assert "volume" in columns
+    assert "dt" in columns
+    assert "market" in columns
+
+
 def test_analysis_with_sma(var_stock_df):
     analysis_df = ps.analysis_with(var_stock_df, ps.sma)
     columns = analysis_df.columns
@@ -25,11 +50,6 @@ def test_analysis_with_sma(var_stock_df):
     assert "sma_long" in columns
     assert "buy_signal" in columns
     assert "sell_signal" in columns
-
-
-def test_visualize_with_sma(var_stock_df):
-    fig = ps.visualize_with(var_stock_df, ps.sma)
-    assert fig is not None
 
 
 def test_analysis_with_macd(var_stock_df):
@@ -42,11 +62,6 @@ def test_analysis_with_macd(var_stock_df):
     assert "histogram" in columns
     assert "buy_signal" in columns
     assert "sell_signal" in columns
-
-
-def test_visualize_with_macd(var_stock_df):
-    fig = ps.visualize_with(var_stock_df, ps.macd)
-    assert fig is not None
 
 
 def test_analysis_with_stochastics(var_stock_df):
@@ -67,9 +82,11 @@ def test_analysis_with_adx(var_stock_df):
     assert "DX" in columns
     assert "ADX" in columns
     assert "ADXR" in columns
-    
+    assert "buy_signal" in columns
+    assert "sell_signal" in columns
 
-def test_analysis_with_ichimoku(var_stock_df):    
+
+def test_analysis_with_ichimoku(var_stock_df):
     analysis_df = ps.analysis_with(var_stock_df, ps.ichimoku)
     columns = analysis_df.columns
     assert "line_change" in columns
@@ -94,6 +111,8 @@ def test_analysis_with_spycho_logical(var_stock_df):
     assert "psycho_line" in columns
     assert "bought_too_much" in columns
     assert "sold_too_much" in columns
+    assert "buy_signal" in columns
+    assert "sell_signal" in columns
 
 
 def test_analysis_with_bollinger_bands(var_stock_df):
@@ -103,24 +122,16 @@ def test_analysis_with_bollinger_bands(var_stock_df):
     assert "lower_2_sigma" in columns
     assert "over_upper_continuity" in columns
     assert "over_lower_continuity" in columns
+    assert "buy_signal" in columns
+    assert "sell_signal" in columns
 
 
-def test_crawl_page_not_found():
-    page = "https://minkabu.jp/stock/994"
-    with pytest.raises(ps.errors.CrawlPageNotFoundError):
-        bs = ps.get_beautifulsoup_result(page)
-
-
-def test_crawl_page_detail():
-    result = ps.get_stock_detail(4395)
-    assert result is not None
-    assert type(result) is dict
-
-
-def test_crawl_ipo_list():
-    result = ps.get_ipo_list_from_year(2019)
-    assert result is not None
-    assert type(result) is dict
+def test_get_impact_with(var_stock_df):
+    result_1 = ps.get_impact_with(var_stock_df, ps.sma)
+    assert "sma" in result_1.keys()
+    result_2 = ps.get_impact_with(var_stock_df, [ps.sma, ps.macd])
+    assert "sma" in result_2.keys()
+    assert "macd" in result_2.keys()
 
 
 def test_io_read_csv():
@@ -131,4 +142,4 @@ def test_io_read_csv():
 
 
 def test_version():
-    assert ps.__version__ == '0.0.1'
+    assert ps.__version__ == '0.1.0'
