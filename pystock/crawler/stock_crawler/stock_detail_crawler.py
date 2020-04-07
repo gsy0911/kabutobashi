@@ -1,5 +1,20 @@
 from pystock.crawler.crawler import Crawler
-from pystock.crawler.stock_crawler.stock_detail_page import StockBoard, StockDetail
+from pystock.crawler.stock_crawler.stock_detail_page import (
+    StockBoard, StockDetail
+)
+from bs4 import BeautifulSoup
+from typing import Union
+
+
+def get_stock_detail(code: Union[str, int]) -> dict:
+    """
+    単一株の実行日時の詳細情報を取得する関数
+    :params code: 取得したい銘柄コード
+    :return:
+    """
+    url = f"https://minkabu.jp/stock/{code}"
+    stock_detail_crawler = StockDetailCrawler()
+    return stock_detail_crawler(url=url)
 
 
 class StockDetailCrawler(Crawler):
@@ -7,25 +22,21 @@ class StockDetailCrawler(Crawler):
     インスタンスに付与したurlの株の情報を取得するCrawler
     """
 
-    def __init__(self, url: str):
+    def __init__(self):
         super().__init__()
-        self.url = url
 
-    def crawl(self) -> dict:
-        """
-        urlをcrawlし、取得した結果を返す関数
-        """
-        bs2 = self.get_beautifulsoup_result(self.url)
-
+    def web_scraping(self, text: str) -> dict:
+        res = BeautifulSoup(text, 'lxml')
         stock_detail_dict = {}
 
-        stock_board = bs2.find("div", {"class": "ly_col ly_colsize_7 md_box ly_row ly_gutters"})
+        stock_board_tag = "ly_col ly_colsize_7 md_box ly_row ly_gutters"
+        stock_board = res.find("div", {"class": stock_board_tag})
         # ページ上部の情報を取得
         sb = StockBoard(stock_board)
         stock_detail_dict.update(sb.get_info())
 
         # ページ中央の情報を取得
-        stock_detail = bs2.find("div", {"class": "stock-detail"})
+        stock_detail = res.find("div", {"class": "stock-detail"})
         sd = StockDetail(stock_detail)
         stock_detail_dict.update(sd.get_info())
 

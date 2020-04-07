@@ -1,4 +1,27 @@
 from pystock.crawler.crawler import Crawler
+from bs4 import BeautifulSoup
+from typing import Union
+
+
+def get_ipo_list_from_year(year: Union[str, int]) -> dict:
+    """
+    IPOのリストを取得する関数
+    """
+    base_url = "https://96ut.com/ipo/list.php"
+    year_str = None
+    if type(year) is int:
+        year_str = str(year)
+    else:
+        year_str = year
+
+    if year_str == "2020":
+        # 実行年の場合
+        url = base_url
+    else:
+        # 過去年の場合
+        url = f"{base_url}?year={year}"
+    ipo_list_crawler = IPOListCrawler()
+    return ipo_list_crawler(url=url)
 
 
 class IPOListCrawler(Crawler):
@@ -6,15 +29,14 @@ class IPOListCrawler(Crawler):
     指定した年にIPOした企業名と銘柄コードを取得する
     """
 
-    def __init__(self, url: str):
+    def __init__(self):
         super().__init__()
-        self.url = url
 
-    def crawl(self) -> dict:
+    def web_scraping(self, text: str) -> dict:
         """
-        urlをcrawlし、取得した結果を返す関数
+        :params text: webページ
         """
-        res = self.get_beautifulsoup_result(target_url=self.url)
+        res = BeautifulSoup(text, 'lxml')
         table_content = res.find("div", {"class": "tablewrap"})
         table_thead = table_content.find("thead")
         # headの取得
