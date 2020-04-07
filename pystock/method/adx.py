@@ -21,7 +21,7 @@ class ADX(Method):
     adxr_term = Field(required_type=int)
 
     def __init__(self, term=14, adx_term=14, adxr_term=28):
-        super().__init__()
+        super().__init__(method_name="adx")
         self.term = term
         self.adx_term = adx_term
         self.adxr_term = adxr_term
@@ -83,6 +83,8 @@ class ADX(Method):
         _df = _df.dropna()
         required_columns = ["sum_plus_dm", "sum_minus_dm", "sum_tr"]
         _df = _df.loc[:, required_columns]
+        
+        # +DI, -DI
         _df = _df.assign(
             plus_di=_df.apply(lambda x: x['sum_plus_dm'] / x['sum_tr'] * 100, axis=1),
             minus_di=_df.apply(lambda x: x['sum_minus_dm'] / x['sum_tr'] * 100, axis=1)
@@ -94,17 +96,40 @@ class ADX(Method):
         )
         return _df
 
-    def signal(self, analyzed_df: pd.DataFrame) -> pd.DataFrame:
-        return analyzed_df
+    @staticmethod
+    def _buy_signal(x) -> float:
+        """
+        DMIとADXを組み合わせた基本パターン
+        """
+        
+        # +DIが-DIを上抜き、ADXが上昇傾向の上向きであれば新規買い
+        if x['ADX_trend'] > 0:
+            if x['to_plus'] > 0:
+                return 1
+        
+        # +DIが-DIより上に位置している際に、
+        # ADXが下向きから上向きに転換した場合
+        # if x['diff'] > 0:
 
-    # def visualize(self, _df: pd.DataFrame):
-    #     fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(6, 5))
-    #     # x軸のオートフォーマット
-    #     fig.autofmt_xdate()
-    #
-    #     # set candlestick
-    #     self.add_ax_candlestick(ax, _df)
-    #
-    #     # plot macd
-    #     ax.legend(loc="best")  # 各線のラベルを表示
-    #     return fig
+    @staticmethod
+    def _sell_signal(x) -> float:
+        """
+        DMIとADXを組み合わせた基本パターン        
+        """
+        # -DIが+DIを下抜き、ADXが下落傾向の下向きであれば新規空売り
+        if x['ADX_trend'] < 0:
+            if x['to_minus'] > 0:
+                return 1
+        
+    def signal(self, _df: pd.DataFrame) -> pd.DataFrame:
+        """
+        buy_signalとsell_signalを付与
+        """
+        _df['ADX_trend'] = self.trend(_df['ADX'])
+        _df['diff'] = _df['plus_di'] - _df['minus_di']
+        _df = _df.join(self.cross(_df['diff']))
+        
+        _df['buy_signal'] = _df.apply(lambda x: self._buy_signal)
+        _df['sell_signal'] = _df.apply(lambda x: self._sell_signal)
+
+        return _df

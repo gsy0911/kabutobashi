@@ -16,7 +16,7 @@ class MACD(Method):
             short_term: int = 12,
             long_term: int = 26,
             macd_span: int = 9):
-        super().__init__()
+        super().__init__(method_name="macd")
         self.short_term = short_term
         self.long_term = long_term
         self.macd_span = macd_span

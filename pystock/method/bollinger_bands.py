@@ -1,15 +1,17 @@
 import pandas as pd
 from pystock.method.method import Method
-# import matplotlib.pyplot as plt
 from pystock.attributes.attribute import Field
 
 
 class BollingerBands(Method):
+    """
+    https://www.sevendata.co.jp/shihyou/technical/bori.html
+    """
     band_term = Field()
     continuity_term = Field()
 
     def __init__(self, band_term=12, continuity_term=10):
-        super().__init__()
+        super().__init__(method_name="bollinger_bands")
         self.band_term = band_term
         self.continuity_term = continuity_term
 
@@ -29,18 +31,9 @@ class BollingerBands(Method):
             over_upper=_df.apply(lambda x: 1 if x['close'] > x['upper_2_sigma'] else 0, axis=1),
             over_lower=_df.apply(lambda x: 1 if x['close'] < x['lower_2_sigma'] else 0, axis=1),
             over_upper_continuity=lambda x: x['over_upper'].rolling(self.continuity_term).sum(),
-            over_lower_continuity=lambda x: x['over_lower'].rolling(self.continuity_term).sum()  
+            over_lower_continuity=lambda x: x['over_lower'].rolling(self.continuity_term).sum()
         )
+        
+        _df['buy_signal'] = _df['over_upper'].apply(lambda x: 1 if x > 0 else 0)
+        _df['sell_signal'] = _df['over_lower'].apply(lambda x: 1 if x > 0 else 0)
         return _df
-
-    # def visualize(self, _df: pd.DataFrame):
-    #     fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(6, 5))
-    #     # x軸のオートフォーマット
-    #     fig.autofmt_xdate()
-    #
-    #     # set candlestick
-    #     self.add_ax_candlestick(ax, _df)
-    #
-    #     # plot macd
-    #     ax.legend(loc="best")  # 各線のラベルを表示
-    #     return fig

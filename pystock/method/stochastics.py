@@ -7,7 +7,7 @@ from pystock.method.method import Method
 
 class Stochastics(Method):
     def __init__(self):
-        super().__init__()
+        super().__init__(method_name="stochastics")
 
     def method(self, _df: pd.DataFrame) -> pd.DataFrame:
         """
@@ -101,15 +101,3 @@ class Stochastics(Method):
         return 1 / math.exp(math.pow(current_k - 20, 2) / 100
                             + math.pow(current_d - 20, 2) / 100
                             + math.pow(current_sd - 20, 2) / 100)
-
-    # def visualize(self, _df: pd.DataFrame):
-    #     fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(6, 5))
-    #     # x軸のオートフォーマット
-    #     fig.autofmt_xdate()
-    #
-    #     # set candlestick
-    #     self.add_ax_candlestick(ax, _df)
-    #
-    #     # plot macd
-    #     ax.legend(loc="best")  # 各線のラベルを表示
-    #     return fig

@@ -11,7 +11,7 @@ class Momentum(Method):
     term = Field()
 
     def __init__(self, term=25):
-        super().__init__()
+        super().__init__(method_name="momentum")
         self.term = term
 
     def method(self, _df: pd.DataFrame) -> pd.DataFrame:
@@ -28,15 +28,3 @@ class Momentum(Method):
             "to_minus": "sell_signal"
         })
         return _df
-
-    # def visualize(self, _df: pd.DataFrame):
-    #     fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(6, 5))
-    #     # x軸のオートフォーマット
-    #     fig.autofmt_xdate()
-    #
-    #     # set candlestick
-    #     self.add_ax_candlestick(ax, _df)
-    #
-    #     # plot macd
-    #     ax.legend(loc="best")  # 各線のラベルを表示
-    #     return fig

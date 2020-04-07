@@ -15,7 +15,7 @@ class SMA(Method):
             short_term: int = 5,
             medium_term: int = 21,
             long_term: int = 70):
-        super().__init__()
+        super().__init__(method_name="sma")
         self.short_term = short_term
         self.medium_term = medium_term
         self.long_term = long_term

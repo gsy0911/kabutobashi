@@ -14,7 +14,7 @@ class Ichimoku(Method):
     long_term = Field
 
     def __init__(self, short_term=12, medium_term=26, long_term=52):
-        super().__init__()
+        super().__init__(method_name="ichimoku")
         self.short_term = short_term
         self.medium_term = medium_term
         self.long_term = long_term
@@ -51,15 +51,3 @@ class Ichimoku(Method):
 
     def signal(self, _df: pd.DataFrame) -> pd.DataFrame:
         return _df
-
-    # def visualize(self, _df: pd.DataFrame):
-    #     fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(6, 5))
-    #     # x軸のオートフォーマット
-    #     fig.autofmt_xdate()
-    #
-    #     # set candlestick
-    #     self.add_ax_candlestick(ax, _df)
-    #
-    #     # plot macd
-    #     ax.legend(loc="best")  # 各線のラベルを表示
-    #     return fig
