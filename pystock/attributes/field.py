@@ -20,9 +20,7 @@ class Field(object):
         self.value_candidate: list = value_candidate
 
     def __get__(self, instance, instance_type):
-        if instance is None:
-            return self
-        return getattr(instance, self.internal_name, '')
+        return getattr(instance, self.internal_name, None)
 
     def __set__(self, instance, value):
         if value is None:

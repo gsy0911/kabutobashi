@@ -15,12 +15,14 @@ class PageContent(object):
             _class2: str = None,
             _id2: str = None,
             required=False,
+            alternative_data=None,
             required_type=None,
             value_candidate=None):
         """
         :params required: True if value is required
         :params required_type: specify type if the type is fixed
         :params value_candidte: list the candidate values
+        :params find_all: find()ではなく、find_all()でデータを取得する
         """
         self.name = None
         self.internal_name = None
@@ -33,13 +35,12 @@ class PageContent(object):
         self._id2 = {"id": _id2}
         # 値を設定する際の条件など
         self.required: bool = required
+        self.alternative_data = alternative_data
         self.required_type: type = required_type
         self.value_candidate: list = value_candidate
 
     def __get__(self, instance, instance_type):
-        if instance is None:
-            return self
-        return getattr(instance, self.internal_name, '')
+        return getattr(instance, self.internal_name, None)
 
     def __set__(self, instance, value):
         if value is None:
@@ -52,9 +53,9 @@ class PageContent(object):
                 set_value = value.find(self.tag1, self._class1)
             else:
                 set_value = value.find(self.tag1)
-        
+
         # 値がない場合はerror
-        if set_value is None:
+        if set_value is None and self.required:
             raise TagNotFoundError(tag=self.tag1)
 
         # tag2もある場合は、追加で取得
@@ -65,16 +66,18 @@ class PageContent(object):
                 set_value = set_value.find(self.tag2)
 
         # 値がない場合はerror
-        if set_value is None:
+        if set_value is None and self.required:
             raise TagNotFoundError(tag=self.tag2)
 
         # 文字列を置換して保持
-        set_value = self.replace(set_value.get_text())
+        if set_value is not None:
+            set_value = self.replace(set_value.get_text())
+        else:
+            set_value = self.alternative_data
         setattr(instance, self.internal_name, set_value)
-
 
     @staticmethod
     def replace(input: str) -> str:
         return input.replace(" ", "") \
-            .replace("\n", "").replace("\r", "") \
+            .replace("\t", "").replace("\n", "").replace("\r", "") \
             .replace("\xa0", " ").replace("円", "")
