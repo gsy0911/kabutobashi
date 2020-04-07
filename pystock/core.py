@@ -1,5 +1,7 @@
 import pandas as pd
 from pystock.method.api import Method
+from typing import Union
+# http://www.kabuciao.com/tech/deki/
 
 
 def analysis_with(
@@ -12,21 +14,26 @@ def analysis_with(
     return stock_df.pipe(method)
 
 
-# def visualize_with(
-#         stock_df: pd.DataFrame,
-#         method: Method,
-#         visualize_start: str = None,
-#         visualize_end: str = None):
-#     """
-#     :params stock_df:
-#     :params method:
-#     :params visualize_start:
-#     :params visualize_end:
-#     """
-#     # figにするのは確定
-#     param_dict = {"to_fig": True}
-#     if visualize_start is not None:
-#         param_dict['visualize_start'] = visualize_start
-#     if visualize_end is not None:
-#         param_dict['visualize_end'] = visualize_end
-#     return stock_df.pipe(method, **param_dict)
+def get_impact_with(
+        stock_df: pd.DataFrame,
+        method: Union[Method, list],
+        **kwargs) -> pd.DataFrame:
+    """
+    :params stock_df:
+    :params method:
+    """
+    kwargs.update({"impact": "true"})
+
+    # 分析のリスト
+    method_list = []
+    if type(method) is list:
+        method_list.extend(method)
+    else:
+        method_list.append(method)
+
+    # 結果を格納するdict
+    result_dict = {}
+    for m in method_list:
+        result_dict[str(m)] = stock_df.pipe(m, **kwargs)
+
+    return result_dict

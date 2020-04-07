@@ -7,15 +7,15 @@ from pystock.method.api import (
     ADX,
     BollingerBands,
     Ichimoku,
-    Momentum, 
+    Momentum,
     PsychoLogical
 )
 
 from pystock.core import (
     # technical analysis function
-    analysis_with
-    # visualize analysis df
-    # visualize_with
+    analysis_with,
+    # get buy or sell signal value
+    get_impact_with
 )
 
 # functions to load or save files
@@ -23,7 +23,9 @@ from pystock.io.api import (
     # read csv data
     read_csv,
     # provide example stock data
-    example_data
+    example_data,
+    # read stock data
+    read_stock_csv
 )
 
 # import errors
@@ -32,19 +34,13 @@ from pystock import errors
 # classes or functions about crawl web pages
 from pystock.crawler.api import (
     # beautifulsoupを利用してウェブページを取得する
-    get_beautifulsoup_result,
+    get_webpage,
     # 単一の株価の詳細情報を取得する
     get_stock_detail,
     # ある年にIPOした銘柄の情報を取得する
     get_ipo_list_from_year,
-    # 単一のページから銘柄一覧を取得する
-    # get_stock_brand_list_from_one_page,
-    # 単一の産業の銘柄を取得する
-    # get_stock_brand_list_from_one_industry_type,
-    # すべての銘柄一覧を取得する
-    # get_stock_brand_list,
-    # OneRowのリストをDataFrameに変換する
-    convert_to_df
+    # 52週高値・底値を取得する関数
+    get_52_weeks_high_low
 )
 
 # create and initialize instance
