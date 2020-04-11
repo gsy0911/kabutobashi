@@ -1,4 +1,5 @@
 import pandas as pd
+from pystock.errors import StockDfError
 
 
 class StockDf(object):
@@ -17,21 +18,32 @@ class StockDf(object):
 
     def __set__(self, instance, value):
         if value is None:
-            raise ValueError("required")
+            raise StockDfError("required")
 
         df_columns = value.columns
         if "code" in df_columns:
             code = list(set(value.code.values))
             if len(code) > 1:
-                raise ValueError("multiple code")
+                raise StockDfError("multiple code")
             elif len(code) == 0:
-                raise ValueError("no code")
+                raise StockDfError("no code")
+
+        # 日付カラムの候補値を探す
+        date_column = None
+        if "date" in df_columns:
+            date_column = "date"
+        elif "dt" in df_columns:
+            date_column = "dt"
+        if date_column is None:
+            raise StockDfError("日付のカラム[dt, date]のいずれかが存在しません")
+        if "date" in df_columns and "dt" in df_columns:
+            raise StockDfError("日付のカラム[dt, date]は片方しか存在できません")
 
         # indexにdateを指定
-        value.index = pd.to_datetime(value['date'])
+        value.index = pd.to_datetime(value[date_column])
+
         # 必要なカラムに絞る
         value = value.loc[:, ["open", "high", "low", "close"]]
-
         open_s = value['open'].apply(self._replace_comma)
         close_s = value['close'].apply(self._replace_comma)
         high_s = value['high'].apply(self._replace_comma)
