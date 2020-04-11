@@ -43,6 +43,11 @@ from pystock.crawler.api import (
     get_52_weeks_high_low
 )
 
+from .utilities import (
+    # n営業日前までの日付のリストを返す関数
+    get_past_n_days
+)
+
 # create and initialize instance
 sma = SMA(short_term=5, medium_term=21, long_term=70)
 macd = MACD(short_term=12, long_term=26, macd_span=9)
@@ -53,7 +58,7 @@ ichimoku = Ichimoku()
 momentum = Momentum()
 psycho_logical = PsychoLogical()
 
-__version__ = "0.0.2"
+__version__ = "0.1.1"
 
 # module level doc-string
 __doc__ = """
