@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="pystock",
-    version="0.0.2",
+    version="0.1.1",
     author="gsy0911",
     author_email="yoshiki0911@gmail.com",
     description="Analyze stock",
