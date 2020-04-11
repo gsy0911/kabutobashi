@@ -41,6 +41,10 @@ class TagNotFoundError(PyStockCrawlerError):
         return f"tag [{self.tag}] not found"
 
 
+class StockDfError(PyStockBaseError):
+    pass
+
+
 class PyStockMethodError(PyStockBaseError):
     pass
 

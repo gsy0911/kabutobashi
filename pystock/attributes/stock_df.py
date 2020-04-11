@@ -1,4 +1,5 @@
 import pandas as pd
+from pystock.errors import StockDfError
 
 
 class StockDf(object):
@@ -17,15 +18,15 @@ class StockDf(object):
 
     def __set__(self, instance, value):
         if value is None:
-            raise ValueError("required")
+            raise StockDfError("required")
 
         df_columns = value.columns
         if "code" in df_columns:
             code = list(set(value.code.values))
             if len(code) > 1:
-                raise ValueError("multiple code")
+                raise StockDfError("multiple code")
             elif len(code) == 0:
-                raise ValueError("no code")
+                raise StockDfError("no code")
 
         # indexにdateを指定
         value.index = pd.to_datetime(value['date'])
