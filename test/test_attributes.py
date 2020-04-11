@@ -108,6 +108,17 @@ def test_stock_df_instance():
     with pytest.raises(StockDfError):
         fi.stock_df = pd.DataFrame.from_dict(data, orient="index")
 
+    # 日付の項目がdtでも動くかの確認
+    data = {
+        0: {"open": "1.0", "high": "2.0", "low": "3.0", "close": "4.0", "dt": "2020-03-01", "date": "2020-03-01"},
+        1: {"open": "1.0", "high": "2.0", "low": "3.0", "close": "4.0", "dt": "2020-03-02", "date": "2020-03-02"},
+        2: {"open": "1.0", "high": "2.0", "low": "3.0", "close": "4.0", "dt": "2020-03-03", "date": "2020-03-03"},
+        3: {"open": "1.0", "high": "2.0", "low": "3.0", "close": "4.0", "dt": "2020-03-04", "date": "2020-03-04"},
+        4: {"open": "1.0", "high": "2.0", "low": "3.0", "close": "4.0", "dt": "2020-03-05", "date": "2020-03-05"},
+    }
+    with pytest.raises(StockDfError):
+        fi.stock_df = pd.DataFrame.from_dict(data, orient="index")
+
 
 def test_page_content_instance():
     fi = AttributeInstance()

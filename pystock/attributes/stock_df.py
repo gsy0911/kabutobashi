@@ -36,6 +36,9 @@ class StockDf(object):
             date_column = "dt"
         if date_column is None:
             raise StockDfError("日付のカラム[dt, date]のいずれかが存在しません")
+        if "date" in df_columns and "dt" in df_columns:
+            raise StockDfError("日付のカラム[dt, date]は片方しか存在できません")
+
         # indexにdateを指定
         value.index = pd.to_datetime(value[date_column])
 
