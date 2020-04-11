@@ -17,7 +17,7 @@ jobs:
             sudo pip install pipenv
             pipenv install
       # circleCI上ではpipenv shellは動かない
-      - run: pipenv run pytest ./test -vv --cov=./pystock_private_dev --cov-report=xml
+      - run: poetry run pytest ./test -vv --cov=./pystock --cov-report=xml
       - codecov/upload:
         file: ./test/coverage.xml
 
