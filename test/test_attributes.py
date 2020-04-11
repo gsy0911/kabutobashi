@@ -5,6 +5,7 @@ from pystock.attributes.attribute import (
     PageContent
 )
 
+
 # Fieldクラスを検証するためのscript
 class MetaAttribute(type):
     """
