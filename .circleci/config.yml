@@ -14,8 +14,8 @@ jobs:
       - checkout  # ソースコードを作業ディレクトリにチェックアウトします
       - run:
           command: |  # Pipenv を使用して依存関係をインストールします
-            sudo pip install pipenv
-            pipenv install
+            sudo pip install poetry
+            poetry install
       # circleCI上ではpipenv shellは動かない
       - run: poetry run pytest ./test -vv --cov=./pystock --cov-report=xml
       - codecov/upload:
