@@ -82,6 +82,21 @@ def test_stock_df_instance():
     assert "low" in columns
     assert "close" in columns
 
+    # 日付の項目がdtでも動くかの確認
+    data = {
+        0: {"open": "1,000.0", "high": "2,000.0", "low": "3,000.0", "close": "4,000.0", "dt": "2020-03-01"},
+        1: {"open": "1,000.0", "high": "2,000.0", "low": "3,000.0", "close": "4,000.0", "dt": "2020-03-02"},
+        2: {"open": "1,000.0", "high": "2,000.0", "low": "3,000.0", "close": "4,000.0", "dt": "2020-03-03"},
+        3: {"open": "1,000.0", "high": "2,000.0", "low": "3,000.0", "close": "4,000.0", "dt": "2020-03-04"},
+        4: {"open": "1,000.0", "high": "2,000.0", "low": "3,000.0", "close": "4,000.0", "dt": "2020-03-05"},
+    }
+    fi.stock_df = pd.DataFrame.from_dict(data, orient="index")
+    columns = fi.stock_df.columns
+    assert "open" in columns
+    assert "high" in columns
+    assert "low" in columns
+    assert "close" in columns
+
     # date列がない場合にErrorを返す
     data = {
         0: {"open": "1,000.0", "high": "2,000.0", "low": "3,000.0", "close": "4,000.0"},
