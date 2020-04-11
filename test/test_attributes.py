@@ -1,4 +1,5 @@
 import pytest
+import pandas as pd
 from pystock.attributes.attribute import (
     Field,
     StockDf,
@@ -64,6 +65,21 @@ def test_stock_df_instance():
     assert fi.stock_df is None
     with pytest.raises(ValueError):
         fi.stock_df = None
+
+    # カンマを含むデータを入れても正しく動くか確認
+    data = {
+        0: {"open": "1,000.0", "high": "2,000.0", "low": "3,000.0", "close": "4,000.0", "date": "2020-03-01"},
+        1: {"open": "1,000.0", "high": "2,000.0", "low": "3,000.0", "close": "4,000.0", "date": "2020-03-02"},
+        2: {"open": "1,000.0", "high": "2,000.0", "low": "3,000.0", "close": "4,000.0", "date": "2020-03-03"},
+        3: {"open": "1,000.0", "high": "2,000.0", "low": "3,000.0", "close": "4,000.0", "date": "2020-03-04"},
+        4: {"open": "1,000.0", "high": "2,000.0", "low": "3,000.0", "close": "4,000.0", "date": "2020-03-05"},
+    }
+    fi.stock_df = pd.DataFrame.from_dict(data, orient="index")
+    columns = fi.stock_df.columns
+    assert "open" in columns
+    assert "high" in columns
+    assert "low" in columns
+    assert "close" in columns
 
 
 def test_page_content_instance():

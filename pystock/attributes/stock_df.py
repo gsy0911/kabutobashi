@@ -31,9 +31,22 @@ class StockDf(object):
         value.index = pd.to_datetime(value['date'])
         # 必要なカラムに絞る
         value = value.loc[:, ["open", "high", "low", "close"]]
+
+        open_s = value['open'].apply(self._replace_comma)
+        close_s = value['close'].apply(self._replace_comma)
+        high_s = value['high'].apply(self._replace_comma)
+        low_s = value['low'].apply(self._replace_comma)
+        new_value = pd.DataFrame({"open": open_s, "high": high_s, "low": low_s, "close": close_s})
         # 型の指定
-        value['open'] = value['open'].astype(float)
-        value['close'] = value['close'].astype(float)
-        value['high'] = value['high'].astype(float)
-        value['low'] = value['low'].astype(float)
-        setattr(instance, self.internal_name, value)
+        setattr(instance, self.internal_name, new_value)
+
+    @staticmethod
+    def _replace_comma(x) -> float:
+        """
+        pandas内の値がカンマ付きの場合に、カンマを削除する関数
+        :param x:
+        :return:
+        """
+        if type(x) is str:
+            x = x.replace(",", "")
+        return float(x)
