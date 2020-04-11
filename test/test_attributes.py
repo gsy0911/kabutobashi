@@ -5,6 +5,7 @@ from pystock.attributes.attribute import (
     StockDf,
     PageContent
 )
+from pystock.errors import StockDfError
 
 
 # Fieldクラスを検証するためのscript
@@ -63,7 +64,7 @@ def test_stock_df_instance():
     fi = AttributeInstance()
     # 値をセットする前に取得した場合はNone
     assert fi.stock_df is None
-    with pytest.raises(ValueError):
+    with pytest.raises(StockDfError):
         fi.stock_df = None
 
     # カンマを含むデータを入れても正しく動くか確認
@@ -80,6 +81,17 @@ def test_stock_df_instance():
     assert "high" in columns
     assert "low" in columns
     assert "close" in columns
+
+    # date列がない場合にErrorを返す
+    data = {
+        0: {"open": "1,000.0", "high": "2,000.0", "low": "3,000.0", "close": "4,000.0"},
+        1: {"open": "1,000.0", "high": "2,000.0", "low": "3,000.0", "close": "4,000.0"},
+        2: {"open": "1,000.0", "high": "2,000.0", "low": "3,000.0", "close": "4,000.0"},
+        3: {"open": "1,000.0", "high": "2,000.0", "low": "3,000.0", "close": "4,000.0"},
+        4: {"open": "1,000.0", "high": "2,000.0", "low": "3,000.0", "close": "4,000.0"},
+    }
+    with pytest.raises(StockDfError):
+        fi.stock_df = pd.DataFrame.from_dict(data, orient="index")
 
 
 def test_page_content_instance():
