@@ -142,4 +142,4 @@ def test_io_read_csv():
 
 
 def test_version():
-    assert ps.__version__ == '0.0.2'
+    assert ps.__version__ == '0.1.1'
