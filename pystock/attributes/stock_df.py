@@ -61,4 +61,8 @@ class StockDf(object):
         """
         if type(x) is str:
             x = x.replace(",", "")
-        return float(x)
+        try:
+            f = float(x)
+        except ValueError as e:
+            raise StockDfError("floatに変換できる値ではありません")
+        return f
