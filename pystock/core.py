@@ -17,11 +17,16 @@ def analysis_with(
 def get_impact_with(
         stock_df: pd.DataFrame,
         method: Union[Method, list],
-        **kwargs) -> pd.DataFrame:
+        **kwargs) -> dict:
     """
     :params stock_df:
     :params method:
+    :return: ex: {
+            "sma": 0.4,
+            "macd": -0.04
+        }
     """
+    # methodのpipeで渡す際の引数、impactにtrueを渡して直近の各手法の買い・売りの傾向を取得する
     kwargs.update({"impact": "true"})
 
     # 分析のリスト
@@ -32,8 +37,4 @@ def get_impact_with(
         method_list.append(method)
 
     # 結果を格納するdict
-    result_dict = {}
-    for m in method_list:
-        result_dict[str(m)] = stock_df.pipe(m, **kwargs)
-
-    return result_dict
+    return {str(m): stock_df.pipe(m, **kwargs) for m in method_list}

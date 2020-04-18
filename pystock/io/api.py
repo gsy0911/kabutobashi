@@ -12,6 +12,11 @@ def example_data() -> pd.DataFrame:
 
 
 def read_csv(path_candidate: Union[str, list]) -> Union[pd.DataFrame, None]:
+    """
+    通常のread_csvの関数に加えて、strとlist[str]の場合に縦方向に結合してDataFrameを返す
+    :param path_candidate: "path" or ["path_1", "path_2"]
+    :return: 
+    """
     if type(path_candidate) is str:
         return pd.read_csv(path_candidate)
     elif type(path_candidate) is list:
@@ -37,11 +42,11 @@ def read_stock_csv(path_candidate: Union[str, list]) -> Union[pd.DataFrame, None
 def _decode_stock_data(_df: pd.DataFrame) -> pd.DataFrame:
     """
     以下のような株のデータを扱いやすいように整形する関数
-    stock_label,name,close,date,industry_type,open,high,low,unit,per,psr,pbr,volume,mark    et_capitalization,issued_shares,crawl_datetime,code
-
+    stock_label,name,close,date,industry_type,open,high,low,unit,per,psr,pbr,volume,market_capitalization,issued_shares,crawl_datetime,code
     1436  東証マザーズ,フィット,540.0,株価(15:00),業種建設業,555.0円,557.0円,482.0円,100株,---,0.46倍,0.54倍,"22,000株","2,312百万円","4,282千株",2020-03-13T23:31:04,1436
-
     1438  名証２部,岐阜造園,"1,098.0",株価(12:38),業種建設業,"1,110.0円","1,150.0円","1,098.0円",100株,9.19倍,0.38倍,0.62倍,"3,100株","1,594百万円","1,451千株",2020-03-13T23:31:06,1438
+    :param _df:
+    :return:
     """
 
     # 正規表現を利用して数値のみにする
