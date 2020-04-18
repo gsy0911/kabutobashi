@@ -34,7 +34,7 @@ class TagNotFoundError(PyStockCrawlerError):
     """
 
     def __init__(self, tag):
-        super().__init__(url=None)
+        super().__init__(url="")
         self.tag = tag
 
     def __str__(self):

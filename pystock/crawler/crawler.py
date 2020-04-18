@@ -1,7 +1,6 @@
 from pystock.attributes.attribute import Field
 from pystock.crawler.user_agent import UserAgent
 from pystock.errors import CrawlPageNotFoundError
-from bs4 import BeautifulSoup
 from datetime import datetime, timedelta, timezone
 import requests
 
@@ -41,7 +40,7 @@ class Crawler(AbstractCrawler):
         if "text" in kwargs:
             text = kwargs['text']
         # 両方に値が含まれている場合は例外を投げる
-        if (url is not None) and (text) is not None:
+        if (url is not None) and (text is not None):
             raise ValueError("両方に値を設定しないでください")
         result = self.web_scraping(text)
         return result
@@ -69,14 +68,8 @@ class Crawler(AbstractCrawler):
         r.encoding = r.apparent_encoding
         return r.text
 
-    # def get_beautifulsoup_result(self, target_url: str) -> BeautifulSoup:
-    #     """
-    #     beautifulsoupを使える状態にする
-    #     """
-    #     text = self.get_url_text(target_url)
-    #     return BeautifulSoup(text, 'lxml')
-
-    def get_crawl_datetime(self) -> str:
-        JST = timezone(timedelta(hours=+9), 'JST')
-        now = datetime.now(JST)
+    @staticmethod
+    def get_crawl_datetime() -> str:
+        jst = timezone(timedelta(hours=+9), 'JST')
+        now = datetime.now(jst)
         return now.strftime("%Y-%m-%dT%H:%M:%S")
