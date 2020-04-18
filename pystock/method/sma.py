@@ -1,7 +1,6 @@
 import pandas as pd
 from pystock.method.method import Method
 from pystock.attributes.attribute import Field
-# import matplotlib.pyplot as plt
 
 
 class SMA(Method):

@@ -1,6 +1,5 @@
 import pandas as pd
 from pystock.method.method import Method
-# import matplotlib.pyplot as plt
 from pystock.attributes.attribute import Field
 
 
@@ -12,7 +11,6 @@ class MACD(Method):
 
     def __init__(
             self,
-            stock_df: pd.DataFrame = None,
             short_term: int = 12,
             long_term: int = 26,
             macd_span: int = 9):
