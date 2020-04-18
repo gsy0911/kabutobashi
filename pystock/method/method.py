@@ -66,10 +66,6 @@ class Method(AbstractMethod):
         # 買い・売りのシグナルを算出する場合
         if "impact" in kwargs:
             return signal_df.pipe(self.get_impact, **kwargs)
-        # figにする場合
-        # if "to_fig" in kwds:
-        #    if kwds['to_fig']:
-        #        return signal_df.pipe(self.visualize)
         # それ以外は解析結果のdfを返す
         return signal_df
 
@@ -88,15 +84,6 @@ class Method(AbstractMethod):
 
     def signal(self, _df: pd.DataFrame) -> pd.DataFrame:
         raise NotImplementedError("please implement your code")
-
-    # def visualize(self, _df: pd.DataFrame):
-    #     raise NotImplementedError("please implement your code")
-
-    # @staticmethod
-    # def add_ax_candlestick(ax, _df: pd.DataFrame):
-    #     # datetime -> float
-    #     ohlc = np.vstack((date2num(_df.index), _df.values.T)).T
-    #     mpf.candlestick_ohlc(ax, ohlc, width=0.7, colorup='g', colordown='r')
 
     @staticmethod
     def cross(
@@ -141,7 +128,7 @@ class Method(AbstractMethod):
         ある系列_sのトレンドを計算する。
         差分のrolling_sumを返す
         """
-        # shorten vaiable name
+        # shorten variable name
         col = "original"
         shifted = "shifted"
         
@@ -151,7 +138,6 @@ class Method(AbstractMethod):
         _df['diff'] = _df['original'] - _df['shifted']
         _df['diff_rolling_sum'] = _df['diff'].rolling(5).sum()
         return _df['diff_rolling_sum']
-        
 
     @staticmethod
     def get_impact(

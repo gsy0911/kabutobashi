@@ -15,7 +15,7 @@ def read_csv(path_candidate: Union[str, list]) -> Union[pd.DataFrame, None]:
     """
     通常のread_csvの関数に加えて、strとlist[str]の場合に縦方向に結合してDataFrameを返す
     :param path_candidate: "path" or ["path_1", "path_2"]
-    :return: 
+    :return:
     """
     if type(path_candidate) is str:
         return pd.read_csv(path_candidate)

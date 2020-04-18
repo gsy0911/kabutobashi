@@ -1,6 +1,9 @@
 from pystock.attributes.attribute import Field
 from pystock.crawler.user_agent import UserAgent
-from pystock.errors import CrawlPageNotFoundError
+from pystock.errors import (
+    CrawlPageNotFoundError,
+    PyStockCrawlerError
+)
 from datetime import datetime, timedelta, timezone
 import requests
 
@@ -9,12 +12,12 @@ class MetaCrawler(type):
     """
     値のget, setに関するメタクラス
     """
-    def __new__(meta, name, bases, class_dict):
+    def __new__(mcs, name, bases, class_dict):
         for key, value in class_dict.items():
             if isinstance(value, Field):
                 value.name = key
                 value.internal_name = '_' + key
-        cls = type.__new__(meta, name, bases, class_dict)
+        cls = type.__new__(mcs, name, bases, class_dict)
         return cls
 
 
@@ -41,7 +44,9 @@ class Crawler(AbstractCrawler):
             text = kwargs['text']
         # 両方に値が含まれている場合は例外を投げる
         if (url is not None) and (text is not None):
-            raise ValueError("両方に値を設定しないでください")
+            raise PyStockCrawlerError("両方に値を設定しないでください")
+        if text is None:
+            raise PyStockCrawlerError("textに値が設定されていません")
         result = self.web_scraping(text)
         return result
 
@@ -52,7 +57,8 @@ class Crawler(AbstractCrawler):
         """
         raise NotImplementedError("please implement your code")
 
-    def get_url_text(self, target_url: str) -> str:
+    @staticmethod
+    def get_url_text(target_url: str) -> str:
         """
         requestsを使って、webからページを取得し、htmlを返す
         """
