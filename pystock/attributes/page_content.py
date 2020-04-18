@@ -77,7 +77,7 @@ class PageContent(object):
         setattr(instance, self.internal_name, set_value)
 
     @staticmethod
-    def replace(input: str) -> str:
-        return input.replace(" ", "") \
+    def replace(input_text: str) -> str:
+        return input_text.replace(" ", "") \
             .replace("\t", "").replace("\n", "").replace("\r", "") \
             .replace("\xa0", " ").replace("円", "")

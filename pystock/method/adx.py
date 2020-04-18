@@ -1,6 +1,5 @@
 import pandas as pd
 from pystock.method.method import Method
-# import matplotlib.pyplot as plt
 from pystock.attributes.attribute import Field
 
 
@@ -39,7 +38,7 @@ class ADX(Method):
         return max(max_ab, max_ac)
 
     @staticmethod
-    def compute_DX(x: pd.DataFrame) -> float:
+    def compute_dx(x: pd.DataFrame) -> float:
         numerator = abs(x['plus_di'] - x['minus_di'])
         denominator = x['plus_di'] + x['minus_di']
         return numerator / denominator * 100
@@ -90,7 +89,7 @@ class ADX(Method):
             minus_di=_df.apply(lambda x: x['sum_minus_dm'] / x['sum_tr'] * 100, axis=1)
         )
         _df = _df.assign(
-            DX=_df.apply(self.compute_DX, axis=1),
+            DX=_df.apply(self.compute_dx, axis=1),
             ADX=lambda x: x['DX'].rolling(self.adx_term).mean(),
             ADXR=lambda x: x['DX'].rolling(self.adxr_term).mean()
         )

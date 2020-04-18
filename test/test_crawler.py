@@ -5,7 +5,7 @@ import pystock as ps
 def test_crawl_page_not_found():
     page = "https://minkabu.jp/stock/994"
     with pytest.raises(ps.errors.CrawlPageNotFoundError):
-        ps.get_webpage(page)
+        ps.get_web_page(page)
 
 
 def test_crawl_page_detail():

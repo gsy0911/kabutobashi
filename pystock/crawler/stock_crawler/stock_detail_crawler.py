@@ -26,6 +26,11 @@ class StockDetailCrawler(Crawler):
         super().__init__()
 
     def web_scraping(self, text: str) -> dict:
+        """
+
+        :param text:
+        :return:
+        """
         res = BeautifulSoup(text, 'lxml')
         stock_detail_dict = {}
 

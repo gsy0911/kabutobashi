@@ -1,6 +1,5 @@
 import pandas as pd
 from pystock.method.method import Method
-# import matplotlib.pyplot as plt
 from pystock.attributes.attribute import Field
 
 

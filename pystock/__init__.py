@@ -34,7 +34,7 @@ from pystock import errors
 # classes or functions about crawl web pages
 from pystock.crawler.api import (
     # beautifulsoupを利用してウェブページを取得する
-    get_webpage,
+    get_web_page,
     # 単一の株価の詳細情報を取得する
     get_stock_detail,
     # ある年にIPOした銘柄の情報を取得する
