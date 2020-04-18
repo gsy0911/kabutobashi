@@ -14,7 +14,7 @@ class UserAgent:
             return ""
 
     @staticmethod
-    def get_user_agent_header() -> str:
+    def get_user_agent_header() -> dict:
         return {"User-Agent": UserAgent.get_user_agent()}
 
 

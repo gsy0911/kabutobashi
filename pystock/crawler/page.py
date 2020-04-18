@@ -1,4 +1,3 @@
-from pystock.attributes.attribute import Field
 from pystock.attributes.attribute import PageContent
 
 

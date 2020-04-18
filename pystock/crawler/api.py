@@ -14,6 +14,6 @@ from pystock.crawler.stock_crawler.weeks_52_high_low_crawler import (
 )
 
 
-def get_webpage(url: str) -> str:
+def get_web_page(url: str) -> str:
     crawler = Crawler()
     return crawler.get_url_text(url)
