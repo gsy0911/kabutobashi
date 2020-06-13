@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Union, Optional
 import pandas as pd
 from datetime import datetime
 
@@ -11,7 +11,7 @@ def example_data() -> pd.DataFrame:
     return _df
 
 
-def read_csv(path_candidate: Union[str, list]) -> Union[pd.DataFrame, None]:
+def read_csv(path_candidate: Union[str, list]) -> Optional[pd.DataFrame]:
     """
     通常のread_csvの関数に加えて、strとlist[str]の場合に縦方向に結合してDataFrameを返す
     :param path_candidate: "path" or ["path_1", "path_2"]
@@ -28,7 +28,7 @@ def read_csv(path_candidate: Union[str, list]) -> Union[pd.DataFrame, None]:
         return None
 
 
-def read_stock_csv(path_candidate: Union[str, list]) -> Union[pd.DataFrame, None]:
+def read_stock_csv(path_candidate: Union[str, list]) -> Optional[pd.DataFrame]:
     """
     本APIにてCrawlしたデータを扱いやすい形式にデータ変換する関数
     """
