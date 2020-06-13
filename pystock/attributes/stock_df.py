@@ -64,5 +64,5 @@ class StockDf(object):
         try:
             f = float(x)
         except ValueError as e:
-            raise StockDfError("floatに変換できる値ではありません")
+            raise StockDfError(f"floatに変換できる値ではありません。{e}")
         return f
