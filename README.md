@@ -1,4 +1,4 @@
-# pystock
+# kabutobashi
 
 [![CircleCI](https://circleci.com/gh/gsy0911/kabutobashi.svg?style=svg&circle-token=76679803b77f4fc6e722c952a20da7fc5f0294c7)](https://circleci.com/gh/gsy0911/kabutobashi)
 [![codecov](https://codecov.io/gh/gsy0911/kabutobashi/branch/master/graph/badge.svg)](https://codecov.io/gh/gsy0911/kabutobashi)

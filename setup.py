@@ -34,17 +34,24 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/gsy0911/kabutobashi",
-    packages=[
+    packages=setuptools.find_packages(),
+    install_requires=[
         "pandas",
         "jpholiday",
         "lxml",
         "requests",
         "beautifulsoup4"
     ],
+    license="MIT",
     classifiers=[
         "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: MIT License",
+        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Development Status :: 3 - Alpha",
         "Operating System :: OS Independent",
+        "Intended Audience :: Developers",
+        "License :: OSI Approved :: MIT License"
     ],
-    python_requires='>=3.6',
+    python_requires='>=3.6'
 )
