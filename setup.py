@@ -34,7 +34,13 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/gsy0911/kabutobashi",
-    packages=setuptools.find_packages(),
+    packages=[
+        "pandas",
+        "jpholiday",
+        "lxml",
+        "requests",
+        "beautifulsoup4"
+    ],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
