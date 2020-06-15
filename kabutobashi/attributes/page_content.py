@@ -1,4 +1,4 @@
-from pystock.errors import TagNotFoundError
+from kabutobashi.errors import TagNotFoundError
 
 
 class PageContent(object):

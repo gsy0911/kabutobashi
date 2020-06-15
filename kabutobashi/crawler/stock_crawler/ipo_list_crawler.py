@@ -1,4 +1,4 @@
-from pystock.crawler.crawler import Crawler
+from kabutobashi.crawler.crawler import Crawler
 from bs4 import BeautifulSoup
 from typing import Union
 

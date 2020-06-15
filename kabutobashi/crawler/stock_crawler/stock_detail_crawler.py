@@ -1,5 +1,5 @@
-from pystock.crawler.crawler import Crawler
-from pystock.crawler.stock_crawler.stock_detail_page import (
+from kabutobashi.crawler.crawler import Crawler
+from kabutobashi.crawler.stock_crawler.stock_detail_page import (
     StockBoard, StockDetail
 )
 from bs4 import BeautifulSoup

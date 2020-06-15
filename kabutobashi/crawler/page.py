@@ -1,4 +1,4 @@
-from pystock.attributes.attribute import PageContent
+from kabutobashi.attributes.attribute import PageContent
 
 
 class MetaPage(type):

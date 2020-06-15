@@ -9,4 +9,4 @@ print(f"test_target_path:= {SOURCE_PATH}")
 sys.path.append(f"{SOURCE_PATH}")
 
 # テスト対象のディレクトリに移動
-os.chdir("./pystock")
+os.chdir("./kabutobashi")

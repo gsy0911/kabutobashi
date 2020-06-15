@@ -1,6 +1,6 @@
 import math
 import pandas as pd
-from pystock.method.method import Method
+from kabutobashi.method.method import Method
 
 
 class Stochastics(Method):

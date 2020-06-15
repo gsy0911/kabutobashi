@@ -1,5 +1,5 @@
 import pytest
-import pystock as ps
+import kabutobashi as ps
 
 
 @pytest.fixture(scope="module", autouse=True)

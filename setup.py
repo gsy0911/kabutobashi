@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="pystock",
+    name="kabutobashi",
     version="0.1.1",
     author="gsy0911",
     author_email="yoshiki0911@gmail.com",

@@ -1,6 +1,6 @@
-from pystock.attributes.attribute import Field
-from pystock.crawler.user_agent import UserAgent
-from pystock.errors import (
+from kabutobashi.attributes.attribute import Field
+from kabutobashi.crawler.user_agent import UserAgent
+from kabutobashi.errors import (
     CrawlPageNotFoundError,
     PyStockCrawlerError
 )

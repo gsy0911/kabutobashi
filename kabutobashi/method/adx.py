@@ -1,6 +1,6 @@
 import pandas as pd
-from pystock.method.method import Method
-from pystock.attributes.attribute import Field
+from kabutobashi.method.method import Method
+from kabutobashi.attributes.attribute import Field
 
 
 class ADX(Method):

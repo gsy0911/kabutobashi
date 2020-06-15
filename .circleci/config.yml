@@ -17,7 +17,7 @@ jobs:
             sudo pip install poetry
             poetry install
       # circleCI上ではpipenv shellは動かない
-      - run: poetry run pytest ./test -vv --cov=./pystock --cov-report=xml
+      - run: poetry run pytest ./test -vv --cov=./kabutobashi --cov-report=xml
       - codecov/upload:
         file: ./test/coverage.xml
 

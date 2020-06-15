@@ -1,5 +1,5 @@
 # methods to analysis
-from pystock.method.api import (
+from kabutobashi.method.api import (
     Method,
     SMA,
     MACD,
@@ -11,7 +11,7 @@ from pystock.method.api import (
     PsychoLogical
 )
 
-from pystock.core import (
+from kabutobashi.core import (
     # technical analysis function
     analysis_with,
     # get buy or sell signal value
@@ -19,7 +19,7 @@ from pystock.core import (
 )
 
 # functions to load or save files
-from pystock.io.api import (
+from kabutobashi.io.api import (
     # read csv data
     read_csv,
     # provide example stock data
@@ -29,10 +29,10 @@ from pystock.io.api import (
 )
 
 # import errors
-from pystock import errors
+from kabutobashi import errors
 
 # classes or functions about crawl web pages
-from pystock.crawler.api import (
+from kabutobashi.crawler.api import (
     # beautifulsoupを利用してウェブページを取得する
     get_web_page,
     # 単一の株価の詳細情報を取得する
@@ -62,15 +62,15 @@ __version__ = "0.1.1"
 
 # module level doc-string
 __doc__ = """
-pystock
+kabutobashi
 =======
 
-**pystock** is a Python package to analysis stock data with measure
+**kabutobashi** is a Python package to analysis stock data with measure
 analysis methods, such as MACD, SMA, etc.
 
 Main Features
 -------------
-Here are the things that pystock does well:
+Here are the things that kabutobashi does well:
  - Easy crawl.
  - Easy analysis.
 """

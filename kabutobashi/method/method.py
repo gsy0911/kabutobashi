@@ -1,4 +1,4 @@
-from pystock.attributes.attribute import Field, StockDf
+from kabutobashi.attributes.attribute import Field, StockDf
 import pandas as pd
 import logging
 

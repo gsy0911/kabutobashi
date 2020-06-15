@@ -1,5 +1,5 @@
 import pytest
-import pystock as ps
+import kabutobashi as ps
 
 
 def test_crawl_page_not_found():

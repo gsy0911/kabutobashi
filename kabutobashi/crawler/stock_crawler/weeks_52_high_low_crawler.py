@@ -1,5 +1,5 @@
-from pystock.crawler.crawler import Crawler
-from pystock.crawler.stock_crawler.weeks_52_high_low_page import (
+from kabutobashi.crawler.crawler import Crawler
+from kabutobashi.crawler.stock_crawler.weeks_52_high_low_page import (
     Week52HighLowStockPricePageTable
 )
 from bs4 import BeautifulSoup

@@ -1,5 +1,5 @@
 import pandas as pd
-from pystock.errors import StockDfError
+from kabutobashi.errors import StockDfError
 
 
 class StockDf(object):

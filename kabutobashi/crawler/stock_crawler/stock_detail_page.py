@@ -1,5 +1,5 @@
-from pystock.crawler.page import Page
-from pystock.attributes.attribute import PageContent
+from kabutobashi.crawler.page import Page
+from kabutobashi.attributes.attribute import PageContent
 from bs4 import BeautifulSoup
 
 

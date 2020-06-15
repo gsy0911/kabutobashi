@@ -1,11 +1,11 @@
 import pytest
 import pandas as pd
-from pystock.attributes.attribute import (
+from kabutobashi.attributes.attribute import (
     Field,
     StockDf,
     PageContent
 )
-from pystock.errors import StockDfError
+from kabutobashi.errors import StockDfError
 
 
 # Fieldクラスを検証するためのscript
