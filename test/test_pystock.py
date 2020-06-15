@@ -139,7 +139,3 @@ def test_io_read_csv():
     assert _df is None
     _df = ps.read_csv("../data/stooq.csv")
     assert _df is not None
-
-
-def test_version():
-    assert ps.__version__ == '0.1.1'
