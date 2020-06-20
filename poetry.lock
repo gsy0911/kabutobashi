@@ -186,6 +186,17 @@ python-versions = ">=2.7"
 version = "0.3"
 
 [[package]]
+category = "dev"
+description = "Sphinx theme used by Guzzle."
+name = "guzzle-sphinx-theme"
+optional = false
+python-versions = "*"
+version = "0.7.11"
+
+[package.dependencies]
+Sphinx = ">=1.2b1"
+
+[[package]]
 category = "main"
 description = "Internationalized Domain Names in Applications (IDNA)"
 name = "idna"
@@ -1167,7 +1178,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "53ec61edef640bcd791de8e2079e2219f71350e2a91d1603d07790c70583a7c1"
+content-hash = "7a3257119671d13d42d212098082a721292a50d0ae0d55dd3012bc64598e07f0"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -1315,6 +1326,9 @@ docutils = [
 entrypoints = [
     {file = "entrypoints-0.3-py2.py3-none-any.whl", hash = "sha256:589f874b313739ad35be6e0cd7efde2a4e9b6fea91edcc34e58ecbb8dbe56d19"},
     {file = "entrypoints-0.3.tar.gz", hash = "sha256:c70dd71abe5a8c85e55e12c19bd91ccfeec11a6e99044204511f9ed547d48451"},
+]
+guzzle-sphinx-theme = [
+    {file = "guzzle_sphinx_theme-0.7.11.tar.gz", hash = "sha256:9b8c1639c343c02c3f3db7df660ddf6f533b5454ee92a5f7b02edaa573fed3e6"},
 ]
 idna = [
     {file = "idna-2.9-py2.py3-none-any.whl", hash = "sha256:a068a21ceac8a4d63dbfd964670474107f541babbd2250d61922f029858365fa"},
