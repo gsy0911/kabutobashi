@@ -16,7 +16,7 @@ clean:
 
 .PHONY: doc-build-sphinx
 doc-build-sphinx: compile-python-docstring
-	sphinx-build -b dirhtml ./doc ./doc/_build
+	sphinx-build ./doc ./doc/_build
 
 .PHONY: compile-python-docstring
 compile-python-docstring:
