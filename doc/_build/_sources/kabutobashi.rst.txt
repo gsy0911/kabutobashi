@@ -1,6 +1,11 @@
 kabutobashi package
 ===================
 
+.. automodule:: kabutobashi
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Subpackages
 -----------
 
@@ -15,35 +20,21 @@ Subpackages
 Submodules
 ----------
 
-kabutobashi.core module
------------------------
 
 .. automodule:: kabutobashi.core
    :members:
    :undoc-members:
    :show-inheritance:
 
-kabutobashi.errors module
--------------------------
 
 .. automodule:: kabutobashi.errors
    :members:
    :undoc-members:
    :show-inheritance:
 
-kabutobashi.utilities module
-----------------------------
 
 .. automodule:: kabutobashi.utilities
    :members:
    :undoc-members:
    :show-inheritance:
 
-
-Module contents
----------------
-
-.. automodule:: kabutobashi
-   :members:
-   :undoc-members:
-   :show-inheritance:

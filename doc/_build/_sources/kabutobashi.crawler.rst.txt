@@ -1,6 +1,11 @@
 kabutobashi.crawler package
 ===========================
 
+.. automodule:: kabutobashi.crawler
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Subpackages
 -----------
 
@@ -12,35 +17,21 @@ Subpackages
 Submodules
 ----------
 
-kabutobashi.crawler.crawler module
-----------------------------------
 
 .. automodule:: kabutobashi.crawler.crawler
    :members:
    :undoc-members:
    :show-inheritance:
 
-kabutobashi.crawler.page module
--------------------------------
 
 .. automodule:: kabutobashi.crawler.page
    :members:
    :undoc-members:
    :show-inheritance:
 
-kabutobashi.crawler.user\_agent module
---------------------------------------
 
 .. automodule:: kabutobashi.crawler.user_agent
    :members:
    :undoc-members:
    :show-inheritance:
 
-
-Module contents
----------------
-
-.. automodule:: kabutobashi.crawler
-   :members:
-   :undoc-members:
-   :show-inheritance:
