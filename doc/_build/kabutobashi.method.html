@@ -1,174 +1,124 @@
 
-
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
-<head>
-  <meta charset="utf-8">
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
+  <!-- Licensed under the Apache 2.0 License -->
+  <link rel="stylesheet" type="text/css" href="_static/fonts/open-sans/stylesheet.css" />
+  <!-- Licensed under the SIL Open Font License -->
+  <link rel="stylesheet" type="text/css" href="_static/fonts/source-serif-pro/source-serif-pro.css" />
+  <link rel="stylesheet" type="text/css" href="_static/css/bootstrap.min.css" />
+  <link rel="stylesheet" type="text/css" href="_static/css/bootstrap-theme.min.css" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>kabutobashi.method package &mdash; kabutobashi  documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-
-  
-  
-  
-  
-
-  
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
-    
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-    
+    <title>kabutobashi.method package &#8212; kabutobashi  documentation</title>
+    <link rel="stylesheet" href="_static/guzzle.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="kabutobashi.io package" href="kabutobashi.io.html" /> 
-</head>
-
-<body class="wy-body-for-nav">
-
-   
-  <div class="wy-grid-for-nav">
-    
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-          
-
-          
-            <a href="index.html" class="icon icon-home" alt="Documentation Home"> kabutobashi
-          
-
-          
-          </a>
-
-          
-            
-            
-          
-
-          
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
-</div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Contents:</span></p>
-<ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="modules.html">kabutobashi</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="kabutobashi.html">kabutobashi package</a><ul class="current">
-<li class="toctree-l3 current"><a class="reference internal" href="kabutobashi.html#subpackages">Subpackages</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="kabutobashi.attributes.html">kabutobashi.attributes package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="kabutobashi.crawler.html">kabutobashi.crawler package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="kabutobashi.io.html">kabutobashi.io package</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">kabutobashi.method package</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="kabutobashi.html#submodules">Submodules</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kabutobashi.html#module-kabutobashi.core">kabutobashi.core module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kabutobashi.html#module-kabutobashi.errors">kabutobashi.errors module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kabutobashi.html#module-kabutobashi.utilities">kabutobashi.utilities module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kabutobashi.html#module-kabutobashi">Module contents</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-
-            
-          
-        </div>
-        
-      </div>
-    </nav>
-
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">kabutobashi</a>
-        
-      </nav>
-
-
-      <div class="wy-nav-content">
-        
-        <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
-  <ul class="wy-breadcrumbs">
-    
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-        
-          <li><a href="modules.html">kabutobashi</a> &raquo;</li>
-        
-          <li><a href="kabutobashi.html">kabutobashi package</a> &raquo;</li>
-        
-      <li>kabutobashi.method package</li>
-    
-    
-      <li class="wy-breadcrumbs-aside">
-        
-            
-            <a href="_sources/kabutobashi.method.rst.txt" rel="nofollow"> View page source</a>
-          
-        
-      </li>
-    
-  </ul>
-
+    <link rel="prev" title="kabutobashi.io package" href="kabutobashi.io.html" />
   
-  <hr/>
+   
+
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="kabutobashi.io.html" title="kabutobashi.io package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">kabutobashi  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >kabutobashi</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="kabutobashi.html" accesskey="U">kabutobashi package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">kabutobashi.method package</a></li> 
+      </ul>
+    </div>
+    <div class="container-wrapper">
+
+      <div id="mobile-toggle">
+        <a href="#"><span class="glyphicon glyphicon-align-justify" aria-hidden="true"></span></a>
+      </div>
+  <div id="left-column">
+    <div class="sphinxsidebar">
+<div class="sidebar-block">
+  <div class="sidebar-wrapper">
+    <h2>Contents</h2>
+    <div class="sidebar-localtoc">
+      <ul>
+<li><a class="reference internal" href="#">kabutobashi.method package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-kabutobashi.method.adx">kabutobashi.method.adx module</a></li>
+<li><a class="reference internal" href="#module-kabutobashi.method.bollinger_bands">kabutobashi.method.bollinger_bands module</a></li>
+<li><a class="reference internal" href="#module-kabutobashi.method.ichimoku">kabutobashi.method.ichimoku module</a></li>
+<li><a class="reference internal" href="#module-kabutobashi.method.macd">kabutobashi.method.macd module</a></li>
+<li><a class="reference internal" href="#module-kabutobashi.method.method">kabutobashi.method.method module</a></li>
+<li><a class="reference internal" href="#module-kabutobashi.method.momentum">kabutobashi.method.momentum module</a></li>
+<li><a class="reference internal" href="#module-kabutobashi.method.psycho_logical">kabutobashi.method.psycho_logical module</a></li>
+<li><a class="reference internal" href="#module-kabutobashi.method.sma">kabutobashi.method.sma module</a></li>
+<li><a class="reference internal" href="#module-kabutobashi.method.stochastics">kabutobashi.method.stochastics module</a></li>
+<li><a class="reference internal" href="#module-kabutobashi.method">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+    </div>
+  </div>
 </div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="kabutobashi.io.html"
+                        title="previous chapter">kabutobashi.io package</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/kabutobashi.method.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div class="sidebar-block">
+  <div class="sidebar-wrapper">
+    <div id="main-search">
+      <form class="form-inline" action="search.html" method="GET" role="form">
+        <div class="input-group">
+          <input name="q" type="text" class="form-control" placeholder="Search...">
+        </div>
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
+        <div id="right-column">
+          
+          <div role="navigation" aria-label="breadcrumbs navigation">
+            <ol class="breadcrumb">
+              <li><a href="index.html">Docs</a></li>
+              
+                <li><a href="modules.html">kabutobashi</a></li>
+              
+                <li><a href="kabutobashi.html">kabutobashi package</a></li>
+              
+              <li>kabutobashi.method package</li>
+            </ol>
+          </div>
+          
+          <div class="document clearer body">
             
   <div class="section" id="kabutobashi-method-package">
 <h1>kabutobashi.method package<a class="headerlink" href="#kabutobashi-method-package" title="Permalink to this headline">¶</a></h1>
@@ -182,6 +132,14 @@
 <em class="property">class </em><code class="sig-prename descclassname">kabutobashi.method.adx.</code><code class="sig-name descname">ADX</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">term</span><span class="o">=</span><span class="default_value">14</span></em>, <em class="sig-param"><span class="n">adx_term</span><span class="o">=</span><span class="default_value">14</span></em>, <em class="sig-param"><span class="n">adxr_term</span><span class="o">=</span><span class="default_value">28</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kabutobashi.method.adx.ADX" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#kabutobashi.method.method.Method" title="kabutobashi.method.method.Method"><code class="xref py py-class docutils literal notranslate"><span class="pre">kabutobashi.method.method.Method</span></code></a></p>
 <p>以下の指標を計算するクラス</p>
+<ul class="simple">
+<li><p>+DI: 株価の上昇の大きさ</p></li>
+<li><p>-DI: 株価の下降の大きさ</p></li>
+<li><p>ADX: 株価のトレンドの強さ</p></li>
+<li><p>ADXR: ADXの単純移動平均線</p></li>
+</ul>
+<p><a class="reference external" href="https://www.sevendata.co.jp/shihyou/technical/dmi.html">https://www.sevendata.co.jp/shihyou/technical/dmi.html</a>
+<a class="reference external" href="https://www.sevendata.co.jp/shihyou/technical/adx.html">https://www.sevendata.co.jp/shihyou/technical/adx.html</a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -191,14 +149,6 @@
 </ul>
 </dd>
 </dl>
-<ul class="simple">
-<li><p>+DI: 株価の上昇の大きさ</p></li>
-<li><p>-DI: 株価の下降の大きさ</p></li>
-<li><p>ADX: 株価のトレンドの強さ</p></li>
-<li><p>ADXR: ADXの単純移動平均線</p></li>
-</ul>
-<p><a class="reference external" href="https://www.sevendata.co.jp/shihyou/technical/dmi.html">https://www.sevendata.co.jp/shihyou/technical/dmi.html</a>
-<a class="reference external" href="https://www.sevendata.co.jp/shihyou/technical/adx.html">https://www.sevendata.co.jp/shihyou/technical/adx.html</a></p>
 <dl class="py attribute">
 <dt id="kabutobashi.method.adx.ADX.adx_term">
 <code class="sig-name descname">adx_term</code><em class="property"> = None</em><a class="headerlink" href="#kabutobashi.method.adx.ADX.adx_term" title="Permalink to this definition">¶</a></dt>
@@ -209,66 +159,13 @@
 <code class="sig-name descname">adxr_term</code><em class="property"> = None</em><a class="headerlink" href="#kabutobashi.method.adx.ADX.adxr_term" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="py method">
-<dt id="kabutobashi.method.adx.ADX.compute_dx">
-<em class="property">static </em><code class="sig-name descname">compute_dx</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em><span class="sig-paren">)</span> &#x2192; float<a class="headerlink" href="#kabutobashi.method.adx.ADX.compute_dx" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>pd.DataFrame</em>) – </p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="kabutobashi.method.adx.ADX.fixed_minus_dm">
-<em class="property">static </em><code class="sig-name descname">fixed_minus_dm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em><span class="sig-paren">)</span> &#x2192; float<a class="headerlink" href="#kabutobashi.method.adx.ADX.fixed_minus_dm" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="kabutobashi.method.adx.ADX.fixed_plus_dm">
-<em class="property">static </em><code class="sig-name descname">fixed_plus_dm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em><span class="sig-paren">)</span> &#x2192; float<a class="headerlink" href="#kabutobashi.method.adx.ADX.fixed_plus_dm" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="kabutobashi.method.adx.ADX.method">
-<code class="sig-name descname">method</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">_df</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#kabutobashi.method.adx.ADX.method" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="kabutobashi.method.adx.ADX.signal">
-<code class="sig-name descname">signal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">_df</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#kabutobashi.method.adx.ADX.signal" title="Permalink to this definition">¶</a></dt>
-<dd><p>buy_signalとsell_signalを付与</p>
-</dd></dl>
-
 <dl class="py attribute">
 <dt id="kabutobashi.method.adx.ADX.term">
 <code class="sig-name descname">term</code><em class="property"> = None</em><a class="headerlink" href="#kabutobashi.method.adx.ADX.term" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="py method">
-<dt id="kabutobashi.method.adx.ADX.true_range">
-<em class="property">static </em><code class="sig-name descname">true_range</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kabutobashi.method.adx.ADX.true_range" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>pd.DataFrame</em>) – </p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>maximum</p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">adx</span> <span class="o">=</span> <span class="n">ADX</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">adx</span><span class="o">.</span><span class="n">true_range</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-<span class="go">7</span>
-</pre></div>
-</div>
 </dd></dl>
 
-</dd></dl>
-
-</div>
-<div class="section" id="module-kabutobashi.method.api">
-<span id="kabutobashi-method-api-module"></span><h2>kabutobashi.method.api module<a class="headerlink" href="#module-kabutobashi.method.api" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-kabutobashi.method.bollinger_bands">
 <span id="kabutobashi-method-bollinger-bands-module"></span><h2>kabutobashi.method.bollinger_bands module<a class="headerlink" href="#module-kabutobashi.method.bollinger_bands" title="Permalink to this headline">¶</a></h2>
@@ -285,16 +182,6 @@
 <dl class="py attribute">
 <dt id="kabutobashi.method.bollinger_bands.BollingerBands.continuity_term">
 <code class="sig-name descname">continuity_term</code><em class="property"> = None</em><a class="headerlink" href="#kabutobashi.method.bollinger_bands.BollingerBands.continuity_term" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="kabutobashi.method.bollinger_bands.BollingerBands.method">
-<code class="sig-name descname">method</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">_df</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#kabutobashi.method.bollinger_bands.BollingerBands.method" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="kabutobashi.method.bollinger_bands.BollingerBands.signal">
-<code class="sig-name descname">signal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">_df</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#kabutobashi.method.bollinger_bands.BollingerBands.signal" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -318,19 +205,9 @@
 <code class="sig-name descname">medium_term</code><em class="property"> = None</em><a class="headerlink" href="#kabutobashi.method.ichimoku.Ichimoku.medium_term" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="py method">
-<dt id="kabutobashi.method.ichimoku.Ichimoku.method">
-<code class="sig-name descname">method</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">_df</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#kabutobashi.method.ichimoku.Ichimoku.method" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 <dl class="py attribute">
 <dt id="kabutobashi.method.ichimoku.Ichimoku.short_term">
 <code class="sig-name descname">short_term</code><em class="property"> = None</em><a class="headerlink" href="#kabutobashi.method.ichimoku.Ichimoku.short_term" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="kabutobashi.method.ichimoku.Ichimoku.signal">
-<code class="sig-name descname">signal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">_df</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#kabutobashi.method.ichimoku.Ichimoku.signal" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -352,24 +229,9 @@
 <code class="sig-name descname">macd_span</code><em class="property"> = None</em><a class="headerlink" href="#kabutobashi.method.macd.MACD.macd_span" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="py method">
-<dt id="kabutobashi.method.macd.MACD.method">
-<code class="sig-name descname">method</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">_df</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#kabutobashi.method.macd.MACD.method" title="Permalink to this definition">¶</a></dt>
-<dd><p>macdを基準として今後上昇するかどうかをスコアで返す。
-値が大きければその傾向が高いことを表している。
-最小値は0で、最大値は無限大である。
-:param _df:
-:return:</p>
-</dd></dl>
-
 <dl class="py attribute">
 <dt id="kabutobashi.method.macd.MACD.short_term">
 <code class="sig-name descname">short_term</code><em class="property"> = None</em><a class="headerlink" href="#kabutobashi.method.macd.MACD.short_term" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="kabutobashi.method.macd.MACD.signal">
-<code class="sig-name descname">signal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">_df</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#kabutobashi.method.macd.MACD.signal" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -381,66 +243,66 @@
 <dt id="kabutobashi.method.method.AbstractMethod">
 <em class="property">class </em><code class="sig-prename descclassname">kabutobashi.method.method.</code><code class="sig-name descname">AbstractMethod</code><a class="headerlink" href="#kabutobashi.method.method.AbstractMethod" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>MetaMethodを継承するクラス</p>
+<p>FieldClassとStockDfClassの値のget/setに関する操作をhookする</p>
 </dd></dl>
 
 <dl class="py class">
 <dt id="kabutobashi.method.method.MetaMethod">
 <em class="property">class </em><code class="sig-prename descclassname">kabutobashi.method.method.</code><code class="sig-name descname">MetaMethod</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">bases</span></em>, <em class="sig-param"><span class="n">class_dict</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kabutobashi.method.method.MetaMethod" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">type</span></code></p>
-<p>値のget, setに関するメタクラス</p>
+<p>値のget/setに関するメタクラス</p>
 </dd></dl>
 
 <dl class="py class">
 <dt id="kabutobashi.method.method.Method">
 <em class="property">class </em><code class="sig-prename descclassname">kabutobashi.method.method.</code><code class="sig-name descname">Method</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">method_name</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">logger</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kabutobashi.method.method.Method" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#kabutobashi.method.method.AbstractMethod" title="kabutobashi.method.method.AbstractMethod"><code class="xref py py-class docutils literal notranslate"><span class="pre">kabutobashi.method.method.AbstractMethod</span></code></a></p>
-<p>usage
-sma = SMA()
-macd = MCAD()</p>
-<p># get sma-based-analysis
-sma_df = stock_df.pipe(sma)</p>
-<p># get macd-based-analysis
-macd_df = stock_df.pipe(macd)</p>
-<dl class="py method">
-<dt id="kabutobashi.method.method.Method.cross">
-<em class="property">static </em><code class="sig-name descname">cross</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">_s</span><span class="p">:</span> <span class="n">pandas.core.series.Series</span></em>, <em class="sig-param"><span class="n">to_plus_name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_minus_name</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#kabutobashi.method.method.Method.cross" title="Permalink to this definition">¶</a></dt>
-<dd><p>0を基準としてプラスかマイナスのどちらかに振れたかを判断する関数
-:params _s: 対象のpd.Series
-:params to_plus_name: 上抜けた場合のカラムの名前
-:params to_minus_name: 上抜けた場合のカラムの名前</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="kabutobashi.method.method.Method.get_impact">
-<em class="property">static </em><code class="sig-name descname">get_impact</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">_df</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em>, <em class="sig-param"><span class="n">influence</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">2</span></em>, <em class="sig-param"><span class="n">tail</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">5</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span> &#x2192; float<a class="headerlink" href="#kabutobashi.method.method.Method.get_impact" title="Permalink to this definition">¶</a></dt>
-<dd><p>売りと買いのシグナルの余波の合計値を返す。
-:params _df:
-:params influence:
-:params tail:
-:return: [-1,1]の値をとる。-1: 売り、1: 買いを表す</p>
-</dd></dl>
-
+<p>株のテクニカル分析に関するメソッドを提供するクラス</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">kabutobashi</span> <span class="k">as</span> <span class="nn">kb</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">stock_df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="s2">&quot;path_to_stock_data&quot;</span><span class="p">)</span>
+<span class="go"># get sma-based-analysis</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sma_df</span> <span class="o">=</span> <span class="n">stock_df</span><span class="o">.</span><span class="n">pipe</span><span class="p">(</span><span class="n">kb</span><span class="o">.</span><span class="n">sma</span><span class="p">)</span>
+<span class="go"># get sma-base-buy or sell signal</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sma_signal</span> <span class="o">=</span> <span class="n">stock_df</span><span class="o">.</span><span class="n">pipe</span><span class="p">(</span><span class="n">kb</span><span class="o">.</span><span class="n">sma</span><span class="p">,</span> <span class="n">impact</span><span class="o">=</span><span class="s2">&quot;true&quot;</span><span class="p">,</span> <span class="n">influence</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">tail</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="go"># get macd-based-analysis</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">macd_df</span> <span class="o">=</span> <span class="n">stock_df</span><span class="o">.</span><span class="n">pipe</span><span class="p">(</span><span class="n">kb</span><span class="o">.</span><span class="n">macd</span><span class="p">)</span>
+<span class="go"># get macd-base-buy or sell signal</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sma_signal</span> <span class="o">=</span> <span class="n">stock_df</span><span class="o">.</span><span class="n">pipe</span><span class="p">(</span><span class="n">kb</span><span class="o">.</span><span class="n">macd</span><span class="p">,</span> <span class="n">impact</span><span class="o">=</span><span class="s2">&quot;true&quot;</span><span class="p">,</span> <span class="n">influence</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">tail</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
 <dl class="py method">
 <dt id="kabutobashi.method.method.Method.method">
 <code class="sig-name descname">method</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">_df</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#kabutobashi.method.method.Method.method" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>テクニカル分析の手法</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>_df</strong> – 株の情報を含むDataFrame</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>各分析手法の結果を付与したDataFrame</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt id="kabutobashi.method.method.Method.signal">
 <code class="sig-name descname">signal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">_df</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#kabutobashi.method.method.Method.signal" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>テクニカル分析の手法の結果により、買いと売りのタイミングを計算する</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>_df</strong> – 株の情報を含むDataFrame</p>
+</dd>
+</dl>
+<p>Returns:</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt id="kabutobashi.method.method.Method.stock_df">
 <code class="sig-name descname">stock_df</code><em class="property"> = None</em><a class="headerlink" href="#kabutobashi.method.method.Method.stock_df" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
-
-<dl class="py method">
-<dt id="kabutobashi.method.method.Method.trend">
-<em class="property">static </em><code class="sig-name descname">trend</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">_s</span><span class="p">:</span> <span class="n">pandas.core.series.Series</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.series.Series<a class="headerlink" href="#kabutobashi.method.method.Method.trend" title="Permalink to this definition">¶</a></dt>
-<dd><p>ある系列_sのトレンドを計算する。
-差分のrolling_sumを返す</p>
-</dd></dl>
 
 <dl class="py method">
 <dt id="kabutobashi.method.method.Method.validate">
@@ -457,16 +319,6 @@ macd_df = stock_df.pipe(macd)</p>
 <em class="property">class </em><code class="sig-prename descclassname">kabutobashi.method.momentum.</code><code class="sig-name descname">Momentum</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">term</span><span class="o">=</span><span class="default_value">25</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kabutobashi.method.momentum.Momentum" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#kabutobashi.method.method.Method" title="kabutobashi.method.method.Method"><code class="xref py py-class docutils literal notranslate"><span class="pre">kabutobashi.method.method.Method</span></code></a></p>
 <p><a class="reference external" href="https://www.sevendata.co.jp/shihyou/technical/momentum.html">https://www.sevendata.co.jp/shihyou/technical/momentum.html</a></p>
-<dl class="py method">
-<dt id="kabutobashi.method.momentum.Momentum.method">
-<code class="sig-name descname">method</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">_df</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#kabutobashi.method.momentum.Momentum.method" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="kabutobashi.method.momentum.Momentum.signal">
-<code class="sig-name descname">signal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">_df</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#kabutobashi.method.momentum.Momentum.signal" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 <dl class="py attribute">
 <dt id="kabutobashi.method.momentum.Momentum.term">
 <code class="sig-name descname">term</code><em class="property"> = None</em><a class="headerlink" href="#kabutobashi.method.momentum.Momentum.term" title="Permalink to this definition">¶</a></dt>
@@ -487,19 +339,9 @@ macd_df = stock_df.pipe(macd)</p>
 <code class="sig-name descname">lower_threshold</code><em class="property"> = None</em><a class="headerlink" href="#kabutobashi.method.psycho_logical.PsychoLogical.lower_threshold" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="py method">
-<dt id="kabutobashi.method.psycho_logical.PsychoLogical.method">
-<code class="sig-name descname">method</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">_df</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#kabutobashi.method.psycho_logical.PsychoLogical.method" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 <dl class="py attribute">
 <dt id="kabutobashi.method.psycho_logical.PsychoLogical.psycho_term">
 <code class="sig-name descname">psycho_term</code><em class="property"> = None</em><a class="headerlink" href="#kabutobashi.method.psycho_logical.PsychoLogical.psycho_term" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="kabutobashi.method.psycho_logical.PsychoLogical.signal">
-<code class="sig-name descname">signal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">_df</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#kabutobashi.method.psycho_logical.PsychoLogical.signal" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -526,19 +368,9 @@ macd_df = stock_df.pipe(macd)</p>
 <code class="sig-name descname">medium_term</code><em class="property"> = None</em><a class="headerlink" href="#kabutobashi.method.sma.SMA.medium_term" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="py method">
-<dt id="kabutobashi.method.sma.SMA.method">
-<code class="sig-name descname">method</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">_df</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#kabutobashi.method.sma.SMA.method" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 <dl class="py attribute">
 <dt id="kabutobashi.method.sma.SMA.short_term">
 <code class="sig-name descname">short_term</code><em class="property"> = None</em><a class="headerlink" href="#kabutobashi.method.sma.SMA.short_term" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="kabutobashi.method.sma.SMA.signal">
-<code class="sig-name descname">signal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">_df</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#kabutobashi.method.sma.SMA.signal" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -550,48 +382,6 @@ macd_df = stock_df.pipe(macd)</p>
 <dt id="kabutobashi.method.stochastics.Stochastics">
 <em class="property">class </em><code class="sig-prename descclassname">kabutobashi.method.stochastics.</code><code class="sig-name descname">Stochastics</code><a class="headerlink" href="#kabutobashi.method.stochastics.Stochastics" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#kabutobashi.method.method.Method" title="kabutobashi.method.method.Method"><code class="xref py py-class docutils literal notranslate"><span class="pre">kabutobashi.method.method.Method</span></code></a></p>
-<dl class="py method">
-<dt id="kabutobashi.method.stochastics.Stochastics.buy_signal_index">
-<em class="property">static </em><code class="sig-name descname">buy_signal_index</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">current_k</span></em>, <em class="sig-param"><span class="n">current_d</span></em>, <em class="sig-param"><span class="n">current_sd</span></em>, <em class="sig-param"><span class="n">prev_k</span></em>, <em class="sig-param"><span class="n">prev_d</span></em>, <em class="sig-param"><span class="n">prev_sd</span></em><span class="sig-paren">)</span> &#x2192; float<a class="headerlink" href="#kabutobashi.method.stochastics.Stochastics.buy_signal_index" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="kabutobashi.method.stochastics.Stochastics.fast_stochastic_d">
-<em class="property">static </em><code class="sig-name descname">fast_stochastic_d</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">stochastic_k</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kabutobashi.method.stochastics.Stochastics.fast_stochastic_d" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="kabutobashi.method.stochastics.Stochastics.fast_stochastic_k">
-<em class="property">static </em><code class="sig-name descname">fast_stochastic_k</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">close</span></em>, <em class="sig-param"><span class="n">low</span></em>, <em class="sig-param"><span class="n">high</span></em>, <em class="sig-param"><span class="n">n</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kabutobashi.method.stochastics.Stochastics.fast_stochastic_k" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="kabutobashi.method.stochastics.Stochastics.method">
-<code class="sig-name descname">method</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">_df</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#kabutobashi.method.stochastics.Stochastics.method" title="Permalink to this definition">¶</a></dt>
-<dd><p>買いのシグナルを計算で求める
-・%K・%D共に20％以下の時に、%Kが%Dを下から上抜いた時
-・%D・スロー%D共に20％以下の時に、%Dがスロー%Dを下から上抜いた時
-<a class="reference external" href="https://www.moneypartners.co.jp/support/tech/sct.html">https://www.moneypartners.co.jp/support/tech/sct.html</a>
-:param _df:
-:return:</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="kabutobashi.method.stochastics.Stochastics.sell_signal_index">
-<em class="property">static </em><code class="sig-name descname">sell_signal_index</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">current_k</span></em>, <em class="sig-param"><span class="n">current_d</span></em>, <em class="sig-param"><span class="n">current_sd</span></em>, <em class="sig-param"><span class="n">prev_k</span></em>, <em class="sig-param"><span class="n">prev_d</span></em>, <em class="sig-param"><span class="n">prev_sd</span></em><span class="sig-paren">)</span> &#x2192; float<a class="headerlink" href="#kabutobashi.method.stochastics.Stochastics.sell_signal_index" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="kabutobashi.method.stochastics.Stochastics.signal">
-<code class="sig-name descname">signal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">_df</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#kabutobashi.method.stochastics.Stochastics.signal" title="Permalink to this definition">¶</a></dt>
-<dd><p>買いと売りに関する指標を算出する</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="kabutobashi.method.stochastics.Stochastics.slow_stochastic_d">
-<em class="property">static </em><code class="sig-name descname">slow_stochastic_d</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">stochastic_d</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kabutobashi.method.stochastics.Stochastics.slow_stochastic_d" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 </dd></dl>
 
 </div>
@@ -601,57 +391,46 @@ macd_df = stock_df.pipe(macd)</p>
 </div>
 
 
-           </div>
-           
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-      
-        <a href="kabutobashi.io.html" class="btn btn-neutral float-left" title="kabutobashi.io package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
-    </div>
-  
-
-  <hr/>
-
-  <div role="contentinfo">
-    <p>
-        
-        &copy; Copyright 2020, gsy0911
-
-    </p>
-  </div>
+            
+  <div class="footer-relations">
     
-    
-    
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
-
-</footer>
-
-        </div>
+      <div class="pull-left">
+        <a class="btn btn-default" href="kabutobashi.io.html" title="previous chapter (use the left arrow)">kabutobashi.io package</a>
       </div>
-
-    </section>
-
-  </div>
-  
-
-  <script type="text/javascript">
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script>
-
-  
-  
     
-   
-
-</body>
+    </div>
+    <div class="clearer"></div>
+  
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="kabutobashi.io.html" title="kabutobashi.io package"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">kabutobashi  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >kabutobashi</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="kabutobashi.html" >kabutobashi package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">kabutobashi.method package</a></li> 
+      </ul>
+    </div>
+<script type="text/javascript">
+  $("#mobile-toggle a").click(function () {
+    $("#left-column").toggle();
+  });
+</script>
+<script type="text/javascript" src="_static/js/bootstrap.js"></script>
+  <div class="footer">
+    &copy; Copyright 2020, gsy0911. Created using <a href="http://sphinx.pocoo.org/">Sphinx</a>.
+  </div>
+  </body>
 </html>

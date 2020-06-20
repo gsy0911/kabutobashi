@@ -12,14 +12,6 @@ kabutobashi.method.adx module
    :undoc-members:
    :show-inheritance:
 
-kabutobashi.method.api module
------------------------------
-
-.. automodule:: kabutobashi.method.api
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 kabutobashi.method.bollinger\_bands module
 ------------------------------------------
 

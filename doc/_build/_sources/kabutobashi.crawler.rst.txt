@@ -12,14 +12,6 @@ Subpackages
 Submodules
 ----------
 
-kabutobashi.crawler.api module
-------------------------------
-
-.. automodule:: kabutobashi.crawler.api
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 kabutobashi.crawler.crawler module
 ----------------------------------
 

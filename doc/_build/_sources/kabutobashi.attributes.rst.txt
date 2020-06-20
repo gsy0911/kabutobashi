@@ -4,14 +4,6 @@ kabutobashi.attributes package
 Submodules
 ----------
 
-kabutobashi.attributes.attribute module
----------------------------------------
-
-.. automodule:: kabutobashi.attributes.attribute
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 kabutobashi.attributes.field module
 -----------------------------------
 
