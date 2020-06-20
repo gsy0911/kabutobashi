@@ -13,11 +13,3 @@ build: clean
 .PHONY: clean
 clean:
 	rm -f -r kabutobashi.egg-info/* dist/* -y
-
-.PHONY: doc-build-sphinx
-doc-build-sphinx: compile-python-docstring
-	sphinx-build ./doc ./doc/_build
-
-.PHONY: compile-python-docstring
-compile-python-docstring:
-	sphinx-apidoc -f -o ./doc ./kabutobashi
