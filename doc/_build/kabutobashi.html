@@ -253,20 +253,22 @@
 <dt id="kabutobashi.core.get_impact_with">
 <code class="sig-prename descclassname">kabutobashi.core.</code><code class="sig-name descname">get_impact_with</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">stock_df</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em>, <em class="sig-param"><span class="n">method</span><span class="p">:</span> <span class="n">Union<span class="p">[</span><a class="reference internal" href="kabutobashi.method.html#kabutobashi.method.method.Method" title="kabutobashi.method.method.Method">kabutobashi.method.method.Method</a><span class="p">, </span>list<span class="p">]</span></span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span> &#x2192; dict<a class="headerlink" href="#kabutobashi.core.get_impact_with" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
-<dt class="field-odd">Params stock_df</dt>
-<dd class="field-odd"><p></p></dd>
-<dt class="field-even">Params method</dt>
-<dd class="field-even"><p></p></dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><dl class="simple">
-<dt>ex: {</dt><dd><p>“sma”: 0.4,
-“macd”: -0.04</p>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>stock_df</strong> (<em>pd.DataFrame</em>) – </p></li>
+<li><p><strong>method</strong> (<a class="reference internal" href="kabutobashi.method.html#kabutobashi.method.method.Method" title="kabutobashi.method.method.Method"><em>Method</em></a><em> or </em><em>list</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Dict[str, float]</p>
 </dd>
 </dl>
-<p>}</p>
-</p>
-</dd>
-</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">kabutobashi</span> <span class="k">as</span> <span class="nn">kb</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">get_impact_with</span><span class="p">(</span><span class="n">stock_df</span><span class="p">,</span> <span class="p">[</span><span class="n">kb</span><span class="o">.</span><span class="n">SMA</span><span class="p">,</span> <span class="n">kb</span><span class="o">.</span><span class="n">MACD</span><span class="p">])</span>
+<span class="go">{&quot;sma&quot;: 0.4, &quot;macd&quot;: -0.04}</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </div>
