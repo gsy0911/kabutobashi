@@ -1,0 +1,1162 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>kabutobashi documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="welcome-to-kabutobashi-s-documentation">
+<h1>Welcome to kabutobashi’s documentation!<a class="headerlink" href="#welcome-to-kabutobashi-s-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<span id="document-modules"></span><div class="section" id="kabutobashi">
+<h2>kabutobashi<a class="headerlink" href="#kabutobashi" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<span id="document-kabutobashi"></span><div class="section" id="kabutobashi-package">
+<h3>kabutobashi package<a class="headerlink" href="#kabutobashi-package" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="subpackages">
+<h4>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h4>
+<div class="toctree-wrapper compound">
+<span id="document-kabutobashi.attributes"></span><div class="section" id="kabutobashi-attributes-package">
+<h5>kabutobashi.attributes package<a class="headerlink" href="#kabutobashi-attributes-package" title="Permalink to this headline">¶</a></h5>
+<div class="section" id="submodules">
+<h6>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h6>
+</div>
+<div class="section" id="module-kabutobashi.attributes.attribute">
+<span id="kabutobashi-attributes-attribute-module"></span><h6>kabutobashi.attributes.attribute module<a class="headerlink" href="#module-kabutobashi.attributes.attribute" title="Permalink to this headline">¶</a></h6>
+</div>
+<div class="section" id="module-kabutobashi.attributes.field">
+<span id="kabutobashi-attributes-field-module"></span><h6>kabutobashi.attributes.field module<a class="headerlink" href="#module-kabutobashi.attributes.field" title="Permalink to this headline">¶</a></h6>
+<dl class="py class">
+<dt id="kabutobashi.attributes.field.Field">
+<em class="property">class </em><code class="sig-prename descclassname">kabutobashi.attributes.field.</code><code class="sig-name descname">Field</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">required</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">required_type</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">value_candidate</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kabutobashi.attributes.field.Field" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>様々な値の保持に用いるクラス。
+値を代入する際にバリデーションが行われる。</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-kabutobashi.attributes.page_content">
+<span id="kabutobashi-attributes-page-content-module"></span><h6>kabutobashi.attributes.page_content module<a class="headerlink" href="#module-kabutobashi.attributes.page_content" title="Permalink to this headline">¶</a></h6>
+<dl class="py class">
+<dt id="kabutobashi.attributes.page_content.PageContent">
+<em class="property">class </em><code class="sig-prename descclassname">kabutobashi.attributes.page_content.</code><code class="sig-name descname">PageContent</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tag1</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">_class1</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">_id1</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">tag2</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">_class2</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">_id2</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">required</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">alternative_data</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">required_type</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">value_candidate</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kabutobashi.attributes.page_content.PageContent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>WebPageからCrawlしてきた値を保持するクラス。
+値を入力する際に改行や空白などの文字を自動で削除する</p>
+<dl class="py method">
+<dt id="kabutobashi.attributes.page_content.PageContent.replace">
+<em class="property">static </em><code class="sig-name descname">replace</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_text</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#kabutobashi.attributes.page_content.PageContent.replace" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kabutobashi.attributes.stock_df">
+<span id="kabutobashi-attributes-stock-df-module"></span><h6>kabutobashi.attributes.stock_df module<a class="headerlink" href="#module-kabutobashi.attributes.stock_df" title="Permalink to this headline">¶</a></h6>
+<dl class="py class">
+<dt id="kabutobashi.attributes.stock_df.StockDf">
+<em class="property">class </em><code class="sig-prename descclassname">kabutobashi.attributes.stock_df.</code><code class="sig-name descname">StockDf</code><a class="headerlink" href="#kabutobashi.attributes.stock_df.StockDf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>様々な値の保持に用いるクラス。
+値を代入する際にバリデーションが行われる。</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-kabutobashi.attributes">
+<span id="module-contents"></span><h6>Module contents<a class="headerlink" href="#module-kabutobashi.attributes" title="Permalink to this headline">¶</a></h6>
+</div>
+</div>
+<span id="document-kabutobashi.crawler"></span><div class="section" id="kabutobashi-crawler-package">
+<h5>kabutobashi.crawler package<a class="headerlink" href="#kabutobashi-crawler-package" title="Permalink to this headline">¶</a></h5>
+<div class="section" id="subpackages">
+<h6>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h6>
+<div class="toctree-wrapper compound">
+<span id="document-kabutobashi.crawler.stock_crawler"></span><div class="section" id="kabutobashi-crawler-stock-crawler-package">
+<h7>kabutobashi.crawler.stock_crawler package<a class="headerlink" href="#kabutobashi-crawler-stock-crawler-package" title="Permalink to this headline">¶</a></h7>
+<div class="section" id="submodules">
+<h8>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h8>
+</div>
+<div class="section" id="module-kabutobashi.crawler.stock_crawler.ipo_list_crawler">
+<span id="kabutobashi-crawler-stock-crawler-ipo-list-crawler-module"></span><h8>kabutobashi.crawler.stock_crawler.ipo_list_crawler module<a class="headerlink" href="#module-kabutobashi.crawler.stock_crawler.ipo_list_crawler" title="Permalink to this headline">¶</a></h8>
+<dl class="py class">
+<dt id="kabutobashi.crawler.stock_crawler.ipo_list_crawler.IPOListCrawler">
+<em class="property">class </em><code class="sig-prename descclassname">kabutobashi.crawler.stock_crawler.ipo_list_crawler.</code><code class="sig-name descname">IPOListCrawler</code><a class="headerlink" href="#kabutobashi.crawler.stock_crawler.ipo_list_crawler.IPOListCrawler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="index.html#kabutobashi.crawler.crawler.Crawler" title="kabutobashi.crawler.crawler.Crawler"><code class="xref py py-class docutils literal notranslate"><span class="pre">kabutobashi.crawler.crawler.Crawler</span></code></a></p>
+<p>指定した年にIPOした企業名と銘柄コードを取得する</p>
+<dl class="py method">
+<dt id="kabutobashi.crawler.stock_crawler.ipo_list_crawler.IPOListCrawler.web_scraping">
+<code class="sig-name descname">web_scraping</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">text</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; dict<a class="headerlink" href="#kabutobashi.crawler.stock_crawler.ipo_list_crawler.IPOListCrawler.web_scraping" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Params text</dt>
+<dd class="field-odd"><p>webページ</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="kabutobashi.crawler.stock_crawler.ipo_list_crawler.get_ipo_list_from_year">
+<code class="sig-prename descclassname">kabutobashi.crawler.stock_crawler.ipo_list_crawler.</code><code class="sig-name descname">get_ipo_list_from_year</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">year</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>str<span class="p">, </span>int<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; dict<a class="headerlink" href="#kabutobashi.crawler.stock_crawler.ipo_list_crawler.get_ipo_list_from_year" title="Permalink to this definition">¶</a></dt>
+<dd><p>IPOのリストを取得する関数</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-kabutobashi.crawler.stock_crawler.stock_detail_crawler">
+<span id="kabutobashi-crawler-stock-crawler-stock-detail-crawler-module"></span><h8>kabutobashi.crawler.stock_crawler.stock_detail_crawler module<a class="headerlink" href="#module-kabutobashi.crawler.stock_crawler.stock_detail_crawler" title="Permalink to this headline">¶</a></h8>
+<dl class="py class">
+<dt id="kabutobashi.crawler.stock_crawler.stock_detail_crawler.StockDetailCrawler">
+<em class="property">class </em><code class="sig-prename descclassname">kabutobashi.crawler.stock_crawler.stock_detail_crawler.</code><code class="sig-name descname">StockDetailCrawler</code><a class="headerlink" href="#kabutobashi.crawler.stock_crawler.stock_detail_crawler.StockDetailCrawler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="index.html#kabutobashi.crawler.crawler.Crawler" title="kabutobashi.crawler.crawler.Crawler"><code class="xref py py-class docutils literal notranslate"><span class="pre">kabutobashi.crawler.crawler.Crawler</span></code></a></p>
+<p>インスタンスに付与したurlの株の情報を取得するCrawler</p>
+<dl class="py method">
+<dt id="kabutobashi.crawler.stock_crawler.stock_detail_crawler.StockDetailCrawler.web_scraping">
+<code class="sig-name descname">web_scraping</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">text</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; dict<a class="headerlink" href="#kabutobashi.crawler.stock_crawler.stock_detail_crawler.StockDetailCrawler.web_scraping" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>text</strong> – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="kabutobashi.crawler.stock_crawler.stock_detail_crawler.get_stock_detail">
+<code class="sig-prename descclassname">kabutobashi.crawler.stock_crawler.stock_detail_crawler.</code><code class="sig-name descname">get_stock_detail</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">code</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>str<span class="p">, </span>int<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; dict<a class="headerlink" href="#kabutobashi.crawler.stock_crawler.stock_detail_crawler.get_stock_detail" title="Permalink to this definition">¶</a></dt>
+<dd><p>単一株の実行日時の詳細情報を取得する関数
+:params code: 取得したい銘柄コード
+:return:</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-kabutobashi.crawler.stock_crawler.stock_detail_page">
+<span id="kabutobashi-crawler-stock-crawler-stock-detail-page-module"></span><h8>kabutobashi.crawler.stock_crawler.stock_detail_page module<a class="headerlink" href="#module-kabutobashi.crawler.stock_crawler.stock_detail_page" title="Permalink to this headline">¶</a></h8>
+<dl class="py class">
+<dt id="kabutobashi.crawler.stock_crawler.stock_detail_page.StockBoard">
+<em class="property">class </em><code class="sig-prename descclassname">kabutobashi.crawler.stock_crawler.stock_detail_page.</code><code class="sig-name descname">StockBoard</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">stock_board</span><span class="p">:</span> <span class="n">bs4.BeautifulSoup</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kabutobashi.crawler.stock_crawler.stock_detail_page.StockBoard" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="index.html#kabutobashi.crawler.page.Page" title="kabutobashi.crawler.page.Page"><code class="xref py py-class docutils literal notranslate"><span class="pre">kabutobashi.crawler.page.Page</span></code></a></p>
+<p>ページ上部の
+stock_label: {code} {市場}
+name: {銘柄名}
+date: 株価MM/DD
+close: 終値
+を取得する</p>
+<dl class="py attribute">
+<dt id="kabutobashi.crawler.stock_crawler.stock_detail_page.StockBoard.close">
+<code class="sig-name descname">close</code><em class="property"> = None</em><a class="headerlink" href="#kabutobashi.crawler.stock_crawler.stock_detail_page.StockBoard.close" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="kabutobashi.crawler.stock_crawler.stock_detail_page.StockBoard.date">
+<code class="sig-name descname">date</code><em class="property"> = None</em><a class="headerlink" href="#kabutobashi.crawler.stock_crawler.stock_detail_page.StockBoard.date" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="kabutobashi.crawler.stock_crawler.stock_detail_page.StockBoard.get_info">
+<code class="sig-name descname">get_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; dict<a class="headerlink" href="#kabutobashi.crawler.stock_crawler.stock_detail_page.StockBoard.get_info" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="kabutobashi.crawler.stock_crawler.stock_detail_page.StockBoard.name">
+<code class="sig-name descname">name</code><em class="property"> = None</em><a class="headerlink" href="#kabutobashi.crawler.stock_crawler.stock_detail_page.StockBoard.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="kabutobashi.crawler.stock_crawler.stock_detail_page.StockBoard.stock_label">
+<code class="sig-name descname">stock_label</code><em class="property"> = None</em><a class="headerlink" href="#kabutobashi.crawler.stock_crawler.stock_detail_page.StockBoard.stock_label" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="kabutobashi.crawler.stock_crawler.stock_detail_page.StockDetail">
+<em class="property">class </em><code class="sig-prename descclassname">kabutobashi.crawler.stock_crawler.stock_detail_page.</code><code class="sig-name descname">StockDetail</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">stock_detail</span><span class="p">:</span> <span class="n">bs4.BeautifulSoup</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kabutobashi.crawler.stock_crawler.stock_detail_page.StockDetail" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="index.html#kabutobashi.crawler.page.Page" title="kabutobashi.crawler.page.Page"><code class="xref py py-class docutils literal notranslate"><span class="pre">kabutobashi.crawler.page.Page</span></code></a></p>
+<p>ページ中央の情報を取得する</p>
+<dl class="py method">
+<dt id="kabutobashi.crawler.stock_crawler.stock_detail_page.StockDetail.get_info">
+<code class="sig-name descname">get_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; dict<a class="headerlink" href="#kabutobashi.crawler.stock_crawler.stock_detail_page.StockDetail.get_info" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="kabutobashi.crawler.stock_crawler.stock_detail_page.StockDetail.industry_type">
+<code class="sig-name descname">industry_type</code><em class="property"> = None</em><a class="headerlink" href="#kabutobashi.crawler.stock_crawler.stock_detail_page.StockDetail.industry_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kabutobashi.crawler.stock_crawler.weeks_52_high_low_crawler">
+<span id="kabutobashi-crawler-stock-crawler-weeks-52-high-low-crawler-module"></span><h8>kabutobashi.crawler.stock_crawler.weeks_52_high_low_crawler module<a class="headerlink" href="#module-kabutobashi.crawler.stock_crawler.weeks_52_high_low_crawler" title="Permalink to this headline">¶</a></h8>
+<dl class="py class">
+<dt id="kabutobashi.crawler.stock_crawler.weeks_52_high_low_crawler.Week52HighLowStockPriceCrawler">
+<em class="property">class </em><code class="sig-prename descclassname">kabutobashi.crawler.stock_crawler.weeks_52_high_low_crawler.</code><code class="sig-name descname">Week52HighLowStockPriceCrawler</code><a class="headerlink" href="#kabutobashi.crawler.stock_crawler.weeks_52_high_low_crawler.Week52HighLowStockPriceCrawler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="index.html#kabutobashi.crawler.crawler.Crawler" title="kabutobashi.crawler.crawler.Crawler"><code class="xref py py-class docutils literal notranslate"><span class="pre">kabutobashi.crawler.crawler.Crawler</span></code></a></p>
+<p>52週の高値・底値を取得するCrawler</p>
+<dl class="py method">
+<dt id="kabutobashi.crawler.stock_crawler.weeks_52_high_low_crawler.Week52HighLowStockPriceCrawler.web_scraping">
+<code class="sig-name descname">web_scraping</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">text</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; dict<a class="headerlink" href="#kabutobashi.crawler.stock_crawler.weeks_52_high_low_crawler.Week52HighLowStockPriceCrawler.web_scraping" title="Permalink to this definition">¶</a></dt>
+<dd><p>textより情報を抽出する
+:params text: webページ</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="kabutobashi.crawler.stock_crawler.weeks_52_high_low_crawler.get_52_weeks_high_low">
+<code class="sig-prename descclassname">kabutobashi.crawler.stock_crawler.weeks_52_high_low_crawler.</code><code class="sig-name descname">get_52_weeks_high_low</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">crawl_objective</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; dict<a class="headerlink" href="#kabutobashi.crawler.stock_crawler.weeks_52_high_low_crawler.get_52_weeks_high_low" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-kabutobashi.crawler.stock_crawler.weeks_52_high_low_page">
+<span id="kabutobashi-crawler-stock-crawler-weeks-52-high-low-page-module"></span><h8>kabutobashi.crawler.stock_crawler.weeks_52_high_low_page module<a class="headerlink" href="#module-kabutobashi.crawler.stock_crawler.weeks_52_high_low_page" title="Permalink to this headline">¶</a></h8>
+<dl class="py class">
+<dt id="kabutobashi.crawler.stock_crawler.weeks_52_high_low_page.Week52HighLowStockPricePageRow">
+<em class="property">class </em><code class="sig-prename descclassname">kabutobashi.crawler.stock_crawler.weeks_52_high_low_page.</code><code class="sig-name descname">Week52HighLowStockPricePageRow</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">row</span><span class="p">:</span> <span class="n">bs4.BeautifulSoup</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kabutobashi.crawler.stock_crawler.weeks_52_high_low_page.Week52HighLowStockPricePageRow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="index.html#kabutobashi.crawler.page.Page" title="kabutobashi.crawler.page.Page"><code class="xref py py-class docutils literal notranslate"><span class="pre">kabutobashi.crawler.page.Page</span></code></a></p>
+<dl class="py attribute">
+<dt id="kabutobashi.crawler.stock_crawler.weeks_52_high_low_page.Week52HighLowStockPricePageRow.brand_name">
+<code class="sig-name descname">brand_name</code><em class="property"> = None</em><a class="headerlink" href="#kabutobashi.crawler.stock_crawler.weeks_52_high_low_page.Week52HighLowStockPricePageRow.brand_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="kabutobashi.crawler.stock_crawler.weeks_52_high_low_page.Week52HighLowStockPricePageRow.buy">
+<code class="sig-name descname">buy</code><em class="property"> = None</em><a class="headerlink" href="#kabutobashi.crawler.stock_crawler.weeks_52_high_low_page.Week52HighLowStockPricePageRow.buy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="kabutobashi.crawler.stock_crawler.weeks_52_high_low_page.Week52HighLowStockPricePageRow.buy_tag">
+<code class="sig-name descname">buy_tag</code><em class="property"> = 'tv-screener-table__signal tv-screener-table__signal--buy'</em><a class="headerlink" href="#kabutobashi.crawler.stock_crawler.weeks_52_high_low_page.Week52HighLowStockPricePageRow.buy_tag" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="kabutobashi.crawler.stock_crawler.weeks_52_high_low_page.Week52HighLowStockPricePageRow.cell">
+<code class="sig-name descname">cell</code><em class="property"> = 'tv-screener-table__cell'</em><a class="headerlink" href="#kabutobashi.crawler.stock_crawler.weeks_52_high_low_page.Week52HighLowStockPricePageRow.cell" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="kabutobashi.crawler.stock_crawler.weeks_52_high_low_page.Week52HighLowStockPricePageRow.close">
+<code class="sig-name descname">close</code><em class="property"> = None</em><a class="headerlink" href="#kabutobashi.crawler.stock_crawler.weeks_52_high_low_page.Week52HighLowStockPricePageRow.close" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="kabutobashi.crawler.stock_crawler.weeks_52_high_low_page.Week52HighLowStockPricePageRow.close_tag">
+<code class="sig-name descname">close_tag</code><em class="property"> = 'tv-data-table__cell tv-screener-table__cell tv-screener-table__cell--big'</em><a class="headerlink" href="#kabutobashi.crawler.stock_crawler.weeks_52_high_low_page.Week52HighLowStockPricePageRow.close_tag" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="kabutobashi.crawler.stock_crawler.weeks_52_high_low_page.Week52HighLowStockPricePageRow.code">
+<code class="sig-name descname">code</code><em class="property"> = None</em><a class="headerlink" href="#kabutobashi.crawler.stock_crawler.weeks_52_high_low_page.Week52HighLowStockPricePageRow.code" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="kabutobashi.crawler.stock_crawler.weeks_52_high_low_page.Week52HighLowStockPricePageRow.get_info">
+<code class="sig-name descname">get_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; dict<a class="headerlink" href="#kabutobashi.crawler.stock_crawler.weeks_52_high_low_page.Week52HighLowStockPricePageRow.get_info" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="kabutobashi.crawler.stock_crawler.weeks_52_high_low_page.Week52HighLowStockPricePageRow.sell">
+<code class="sig-name descname">sell</code><em class="property"> = None</em><a class="headerlink" href="#kabutobashi.crawler.stock_crawler.weeks_52_high_low_page.Week52HighLowStockPricePageRow.sell" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="kabutobashi.crawler.stock_crawler.weeks_52_high_low_page.Week52HighLowStockPricePageRow.sell_tag">
+<code class="sig-name descname">sell_tag</code><em class="property"> = 'tv-screener-table__signal tv-screener-table__signal--sell'</em><a class="headerlink" href="#kabutobashi.crawler.stock_crawler.weeks_52_high_low_page.Week52HighLowStockPricePageRow.sell_tag" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="kabutobashi.crawler.stock_crawler.weeks_52_high_low_page.Week52HighLowStockPricePageRow.signal">
+<code class="sig-name descname">signal</code><em class="property"> = 'tv-screener-table__signal'</em><a class="headerlink" href="#kabutobashi.crawler.stock_crawler.weeks_52_high_low_page.Week52HighLowStockPricePageRow.signal" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="kabutobashi.crawler.stock_crawler.weeks_52_high_low_page.Week52HighLowStockPricePageRow.strong_buy">
+<code class="sig-name descname">strong_buy</code><em class="property"> = None</em><a class="headerlink" href="#kabutobashi.crawler.stock_crawler.weeks_52_high_low_page.Week52HighLowStockPricePageRow.strong_buy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="kabutobashi.crawler.stock_crawler.weeks_52_high_low_page.Week52HighLowStockPricePageRow.strong_buy_tag">
+<code class="sig-name descname">strong_buy_tag</code><em class="property"> = 'tv-screener-table__signal tv-screener-table__signal--strong-buy'</em><a class="headerlink" href="#kabutobashi.crawler.stock_crawler.weeks_52_high_low_page.Week52HighLowStockPricePageRow.strong_buy_tag" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="kabutobashi.crawler.stock_crawler.weeks_52_high_low_page.Week52HighLowStockPricePageRow.strong_sell">
+<code class="sig-name descname">strong_sell</code><em class="property"> = None</em><a class="headerlink" href="#kabutobashi.crawler.stock_crawler.weeks_52_high_low_page.Week52HighLowStockPricePageRow.strong_sell" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="kabutobashi.crawler.stock_crawler.weeks_52_high_low_page.Week52HighLowStockPricePageRow.strong_sell_tag">
+<code class="sig-name descname">strong_sell_tag</code><em class="property"> = 'tv-screener-table__signal tv-screener-table__signal--strong-sell'</em><a class="headerlink" href="#kabutobashi.crawler.stock_crawler.weeks_52_high_low_page.Week52HighLowStockPricePageRow.strong_sell_tag" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="kabutobashi.crawler.stock_crawler.weeks_52_high_low_page.Week52HighLowStockPricePageRow.volatility_down">
+<code class="sig-name descname">volatility_down</code><em class="property"> = None</em><a class="headerlink" href="#kabutobashi.crawler.stock_crawler.weeks_52_high_low_page.Week52HighLowStockPricePageRow.volatility_down" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="kabutobashi.crawler.stock_crawler.weeks_52_high_low_page.Week52HighLowStockPricePageRow.volatility_down_tag">
+<code class="sig-name descname">volatility_down_tag</code><em class="property"> = 'tv-data-table__cell tv-screener-table__cell tv-screener-table__cell--big tv-screener-table__cell--down'</em><a class="headerlink" href="#kabutobashi.crawler.stock_crawler.weeks_52_high_low_page.Week52HighLowStockPricePageRow.volatility_down_tag" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="kabutobashi.crawler.stock_crawler.weeks_52_high_low_page.Week52HighLowStockPricePageRow.volatility_up">
+<code class="sig-name descname">volatility_up</code><em class="property"> = None</em><a class="headerlink" href="#kabutobashi.crawler.stock_crawler.weeks_52_high_low_page.Week52HighLowStockPricePageRow.volatility_up" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="kabutobashi.crawler.stock_crawler.weeks_52_high_low_page.Week52HighLowStockPricePageRow.volatility_up_tag">
+<code class="sig-name descname">volatility_up_tag</code><em class="property"> = 'tv-data-table__cell tv-screener-table__cell tv-screener-table__cell--big tv-screener-table__cell--up'</em><a class="headerlink" href="#kabutobashi.crawler.stock_crawler.weeks_52_high_low_page.Week52HighLowStockPricePageRow.volatility_up_tag" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="kabutobashi.crawler.stock_crawler.weeks_52_high_low_page.Week52HighLowStockPricePageTable">
+<em class="property">class </em><code class="sig-prename descclassname">kabutobashi.crawler.stock_crawler.weeks_52_high_low_page.</code><code class="sig-name descname">Week52HighLowStockPricePageTable</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">content</span><span class="p">:</span> <span class="n">bs4.BeautifulSoup</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kabutobashi.crawler.stock_crawler.weeks_52_high_low_page.Week52HighLowStockPricePageTable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="index.html#kabutobashi.crawler.page.Page" title="kabutobashi.crawler.page.Page"><code class="xref py py-class docutils literal notranslate"><span class="pre">kabutobashi.crawler.page.Page</span></code></a></p>
+<p>を取得する</p>
+<dl class="py method">
+<dt id="kabutobashi.crawler.stock_crawler.weeks_52_high_low_page.Week52HighLowStockPricePageTable.get_info">
+<code class="sig-name descname">get_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; dict<a class="headerlink" href="#kabutobashi.crawler.stock_crawler.weeks_52_high_low_page.Week52HighLowStockPricePageTable.get_info" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kabutobashi.crawler.stock_crawler">
+<span id="module-contents"></span><h8>Module contents<a class="headerlink" href="#module-kabutobashi.crawler.stock_crawler" title="Permalink to this headline">¶</a></h8>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="submodules">
+<h6>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h6>
+</div>
+<div class="section" id="module-kabutobashi.crawler.api">
+<span id="kabutobashi-crawler-api-module"></span><h6>kabutobashi.crawler.api module<a class="headerlink" href="#module-kabutobashi.crawler.api" title="Permalink to this headline">¶</a></h6>
+<dl class="py function">
+<dt id="kabutobashi.crawler.api.get_web_page">
+<code class="sig-prename descclassname">kabutobashi.crawler.api.</code><code class="sig-name descname">get_web_page</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">url</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#kabutobashi.crawler.api.get_web_page" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-kabutobashi.crawler.crawler">
+<span id="kabutobashi-crawler-crawler-module"></span><h6>kabutobashi.crawler.crawler module<a class="headerlink" href="#module-kabutobashi.crawler.crawler" title="Permalink to this headline">¶</a></h6>
+<dl class="py class">
+<dt id="kabutobashi.crawler.crawler.AbstractCrawler">
+<em class="property">class </em><code class="sig-prename descclassname">kabutobashi.crawler.crawler.</code><code class="sig-name descname">AbstractCrawler</code><a class="headerlink" href="#kabutobashi.crawler.crawler.AbstractCrawler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="kabutobashi.crawler.crawler.Crawler">
+<em class="property">class </em><code class="sig-prename descclassname">kabutobashi.crawler.crawler.</code><code class="sig-name descname">Crawler</code><a class="headerlink" href="#kabutobashi.crawler.crawler.Crawler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#kabutobashi.crawler.crawler.AbstractCrawler" title="kabutobashi.crawler.crawler.AbstractCrawler"><code class="xref py py-class docutils literal notranslate"><span class="pre">kabutobashi.crawler.crawler.AbstractCrawler</span></code></a></p>
+<dl class="py method">
+<dt id="kabutobashi.crawler.crawler.Crawler.get_crawl_datetime">
+<em class="property">static </em><code class="sig-name descname">get_crawl_datetime</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#kabutobashi.crawler.crawler.Crawler.get_crawl_datetime" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="kabutobashi.crawler.crawler.Crawler.get_url_text">
+<em class="property">static </em><code class="sig-name descname">get_url_text</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target_url</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#kabutobashi.crawler.crawler.Crawler.get_url_text" title="Permalink to this definition">¶</a></dt>
+<dd><p>requestsを使って、webからページを取得し、htmlを返す</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="kabutobashi.crawler.crawler.Crawler.web_scraping">
+<code class="sig-name descname">web_scraping</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">text</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; dict<a class="headerlink" href="#kabutobashi.crawler.crawler.Crawler.web_scraping" title="Permalink to this definition">¶</a></dt>
+<dd><p>textより情報を抽出する
+:params text: webページ</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="kabutobashi.crawler.crawler.MetaCrawler">
+<em class="property">class </em><code class="sig-prename descclassname">kabutobashi.crawler.crawler.</code><code class="sig-name descname">MetaCrawler</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">bases</span></em>, <em class="sig-param"><span class="n">class_dict</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kabutobashi.crawler.crawler.MetaCrawler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">type</span></code></p>
+<p>値のget, setに関するメタクラス</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-kabutobashi.crawler.page">
+<span id="kabutobashi-crawler-page-module"></span><h6>kabutobashi.crawler.page module<a class="headerlink" href="#module-kabutobashi.crawler.page" title="Permalink to this headline">¶</a></h6>
+<dl class="py class">
+<dt id="kabutobashi.crawler.page.AbstractPage">
+<em class="property">class </em><code class="sig-prename descclassname">kabutobashi.crawler.page.</code><code class="sig-name descname">AbstractPage</code><a class="headerlink" href="#kabutobashi.crawler.page.AbstractPage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="kabutobashi.crawler.page.MetaPage">
+<em class="property">class </em><code class="sig-prename descclassname">kabutobashi.crawler.page.</code><code class="sig-name descname">MetaPage</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">bases</span></em>, <em class="sig-param"><span class="n">class_dict</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kabutobashi.crawler.page.MetaPage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">type</span></code></p>
+<p>値のget, setに関するメタクラス</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="kabutobashi.crawler.page.Page">
+<em class="property">class </em><code class="sig-prename descclassname">kabutobashi.crawler.page.</code><code class="sig-name descname">Page</code><a class="headerlink" href="#kabutobashi.crawler.page.Page" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#kabutobashi.crawler.page.AbstractPage" title="kabutobashi.crawler.page.AbstractPage"><code class="xref py py-class docutils literal notranslate"><span class="pre">kabutobashi.crawler.page.AbstractPage</span></code></a></p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-kabutobashi.crawler.user_agent">
+<span id="kabutobashi-crawler-user-agent-module"></span><h6>kabutobashi.crawler.user_agent module<a class="headerlink" href="#module-kabutobashi.crawler.user_agent" title="Permalink to this headline">¶</a></h6>
+<dl class="py class">
+<dt id="kabutobashi.crawler.user_agent.Chrome">
+<em class="property">class </em><code class="sig-prename descclassname">kabutobashi.crawler.user_agent.</code><code class="sig-name descname">Chrome</code><a class="headerlink" href="#kabutobashi.crawler.user_agent.Chrome" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="kabutobashi.crawler.user_agent.Chrome.get_user_agent">
+<em class="property">static </em><code class="sig-name descname">get_user_agent</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#kabutobashi.crawler.user_agent.Chrome.get_user_agent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="kabutobashi.crawler.user_agent.Chrome.mac_chrome_format">
+<code class="sig-name descname">mac_chrome_format</code><em class="property"> = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/{chrome_version} Safari/537.36'</em><a class="headerlink" href="#kabutobashi.crawler.user_agent.Chrome.mac_chrome_format" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="kabutobashi.crawler.user_agent.Chrome.os_format_list">
+<code class="sig-name descname">os_format_list</code><em class="property"> = ['Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/{chrome_version} Safari/537.36', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/{chrome_version}']</em><a class="headerlink" href="#kabutobashi.crawler.user_agent.Chrome.os_format_list" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="kabutobashi.crawler.user_agent.Chrome.os_size">
+<code class="sig-name descname">os_size</code><em class="property"> = 1</em><a class="headerlink" href="#kabutobashi.crawler.user_agent.Chrome.os_size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="kabutobashi.crawler.user_agent.Chrome.version_list">
+<code class="sig-name descname">version_list</code><em class="property"> = ['77.0.3865', '78.0.3904', '79.0.3945.130', '80.0.3987', '81.0.4044']</em><a class="headerlink" href="#kabutobashi.crawler.user_agent.Chrome.version_list" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="kabutobashi.crawler.user_agent.Chrome.version_size">
+<code class="sig-name descname">version_size</code><em class="property"> = 4</em><a class="headerlink" href="#kabutobashi.crawler.user_agent.Chrome.version_size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="kabutobashi.crawler.user_agent.Chrome.windows_chrome_format">
+<code class="sig-name descname">windows_chrome_format</code><em class="property"> = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/{chrome_version}'</em><a class="headerlink" href="#kabutobashi.crawler.user_agent.Chrome.windows_chrome_format" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="kabutobashi.crawler.user_agent.Firefox">
+<em class="property">class </em><code class="sig-prename descclassname">kabutobashi.crawler.user_agent.</code><code class="sig-name descname">Firefox</code><a class="headerlink" href="#kabutobashi.crawler.user_agent.Firefox" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="kabutobashi.crawler.user_agent.Firefox.get_user_agent">
+<em class="property">static </em><code class="sig-name descname">get_user_agent</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#kabutobashi.crawler.user_agent.Firefox.get_user_agent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="kabutobashi.crawler.user_agent.Firefox.mac_firefox_format">
+<code class="sig-name descname">mac_firefox_format</code><em class="property"> = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:62.0) Gecko/20100101 Firefox/{firefox_version}'</em><a class="headerlink" href="#kabutobashi.crawler.user_agent.Firefox.mac_firefox_format" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="kabutobashi.crawler.user_agent.Firefox.os_format_list">
+<code class="sig-name descname">os_format_list</code><em class="property"> = ['Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:62.0) Gecko/20100101 Firefox/{firefox_version}', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:61.0) Gecko/20100101 Firefox/{firefox_version}']</em><a class="headerlink" href="#kabutobashi.crawler.user_agent.Firefox.os_format_list" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="kabutobashi.crawler.user_agent.Firefox.os_size">
+<code class="sig-name descname">os_size</code><em class="property"> = 1</em><a class="headerlink" href="#kabutobashi.crawler.user_agent.Firefox.os_size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="kabutobashi.crawler.user_agent.Firefox.version_list">
+<code class="sig-name descname">version_list</code><em class="property"> = ['68.4.2', '72.0.2', '73.0', '74.0']</em><a class="headerlink" href="#kabutobashi.crawler.user_agent.Firefox.version_list" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="kabutobashi.crawler.user_agent.Firefox.version_size">
+<code class="sig-name descname">version_size</code><em class="property"> = 3</em><a class="headerlink" href="#kabutobashi.crawler.user_agent.Firefox.version_size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="kabutobashi.crawler.user_agent.Firefox.windows_firefox_format">
+<code class="sig-name descname">windows_firefox_format</code><em class="property"> = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:61.0) Gecko/20100101 Firefox/{firefox_version}'</em><a class="headerlink" href="#kabutobashi.crawler.user_agent.Firefox.windows_firefox_format" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="kabutobashi.crawler.user_agent.UserAgent">
+<em class="property">class </em><code class="sig-prename descclassname">kabutobashi.crawler.user_agent.</code><code class="sig-name descname">UserAgent</code><a class="headerlink" href="#kabutobashi.crawler.user_agent.UserAgent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="kabutobashi.crawler.user_agent.UserAgent.get_user_agent">
+<em class="property">static </em><code class="sig-name descname">get_user_agent</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#kabutobashi.crawler.user_agent.UserAgent.get_user_agent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="kabutobashi.crawler.user_agent.UserAgent.get_user_agent_header">
+<em class="property">static </em><code class="sig-name descname">get_user_agent_header</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; dict<a class="headerlink" href="#kabutobashi.crawler.user_agent.UserAgent.get_user_agent_header" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kabutobashi.crawler">
+<span id="module-contents"></span><h6>Module contents<a class="headerlink" href="#module-kabutobashi.crawler" title="Permalink to this headline">¶</a></h6>
+</div>
+</div>
+<span id="document-kabutobashi.io"></span><div class="section" id="kabutobashi-io-package">
+<h5>kabutobashi.io package<a class="headerlink" href="#kabutobashi-io-package" title="Permalink to this headline">¶</a></h5>
+<div class="section" id="submodules">
+<h6>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h6>
+</div>
+<div class="section" id="module-kabutobashi.io.api">
+<span id="kabutobashi-io-api-module"></span><h6>kabutobashi.io.api module<a class="headerlink" href="#module-kabutobashi.io.api" title="Permalink to this headline">¶</a></h6>
+<dl class="py function">
+<dt id="kabutobashi.io.api.example_data">
+<code class="sig-prename descclassname">kabutobashi.io.api.</code><code class="sig-name descname">example_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#kabutobashi.io.api.example_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="kabutobashi.io.api.read_csv">
+<code class="sig-prename descclassname">kabutobashi.io.api.</code><code class="sig-name descname">read_csv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path_candidate</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>str<span class="p">, </span>list<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>pandas.core.frame.DataFrame<span class="p">]</span><a class="headerlink" href="#kabutobashi.io.api.read_csv" title="Permalink to this definition">¶</a></dt>
+<dd><p>通常のread_csvの関数に加えて、strとlist[str]の場合に縦方向に結合してDataFrameを返す
+:param path_candidate: “path” or [“path_1”, “path_2”]
+:return:</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="kabutobashi.io.api.read_stock_csv">
+<code class="sig-prename descclassname">kabutobashi.io.api.</code><code class="sig-name descname">read_stock_csv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path_candidate</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>str<span class="p">, </span>list<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>pandas.core.frame.DataFrame<span class="p">]</span><a class="headerlink" href="#kabutobashi.io.api.read_stock_csv" title="Permalink to this definition">¶</a></dt>
+<dd><p>本APIにてCrawlしたデータを扱いやすい形式にデータ変換する関数</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-kabutobashi.io">
+<span id="module-contents"></span><h6>Module contents<a class="headerlink" href="#module-kabutobashi.io" title="Permalink to this headline">¶</a></h6>
+</div>
+</div>
+<span id="document-kabutobashi.method"></span><div class="section" id="kabutobashi-method-package">
+<h5>kabutobashi.method package<a class="headerlink" href="#kabutobashi-method-package" title="Permalink to this headline">¶</a></h5>
+<div class="section" id="submodules">
+<h6>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h6>
+</div>
+<div class="section" id="module-kabutobashi.method.adx">
+<span id="kabutobashi-method-adx-module"></span><h6>kabutobashi.method.adx module<a class="headerlink" href="#module-kabutobashi.method.adx" title="Permalink to this headline">¶</a></h6>
+<dl class="py class">
+<dt id="kabutobashi.method.adx.ADX">
+<em class="property">class </em><code class="sig-prename descclassname">kabutobashi.method.adx.</code><code class="sig-name descname">ADX</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">term</span><span class="o">=</span><span class="default_value">14</span></em>, <em class="sig-param"><span class="n">adx_term</span><span class="o">=</span><span class="default_value">14</span></em>, <em class="sig-param"><span class="n">adxr_term</span><span class="o">=</span><span class="default_value">28</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kabutobashi.method.adx.ADX" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#kabutobashi.method.method.Method" title="kabutobashi.method.method.Method"><code class="xref py py-class docutils literal notranslate"><span class="pre">kabutobashi.method.method.Method</span></code></a></p>
+<p>以下の指標を計算するクラス
++DI: 株価の上昇の大きさ
+-DI: 株価の下降の大きさ
+ADX: 株価のトレンドの強さ
+ADXR: ADXの単純移動平均線</p>
+<p><a class="reference external" href="https://www.sevendata.co.jp/shihyou/technical/dmi.html">https://www.sevendata.co.jp/shihyou/technical/dmi.html</a>
+<a class="reference external" href="https://www.sevendata.co.jp/shihyou/technical/adx.html">https://www.sevendata.co.jp/shihyou/technical/adx.html</a></p>
+<dl class="py attribute">
+<dt id="kabutobashi.method.adx.ADX.adx_term">
+<code class="sig-name descname">adx_term</code><em class="property"> = None</em><a class="headerlink" href="#kabutobashi.method.adx.ADX.adx_term" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="kabutobashi.method.adx.ADX.adxr_term">
+<code class="sig-name descname">adxr_term</code><em class="property"> = None</em><a class="headerlink" href="#kabutobashi.method.adx.ADX.adxr_term" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="kabutobashi.method.adx.ADX.compute_dx">
+<em class="property">static </em><code class="sig-name descname">compute_dx</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em><span class="sig-paren">)</span> &#x2192; float<a class="headerlink" href="#kabutobashi.method.adx.ADX.compute_dx" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="kabutobashi.method.adx.ADX.fixed_minus_dm">
+<em class="property">static </em><code class="sig-name descname">fixed_minus_dm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em><span class="sig-paren">)</span> &#x2192; float<a class="headerlink" href="#kabutobashi.method.adx.ADX.fixed_minus_dm" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="kabutobashi.method.adx.ADX.fixed_plus_dm">
+<em class="property">static </em><code class="sig-name descname">fixed_plus_dm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em><span class="sig-paren">)</span> &#x2192; float<a class="headerlink" href="#kabutobashi.method.adx.ADX.fixed_plus_dm" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="kabutobashi.method.adx.ADX.method">
+<code class="sig-name descname">method</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">_df</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#kabutobashi.method.adx.ADX.method" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="kabutobashi.method.adx.ADX.signal">
+<code class="sig-name descname">signal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">_df</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#kabutobashi.method.adx.ADX.signal" title="Permalink to this definition">¶</a></dt>
+<dd><p>buy_signalとsell_signalを付与</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="kabutobashi.method.adx.ADX.term">
+<code class="sig-name descname">term</code><em class="property"> = None</em><a class="headerlink" href="#kabutobashi.method.adx.ADX.term" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="kabutobashi.method.adx.ADX.true_range">
+<em class="property">static </em><code class="sig-name descname">true_range</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kabutobashi.method.adx.ADX.true_range" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kabutobashi.method.api">
+<span id="kabutobashi-method-api-module"></span><h6>kabutobashi.method.api module<a class="headerlink" href="#module-kabutobashi.method.api" title="Permalink to this headline">¶</a></h6>
+</div>
+<div class="section" id="module-kabutobashi.method.bollinger_bands">
+<span id="kabutobashi-method-bollinger-bands-module"></span><h6>kabutobashi.method.bollinger_bands module<a class="headerlink" href="#module-kabutobashi.method.bollinger_bands" title="Permalink to this headline">¶</a></h6>
+<dl class="py class">
+<dt id="kabutobashi.method.bollinger_bands.BollingerBands">
+<em class="property">class </em><code class="sig-prename descclassname">kabutobashi.method.bollinger_bands.</code><code class="sig-name descname">BollingerBands</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">band_term</span><span class="o">=</span><span class="default_value">12</span></em>, <em class="sig-param"><span class="n">continuity_term</span><span class="o">=</span><span class="default_value">10</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kabutobashi.method.bollinger_bands.BollingerBands" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#kabutobashi.method.method.Method" title="kabutobashi.method.method.Method"><code class="xref py py-class docutils literal notranslate"><span class="pre">kabutobashi.method.method.Method</span></code></a></p>
+<p><a class="reference external" href="https://www.sevendata.co.jp/shihyou/technical/bori.html">https://www.sevendata.co.jp/shihyou/technical/bori.html</a></p>
+<dl class="py attribute">
+<dt id="kabutobashi.method.bollinger_bands.BollingerBands.band_term">
+<code class="sig-name descname">band_term</code><em class="property"> = None</em><a class="headerlink" href="#kabutobashi.method.bollinger_bands.BollingerBands.band_term" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="kabutobashi.method.bollinger_bands.BollingerBands.continuity_term">
+<code class="sig-name descname">continuity_term</code><em class="property"> = None</em><a class="headerlink" href="#kabutobashi.method.bollinger_bands.BollingerBands.continuity_term" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="kabutobashi.method.bollinger_bands.BollingerBands.method">
+<code class="sig-name descname">method</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">_df</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#kabutobashi.method.bollinger_bands.BollingerBands.method" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="kabutobashi.method.bollinger_bands.BollingerBands.signal">
+<code class="sig-name descname">signal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">_df</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#kabutobashi.method.bollinger_bands.BollingerBands.signal" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kabutobashi.method.ichimoku">
+<span id="kabutobashi-method-ichimoku-module"></span><h6>kabutobashi.method.ichimoku module<a class="headerlink" href="#module-kabutobashi.method.ichimoku" title="Permalink to this headline">¶</a></h6>
+<dl class="py class">
+<dt id="kabutobashi.method.ichimoku.Ichimoku">
+<em class="property">class </em><code class="sig-prename descclassname">kabutobashi.method.ichimoku.</code><code class="sig-name descname">Ichimoku</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">short_term</span><span class="o">=</span><span class="default_value">12</span></em>, <em class="sig-param"><span class="n">medium_term</span><span class="o">=</span><span class="default_value">26</span></em>, <em class="sig-param"><span class="n">long_term</span><span class="o">=</span><span class="default_value">52</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kabutobashi.method.ichimoku.Ichimoku" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#kabutobashi.method.method.Method" title="kabutobashi.method.method.Method"><code class="xref py py-class docutils literal notranslate"><span class="pre">kabutobashi.method.method.Method</span></code></a></p>
+<p><a class="reference external" href="https://kabu.com/investment/guide/technical/04.html">https://kabu.com/investment/guide/technical/04.html</a></p>
+<dl class="py attribute">
+<dt id="kabutobashi.method.ichimoku.Ichimoku.long_term">
+<code class="sig-name descname">long_term</code><a class="headerlink" href="#kabutobashi.method.ichimoku.Ichimoku.long_term" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="index.html#kabutobashi.attributes.field.Field" title="kabutobashi.attributes.field.Field"><code class="xref py py-class docutils literal notranslate"><span class="pre">kabutobashi.attributes.field.Field</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="kabutobashi.method.ichimoku.Ichimoku.medium_term">
+<code class="sig-name descname">medium_term</code><em class="property"> = None</em><a class="headerlink" href="#kabutobashi.method.ichimoku.Ichimoku.medium_term" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="kabutobashi.method.ichimoku.Ichimoku.method">
+<code class="sig-name descname">method</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">_df</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#kabutobashi.method.ichimoku.Ichimoku.method" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="kabutobashi.method.ichimoku.Ichimoku.short_term">
+<code class="sig-name descname">short_term</code><em class="property"> = None</em><a class="headerlink" href="#kabutobashi.method.ichimoku.Ichimoku.short_term" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="kabutobashi.method.ichimoku.Ichimoku.signal">
+<code class="sig-name descname">signal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">_df</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#kabutobashi.method.ichimoku.Ichimoku.signal" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kabutobashi.method.macd">
+<span id="kabutobashi-method-macd-module"></span><h6>kabutobashi.method.macd module<a class="headerlink" href="#module-kabutobashi.method.macd" title="Permalink to this headline">¶</a></h6>
+<dl class="py class">
+<dt id="kabutobashi.method.macd.MACD">
+<em class="property">class </em><code class="sig-prename descclassname">kabutobashi.method.macd.</code><code class="sig-name descname">MACD</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">short_term</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">12</span></em>, <em class="sig-param"><span class="n">long_term</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">26</span></em>, <em class="sig-param"><span class="n">macd_span</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">9</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kabutobashi.method.macd.MACD" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#kabutobashi.method.method.Method" title="kabutobashi.method.method.Method"><code class="xref py py-class docutils literal notranslate"><span class="pre">kabutobashi.method.method.Method</span></code></a></p>
+<dl class="py attribute">
+<dt id="kabutobashi.method.macd.MACD.long_term">
+<code class="sig-name descname">long_term</code><em class="property"> = None</em><a class="headerlink" href="#kabutobashi.method.macd.MACD.long_term" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="kabutobashi.method.macd.MACD.macd_span">
+<code class="sig-name descname">macd_span</code><em class="property"> = None</em><a class="headerlink" href="#kabutobashi.method.macd.MACD.macd_span" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="kabutobashi.method.macd.MACD.method">
+<code class="sig-name descname">method</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">_df</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#kabutobashi.method.macd.MACD.method" title="Permalink to this definition">¶</a></dt>
+<dd><p>macdを基準として今後上昇するかどうかをスコアで返す。
+値が大きければその傾向が高いことを表している。
+最小値は0で、最大値は無限大である。
+:param _df:
+:return:</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="kabutobashi.method.macd.MACD.short_term">
+<code class="sig-name descname">short_term</code><em class="property"> = None</em><a class="headerlink" href="#kabutobashi.method.macd.MACD.short_term" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="kabutobashi.method.macd.MACD.signal">
+<code class="sig-name descname">signal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">_df</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#kabutobashi.method.macd.MACD.signal" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kabutobashi.method.method">
+<span id="kabutobashi-method-method-module"></span><h6>kabutobashi.method.method module<a class="headerlink" href="#module-kabutobashi.method.method" title="Permalink to this headline">¶</a></h6>
+<dl class="py class">
+<dt id="kabutobashi.method.method.AbstractMethod">
+<em class="property">class </em><code class="sig-prename descclassname">kabutobashi.method.method.</code><code class="sig-name descname">AbstractMethod</code><a class="headerlink" href="#kabutobashi.method.method.AbstractMethod" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="kabutobashi.method.method.MetaMethod">
+<em class="property">class </em><code class="sig-prename descclassname">kabutobashi.method.method.</code><code class="sig-name descname">MetaMethod</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">bases</span></em>, <em class="sig-param"><span class="n">class_dict</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kabutobashi.method.method.MetaMethod" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">type</span></code></p>
+<p>値のget, setに関するメタクラス</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="kabutobashi.method.method.Method">
+<em class="property">class </em><code class="sig-prename descclassname">kabutobashi.method.method.</code><code class="sig-name descname">Method</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">method_name</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">logger</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kabutobashi.method.method.Method" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#kabutobashi.method.method.AbstractMethod" title="kabutobashi.method.method.AbstractMethod"><code class="xref py py-class docutils literal notranslate"><span class="pre">kabutobashi.method.method.AbstractMethod</span></code></a></p>
+<p>usage
+sma = SMA()
+macd = MCAD()</p>
+<p># get sma-based-analysis
+sma_df = stock_df.pipe(sma)</p>
+<p># get macd-based-analysis
+macd_df = stock_df.pipe(macd)</p>
+<dl class="py method">
+<dt id="kabutobashi.method.method.Method.cross">
+<em class="property">static </em><code class="sig-name descname">cross</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">_s</span><span class="p">:</span> <span class="n">pandas.core.series.Series</span></em>, <em class="sig-param"><span class="n">to_plus_name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_minus_name</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#kabutobashi.method.method.Method.cross" title="Permalink to this definition">¶</a></dt>
+<dd><p>0を基準としてプラスかマイナスのどちらかに振れたかを判断する関数
+:params _s: 対象のpd.Series
+:params to_plus_name: 上抜けた場合のカラムの名前
+:params to_minus_name: 上抜けた場合のカラムの名前</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="kabutobashi.method.method.Method.get_impact">
+<em class="property">static </em><code class="sig-name descname">get_impact</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">_df</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em>, <em class="sig-param"><span class="n">influence</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">2</span></em>, <em class="sig-param"><span class="n">tail</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">5</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span> &#x2192; float<a class="headerlink" href="#kabutobashi.method.method.Method.get_impact" title="Permalink to this definition">¶</a></dt>
+<dd><p>売りと買いのシグナルの余波の合計値を返す。
+:params _df:
+:params influence:
+:params tail:
+:return: [-1,1]の値をとる。-1: 売り、1: 買いを表す</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="kabutobashi.method.method.Method.method">
+<code class="sig-name descname">method</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">_df</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#kabutobashi.method.method.Method.method" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="kabutobashi.method.method.Method.signal">
+<code class="sig-name descname">signal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">_df</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#kabutobashi.method.method.Method.signal" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="kabutobashi.method.method.Method.stock_df">
+<code class="sig-name descname">stock_df</code><em class="property"> = None</em><a class="headerlink" href="#kabutobashi.method.method.Method.stock_df" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="kabutobashi.method.method.Method.trend">
+<em class="property">static </em><code class="sig-name descname">trend</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">_s</span><span class="p">:</span> <span class="n">pandas.core.series.Series</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.series.Series<a class="headerlink" href="#kabutobashi.method.method.Method.trend" title="Permalink to this definition">¶</a></dt>
+<dd><p>ある系列_sのトレンドを計算する。
+差分のrolling_sumを返す</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="kabutobashi.method.method.Method.validate">
+<code class="sig-name descname">validate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">_df</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#kabutobashi.method.method.Method.validate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kabutobashi.method.momentum">
+<span id="kabutobashi-method-momentum-module"></span><h6>kabutobashi.method.momentum module<a class="headerlink" href="#module-kabutobashi.method.momentum" title="Permalink to this headline">¶</a></h6>
+<dl class="py class">
+<dt id="kabutobashi.method.momentum.Momentum">
+<em class="property">class </em><code class="sig-prename descclassname">kabutobashi.method.momentum.</code><code class="sig-name descname">Momentum</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">term</span><span class="o">=</span><span class="default_value">25</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kabutobashi.method.momentum.Momentum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#kabutobashi.method.method.Method" title="kabutobashi.method.method.Method"><code class="xref py py-class docutils literal notranslate"><span class="pre">kabutobashi.method.method.Method</span></code></a></p>
+<p><a class="reference external" href="https://www.sevendata.co.jp/shihyou/technical/momentum.html">https://www.sevendata.co.jp/shihyou/technical/momentum.html</a></p>
+<dl class="py method">
+<dt id="kabutobashi.method.momentum.Momentum.method">
+<code class="sig-name descname">method</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">_df</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#kabutobashi.method.momentum.Momentum.method" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="kabutobashi.method.momentum.Momentum.signal">
+<code class="sig-name descname">signal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">_df</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#kabutobashi.method.momentum.Momentum.signal" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="kabutobashi.method.momentum.Momentum.term">
+<code class="sig-name descname">term</code><em class="property"> = None</em><a class="headerlink" href="#kabutobashi.method.momentum.Momentum.term" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kabutobashi.method.psycho_logical">
+<span id="kabutobashi-method-psycho-logical-module"></span><h6>kabutobashi.method.psycho_logical module<a class="headerlink" href="#module-kabutobashi.method.psycho_logical" title="Permalink to this headline">¶</a></h6>
+<dl class="py class">
+<dt id="kabutobashi.method.psycho_logical.PsychoLogical">
+<em class="property">class </em><code class="sig-prename descclassname">kabutobashi.method.psycho_logical.</code><code class="sig-name descname">PsychoLogical</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">upper_threshold</span><span class="o">=</span><span class="default_value">0.75</span></em>, <em class="sig-param"><span class="n">lower_threshold</span><span class="o">=</span><span class="default_value">0.25</span></em>, <em class="sig-param"><span class="n">psycho_term</span><span class="o">=</span><span class="default_value">12</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kabutobashi.method.psycho_logical.PsychoLogical" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#kabutobashi.method.method.Method" title="kabutobashi.method.method.Method"><code class="xref py py-class docutils literal notranslate"><span class="pre">kabutobashi.method.method.Method</span></code></a></p>
+<p><a class="reference external" href="https://www.sevendata.co.jp/shihyou/technical/psycho.html">https://www.sevendata.co.jp/shihyou/technical/psycho.html</a></p>
+<dl class="py attribute">
+<dt id="kabutobashi.method.psycho_logical.PsychoLogical.lower_threshold">
+<code class="sig-name descname">lower_threshold</code><em class="property"> = None</em><a class="headerlink" href="#kabutobashi.method.psycho_logical.PsychoLogical.lower_threshold" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="kabutobashi.method.psycho_logical.PsychoLogical.method">
+<code class="sig-name descname">method</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">_df</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#kabutobashi.method.psycho_logical.PsychoLogical.method" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="kabutobashi.method.psycho_logical.PsychoLogical.psycho_term">
+<code class="sig-name descname">psycho_term</code><em class="property"> = None</em><a class="headerlink" href="#kabutobashi.method.psycho_logical.PsychoLogical.psycho_term" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="kabutobashi.method.psycho_logical.PsychoLogical.signal">
+<code class="sig-name descname">signal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">_df</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#kabutobashi.method.psycho_logical.PsychoLogical.signal" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="kabutobashi.method.psycho_logical.PsychoLogical.upper_threshold">
+<code class="sig-name descname">upper_threshold</code><em class="property"> = None</em><a class="headerlink" href="#kabutobashi.method.psycho_logical.PsychoLogical.upper_threshold" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kabutobashi.method.sma">
+<span id="kabutobashi-method-sma-module"></span><h6>kabutobashi.method.sma module<a class="headerlink" href="#module-kabutobashi.method.sma" title="Permalink to this headline">¶</a></h6>
+<dl class="py class">
+<dt id="kabutobashi.method.sma.SMA">
+<em class="property">class </em><code class="sig-prename descclassname">kabutobashi.method.sma.</code><code class="sig-name descname">SMA</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">short_term</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">5</span></em>, <em class="sig-param"><span class="n">medium_term</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">21</span></em>, <em class="sig-param"><span class="n">long_term</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">70</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kabutobashi.method.sma.SMA" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#kabutobashi.method.method.Method" title="kabutobashi.method.method.Method"><code class="xref py py-class docutils literal notranslate"><span class="pre">kabutobashi.method.method.Method</span></code></a></p>
+<dl class="py attribute">
+<dt id="kabutobashi.method.sma.SMA.long_term">
+<code class="sig-name descname">long_term</code><em class="property"> = None</em><a class="headerlink" href="#kabutobashi.method.sma.SMA.long_term" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="kabutobashi.method.sma.SMA.medium_term">
+<code class="sig-name descname">medium_term</code><em class="property"> = None</em><a class="headerlink" href="#kabutobashi.method.sma.SMA.medium_term" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="kabutobashi.method.sma.SMA.method">
+<code class="sig-name descname">method</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">_df</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#kabutobashi.method.sma.SMA.method" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="kabutobashi.method.sma.SMA.short_term">
+<code class="sig-name descname">short_term</code><em class="property"> = None</em><a class="headerlink" href="#kabutobashi.method.sma.SMA.short_term" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="kabutobashi.method.sma.SMA.signal">
+<code class="sig-name descname">signal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">_df</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#kabutobashi.method.sma.SMA.signal" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kabutobashi.method.stochastics">
+<span id="kabutobashi-method-stochastics-module"></span><h6>kabutobashi.method.stochastics module<a class="headerlink" href="#module-kabutobashi.method.stochastics" title="Permalink to this headline">¶</a></h6>
+<dl class="py class">
+<dt id="kabutobashi.method.stochastics.Stochastics">
+<em class="property">class </em><code class="sig-prename descclassname">kabutobashi.method.stochastics.</code><code class="sig-name descname">Stochastics</code><a class="headerlink" href="#kabutobashi.method.stochastics.Stochastics" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#kabutobashi.method.method.Method" title="kabutobashi.method.method.Method"><code class="xref py py-class docutils literal notranslate"><span class="pre">kabutobashi.method.method.Method</span></code></a></p>
+<dl class="py method">
+<dt id="kabutobashi.method.stochastics.Stochastics.buy_signal_index">
+<em class="property">static </em><code class="sig-name descname">buy_signal_index</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">current_k</span></em>, <em class="sig-param"><span class="n">current_d</span></em>, <em class="sig-param"><span class="n">current_sd</span></em>, <em class="sig-param"><span class="n">prev_k</span></em>, <em class="sig-param"><span class="n">prev_d</span></em>, <em class="sig-param"><span class="n">prev_sd</span></em><span class="sig-paren">)</span> &#x2192; float<a class="headerlink" href="#kabutobashi.method.stochastics.Stochastics.buy_signal_index" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="kabutobashi.method.stochastics.Stochastics.fast_stochastic_d">
+<em class="property">static </em><code class="sig-name descname">fast_stochastic_d</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">stochastic_k</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kabutobashi.method.stochastics.Stochastics.fast_stochastic_d" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="kabutobashi.method.stochastics.Stochastics.fast_stochastic_k">
+<em class="property">static </em><code class="sig-name descname">fast_stochastic_k</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">close</span></em>, <em class="sig-param"><span class="n">low</span></em>, <em class="sig-param"><span class="n">high</span></em>, <em class="sig-param"><span class="n">n</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kabutobashi.method.stochastics.Stochastics.fast_stochastic_k" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="kabutobashi.method.stochastics.Stochastics.method">
+<code class="sig-name descname">method</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">_df</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#kabutobashi.method.stochastics.Stochastics.method" title="Permalink to this definition">¶</a></dt>
+<dd><p>買いのシグナルを計算で求める
+・%K・%D共に20％以下の時に、%Kが%Dを下から上抜いた時
+・%D・スロー%D共に20％以下の時に、%Dがスロー%Dを下から上抜いた時
+<a class="reference external" href="https://www.moneypartners.co.jp/support/tech/sct.html">https://www.moneypartners.co.jp/support/tech/sct.html</a>
+:param _df:
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="kabutobashi.method.stochastics.Stochastics.sell_signal_index">
+<em class="property">static </em><code class="sig-name descname">sell_signal_index</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">current_k</span></em>, <em class="sig-param"><span class="n">current_d</span></em>, <em class="sig-param"><span class="n">current_sd</span></em>, <em class="sig-param"><span class="n">prev_k</span></em>, <em class="sig-param"><span class="n">prev_d</span></em>, <em class="sig-param"><span class="n">prev_sd</span></em><span class="sig-paren">)</span> &#x2192; float<a class="headerlink" href="#kabutobashi.method.stochastics.Stochastics.sell_signal_index" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="kabutobashi.method.stochastics.Stochastics.signal">
+<code class="sig-name descname">signal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">_df</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#kabutobashi.method.stochastics.Stochastics.signal" title="Permalink to this definition">¶</a></dt>
+<dd><p>買いと売りに関する指標を算出する</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="kabutobashi.method.stochastics.Stochastics.slow_stochastic_d">
+<em class="property">static </em><code class="sig-name descname">slow_stochastic_d</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">stochastic_d</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kabutobashi.method.stochastics.Stochastics.slow_stochastic_d" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kabutobashi.method">
+<span id="module-contents"></span><h6>Module contents<a class="headerlink" href="#module-kabutobashi.method" title="Permalink to this headline">¶</a></h6>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="submodules">
+<h4>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h4>
+</div>
+<div class="section" id="module-kabutobashi.core">
+<span id="kabutobashi-core-module"></span><h4>kabutobashi.core module<a class="headerlink" href="#module-kabutobashi.core" title="Permalink to this headline">¶</a></h4>
+<dl class="py function">
+<dt id="kabutobashi.core.analysis_with">
+<code class="sig-prename descclassname">kabutobashi.core.</code><code class="sig-name descname">analysis_with</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">stock_df</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em>, <em class="sig-param"><span class="n">method</span><span class="p">:</span> <span class="n"><a class="reference internal" href="index.html#kabutobashi.method.method.Method" title="kabutobashi.method.method.Method">kabutobashi.method.method.Method</a></span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#kabutobashi.core.analysis_with" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Params stock_df</dt>
+<dd class="field-odd"><p></p></dd>
+<dt class="field-even">Params method</dt>
+<dd class="field-even"><p></p></dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="kabutobashi.core.get_impact_with">
+<code class="sig-prename descclassname">kabutobashi.core.</code><code class="sig-name descname">get_impact_with</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">stock_df</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em>, <em class="sig-param"><span class="n">method</span><span class="p">:</span> <span class="n">Union<span class="p">[</span><a class="reference internal" href="index.html#kabutobashi.method.method.Method" title="kabutobashi.method.method.Method">kabutobashi.method.method.Method</a><span class="p">, </span>list<span class="p">]</span></span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span> &#x2192; dict<a class="headerlink" href="#kabutobashi.core.get_impact_with" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Params stock_df</dt>
+<dd class="field-odd"><p></p></dd>
+<dt class="field-even">Params method</dt>
+<dd class="field-even"><p></p></dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><dl class="simple">
+<dt>ex: {</dt><dd><p>“sma”: 0.4,
+“macd”: -0.04</p>
+</dd>
+</dl>
+<p>}</p>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-kabutobashi.errors">
+<span id="kabutobashi-errors-module"></span><h4>kabutobashi.errors module<a class="headerlink" href="#module-kabutobashi.errors" title="Permalink to this headline">¶</a></h4>
+<dl class="py exception">
+<dt id="kabutobashi.errors.CrawlPageNotFoundError">
+<em class="property">exception </em><code class="sig-prename descclassname">kabutobashi.errors.</code><code class="sig-name descname">CrawlPageNotFoundError</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">url</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">''</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kabutobashi.errors.CrawlPageNotFoundError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#kabutobashi.errors.PyStockCrawlerError" title="kabutobashi.errors.PyStockCrawlerError"><code class="xref py py-class docutils literal notranslate"><span class="pre">kabutobashi.errors.PyStockCrawlerError</span></code></a></p>
+<p>crawlしたいページがない場合に返すエラー</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="kabutobashi.errors.PyStockAttributeError">
+<em class="property">exception </em><code class="sig-prename descclassname">kabutobashi.errors.</code><code class="sig-name descname">PyStockAttributeError</code><a class="headerlink" href="#kabutobashi.errors.PyStockAttributeError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#kabutobashi.errors.PyStockBaseError" title="kabutobashi.errors.PyStockBaseError"><code class="xref py py-class docutils literal notranslate"><span class="pre">kabutobashi.errors.PyStockBaseError</span></code></a></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="kabutobashi.errors.PyStockBaseError">
+<em class="property">exception </em><code class="sig-prename descclassname">kabutobashi.errors.</code><code class="sig-name descname">PyStockBaseError</code><a class="headerlink" href="#kabutobashi.errors.PyStockBaseError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="kabutobashi.errors.PyStockCrawlerError">
+<em class="property">exception </em><code class="sig-prename descclassname">kabutobashi.errors.</code><code class="sig-name descname">PyStockCrawlerError</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">url</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">''</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kabutobashi.errors.PyStockCrawlerError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#kabutobashi.errors.PyStockBaseError" title="kabutobashi.errors.PyStockBaseError"><code class="xref py py-class docutils literal notranslate"><span class="pre">kabutobashi.errors.PyStockBaseError</span></code></a></p>
+<p>Crawlが失敗したときに返すエラー</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="kabutobashi.errors.PyStockMethodError">
+<em class="property">exception </em><code class="sig-prename descclassname">kabutobashi.errors.</code><code class="sig-name descname">PyStockMethodError</code><a class="headerlink" href="#kabutobashi.errors.PyStockMethodError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#kabutobashi.errors.PyStockBaseError" title="kabutobashi.errors.PyStockBaseError"><code class="xref py py-class docutils literal notranslate"><span class="pre">kabutobashi.errors.PyStockBaseError</span></code></a></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="kabutobashi.errors.PyStockVisualizeError">
+<em class="property">exception </em><code class="sig-prename descclassname">kabutobashi.errors.</code><code class="sig-name descname">PyStockVisualizeError</code><a class="headerlink" href="#kabutobashi.errors.PyStockVisualizeError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#kabutobashi.errors.PyStockBaseError" title="kabutobashi.errors.PyStockBaseError"><code class="xref py py-class docutils literal notranslate"><span class="pre">kabutobashi.errors.PyStockBaseError</span></code></a></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="kabutobashi.errors.StockDfError">
+<em class="property">exception </em><code class="sig-prename descclassname">kabutobashi.errors.</code><code class="sig-name descname">StockDfError</code><a class="headerlink" href="#kabutobashi.errors.StockDfError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#kabutobashi.errors.PyStockBaseError" title="kabutobashi.errors.PyStockBaseError"><code class="xref py py-class docutils literal notranslate"><span class="pre">kabutobashi.errors.PyStockBaseError</span></code></a></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="kabutobashi.errors.TagNotFoundError">
+<em class="property">exception </em><code class="sig-prename descclassname">kabutobashi.errors.</code><code class="sig-name descname">TagNotFoundError</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tag</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kabutobashi.errors.TagNotFoundError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#kabutobashi.errors.PyStockCrawlerError" title="kabutobashi.errors.PyStockCrawlerError"><code class="xref py py-class docutils literal notranslate"><span class="pre">kabutobashi.errors.PyStockCrawlerError</span></code></a></p>
+<p>crawlしたいページに対象のtagがない場合に返すエラー</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-kabutobashi.utilities">
+<span id="kabutobashi-utilities-module"></span><h4>kabutobashi.utilities module<a class="headerlink" href="#module-kabutobashi.utilities" title="Permalink to this headline">¶</a></h4>
+<dl class="py function">
+<dt id="kabutobashi.utilities.get_past_n_days">
+<code class="sig-prename descclassname">kabutobashi.utilities.</code><code class="sig-name descname">get_past_n_days</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">current_date</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">n</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">60</span></em><span class="sig-paren">)</span> &#x2192; list<a class="headerlink" href="#kabutobashi.utilities.get_past_n_days" title="Permalink to this definition">¶</a></dt>
+<dd><p>土日と祝日を考慮したn営業日前までの日付のリストを返す関数
+:param current_date: n日前を計算する起点となる日
+:param n: n日前
+:return: [“%Y-%m-%d”, “%Y-%m-%d”, “%Y-%m-%d”, …]</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-kabutobashi">
+<span id="module-contents"></span><h4>Module contents<a class="headerlink" href="#module-kabutobashi" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="kabutobashi">
+<h5>kabutobashi<a class="headerlink" href="#kabutobashi" title="Permalink to this headline">¶</a></h5>
+<p><strong>kabutobashi</strong> is a Python package to analysis stock data with measure
+analysis methods, such as MACD, SMA, etc.</p>
+<div class="section" id="main-features">
+<h6>Main Features<a class="headerlink" href="#main-features" title="Permalink to this headline">¶</a></h6>
+<dl class="simple">
+<dt>Here are the things that kabutobashi does well:</dt><dd><ul class="simple">
+<li><p>Easy crawl.</p></li>
+<li><p>Easy analysis.</p></li>
+</ul>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="#">kabutobashi</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="index.html#document-modules">kabutobashi</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, gsy0911.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
