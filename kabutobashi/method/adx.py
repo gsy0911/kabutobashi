@@ -1,15 +1,10 @@
 import pandas as pd
-from kabutobashi.method.method import Method
-from kabutobashi.attributes.attribute import Field
+from .method import Method
+from kabutobashi.attributes import Field
 
 
 class ADX(Method):
     """    以下の指標を計算するクラス
-
-    Args:
-        term (int):
-        adx_term (int):
-        adxr_term (int):
 
     * +DI: 株価の上昇の大きさ
     * -DI: 株価の下降の大きさ
@@ -18,6 +13,11 @@ class ADX(Method):
 
     https://www.sevendata.co.jp/shihyou/technical/dmi.html
     https://www.sevendata.co.jp/shihyou/technical/adx.html
+
+    Args:
+        term (int):
+        adx_term (int):
+        adxr_term (int):
 
     """
 

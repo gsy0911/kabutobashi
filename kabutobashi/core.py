@@ -8,8 +8,13 @@ def analysis_with(
         stock_df: pd.DataFrame,
         method: Method) -> pd.DataFrame:
     """
-    :params stock_df:
-    :params method:
+
+    Args:
+        stock_df:
+        method:
+
+    Returns:
+        pd.DataFrame
     """
     return stock_df.pipe(method)
 

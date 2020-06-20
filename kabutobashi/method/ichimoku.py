@@ -1,6 +1,6 @@
 import pandas as pd
 from kabutobashi.method.method import Method
-from kabutobashi.attributes.attribute import Field
+from kabutobashi.attributes import Field
 
 
 class Ichimoku(Method):

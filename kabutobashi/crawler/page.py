@@ -1,4 +1,4 @@
-from kabutobashi.attributes.attribute import PageContent
+from kabutobashi.attributes import PageContent
 
 
 class MetaPage(type):

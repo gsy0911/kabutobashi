@@ -32,7 +32,7 @@ from kabutobashi.io.api import (
 from kabutobashi import errors
 
 # classes or functions about crawl web pages
-from kabutobashi.crawler.api import (
+from kabutobashi.crawler import (
     # beautifulsoupを利用してウェブページを取得する
     get_web_page,
     # 単一の株価の詳細情報を取得する
