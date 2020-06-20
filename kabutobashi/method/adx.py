@@ -40,11 +40,6 @@ class ADX(Method):
 
         Returns:
             maximum
-
-        Examples:
-            >>> adx = ADX()
-            >>> adx._true_range(x)
-            7
         """
         current_high = x['high']
         current_low = x['low']
@@ -148,9 +143,9 @@ class ADX(Method):
         """
         buy_signalとsell_signalを付与
         """
-        _df['ADX_trend'] = self.trend(_df['ADX'])
+        _df['ADX_trend'] = self._trend(_df['ADX'])
         _df['diff'] = _df['plus_di'] - _df['minus_di']
-        _df = _df.join(self.cross(_df['diff']))
+        _df = _df.join(self._cross(_df['diff']))
         
         _df['buy_signal'] = _df.apply(lambda x: self._buy_signal)
         _df['sell_signal'] = _df.apply(lambda x: self._sell_signal)

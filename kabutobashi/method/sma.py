@@ -30,7 +30,7 @@ class SMA(Method):
     def _signal(self, _df: pd.DataFrame) -> pd.DataFrame:
         _df['diff'] = _df.apply(lambda x: x['sma_long'] - x['sma_short'], axis=1)
         # 正負が交差した点
-        _df = _df.join(self.cross(_df['diff']))
+        _df = _df.join(self._cross(_df['diff']))
         _df = _df.rename(columns={
             "to_plus": "buy_signal",
             "to_minus": "sell_signal"

@@ -41,7 +41,7 @@ class MACD(Method):
 
     def _signal(self, _df: pd.DataFrame) -> pd.DataFrame:
         # 正負が交差した点
-        _df = _df.join(self.cross(_df['histogram']))
+        _df = _df.join(self._cross(_df['histogram']))
         _df = _df.rename(columns={
             "to_plus": "buy_signal",
             "to_minus": "sell_signal"

@@ -21,7 +21,7 @@ class Momentum(Method):
         return _df
 
     def _signal(self, _df: pd.DataFrame) -> pd.DataFrame:
-        _df = _df.join(self.cross(_df['sma_momentum']))
+        _df = _df.join(self._cross(_df['sma_momentum']))
         _df = _df.rename(columns={
             "to_plus": "buy_signal",
             "to_minus": "sell_signal"
