@@ -1,0 +1,428 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>kabutobashi.crawler package &mdash; kabutobashi  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex/" />
+    <link rel="search" title="Search" href="../search/" />
+    <link rel="next" title="kabutobashi.crawler.stock_crawler package" href="../kabutobashi.crawler.stock_crawler/" />
+    <link rel="prev" title="kabutobashi.attributes package" href="../kabutobashi.attributes/" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../" class="icon icon-home" alt="Documentation Home"> kabutobashi
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search/" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../modules/">kabutobashi</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../kabutobashi/">kabutobashi package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="../kabutobashi/#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../kabutobashi.attributes/">kabutobashi.attributes package</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">kabutobashi.crawler package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../kabutobashi.io/">kabutobashi.io package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../kabutobashi.method/">kabutobashi.method package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../kabutobashi/#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../kabutobashi/#module-kabutobashi.core">kabutobashi.core module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../kabutobashi/#module-kabutobashi.errors">kabutobashi.errors module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../kabutobashi/#module-kabutobashi.utilities">kabutobashi.utilities module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../kabutobashi/#module-kabutobashi">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../">kabutobashi</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../modules/">kabutobashi</a> &raquo;</li>
+        
+          <li><a href="../kabutobashi/">kabutobashi package</a> &raquo;</li>
+        
+      <li>kabutobashi.crawler package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/kabutobashi.crawler.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="kabutobashi-crawler-package">
+<h1>kabutobashi.crawler package<a class="headerlink" href="#kabutobashi-crawler-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../kabutobashi.crawler.stock_crawler/">kabutobashi.crawler.stock_crawler package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../kabutobashi.crawler.stock_crawler/#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../kabutobashi.crawler.stock_crawler/#module-kabutobashi.crawler.stock_crawler.ipo_list_crawler">kabutobashi.crawler.stock_crawler.ipo_list_crawler module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../kabutobashi.crawler.stock_crawler/#module-kabutobashi.crawler.stock_crawler.stock_detail_crawler">kabutobashi.crawler.stock_crawler.stock_detail_crawler module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../kabutobashi.crawler.stock_crawler/#module-kabutobashi.crawler.stock_crawler.stock_detail_page">kabutobashi.crawler.stock_crawler.stock_detail_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../kabutobashi.crawler.stock_crawler/#module-kabutobashi.crawler.stock_crawler.weeks_52_high_low_crawler">kabutobashi.crawler.stock_crawler.weeks_52_high_low_crawler module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../kabutobashi.crawler.stock_crawler/#module-kabutobashi.crawler.stock_crawler.weeks_52_high_low_page">kabutobashi.crawler.stock_crawler.weeks_52_high_low_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../kabutobashi.crawler.stock_crawler/#module-kabutobashi.crawler.stock_crawler">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-kabutobashi.crawler.api">
+<span id="kabutobashi-crawler-api-module"></span><h2>kabutobashi.crawler.api module<a class="headerlink" href="#module-kabutobashi.crawler.api" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="kabutobashi.crawler.api.get_web_page">
+<code class="sig-prename descclassname">kabutobashi.crawler.api.</code><code class="sig-name descname">get_web_page</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">url</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#kabutobashi.crawler.api.get_web_page" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-kabutobashi.crawler.crawler">
+<span id="kabutobashi-crawler-crawler-module"></span><h2>kabutobashi.crawler.crawler module<a class="headerlink" href="#module-kabutobashi.crawler.crawler" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="kabutobashi.crawler.crawler.AbstractCrawler">
+<em class="property">class </em><code class="sig-prename descclassname">kabutobashi.crawler.crawler.</code><code class="sig-name descname">AbstractCrawler</code><a class="headerlink" href="#kabutobashi.crawler.crawler.AbstractCrawler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="kabutobashi.crawler.crawler.Crawler">
+<em class="property">class </em><code class="sig-prename descclassname">kabutobashi.crawler.crawler.</code><code class="sig-name descname">Crawler</code><a class="headerlink" href="#kabutobashi.crawler.crawler.Crawler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#kabutobashi.crawler.crawler.AbstractCrawler" title="kabutobashi.crawler.crawler.AbstractCrawler"><code class="xref py py-class docutils literal notranslate"><span class="pre">kabutobashi.crawler.crawler.AbstractCrawler</span></code></a></p>
+<dl class="py method">
+<dt id="kabutobashi.crawler.crawler.Crawler.get_crawl_datetime">
+<em class="property">static </em><code class="sig-name descname">get_crawl_datetime</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#kabutobashi.crawler.crawler.Crawler.get_crawl_datetime" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="kabutobashi.crawler.crawler.Crawler.get_url_text">
+<em class="property">static </em><code class="sig-name descname">get_url_text</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target_url</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#kabutobashi.crawler.crawler.Crawler.get_url_text" title="Permalink to this definition">¶</a></dt>
+<dd><p>requestsを使って、webからページを取得し、htmlを返す</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="kabutobashi.crawler.crawler.Crawler.web_scraping">
+<code class="sig-name descname">web_scraping</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">text</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; dict<a class="headerlink" href="#kabutobashi.crawler.crawler.Crawler.web_scraping" title="Permalink to this definition">¶</a></dt>
+<dd><p>textより情報を抽出する
+:params text: webページ</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="kabutobashi.crawler.crawler.MetaCrawler">
+<em class="property">class </em><code class="sig-prename descclassname">kabutobashi.crawler.crawler.</code><code class="sig-name descname">MetaCrawler</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">bases</span></em>, <em class="sig-param"><span class="n">class_dict</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kabutobashi.crawler.crawler.MetaCrawler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">type</span></code></p>
+<p>値のget, setに関するメタクラス</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-kabutobashi.crawler.page">
+<span id="kabutobashi-crawler-page-module"></span><h2>kabutobashi.crawler.page module<a class="headerlink" href="#module-kabutobashi.crawler.page" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="kabutobashi.crawler.page.AbstractPage">
+<em class="property">class </em><code class="sig-prename descclassname">kabutobashi.crawler.page.</code><code class="sig-name descname">AbstractPage</code><a class="headerlink" href="#kabutobashi.crawler.page.AbstractPage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="kabutobashi.crawler.page.MetaPage">
+<em class="property">class </em><code class="sig-prename descclassname">kabutobashi.crawler.page.</code><code class="sig-name descname">MetaPage</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">bases</span></em>, <em class="sig-param"><span class="n">class_dict</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kabutobashi.crawler.page.MetaPage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">type</span></code></p>
+<p>値のget, setに関するメタクラス</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="kabutobashi.crawler.page.Page">
+<em class="property">class </em><code class="sig-prename descclassname">kabutobashi.crawler.page.</code><code class="sig-name descname">Page</code><a class="headerlink" href="#kabutobashi.crawler.page.Page" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#kabutobashi.crawler.page.AbstractPage" title="kabutobashi.crawler.page.AbstractPage"><code class="xref py py-class docutils literal notranslate"><span class="pre">kabutobashi.crawler.page.AbstractPage</span></code></a></p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-kabutobashi.crawler.user_agent">
+<span id="kabutobashi-crawler-user-agent-module"></span><h2>kabutobashi.crawler.user_agent module<a class="headerlink" href="#module-kabutobashi.crawler.user_agent" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="kabutobashi.crawler.user_agent.Chrome">
+<em class="property">class </em><code class="sig-prename descclassname">kabutobashi.crawler.user_agent.</code><code class="sig-name descname">Chrome</code><a class="headerlink" href="#kabutobashi.crawler.user_agent.Chrome" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="kabutobashi.crawler.user_agent.Chrome.get_user_agent">
+<em class="property">static </em><code class="sig-name descname">get_user_agent</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#kabutobashi.crawler.user_agent.Chrome.get_user_agent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="kabutobashi.crawler.user_agent.Chrome.mac_chrome_format">
+<code class="sig-name descname">mac_chrome_format</code><em class="property"> = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/{chrome_version} Safari/537.36'</em><a class="headerlink" href="#kabutobashi.crawler.user_agent.Chrome.mac_chrome_format" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="kabutobashi.crawler.user_agent.Chrome.os_format_list">
+<code class="sig-name descname">os_format_list</code><em class="property"> = ['Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/{chrome_version} Safari/537.36', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/{chrome_version}']</em><a class="headerlink" href="#kabutobashi.crawler.user_agent.Chrome.os_format_list" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="kabutobashi.crawler.user_agent.Chrome.os_size">
+<code class="sig-name descname">os_size</code><em class="property"> = 1</em><a class="headerlink" href="#kabutobashi.crawler.user_agent.Chrome.os_size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="kabutobashi.crawler.user_agent.Chrome.version_list">
+<code class="sig-name descname">version_list</code><em class="property"> = ['77.0.3865', '78.0.3904', '79.0.3945.130', '80.0.3987', '81.0.4044']</em><a class="headerlink" href="#kabutobashi.crawler.user_agent.Chrome.version_list" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="kabutobashi.crawler.user_agent.Chrome.version_size">
+<code class="sig-name descname">version_size</code><em class="property"> = 4</em><a class="headerlink" href="#kabutobashi.crawler.user_agent.Chrome.version_size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="kabutobashi.crawler.user_agent.Chrome.windows_chrome_format">
+<code class="sig-name descname">windows_chrome_format</code><em class="property"> = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/{chrome_version}'</em><a class="headerlink" href="#kabutobashi.crawler.user_agent.Chrome.windows_chrome_format" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="kabutobashi.crawler.user_agent.Firefox">
+<em class="property">class </em><code class="sig-prename descclassname">kabutobashi.crawler.user_agent.</code><code class="sig-name descname">Firefox</code><a class="headerlink" href="#kabutobashi.crawler.user_agent.Firefox" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="kabutobashi.crawler.user_agent.Firefox.get_user_agent">
+<em class="property">static </em><code class="sig-name descname">get_user_agent</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#kabutobashi.crawler.user_agent.Firefox.get_user_agent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="kabutobashi.crawler.user_agent.Firefox.mac_firefox_format">
+<code class="sig-name descname">mac_firefox_format</code><em class="property"> = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:62.0) Gecko/20100101 Firefox/{firefox_version}'</em><a class="headerlink" href="#kabutobashi.crawler.user_agent.Firefox.mac_firefox_format" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="kabutobashi.crawler.user_agent.Firefox.os_format_list">
+<code class="sig-name descname">os_format_list</code><em class="property"> = ['Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:62.0) Gecko/20100101 Firefox/{firefox_version}', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:61.0) Gecko/20100101 Firefox/{firefox_version}']</em><a class="headerlink" href="#kabutobashi.crawler.user_agent.Firefox.os_format_list" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="kabutobashi.crawler.user_agent.Firefox.os_size">
+<code class="sig-name descname">os_size</code><em class="property"> = 1</em><a class="headerlink" href="#kabutobashi.crawler.user_agent.Firefox.os_size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="kabutobashi.crawler.user_agent.Firefox.version_list">
+<code class="sig-name descname">version_list</code><em class="property"> = ['68.4.2', '72.0.2', '73.0', '74.0']</em><a class="headerlink" href="#kabutobashi.crawler.user_agent.Firefox.version_list" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="kabutobashi.crawler.user_agent.Firefox.version_size">
+<code class="sig-name descname">version_size</code><em class="property"> = 3</em><a class="headerlink" href="#kabutobashi.crawler.user_agent.Firefox.version_size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="kabutobashi.crawler.user_agent.Firefox.windows_firefox_format">
+<code class="sig-name descname">windows_firefox_format</code><em class="property"> = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:61.0) Gecko/20100101 Firefox/{firefox_version}'</em><a class="headerlink" href="#kabutobashi.crawler.user_agent.Firefox.windows_firefox_format" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="kabutobashi.crawler.user_agent.UserAgent">
+<em class="property">class </em><code class="sig-prename descclassname">kabutobashi.crawler.user_agent.</code><code class="sig-name descname">UserAgent</code><a class="headerlink" href="#kabutobashi.crawler.user_agent.UserAgent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="kabutobashi.crawler.user_agent.UserAgent.get_user_agent">
+<em class="property">static </em><code class="sig-name descname">get_user_agent</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#kabutobashi.crawler.user_agent.UserAgent.get_user_agent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="kabutobashi.crawler.user_agent.UserAgent.get_user_agent_header">
+<em class="property">static </em><code class="sig-name descname">get_user_agent_header</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; dict<a class="headerlink" href="#kabutobashi.crawler.user_agent.UserAgent.get_user_agent_header" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kabutobashi.crawler">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-kabutobashi.crawler" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../kabutobashi.crawler.stock_crawler/" class="btn btn-neutral float-right" title="kabutobashi.crawler.stock_crawler package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../kabutobashi.attributes/" class="btn btn-neutral float-left" title="kabutobashi.attributes package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, gsy0911
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
