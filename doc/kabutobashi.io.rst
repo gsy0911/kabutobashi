@@ -5,13 +5,3 @@ kabutobashi.io package
    :members:
    :undoc-members:
    :show-inheritance:
-
-Submodules
-----------
-
-
-.. automodule:: kabutobashi.io.api
-   :members:
-   :undoc-members:
-   :show-inheritance:
-

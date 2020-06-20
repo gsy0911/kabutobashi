@@ -19,7 +19,7 @@ from kabutobashi.core import (
 )
 
 # functions to load or save files
-from kabutobashi.io.api import (
+from kabutobashi.io import (
     # read csv data
     read_csv,
     # provide example stock data

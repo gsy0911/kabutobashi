@@ -1,3 +1,8 @@
+"""
+Method modules provide technical analysis for stock chart.
+
+
+"""
 from .method import Method
 from .sma import SMA
 from .macd import MACD

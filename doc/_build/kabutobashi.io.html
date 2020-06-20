@@ -62,20 +62,6 @@
       </div>
   <div id="left-column">
     <div class="sphinxsidebar">
-<div class="sidebar-block">
-  <div class="sidebar-wrapper">
-    <h2>Contents</h2>
-    <div class="sidebar-localtoc">
-      <ul>
-<li><a class="reference internal" href="#">kabutobashi.io package</a><ul>
-<li><a class="reference internal" href="#module-kabutobashi.io.api">Submodules</a></li>
-</ul>
-</li>
-</ul>
-
-    </div>
-  </div>
-</div>
   <h4>Previous topic</h4>
   <p class="topless"><a href="kabutobashi.crawler.stock_crawler.html"
                         title="previous chapter">kabutobashi.crawler.stock_crawler package</a></p>
@@ -123,28 +109,46 @@
             
   <div class="section" id="module-kabutobashi.io">
 <span id="kabutobashi-io-package"></span><h1>kabutobashi.io package<a class="headerlink" href="#module-kabutobashi.io" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="module-kabutobashi.io.api">
-<span id="submodules"></span><h2>Submodules<a class="headerlink" href="#module-kabutobashi.io.api" title="Permalink to this headline">¶</a></h2>
+<p>io module provides input/output method</p>
 <dl class="py function">
-<dt id="kabutobashi.io.api.example_data">
-<code class="sig-prename descclassname">kabutobashi.io.api.</code><code class="sig-name descname">example_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#kabutobashi.io.api.example_data" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt id="kabutobashi.io.api.read_csv">
-<code class="sig-prename descclassname">kabutobashi.io.api.</code><code class="sig-name descname">read_csv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path_candidate</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>str<span class="p">, </span>list<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>pandas.core.frame.DataFrame<span class="p">]</span><a class="headerlink" href="#kabutobashi.io.api.read_csv" title="Permalink to this definition">¶</a></dt>
-<dd><p>通常のread_csvの関数に加えて、strとlist[str]の場合に縦方向に結合してDataFrameを返す
-:param path_candidate: “path” or [“path_1”, “path_2”]
-:return:</p>
+<dt id="kabutobashi.io.example_data">
+<code class="sig-prename descclassname">kabutobashi.io.</code><code class="sig-name descname">example_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#kabutobashi.io.example_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>get example stock data</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>stock data</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
-<dt id="kabutobashi.io.api.read_stock_csv">
-<code class="sig-prename descclassname">kabutobashi.io.api.</code><code class="sig-name descname">read_stock_csv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path_candidate</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>str<span class="p">, </span>list<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>pandas.core.frame.DataFrame<span class="p">]</span><a class="headerlink" href="#kabutobashi.io.api.read_stock_csv" title="Permalink to this definition">¶</a></dt>
+<dt id="kabutobashi.io.read_csv">
+<code class="sig-prename descclassname">kabutobashi.io.</code><code class="sig-name descname">read_csv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path_candidate</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>str<span class="p">, </span>list<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>pandas.core.frame.DataFrame<span class="p">]</span><a class="headerlink" href="#kabutobashi.io.read_csv" title="Permalink to this definition">¶</a></dt>
+<dd><p>通常のread_csvの関数に加えて、strとlist[str]の場合に縦方向に結合してDataFrameを返す</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path_candidate</strong> – “path” or [“path_1”, “path_2”]</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>株のDataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="kabutobashi.io.read_stock_csv">
+<code class="sig-prename descclassname">kabutobashi.io.</code><code class="sig-name descname">read_stock_csv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path_candidate</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>str<span class="p">, </span>list<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>pandas.core.frame.DataFrame<span class="p">]</span><a class="headerlink" href="#kabutobashi.io.read_stock_csv" title="Permalink to this definition">¶</a></dt>
 <dd><p>本APIにてCrawlしたデータを扱いやすい形式にデータ変換する関数</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path_candidate</strong> – “path” or [“path_1”, “path_2”]</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>株のDataFrame</p>
+</dd>
+</dl>
 </dd></dl>
 
-</div>
 </div>
 
 
