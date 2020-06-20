@@ -21,7 +21,7 @@ class PsychoLogical(Method):
         self.lower_threshold = lower_threshold
         self.psycho_term = psycho_term
 
-    def method(self, _df: pd.DataFrame) -> pd.DataFrame:
+    def _method(self, _df: pd.DataFrame) -> pd.DataFrame:
         _df['shift_close'] = _df['close'].shift(1)
         _df['diff'] = _df.apply(lambda x: x['close']-x['shift_close'], axis=1)
         
@@ -34,7 +34,7 @@ class PsychoLogical(Method):
         _df['sold_too_much'] = _df['psycho_line'].apply(lambda x: 1 if x < self.lower_threshold else 0)
         return _df
 
-    def signal(self, _df: pd.DataFrame) -> pd.DataFrame:
+    def _signal(self, _df: pd.DataFrame) -> pd.DataFrame:
         _df['buy_signal'] = _df['sold_too_much']
         _df['sell_signal'] = _df['bought_too_much']
         return _df

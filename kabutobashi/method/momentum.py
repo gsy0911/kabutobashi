@@ -13,14 +13,14 @@ class Momentum(Method):
         super().__init__(method_name="momentum")
         self.term = term
 
-    def method(self, _df: pd.DataFrame) -> pd.DataFrame:
+    def _method(self, _df: pd.DataFrame) -> pd.DataFrame:
         _df = _df.assign(
             momentum=_df['close'].shift(10),
             sma_momentum=lambda x: x['momentum'].rolling(self.term).mean()
         )
         return _df
 
-    def signal(self, _df: pd.DataFrame) -> pd.DataFrame:
+    def _signal(self, _df: pd.DataFrame) -> pd.DataFrame:
         _df = _df.join(self.cross(_df['sma_momentum']))
         _df = _df.rename(columns={
             "to_plus": "buy_signal",

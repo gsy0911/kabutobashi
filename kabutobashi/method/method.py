@@ -1,3 +1,4 @@
+from abc import abstractmethod
 from kabutobashi.attributes import Field, StockDf
 import pandas as pd
 import logging
@@ -80,9 +81,17 @@ class Method(AbstractMethod):
         return self.stock_df
 
     def method(self, _df: pd.DataFrame) -> pd.DataFrame:
+        return self._method(_df=_df)
+
+    @abstractmethod
+    def _method(self, _df: pd.DataFrame) -> pd.DataFrame:
         raise NotImplementedError("please implement your code")
 
     def signal(self, _df: pd.DataFrame) -> pd.DataFrame:
+        return self._signal(_df=_df)
+
+    @abstractmethod
+    def _signal(self, _df: pd.DataFrame) -> pd.DataFrame:
         raise NotImplementedError("please implement your code")
 
     @staticmethod

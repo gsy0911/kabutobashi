@@ -1,5 +1,5 @@
 # methods to analysis
-from kabutobashi.method.api import (
+from kabutobashi.method import (
     Method,
     SMA,
     MACD,

@@ -19,7 +19,7 @@ class MACD(Method):
         self.long_term = long_term
         self.macd_span = macd_span
 
-    def method(self, _df: pd.DataFrame) -> pd.DataFrame:
+    def _method(self, _df: pd.DataFrame) -> pd.DataFrame:
         """
         macdを基準として今後上昇するかどうかをスコアで返す。
         値が大きければその傾向が高いことを表している。
@@ -39,7 +39,7 @@ class MACD(Method):
         )
         return _df
 
-    def signal(self, _df: pd.DataFrame) -> pd.DataFrame:
+    def _signal(self, _df: pd.DataFrame) -> pd.DataFrame:
         # 正負が交差した点
         _df = _df.join(self.cross(_df['histogram']))
         _df = _df.rename(columns={

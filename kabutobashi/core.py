@@ -1,5 +1,5 @@
 import pandas as pd
-from kabutobashi.method.api import Method
+from kabutobashi.method import Method
 from typing import Union
 # http://www.kabuciao.com/tech/deki/
 
