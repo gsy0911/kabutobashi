@@ -1,11 +1,12 @@
-from kabutobashi.attributes.attribute import Field, StockDf
+from abc import abstractmethod
+from kabutobashi.attributes import Field, StockDf
 import pandas as pd
 import logging
 
 
 class MetaMethod(type):
     """
-    値のget, setに関するメタクラス
+    値のget/setに関するメタクラス
     """
     def __new__(mcs, name, bases, class_dict):
         for key, value in class_dict.items():
@@ -20,20 +21,30 @@ class MetaMethod(type):
 
 
 class AbstractMethod(object, metaclass=MetaMethod):
+    """
+    MetaMethodを継承するクラス
+
+    FieldClassとStockDfClassの値のget/setに関する操作をhookする
+    """
     pass
 
 
 class Method(AbstractMethod):
     """
-    usage
-    sma = SMA()
-    macd = MCAD()
+    株のテクニカル分析に関するメソッドを提供するクラス
 
-    # get sma-based-analysis
-    sma_df = stock_df.pipe(sma)
-
-    # get macd-based-analysis
-    macd_df = stock_df.pipe(macd)
+    Examples:
+        >>> import pandas as pd
+        >>> import kabutobashi as kb
+        >>> stock_df: pd.DataFrame = pd.DataFrame("path_to_stock_data")
+        # get sma-based-analysis
+        >>> sma_df = stock_df.pipe(kb.sma)
+        # get sma-base-buy or sell signal
+        >>> sma_signal = stock_df.pipe(kb.sma, impact="true", influence=5, tail=5)
+        # get macd-based-analysis
+        >>> macd_df = stock_df.pipe(kb.macd)
+        # get macd-base-buy or sell signal
+        >>> sma_signal = stock_df.pipe(kb.macd, impact="true", influence=5, tail=5)
     """
     # 株価を保持するDataFrame
     stock_df = StockDf()
@@ -52,12 +63,14 @@ class Method(AbstractMethod):
     def __call__(self, stock_df: pd.DataFrame, **kwargs):
         """
         各手法の時系列分析を行い、買いと売りのタイミングを付与
-        :params stock_df:
-        :params kwargs: {
-            "impact": 売りと買いのシグナルを表示させるときに利用,
-            "influence": get_impact()にて利用するパラメータ,
-            "tail": get_impact()にて利用するパラメータ
-        }
+
+        Args:
+            stock_df: 株の情報を含むDataFrame
+            kwargs: {
+                "impact": 売りと買いのシグナルを表示させるときに利用,
+                "influence": get_impact()にて利用するパラメータ,
+                "tail": get_impact()にて利用するパラメータ
+            }
         """
         # 各手法指標となる値を計算し、買いと売りの指標を付与
         signal_df = stock_df.pipe(self.validate) \
@@ -65,7 +78,7 @@ class Method(AbstractMethod):
             .pipe(self.signal)
         # 買い・売りのシグナルを算出する場合
         if "impact" in kwargs:
-            return signal_df.pipe(self.get_impact, **kwargs)
+            return signal_df.pipe(self._get_impact, **kwargs)
         # それ以外は解析結果のdfを返す
         return signal_df
 
@@ -80,13 +93,39 @@ class Method(AbstractMethod):
         return self.stock_df
 
     def method(self, _df: pd.DataFrame) -> pd.DataFrame:
+        """
+        テクニカル分析の手法
+
+        Args:
+            _df: 株の情報を含むDataFrame
+
+        Returns:
+            各分析手法の結果を付与したDataFrame
+        """
+        return self._method(_df=_df)
+
+    @abstractmethod
+    def _method(self, _df: pd.DataFrame) -> pd.DataFrame:
         raise NotImplementedError("please implement your code")
 
     def signal(self, _df: pd.DataFrame) -> pd.DataFrame:
+        """
+        テクニカル分析の手法の結果により、買いと売りのタイミングを計算する
+
+        Args:
+            _df: 株の情報を含むDataFrame
+
+        Returns:
+
+        """
+        return self._signal(_df=_df)
+
+    @abstractmethod
+    def _signal(self, _df: pd.DataFrame) -> pd.DataFrame:
         raise NotImplementedError("please implement your code")
 
     @staticmethod
-    def cross(
+    def _cross(
             _s: pd.Series,
             to_plus_name=None,
             to_minus_name=None) -> pd.DataFrame:
@@ -123,7 +162,7 @@ class Method(AbstractMethod):
         return _df
         
     @staticmethod
-    def trend(_s: pd.Series) -> pd.Series:
+    def _trend(_s: pd.Series) -> pd.Series:
         """
         ある系列_sのトレンドを計算する。
         差分のrolling_sumを返す
@@ -140,7 +179,7 @@ class Method(AbstractMethod):
         return _df['diff_rolling_sum']
 
     @staticmethod
-    def get_impact(
+    def _get_impact(
             _df: pd.DataFrame,
             influence: int = 2,
             tail: int = 5,

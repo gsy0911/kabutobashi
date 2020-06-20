@@ -1,18 +1,24 @@
 import pandas as pd
-from kabutobashi.method.method import Method
-from kabutobashi.attributes.attribute import Field
+from .method import Method
+from kabutobashi.attributes import Field
 
 
 class ADX(Method):
-    """
-    以下の指標を計算するクラス
-    +DI: 株価の上昇の大きさ
-    -DI: 株価の下降の大きさ
-    ADX: 株価のトレンドの強さ
-    ADXR: ADXの単純移動平均線
+    """    以下の指標を計算するクラス
+
+    * +DI: 株価の上昇の大きさ
+    * -DI: 株価の下降の大きさ
+    * ADX: 株価のトレンドの強さ
+    * ADXR: ADXの単純移動平均線
 
     https://www.sevendata.co.jp/shihyou/technical/dmi.html
     https://www.sevendata.co.jp/shihyou/technical/adx.html
+
+    Args:
+        term (int):
+        adx_term (int):
+        adxr_term (int):
+
     """
 
     term = Field(required_type=int)
@@ -26,7 +32,15 @@ class ADX(Method):
         self.adxr_term = adxr_term
 
     @staticmethod
-    def true_range(x: pd.DataFrame):
+    def _true_range(x: pd.DataFrame):
+        """
+
+        Args:
+            x (pd.DataFrame)
+
+        Returns:
+            maximum
+        """
         current_high = x['high']
         current_low = x['low']
         prev_close = x['shift_close']
@@ -38,26 +52,31 @@ class ADX(Method):
         return max(max_ab, max_ac)
 
     @staticmethod
-    def compute_dx(x: pd.DataFrame) -> float:
+    def _compute_dx(x: pd.DataFrame) -> float:
+        """
+
+        Args:
+            x (pd.DataFrame):
+        """
         numerator = abs(x['plus_di'] - x['minus_di'])
         denominator = x['plus_di'] + x['minus_di']
         return numerator / denominator * 100
 
     @staticmethod
-    def fixed_plus_dm(x: pd.DataFrame) -> float:
+    def _fixed_plus_dm(x: pd.DataFrame) -> float:
         if x['plus_dm'] > 0 and x['plus_dm'] > x['minus_dm']:
             return x['plus_dm']
         else:
             return 0
 
     @staticmethod
-    def fixed_minus_dm(x: pd.DataFrame) -> float:
+    def _fixed_minus_dm(x: pd.DataFrame) -> float:
         if x['minus_dm'] > 0 and x['minus_dm'] > x['plus_dm']:
             return x['minus_dm']
         else:
             return 0
 
-    def method(self, _df: pd.DataFrame) -> pd.DataFrame:
+    def _method(self, _df: pd.DataFrame) -> pd.DataFrame:
         # 利用する値をshift
         _df = _df.assign(
             shift_high=_df['high'].shift(1),
@@ -69,11 +88,11 @@ class ADX(Method):
             minus_dm=_df.apply(lambda x: x['shift_low'] - x['low'], axis=1)
         )
         _df = _df.assign(
-            fixed_plus_dm=_df.apply(lambda x: self.fixed_plus_dm(x), axis=1),
-            fixed_minus_dm=_df.apply(lambda x: self.fixed_minus_dm(x), axis=1)
+            fixed_plus_dm=_df.apply(lambda x: self._fixed_plus_dm(x), axis=1),
+            fixed_minus_dm=_df.apply(lambda x: self._fixed_minus_dm(x), axis=1)
         )
         _df = _df.assign(
-            true_range=_df.apply(lambda x: self.true_range(x), axis=1),
+            true_range=_df.apply(lambda x: self._true_range(x), axis=1),
             sum_tr=lambda x: x['true_range'].rolling(self.term).sum(),
             sum_plus_dm=lambda x: x['fixed_plus_dm'].rolling(self.term).sum(),
             sum_minus_dm=lambda x: x['fixed_minus_dm'].rolling(self.term).sum()
@@ -89,7 +108,7 @@ class ADX(Method):
             minus_di=_df.apply(lambda x: x['sum_minus_dm'] / x['sum_tr'] * 100, axis=1)
         )
         _df = _df.assign(
-            DX=_df.apply(self.compute_dx, axis=1),
+            DX=_df.apply(self._compute_dx, axis=1),
             ADX=lambda x: x['DX'].rolling(self.adx_term).mean(),
             ADXR=lambda x: x['DX'].rolling(self.adxr_term).mean()
         )
@@ -120,13 +139,13 @@ class ADX(Method):
             if x['to_minus'] > 0:
                 return 1
         
-    def signal(self, _df: pd.DataFrame) -> pd.DataFrame:
+    def _signal(self, _df: pd.DataFrame) -> pd.DataFrame:
         """
         buy_signalとsell_signalを付与
         """
-        _df['ADX_trend'] = self.trend(_df['ADX'])
+        _df['ADX_trend'] = self._trend(_df['ADX'])
         _df['diff'] = _df['plus_di'] - _df['minus_di']
-        _df = _df.join(self.cross(_df['diff']))
+        _df = _df.join(self._cross(_df['diff']))
         
         _df['buy_signal'] = _df.apply(lambda x: self._buy_signal)
         _df['sell_signal'] = _df.apply(lambda x: self._sell_signal)

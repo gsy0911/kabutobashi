@@ -1,4 +1,4 @@
-from kabutobashi.attributes.attribute import Field
+from kabutobashi.attributes import Field
 from kabutobashi.crawler.user_agent import UserAgent
 from kabutobashi.errors import (
     CrawlPageNotFoundError,

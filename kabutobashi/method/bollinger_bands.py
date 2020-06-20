@@ -1,6 +1,6 @@
 import pandas as pd
 from kabutobashi.method.method import Method
-from kabutobashi.attributes.attribute import Field
+from kabutobashi.attributes import Field
 
 
 class BollingerBands(Method):
@@ -15,7 +15,7 @@ class BollingerBands(Method):
         self.band_term = band_term
         self.continuity_term = continuity_term
 
-    def method(self, _df: pd.DataFrame) -> pd.DataFrame:
+    def _method(self, _df: pd.DataFrame) -> pd.DataFrame:
         _df = _df.assign(
             mean=_df['close'].rolling(self.band_term).mean(),
             std=_df['close'].rolling(self.band_term).std()
@@ -26,7 +26,7 @@ class BollingerBands(Method):
         )
         return _df
 
-    def signal(self, _df: pd.DataFrame) -> pd.DataFrame:
+    def _signal(self, _df: pd.DataFrame) -> pd.DataFrame:
         _df = _df.assign(
             over_upper=_df.apply(lambda x: 1 if x['close'] > x['upper_2_sigma'] else 0, axis=1),
             over_lower=_df.apply(lambda x: 1 if x['close'] < x['lower_2_sigma'] else 0, axis=1),
