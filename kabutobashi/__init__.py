@@ -67,7 +67,7 @@ __version__ = ".".join(map(str, VERSION))
 # module level doc-string
 __doc__ = """
 kabutobashi
-=======
+===========
 
 **kabutobashi** is a Python package to analysis stock data with measure
 analysis methods, such as MACD, SMA, etc.

@@ -4,15 +4,21 @@ from kabutobashi.attributes.attribute import Field
 
 
 class ADX(Method):
-    """
-    以下の指標を計算するクラス
-    +DI: 株価の上昇の大きさ
-    -DI: 株価の下降の大きさ
-    ADX: 株価のトレンドの強さ
-    ADXR: ADXの単純移動平均線
+    """    以下の指標を計算するクラス
+
+    Args:
+        term (int):
+        adx_term (int):
+        adxr_term (int):
+
+    * +DI: 株価の上昇の大きさ
+    * -DI: 株価の下降の大きさ
+    * ADX: 株価のトレンドの強さ
+    * ADXR: ADXの単純移動平均線
 
     https://www.sevendata.co.jp/shihyou/technical/dmi.html
     https://www.sevendata.co.jp/shihyou/technical/adx.html
+
     """
 
     term = Field(required_type=int)
@@ -27,6 +33,19 @@ class ADX(Method):
 
     @staticmethod
     def true_range(x: pd.DataFrame):
+        """
+
+        Args:
+            x (pd.DataFrame)
+
+        Returns:
+            maximum
+
+        Examples:
+            >>> adx = ADX()
+            >>> adx.true_range(x)
+            7
+        """
         current_high = x['high']
         current_low = x['low']
         prev_close = x['shift_close']
@@ -39,6 +58,11 @@ class ADX(Method):
 
     @staticmethod
     def compute_dx(x: pd.DataFrame) -> float:
+        """
+
+        Args:
+            x (pd.DataFrame):
+        """
         numerator = abs(x['plus_di'] - x['minus_di'])
         denominator = x['plus_di'] + x['minus_di']
         return numerator / denominator * 100

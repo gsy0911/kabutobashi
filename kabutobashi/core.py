@@ -19,12 +19,17 @@ def get_impact_with(
         method: Union[Method, list],
         **kwargs) -> dict:
     """
-    :params stock_df:
-    :params method:
-    :return: ex: {
-            "sma": 0.4,
-            "macd": -0.04
-        }
+    Args:
+        stock_df (pd.DataFrame)
+        method (Method or list)
+
+    Returns:
+        Dict[str, float]
+
+    Examples:
+        >>> import kabutobashi as kb
+        >>> get_impact_with(stock_df, [kb.SMA, kb.MACD])
+        {"sma": 0.4, "macd": -0.04}
     """
     # methodのpipeで渡す際の引数、impactにtrueを渡して直近の各手法の買い・売りの傾向を取得する
     kwargs.update({"impact": "true"})
