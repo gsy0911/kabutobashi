@@ -49,9 +49,9 @@ class Firefox:
     def __init__(self):
         os_format_list = [
             # mac_firefox_format
-            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:62.0) Gecko/20100101 Firefox/{firefox_version}",
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:62.0) Gecko/20100101 Firefox/{version}",
             # windows_firefox_format
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:61.0) Gecko/20100101 Firefox/{firefox_version}"
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:61.0) Gecko/20100101 Firefox/{version}"
         ]
 
         version_list = [
