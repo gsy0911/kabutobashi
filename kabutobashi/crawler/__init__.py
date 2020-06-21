@@ -15,5 +15,4 @@ from kabutobashi.crawler.stock_crawler.weeks_52_high_low_crawler import (
 
 
 def get_web_page(url: str) -> str:
-    crawler = Crawler()
-    return crawler.get_url_text(url)
+    return Crawler().get_url_text(url)
