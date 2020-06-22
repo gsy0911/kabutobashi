@@ -10,7 +10,7 @@ Welcome to kabutobashi's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-   modules
+   guide/modules
 
 Indices and tables
 ==================
