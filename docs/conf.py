@@ -13,9 +13,11 @@
 import os
 import sys
 # import guzzle_sphinx_theme
-sys.path.insert(0, os.path.abspath('../kabutobashi'))
+sys.path.insert(0, os.path.abspath('..'))
 
+import kabutobashi
 # -- Project information -----------------------------------------------------
+
 
 project = 'kabutobashi'
 copyright = '2020, gsy0911'
@@ -37,6 +39,8 @@ templates_path = ['_templates']
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
+# The master toctree document.
+master_doc = "index"
 
 # -- Options for HTML output -------------------------------------------------
 
