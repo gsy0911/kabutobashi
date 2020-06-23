@@ -1,5 +1,5 @@
 from kabutobashi.crawler.page import Page
-from kabutobashi.attributes.attribute import PageContent
+from kabutobashi.attributes import PageContent
 from bs4 import BeautifulSoup
 
 

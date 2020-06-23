@@ -125,3 +125,4 @@ pip-selfcheck.json
 *.DS_Store*
 notebook
 circleci_python_test.sh
+doc/_build

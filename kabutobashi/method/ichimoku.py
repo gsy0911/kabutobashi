@@ -1,6 +1,6 @@
 import pandas as pd
 from kabutobashi.method.method import Method
-from kabutobashi.attributes.attribute import Field
+from kabutobashi.attributes import Field
 
 
 class Ichimoku(Method):
@@ -18,7 +18,7 @@ class Ichimoku(Method):
         self.medium_term = medium_term
         self.long_term = long_term
 
-    def method(self, _df: pd.DataFrame) -> pd.DataFrame:
+    def _method(self, _df: pd.DataFrame) -> pd.DataFrame:
         _df = _df.assign(
             # 短期の線
             short_max=lambda x: x['close'].rolling(self.short_term).max(),
@@ -48,5 +48,5 @@ class Ichimoku(Method):
         )
         return _df
 
-    def signal(self, _df: pd.DataFrame) -> pd.DataFrame:
+    def _signal(self, _df: pd.DataFrame) -> pd.DataFrame:
         return _df

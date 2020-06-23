@@ -5,9 +5,13 @@ import jpholiday
 def get_past_n_days(current_date: str, n: int = 60) -> list:
     """
     土日と祝日を考慮したn営業日前までの日付のリストを返す関数
-    :param current_date: n日前を計算する起点となる日
-    :param n: n日前
-    :return: ["%Y-%m-%d", "%Y-%m-%d", "%Y-%m-%d", ...]
+
+    Args:
+        current_date: n日前を計算する起点となる日
+        n: n日前
+
+    Returns:
+        date list, ex ["%Y-%m-%d", "%Y-%m-%d", "%Y-%m-%d", ...]
     """
     end_date = datetime.strptime(current_date, "%Y-%m-%d")
     # 2倍しているのは土日や祝日が排除されるため

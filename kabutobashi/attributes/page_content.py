@@ -43,6 +43,10 @@ class PageContent(object):
         return getattr(instance, self.internal_name, None)
 
     def __set__(self, instance, value):
+        set_value = self._decode(value=value)
+        setattr(instance, self.internal_name, set_value)
+
+    def _decode(self, value):
         if value is None:
             raise ValueError(f"The field is required and none is invalid")
 
@@ -74,7 +78,10 @@ class PageContent(object):
             set_value = self.replace(set_value.get_text())
         else:
             set_value = self.alternative_data
-        setattr(instance, self.internal_name, set_value)
+        return set_value
+
+    def decode(self, value):
+        return self._decode(value=value)
 
     @staticmethod
     def replace(input_text: str) -> str:

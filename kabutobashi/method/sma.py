@@ -1,6 +1,6 @@
 import pandas as pd
 from kabutobashi.method.method import Method
-from kabutobashi.attributes.attribute import Field
+from kabutobashi.attributes import Field
 
 
 class SMA(Method):
@@ -19,7 +19,7 @@ class SMA(Method):
         self.medium_term = medium_term
         self.long_term = long_term
 
-    def method(self, _df: pd.DataFrame) -> pd.DataFrame:
+    def _method(self, _df: pd.DataFrame) -> pd.DataFrame:
         _df = _df.assign(
             sma_short=_df['close'].rolling(self.short_term).mean(),
             sma_medium=_df['close'].rolling(self.medium_term).mean(),
@@ -27,10 +27,10 @@ class SMA(Method):
         )
         return _df
 
-    def signal(self, _df: pd.DataFrame) -> pd.DataFrame:
+    def _signal(self, _df: pd.DataFrame) -> pd.DataFrame:
         _df['diff'] = _df.apply(lambda x: x['sma_long'] - x['sma_short'], axis=1)
         # 正負が交差した点
-        _df = _df.join(self.cross(_df['diff']))
+        _df = _df.join(self._cross(_df['diff']))
         _df = _df.rename(columns={
             "to_plus": "buy_signal",
             "to_minus": "sell_signal"

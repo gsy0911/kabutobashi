@@ -1,5 +1,5 @@
 # methods to analysis
-from kabutobashi.method.api import (
+from kabutobashi.method import (
     Method,
     SMA,
     MACD,
@@ -19,7 +19,7 @@ from kabutobashi.core import (
 )
 
 # functions to load or save files
-from kabutobashi.io.api import (
+from kabutobashi.io import (
     # read csv data
     read_csv,
     # provide example stock data
@@ -32,7 +32,7 @@ from kabutobashi.io.api import (
 from kabutobashi import errors
 
 # classes or functions about crawl web pages
-from kabutobashi.crawler.api import (
+from kabutobashi.crawler import (
     # beautifulsoupを利用してウェブページを取得する
     get_web_page,
     # 単一の株価の詳細情報を取得する
@@ -60,14 +60,14 @@ psycho_logical = PsychoLogical()
 
 
 # comparable tuple
-VERSION = (0, 1, 0)
+VERSION = (0, 1, 1)
 # generate __version__ via VERSION tuple
 __version__ = ".".join(map(str, VERSION))
 
 # module level doc-string
 __doc__ = """
 kabutobashi
-=======
+===========
 
 **kabutobashi** is a Python package to analysis stock data with measure
 analysis methods, such as MACD, SMA, etc.

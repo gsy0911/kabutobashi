@@ -1,6 +1,6 @@
 import pytest
 import pandas as pd
-from kabutobashi.attributes.attribute import (
+from kabutobashi.attributes import (
     Field,
     StockDf,
     PageContent
