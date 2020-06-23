@@ -960,6 +960,14 @@ lint = ["flake8 (>=3.5.0)", "flake8-import-order", "mypy (>=0.780)", "docutils-s
 test = ["pytest", "pytest-cov", "html5lib", "typed-ast", "cython"]
 
 [[package]]
+category = "main"
+description = "setuptools command for uploading Sphinx documentation to PyPI"
+name = "sphinx-pypi-upload3"
+optional = false
+python-versions = "*"
+version = "0.2.2"
+
+[[package]]
 category = "dev"
 description = "Read the Docs theme for Sphinx"
 name = "sphinx-rtd-theme"
@@ -1178,7 +1186,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "7a3257119671d13d42d212098082a721292a50d0ae0d55dd3012bc64598e07f0"
+content-hash = "75f0dc865adf4b0679afc4524e3fd44caff08acb6a087d404510be39e04fc4bc"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -1692,6 +1700,10 @@ soupsieve = [
 sphinx = [
     {file = "Sphinx-3.1.1-py3-none-any.whl", hash = "sha256:97c9e3bcce2f61d9f5edf131299ee9d1219630598d9f9a8791459a4d9e815be5"},
     {file = "Sphinx-3.1.1.tar.gz", hash = "sha256:74fbead182a611ce1444f50218a1c5fc70b6cc547f64948f5182fb30a2a20258"},
+]
+sphinx-pypi-upload3 = [
+    {file = "Sphinx-PyPI-upload3-0.2.2.win32.exe", hash = "sha256:fb627dcedb708821aaf63eabcc1697f54904d8081d39c1dd8c1ad1689c3bf2b7"},
+    {file = "Sphinx-PyPI-upload3-0.2.2.zip", hash = "sha256:414dc4c429ac5236692397083cd023b97e8dd3a5b5020b3c66450f09f21fd4a6"},
 ]
 sphinx-rtd-theme = [
     {file = "sphinx_rtd_theme-0.5.0-py2.py3-none-any.whl", hash = "sha256:373413d0f82425aaa28fb288009bf0d0964711d347763af2f1b65cafcb028c82"},

@@ -8,6 +8,7 @@ SPHINXBUILD   = sphinx-build
 SOURCEDIR     = .
 BUILDDIR      = _build
 PACKAGEDIR    = kabutobashi
+PACKAGEGUIEDE = guide
 
 # Put it first so that "make" without argument is like "make help".
 help:
@@ -37,5 +38,5 @@ html:
 # --no-headings: Do not create headings for the modules/packages.
 # --module-first: Put module documentation before submodule documentation.
 docstring:
-	sphinx-apidoc --no-headings --module-first -f -o $(SOURCEDIR) ../$(PACKAGEDIR)
+	sphinx-apidoc --no-headings --module-first -f -o $(PACKAGEGUIEDE) ../$(PACKAGEDIR)
 	@echo "finish"
