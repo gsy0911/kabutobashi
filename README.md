@@ -4,7 +4,7 @@
 [![codecov](https://codecov.io/gh/gsy0911/kabutobashi/branch/master/graph/badge.svg)](https://codecov.io/gh/gsy0911/kabutobashi)
 
 [![PythonVersion](https://img.shields.io/badge/python-3.7|3.8-blue.svg)](https://www.python.org/downloads/release/python-377/)
-[![PiPY](https://img.shields.io/badge/pypi-0.1.0-blue.svg)](https://pypi.org/project/kabutobashi/)
+[![PiPY](https://img.shields.io/badge/pypi-0.1.1-blue.svg)](https://pypi.org/project/kabutobashi/)
 
 ## Development Environment
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#github.com/gsy0911/kabutobashi)
