@@ -11,13 +11,14 @@ class ADX(Method):
     * ADX: 株価のトレンドの強さ
     * ADXR: ADXの単純移動平均線
 
-    https://www.sevendata.co.jp/shihyou/technical/dmi.html
-    https://www.sevendata.co.jp/shihyou/technical/adx.html
-
     Args:
         term (int):
         adx_term (int):
         adxr_term (int):
+
+    See Also:
+        * https://www.sevendata.co.jp/shihyou/technical/dmi.html
+        * https://www.sevendata.co.jp/shihyou/technical/adx.html
 
     """
 

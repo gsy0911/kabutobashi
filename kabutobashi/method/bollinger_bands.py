@@ -5,7 +5,8 @@ from kabutobashi.attributes import Field
 
 class BollingerBands(Method):
     """
-    https://www.sevendata.co.jp/shihyou/technical/bori.html
+    See Also:
+        * https://www.sevendata.co.jp/shihyou/technical/bori.html
     """
     band_term = Field()
     continuity_term = Field()
