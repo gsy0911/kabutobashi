@@ -4,7 +4,10 @@ from kabutobashi.attributes import Field
 
 
 class ADX(Method):
-    """    以下の指標を計算するクラス
+    """
+    相場のトレンドの強さを見るための指標である`ADX`を計算するクラス。
+
+    以下の指標を計算するクラス
 
     * +DI: 株価の上昇の大きさ
     * -DI: 株価の下降の大きさ

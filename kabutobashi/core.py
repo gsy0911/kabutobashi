@@ -24,9 +24,12 @@ def get_impact_with(
         method: Union[Method, list],
         **kwargs) -> dict:
     """
+    入力のDataFrameに対して、分析の結果を返す関数
+
     Args:
-        stock_df (pd.DataFrame)
-        method (Method or list)
+        stock_df:
+        method: 分析対象の手法
+        **kwargs:
 
     Returns:
         Dict[str, float]
@@ -35,6 +38,9 @@ def get_impact_with(
         >>> import kabutobashi as kb
         >>> get_impact_with(stock_df, [kb.SMA, kb.MACD])
         {"sma": 0.4, "macd": -0.04}
+        >>> sma = kb.SMA(short_term=3, medium_term=15, long_term=50)
+        >>> get_impact_with(stock_df, [sma, kb.MACD])
+        {"sma": 0.2, "macd": -0.04}
     """
     # methodのpipeで渡す際の引数、impactにtrueを渡して直近の各手法の買い・売りの傾向を取得する
     kwargs.update({"impact": "true"})

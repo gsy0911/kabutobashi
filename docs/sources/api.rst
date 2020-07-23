@@ -4,11 +4,6 @@ API Reference
 kabutobashi
 -----------
 
-.. toctree::
-   :maxdepth: 4
-
-
-
 Method Classes
 --------------
 

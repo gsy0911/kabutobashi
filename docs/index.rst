@@ -30,17 +30,21 @@ package status
    :target: https://pepy.tech/project/kabutobashi
 
 
-kabutobashi documentation
-===========================
+**kabutobashi** is to provide convenient Python functions for analyze stocks.
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+``kabutobashi`` can
 
-.. autofunction:: kabutobashi.read_csv
-.. autofunction:: kabutobashi.read_stock_csv
+* crawl Japanese stock data
+* analyze stock based on charts
 
-check more details `references <./sources/api.html>`_.
+Installation
+============
+
+**kabutobashi** can be installed from pip.
+
+.. code-block:: shell
+
+   pip install kabutobashi
 
 
 For Users
