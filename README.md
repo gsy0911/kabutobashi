@@ -5,6 +5,8 @@
 
 [![PythonVersion](https://img.shields.io/badge/python-3.7|3.8-blue.svg)](https://www.python.org/downloads/release/python-377/)
 [![PiPY](https://img.shields.io/badge/pypi-0.1.1-blue.svg)](https://pypi.org/project/kabutobashi/)
+[![Documentation Status](https://readthedocs.org/projects/kabutobashi/badge/?version=latest)](https://kabutobashi.readthedocs.io/en/latest/?badge=latest)
+
 
 ## Development Environment
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#github.com/gsy0911/kabutobashi)
