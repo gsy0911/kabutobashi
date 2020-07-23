@@ -3,14 +3,27 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to kabutobashi's documentation!
-=======================================
+kabutobashi documentation
+===========================
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-   guide/modules
+.. autofunction:: kabutobashi.read_csv
+.. autofunction:: kabutobashi.read_stock_csv
+
+check more details `references <./sources/api.html>`_.
+
+
+For Users
+=========
+
+.. toctree::
+   :maxdepth: 2
+
+   sources/api
+
 
 Indices and tables
 ==================
