@@ -1,14 +1,26 @@
-kabutobashi.method package
-==========================
+API Reference
+=============
+
+kabutobashi
+-----------
+
+Method Classes
+--------------
 
 .. automodule:: kabutobashi.method
    :members:
    :undoc-members:
    :show-inheritance:
 
-Submodules
-----------
 
+.. automodule:: kabutobashi.method.method
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+methods
+^^^^^^^
 
 .. automodule:: kabutobashi.method.adx
    :members:
@@ -29,12 +41,6 @@ Submodules
 
 
 .. automodule:: kabutobashi.method.macd
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-.. automodule:: kabutobashi.method.method
    :members:
    :undoc-members:
    :show-inheritance:
@@ -62,4 +68,3 @@ Submodules
    :members:
    :undoc-members:
    :show-inheritance:
-

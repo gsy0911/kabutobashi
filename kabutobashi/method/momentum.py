@@ -5,7 +5,8 @@ from kabutobashi.attributes import Field
 
 class Momentum(Method):
     """
-    https://www.sevendata.co.jp/shihyou/technical/momentum.html
+    See Also:
+        https://www.sevendata.co.jp/shihyou/technical/momentum.html
     """
     term = Field()
 

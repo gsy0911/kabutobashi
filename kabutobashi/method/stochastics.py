@@ -4,18 +4,21 @@ from kabutobashi.method.method import Method
 
 
 class Stochastics(Method):
+    """
+    買いのシグナルを計算で求める
+
+    * %K・%D共に20％以下の時に、%Kが%Dを下から上抜いた時
+    * %D・スロー%D共に20％以下の時に、%Dがスロー%Dを下から上抜いた時
+
+    See Also:
+        * https://www.moneypartners.co.jp/support/tech/sct.html
+
+    """
+
     def __init__(self):
         super().__init__(method_name="stochastics")
 
     def _method(self, _df: pd.DataFrame) -> pd.DataFrame:
-        """
-        買いのシグナルを計算で求める
-        ・%K・%D共に20％以下の時に、%Kが%Dを下から上抜いた時
-        ・%D・スロー%D共に20％以下の時に、%Dがスロー%Dを下から上抜いた時
-        https://www.moneypartners.co.jp/support/tech/sct.html
-        :param _df:
-        :return:
-        """
 
         _df['close'] = _df['close'].astype(float)
         _df['low'] = _df['low'].astype(float)
