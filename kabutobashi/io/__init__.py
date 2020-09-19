@@ -86,4 +86,6 @@ def _decode_stock_data(_df: pd.DataFrame) -> pd.DataFrame:
     # 必要なカラムに絞る
     required_columns = ["code", "open", "close", "high", "low", "unit", "volume", "per", "psr", "pbr", "market", "dt"]
     _df = _df.loc[:, required_columns].drop_duplicates()
+    # 変な値はpd.NAに変換
+    _df = _df.replace("---", pd.NA)
     return _df
