@@ -1,10 +1,12 @@
 # kabutobashi
 
-[![CircleCI](https://circleci.com/gh/gsy0911/kabutobashi.svg?style=svg&circle-token=76679803b77f4fc6e722c952a20da7fc5f0294c7)](https://circleci.com/gh/gsy0911/kabutobashi)
+[![pytest](https://github.com/gsy0911/kabutobashi/workflows/pytest/badge.svg)](https://github.com/gsy0911/kabutobashi/actions?query=workflow%3Apytest)
 [![codecov](https://codecov.io/gh/gsy0911/kabutobashi/branch/master/graph/badge.svg)](https://codecov.io/gh/gsy0911/kabutobashi)
 
 [![PythonVersion](https://img.shields.io/badge/python-3.7|3.8-blue.svg)](https://www.python.org/downloads/release/python-377/)
-[![PiPY](https://img.shields.io/badge/pypi-0.1.1-blue.svg)](https://pypi.org/project/kabutobashi/)
+[![PiPY](https://img.shields.io/pypi/v/kabutobashi.svg)](https://pypi.org/project/kabutobashi/)
+[![Documentation Status](https://readthedocs.org/projects/kabutobashi/badge/?version=latest)](https://kabutobashi.readthedocs.io/en/latest/?badge=latest)
+
 
 ## Development Environment
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#github.com/gsy0911/kabutobashi)

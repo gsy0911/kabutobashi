@@ -2,9 +2,10 @@
 io module provides input/output method
 """
 
-from typing import Union, Optional
-import pandas as pd
 from datetime import datetime
+from typing import Union, Optional
+
+import pandas as pd
 
 
 def example_data() -> pd.DataFrame:
@@ -42,21 +43,35 @@ def read_csv(path_candidate: Union[str, list]) -> Optional[pd.DataFrame]:
         return None
 
 
-def read_stock_csv(path_candidate: Union[str, list]) -> Optional[pd.DataFrame]:
+def read_stock_csv(
+        path_candidate: Union[str, list],
+        code_list: Optional[list] = None,
+        drop_reit: bool = True) -> Optional[pd.DataFrame]:
     """
     本APIにてCrawlしたデータを扱いやすい形式にデータ変換する関数
 
     Args:
         path_candidate: "path" or ["path_1", "path_2"]
+        code_list: filter with code_list
+        drop_reit: drop REIT-data if True
 
     Returns:
         株のDataFrame
     """
+    # TODO 特定の日以上の長さがあるものに絞る
+    # for code, _df in df.groupby("code"):
+    #     if len(_df.index) >= ANALYSIS_DATE_NUM:
+    #         code_list.append(code)
     df = read_csv(path_candidate)
     if df is None:
         return None
     else:
-        return _decode_stock_data(_df=df)
+        decoded_df = _decode_stock_data(_df=df)
+        if code_list:
+            decoded_df = decoded_df[decoded_df['code'].isin(code_list)]
+        if drop_reit:
+            decoded_df = decoded_df[~(decoded_df['market'] == " 東証REIT")]
+        return decoded_df
 
 
 def _decode_stock_data(_df: pd.DataFrame) -> pd.DataFrame:
@@ -86,4 +101,6 @@ def _decode_stock_data(_df: pd.DataFrame) -> pd.DataFrame:
     # 必要なカラムに絞る
     required_columns = ["code", "open", "close", "high", "low", "unit", "volume", "per", "psr", "pbr", "market", "dt"]
     _df = _df.loc[:, required_columns].drop_duplicates()
+    # 変な値はpd.NAに変換
+    _df = _df.replace("---", pd.NA)
     return _df

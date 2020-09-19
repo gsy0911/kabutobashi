@@ -1,4 +1,5 @@
 from kabutobashi.errors import TagNotFoundError
+from functools import reduce
 
 
 class PageContent(object):
@@ -84,7 +85,12 @@ class PageContent(object):
         return self._decode(value=value)
 
     @staticmethod
+    def remove_of(_input: str, target: str):
+        return _input.replace(target, "")
+
+    @staticmethod
     def replace(input_text: str) -> str:
-        return input_text.replace(" ", "") \
-            .replace("\t", "").replace("\n", "").replace("\r", "") \
-            .replace("\xa0", " ").replace("円", "")
+        target_list = [" ", "\t", "\n", "\r", "円"]
+
+        result = reduce(PageContent.remove_of, target_list, input_text)
+        return result.replace("\xa0", " ")

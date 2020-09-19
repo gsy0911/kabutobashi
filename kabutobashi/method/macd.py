@@ -4,6 +4,9 @@ from kabutobashi.attributes import Field
 
 
 class MACD(Method):
+    """
+
+    """
 
     short_term = Field()
     long_term = Field()

@@ -4,20 +4,24 @@ from kabutobashi.attributes import Field
 
 
 class ADX(Method):
-    """    以下の指標を計算するクラス
+    """
+    相場のトレンドの強さを見るための指標である`ADX`を計算するクラス。
+
+    以下の指標を計算するクラス
 
     * +DI: 株価の上昇の大きさ
     * -DI: 株価の下降の大きさ
     * ADX: 株価のトレンドの強さ
     * ADXR: ADXの単純移動平均線
 
-    https://www.sevendata.co.jp/shihyou/technical/dmi.html
-    https://www.sevendata.co.jp/shihyou/technical/adx.html
-
     Args:
         term (int):
         adx_term (int):
         adxr_term (int):
+
+    See Also:
+        * https://www.sevendata.co.jp/shihyou/technical/dmi.html
+        * https://www.sevendata.co.jp/shihyou/technical/adx.html
 
     """
 

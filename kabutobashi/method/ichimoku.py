@@ -5,7 +5,9 @@ from kabutobashi.attributes import Field
 
 class Ichimoku(Method):
     """
-    https://kabu.com/investment/guide/technical/04.html
+
+    See Also:
+        https://kabu.com/investment/guide/technical/04.html
     """
 
     short_term = Field()

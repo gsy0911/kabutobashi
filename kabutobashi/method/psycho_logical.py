@@ -5,7 +5,8 @@ from kabutobashi.attributes import Field
 
 class PsychoLogical(Method):
     """
-    https://www.sevendata.co.jp/shihyou/technical/psycho.html
+    See Also:
+        https://www.sevendata.co.jp/shihyou/technical/psycho.html
     """
     upper_threshold = Field(required_type=float)
     lower_threshold = Field(required_type=float)
