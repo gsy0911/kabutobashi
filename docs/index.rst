@@ -8,8 +8,8 @@ kabutobashi
 
 code status
 
-.. image:: https://circleci.com/gh/gsy0911/kabutobashi.svg?style=svg&circle-token=76679803b77f4fc6e722c952a20da7fc5f0294c7
-    :target: https://circleci.com/gh/gsy0911/kabutobashi
+.. image:: https://github.com/gsy0911/kabutobashi/workflows/pytest/badge.svg
+    :target: https://github.com/gsy0911/kabutobashi/actions?query=workflow%3Apytest
 
 .. image:: https://codecov.io/gh/gsy0911/kabutobashi/branch/master/graph/badge.svg
     :target: https://codecov.io/gh/gsy0911/kabutobashi
@@ -23,8 +23,8 @@ package status
 .. image:: https://img.shields.io/badge/python-3.7|3.8-blue.svg
    :target: https://www.python.org/downloads/release/python-377/
 
-.. image:: https://img.shields.io/badge/pypi-0.1.1-blue.svg
-    :target: https://pypi.org/project/azfs/
+.. image:: https://img.shields.io/pypi/v/kabutobashi.svg
+    :target: https://pypi.org/project/kabutobashi/
 
 .. image:: https://pepy.tech/badge/kabutobashi
    :target: https://pepy.tech/project/kabutobashi
