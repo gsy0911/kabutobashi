@@ -45,15 +45,15 @@ def read_csv(path_candidate: Union[str, list]) -> Optional[pd.DataFrame]:
 
 def read_stock_csv(
         path_candidate: Union[str, list],
-        code_list: Optional[Union[str, list]] = None,
+        code_list: Optional[list] = None,
         drop_reit: bool = True) -> Optional[pd.DataFrame]:
     """
     本APIにてCrawlしたデータを扱いやすい形式にデータ変換する関数
 
     Args:
         path_candidate: "path" or ["path_1", "path_2"]
-        code_list:
-        drop_reit:
+        code_list: filter with code_list
+        drop_reit: drop REIT-data if True
 
     Returns:
         株のDataFrame
