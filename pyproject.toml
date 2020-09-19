@@ -11,6 +11,7 @@ requests = "^2.23.0"
 beautifulsoup4 = "^4.9.0"
 lxml = "^4.5.0"
 jpholiday = "^0.1.1"
+s3fs = "^0.5.1"
 
 [tool.poetry.dev-dependencies]
 jupyterlab = "^2.1.0"
