@@ -3,3 +3,4 @@ jpholiday
 lxml
 requests
 beautifulsoup4
+kabutobashi
