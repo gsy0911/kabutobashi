@@ -1,8 +1,12 @@
+from enum import Enum
+from typing import Union
+
+from bs4 import BeautifulSoup
+
 from kabutobashi.crawler.crawler import Crawler
 from kabutobashi.crawler.stock_crawler.weeks_52_high_low_page import (
     Week52HighLowStockPricePageTable
 )
-from bs4 import BeautifulSoup
 
 
 # 52週の高値・底値を取得する関数とURL
@@ -13,15 +17,21 @@ NEWLY_HIGH_PRICE_UPDATED = f"{BASE_URL}/highs-and-lows-ath/"
 NEWLY_LOW_PRICE_UPDATED = f"{BASE_URL}/highs-and-lows-atl/"
 
 
-def get_52_weeks_high_low(crawl_objective: str) -> dict:
-    target_url = None
-    if crawl_objective == "high":
+class Week52CrawlType(Enum):
+    HIGH = "high"
+    LOW = "low"
+    NEWLY_HIGH = "newly_high"
+    NEWLY_LOW = "newly_low"
+
+
+def get_52_weeks_high_low(crawl_objective: Union[str, Week52CrawlType]) -> dict:
+    if crawl_objective == "high" or crawl_objective == Week52CrawlType.HIGH:
         target_url = WEEK_52_HIGH_PRICE_URL
-    elif crawl_objective == "low":
+    elif crawl_objective == "low" or crawl_objective == Week52CrawlType.LOW:
         target_url = WEEK_52_LOW_PRICE_URL
-    elif crawl_objective == "newly_high":
+    elif crawl_objective == "newly_high" or crawl_objective == Week52CrawlType.NEWLY_HIGH:
         target_url = NEWLY_HIGH_PRICE_UPDATED
-    elif crawl_objective == "newly_low":
+    elif crawl_objective == "newly_low" or crawl_objective == Week52CrawlType.NEWLY_LOW:
         target_url = NEWLY_LOW_PRICE_UPDATED
     else:
         raise Exception
