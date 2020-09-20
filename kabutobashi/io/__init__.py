@@ -46,7 +46,8 @@ def read_csv(path_candidate: Union[str, list]) -> Optional[pd.DataFrame]:
 def read_stock_csv(
         path_candidate: Union[str, list],
         code_list: Optional[list] = None,
-        drop_reit: bool = True) -> Optional[pd.DataFrame]:
+        drop_reit: bool = True,
+        row_more_than: Optional[int] = None) -> Optional[pd.DataFrame]:
     """
     本APIにてCrawlしたデータを扱いやすい形式にデータ変換する関数
 
@@ -54,14 +55,11 @@ def read_stock_csv(
         path_candidate: "path" or ["path_1", "path_2"]
         code_list: filter with code_list
         drop_reit: drop REIT-data if True
+        row_more_than: filter specified code, which has {row_more_than} data
 
     Returns:
         株のDataFrame
     """
-    # TODO 特定の日以上の長さがあるものに絞る
-    # for code, _df in df.groupby("code"):
-    #     if len(_df.index) >= ANALYSIS_DATE_NUM:
-    #         code_list.append(code)
     df = read_csv(path_candidate)
     if df is None:
         return None
@@ -71,6 +69,11 @@ def read_stock_csv(
             decoded_df = decoded_df[decoded_df['code'].isin(code_list)]
         if drop_reit:
             decoded_df = decoded_df[~(decoded_df['market'] == " 東証REIT")]
+        if row_more_than:
+            dt_count = decoded_df.loc[:, ["code", "dt"]].groupby("code").count().reset_index()
+            dt_count = dt_count[dt_count['dt'] >= row_more_than]
+            _code_list = list(dt_count['code'].values)
+            decoded_df = decoded_df[decoded_df['code'].isin(_code_list)]
         return decoded_df
 
 
