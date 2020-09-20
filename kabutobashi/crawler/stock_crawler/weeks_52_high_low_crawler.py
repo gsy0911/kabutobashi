@@ -7,6 +7,7 @@ from kabutobashi.crawler.crawler import Crawler
 from kabutobashi.crawler.stock_crawler.weeks_52_high_low_page import (
     Week52HighLowStockPricePageTable
 )
+from kabutobashi.errors import PyStockMethodError
 
 
 # 52週の高値・底値を取得する関数とURL
@@ -34,7 +35,7 @@ def get_52_weeks_high_low(crawl_objective: Union[str, Week52CrawlType]) -> dict:
     elif crawl_objective == "newly_low" or crawl_objective == Week52CrawlType.NEWLY_LOW:
         target_url = NEWLY_LOW_PRICE_UPDATED
     else:
-        raise Exception
+        raise PyStockMethodError("crawl_objective is not matched")
 
     # instanceから直接__call__を呼び出して結果を出力
     crawler = Week52HighLowStockPriceCrawler()
