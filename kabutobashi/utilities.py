@@ -13,9 +13,18 @@ def get_past_n_days(current_date: str, n: int = 60) -> list:
     Returns:
         date list, ex ["%Y-%m-%d", "%Y-%m-%d", "%Y-%m-%d", ...]
     """
+    multiply_list = [2, 4, 8, 16]
+    for multiply in multiply_list:
+        return_candidate = _get_past_n_days(current_date=current_date, n=n, multiply=multiply)
+        if len(return_candidate) == n:
+            return return_candidate
+
+
+def _get_past_n_days(current_date: str, n: int, multiply: int) -> list:
     end_date = datetime.strptime(current_date, "%Y-%m-%d")
     # 2倍しているのは土日や祝日が排除されるため
-    back_n_days = n * 2
+    # また、nが小さすぎると休日が重なった場合に日数の取得ができないため
+    back_n_days = n * multiply
     date_candidate = [end_date - timedelta(days=d) for d in range(back_n_days)]
     # 土日を除く
     filter_weekend = [d for d in date_candidate if d.weekday() < 5]
