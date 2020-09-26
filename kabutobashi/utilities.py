@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 import jpholiday
 
+from .errors import PyStockBaseError
 
 def get_past_n_days(current_date: str, n: int = 60) -> list:
     """
@@ -18,9 +19,18 @@ def get_past_n_days(current_date: str, n: int = 60) -> list:
         return_candidate = _get_past_n_days(current_date=current_date, n=n, multiply=multiply)
         if len(return_candidate) == n:
             return return_candidate
+    raise PyStockBaseError(f"{n}日前を正しく取得できませんでした")
 
 
 def _get_past_n_days(current_date: str, n: int, multiply: int) -> list:
+    """
+    n*multiplyの日数分のうち、商取引が行われる日を取得する
+    
+    Args:
+        current_date: n日前を計算する起点となる日
+        n: n日前
+        multiply: n日前にかける数。
+    """
     end_date = datetime.strptime(current_date, "%Y-%m-%d")
     # 2倍しているのは土日や祝日が排除されるため
     # また、nが小さすぎると休日が重なった場合に日数の取得ができないため
