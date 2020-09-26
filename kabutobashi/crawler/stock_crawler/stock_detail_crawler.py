@@ -1,9 +1,10 @@
+from typing import Union
+from bs4 import BeautifulSoup
+
 from kabutobashi.crawler.crawler import Crawler
 from kabutobashi.crawler.stock_crawler.stock_detail_page import (
     StockBoard, StockDetail
 )
-from bs4 import BeautifulSoup
-from typing import Union
 
 
 def get_stock_detail(code: Union[str, int]) -> dict:
@@ -28,8 +29,8 @@ class StockDetailCrawler(Crawler):
     def web_scraping(self, text: str) -> dict:
         """
 
-        :param text:
-        :return:
+        Args:
+            text:
         """
         res = BeautifulSoup(text, 'lxml')
         stock_detail_dict = {}

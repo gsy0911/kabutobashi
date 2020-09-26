@@ -131,9 +131,11 @@ class Method(AbstractMethod):
             to_minus_name=None) -> pd.DataFrame:
         """
         0を基準としてプラスかマイナスのどちらかに振れたかを判断する関数
-        :params _s: 対象のpd.Series
-        :params to_plus_name: 上抜けた場合のカラムの名前
-        :params to_minus_name: 上抜けた場合のカラムの名前
+        
+        Args:
+            _s: 対象のpd.Series
+            to_plus_name: 上抜けた場合のカラムの名前
+            to_minus_name: 下抜けた場合のカラムの名前
         """
         # shorten vaiable name
         col = "original"
@@ -186,10 +188,14 @@ class Method(AbstractMethod):
             **kwargs) -> float:
         """
         売りと買いのシグナルの余波の合計値を返す。
-        :params _df:
-        :params influence:
-        :params tail:
-        :return: [-1,1]の値をとる。-1: 売り、1: 買いを表す
+        
+        Args:
+            _df: 
+            influence:
+            tail:
+            
+        Returns:
+            [-1,1]の値をとる。-1: 売り、1: 買いを表す
         """
         _df['buy_impact'] = _df['buy_signal'].ewm(span=influence).mean()
         _df['sell_impact'] = _df['sell_signal'].ewm(span=influence).mean()

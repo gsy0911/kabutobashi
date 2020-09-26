@@ -6,6 +6,9 @@ from typing import Union
 def get_ipo_list_from_year(year: Union[str, int]) -> dict:
     """
     IPOのリストを取得する関数
+    
+    Args:
+        year: 取得対象の年
     """
     base_url = "https://96ut.com/ipo/list.php"
     year_str = None
@@ -14,6 +17,7 @@ def get_ipo_list_from_year(year: Union[str, int]) -> dict:
     else:
         year_str = year
 
+    # TODO when 2021 has come ?
     if year_str == "2020":
         # 実行年の場合
         url = base_url

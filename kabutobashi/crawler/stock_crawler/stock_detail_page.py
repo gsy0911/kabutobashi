@@ -1,16 +1,17 @@
+from bs4 import BeautifulSoup
 from kabutobashi.crawler.page import Page
 from kabutobashi.attributes import PageContent
-from bs4 import BeautifulSoup
 
 
 class StockBoard(Page):
     """
-    ページ上部の
-    stock_label: {code} {市場}
-    name: {銘柄名}
-    date: 株価MM/DD
-    close: 終値
-    を取得する
+    ページ上部の以下の項目を取得する
+    
+    * stock_label: {code} {市場}
+    * name: {銘柄名}
+    * date: 株価MM/DD
+    * close: 終値
+    
     """
     stock_label = PageContent(tag1="div", _class1="stock_label")
     name = PageContent(tag1="p", _class1="md_stockBoard_stockName")
