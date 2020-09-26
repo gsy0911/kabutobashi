@@ -47,6 +47,62 @@ Installation
    pip install kabutobashi
 
 
+Usage
+=====
+
+
+Analysis
+--------
+
+.. code-block:: python
+    
+    import kabutobashi as kb
+
+    # サンプルデータの取得
+    df_stock = kb.example_data()
+    # 分析手法
+    analysis_methods = [
+        kb.macd, 
+        kb.sma, 
+        kb.stochastics, 
+        kb.adx, 
+        kb.bollinger_bands, 
+        kb.momentum, 
+        kb.psycho_logical
+    ]
+    kb.get_impact_with(df_stock, analysis_methods)
+
+
+
+Crawling
+--------
+
+Get Japanese-Stock-Market info.
+
+.. code-block:: python
+
+    import kabutobashi as kb
+    
+
+Visualize
+---------
+
+
+Not Yet.
+
+
+Utilities
+---------
+
+.. code-block:: python
+
+    import kabutobashi as kb
+
+    # n日前までの営業日の日付リストを取得する関数
+    target_date = “2020-01-01”
+    date_list = kb.get_past_n_days(target_date, n=40)
+    
+
 For Users
 =========
 
