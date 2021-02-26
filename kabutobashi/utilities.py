@@ -1,7 +1,8 @@
 from datetime import datetime, timedelta
 import jpholiday
+import pandas as pd
+from .errors import PyStockBaseError, StockDfError
 
-from .errors import PyStockBaseError
 
 def get_past_n_days(current_date: str, n: int = 60) -> list:
     """
@@ -42,3 +43,67 @@ def _get_past_n_days(current_date: str, n: int, multiply: int) -> list:
     filter_holiday = [d for d in filter_weekend if not jpholiday.is_holiday(d)]
     # 文字列に日付を変えてreturn
     return list(map(lambda x: x.strftime("%Y-%m-%d"), filter_holiday[:n]))
+
+
+def iter_by_code(stock_df: pd.DataFrame, days_thresholds: int = 60) -> (int, pd.DataFrame):
+    """
+    銘柄コードでイテレーションを回しつつ、必要なデータ数がある銘柄のDataFrameのみを返す関数。
+
+    Args:
+        stock_df:
+        days_thresholds:
+
+    Returns:
+        (code: int, _df: pd.DataFrame)
+    """
+    for code, _df in stock_df.groupby("code"):
+        if len(_df.index) < days_thresholds:
+            continue
+        else:
+            yield code, _df
+
+
+def replace_comma(x) -> float:
+    """
+    pandas内の値がカンマ付きの場合に、カンマを削除する関数
+
+    Args:
+        x:
+
+    Returns:
+
+    """
+    if type(x) is str:
+        x = x.replace(",", "")
+    try:
+        f = float(x)
+    except ValueError as e:
+        raise StockDfError(f"floatに変換できる値ではありません。")
+    return f
+
+
+def train_test_sliding_split(
+        stock_df: pd.DataFrame,
+        *,
+        buy_sell_term_days: int = 5,
+        sliding_window: int = 60,
+        step: int = 2):
+    """
+    
+
+    Args:
+        stock_df:
+        buy_sell_term_days:
+        sliding_window:
+        step:
+
+    Returns:
+
+    """
+    df_length = len(stock_df.index)
+    if df_length < buy_sell_term_days + sliding_window:
+        raise Exception("")
+    loop = df_length - (buy_sell_term_days + sliding_window)
+    for idx, i in enumerate(range(0, loop, step)):
+        offset = i+sliding_window
+        yield idx, stock_df[i: offset], stock_df[offset: offset + buy_sell_term_days]
