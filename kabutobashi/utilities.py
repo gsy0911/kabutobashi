@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 import jpholiday
+import numpy as np
 import pandas as pd
 from .errors import PyStockBaseError, StockDfError
 
@@ -60,7 +61,7 @@ def iter_by_code(stock_df: pd.DataFrame, days_thresholds: int = 60) -> (int, pd.
         if len(_df.index) < days_thresholds:
             continue
         else:
-            yield code, _df
+            yield code, format_to_stock_df(_df)
 
 
 def replace_comma(x) -> float:
@@ -77,9 +78,25 @@ def replace_comma(x) -> float:
         x = x.replace(",", "")
     try:
         f = float(x)
-    except ValueError as e:
+    except ValueError:
         raise StockDfError(f"floatに変換できる値ではありません。")
     return f
+
+
+def format_to_stock_df(_df: pd.DataFrame) -> pd.DataFrame:
+    stock_df = _df \
+        .replace("---", np.nan) \
+        .dropna(subset=["open", "close", "high", "low"]) \
+        .fillna(0) \
+        .assign(
+            open=_df['open'].apply(replace_comma),
+            close=_df['close'].apply(replace_comma),
+            high=_df['high'].apply(replace_comma),
+            low=_df['low'].apply(replace_comma),
+            volume=_df['volume'].apply(replace_comma),
+        ) \
+        .convert_dtypes()
+    return stock_df
 
 
 def train_test_sliding_split(
@@ -89,7 +106,6 @@ def train_test_sliding_split(
         sliding_window: int = 60,
         step: int = 2):
     """
-    
 
     Args:
         stock_df:
@@ -102,7 +118,7 @@ def train_test_sliding_split(
     """
     df_length = len(stock_df.index)
     if df_length < buy_sell_term_days + sliding_window:
-        raise Exception("")
+        raise StockDfError("入力されたDataFrameの長さがwindow幅よりも小さいです")
     loop = df_length - (buy_sell_term_days + sliding_window)
     for idx, i in enumerate(range(0, loop, step)):
         offset = i+sliding_window
