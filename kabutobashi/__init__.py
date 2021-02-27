@@ -45,7 +45,12 @@ from kabutobashi.crawler import (
 
 from .utilities import (
     # n営業日前までの日付のリストを返す関数
-    get_past_n_days
+    get_past_n_days,
+    # 銘柄コードでイテレーションする関数
+    iter_by_code,
+    # window幅でデータを取得しつつデータを返す関数
+    train_test_sliding_split
+
 )
 
 # create and initialize instance
@@ -60,7 +65,7 @@ psycho_logical = PsychoLogical()
 
 
 # comparable tuple
-VERSION = (0, 1, 3)
+VERSION = (0, 1, 4)
 # generate __version__ via VERSION tuple
 __version__ = ".".join(map(str, VERSION))
 
