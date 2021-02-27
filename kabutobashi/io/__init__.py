@@ -22,7 +22,7 @@ def example_data() -> pd.DataFrame:
     return _df
 
 
-def read_csv(path_candidate: Union[str, list]) -> Optional[pd.DataFrame]:
+def read_csv(path_candidate: Union[str, list], **kwargs) -> Optional[pd.DataFrame]:
     """
     通常のread_csvの関数に加えて、strとlist[str]の場合に縦方向に結合してDataFrameを返す
 
@@ -33,11 +33,11 @@ def read_csv(path_candidate: Union[str, list]) -> Optional[pd.DataFrame]:
         株のDataFrame
     """
     if type(path_candidate) is str:
-        return pd.read_csv(path_candidate)
+        return pd.read_csv(path_candidate, **kwargs)
     elif type(path_candidate) is list:
         if not path_candidate:
             return None
-        df_list = [pd.read_csv(p) for p in path_candidate]
+        df_list = [pd.read_csv(p, **kwargs) for p in path_candidate]
         return pd.concat(df_list)
     else:
         return None
@@ -47,7 +47,8 @@ def read_stock_csv(
         path_candidate: Union[str, list],
         code_list: Optional[list] = None,
         drop_reit: bool = True,
-        row_more_than: Optional[int] = None) -> Optional[pd.DataFrame]:
+        row_more_than: Optional[int] = None,
+        **kwargs) -> Optional[pd.DataFrame]:
     """
     本APIにてCrawlしたデータを扱いやすい形式にデータ変換する関数
 
@@ -60,7 +61,7 @@ def read_stock_csv(
     Returns:
         株のDataFrame
     """
-    df = read_csv(path_candidate)
+    df = read_csv(path_candidate, **kwargs)
     if df is None:
         return None
     else:
