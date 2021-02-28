@@ -41,6 +41,7 @@ class StockDf(object):
 
         # indexにdateを指定
         value.index = pd.to_datetime(value[date_column])
+        value = value.sort_index()
 
         # 必要なカラムに絞る
         value = value.loc[:, ["open", "high", "low", "close"]]
