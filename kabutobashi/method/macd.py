@@ -52,7 +52,7 @@ class MACD(Method):
         })
         return _df
 
-    def visualize(self, _df: pd.DataFrame):
+    def _visualize(self, _df: pd.DataFrame):
         fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1, gridspec_kw={'height_ratios': [3, 1]}, figsize=(6, 5))
         # x軸のオートフォーマット
         fig.autofmt_xdate()

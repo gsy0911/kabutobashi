@@ -111,6 +111,12 @@ class Method(AbstractMethod):
     def _method(self, _df: pd.DataFrame) -> pd.DataFrame:
         raise NotImplementedError("please implement your code")
 
+    def visualize(self, _df: pd.DataFrame):
+        return self.visualize(_df=_df)
+
+    def _visualize(self, _df: pd.DataFrame):
+        raise NotImplementedError("please implement your code")
+
     def signal(self, _df: pd.DataFrame) -> pd.DataFrame:
         """
         テクニカル分析の手法の結果により、買いと売りのタイミングを計算する

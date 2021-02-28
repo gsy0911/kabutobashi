@@ -38,7 +38,7 @@ class SMA(Method):
         })
         return _df
 
-    def visualize(self, _df: pd.DataFrame):
+    def _visualize(self, _df: pd.DataFrame):
         fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(6, 5))
         # x軸のオートフォーマット
         fig.autofmt_xdate()

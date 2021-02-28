@@ -1,6 +1,7 @@
 import math
 import pandas as pd
 from kabutobashi.method.method import Method
+import matplotlib.pyplot as plt
 
 
 class Stochastics(Method):
@@ -102,3 +103,17 @@ class Stochastics(Method):
         return 1 / math.exp(math.pow(current_k - 20, 2) / 100
                             + math.pow(current_d - 20, 2) / 100
                             + math.pow(current_sd - 20, 2) / 100)
+
+    def _visualize(self, _df: pd.DataFrame):
+        fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(6, 5))
+        # x軸のオートフォーマット
+        fig.autofmt_xdate()
+
+        # set candlestick
+        self.add_ax_candlestick(ax, _df)
+
+        # plot macd
+        ax.plot(_df.index, _df['sma_long'], color="#dc143c", label="sma_long")
+
+        ax.legend(loc="best")  # 各線のラベルを表示
+        return fig
