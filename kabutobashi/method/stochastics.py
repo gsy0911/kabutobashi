@@ -105,15 +105,17 @@ class Stochastics(Method):
                             + math.pow(current_sd - 20, 2) / 100)
 
     def _visualize(self, _df: pd.DataFrame):
-        fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(6, 5))
+        fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1, gridspec_kw={'height_ratios': [3, 1]}, figsize=(6, 5))
         # x軸のオートフォーマット
         fig.autofmt_xdate()
 
         # set candlestick
-        self.add_ax_candlestick(ax, _df)
+        self.add_ax_candlestick(ax1, _df)
 
         # plot macd
-        ax.plot(_df.index, _df['sma_long'], color="#dc143c", label="sma_long")
+        ax2.plot(_df.index, _df['D'], label="%D")
+        ax2.plot(_df.index, _df['SD'], label="%SD")
+        ax2.legend(loc="center left")  # 各線のラベルを表示
 
-        ax.legend(loc="best")  # 各線のラベルを表示
+        ax1.legend(loc="best")  # 各線のラベルを表示
         return fig
