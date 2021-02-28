@@ -112,7 +112,7 @@ class Method(AbstractMethod):
         raise NotImplementedError("please implement your code")
 
     def visualize(self, _df: pd.DataFrame):
-        return self.visualize(_df=_df)
+        return self._visualize(_df=_df)
 
     def _visualize(self, _df: pd.DataFrame):
         raise NotImplementedError("please implement your code")
