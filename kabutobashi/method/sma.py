@@ -1,6 +1,7 @@
 import pandas as pd
 from kabutobashi.method.method import Method
 from kabutobashi.attributes import Field
+import matplotlib.pyplot as plt
 
 
 class SMA(Method):
@@ -37,18 +38,18 @@ class SMA(Method):
         })
         return _df
 
-    # def visualize(self, _df: pd.DataFrame):
-    #     fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(6, 5))
-    #     # x軸のオートフォーマット
-    #     fig.autofmt_xdate()
-    #
-    #     # set candlestick
-    #     self.add_ax_candlestick(ax, _df)
-    #
-    #     # plot macd
-    #     ax.plot(_df.index, _df['sma_long'], color="#dc143c", label="sma_long")
-    #     ax.plot(_df.index, _df['sma_medium'], color="#ffa500", label="sma_medium")
-    #     ax.plot(_df.index, _df['sma_short'], color="#1e90ff", label="sma_short")
-    #
-    #     ax.legend(loc="best")  # 各線のラベルを表示
-    #     return fig
+    def visualize(self, _df: pd.DataFrame):
+        fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(6, 5))
+        # x軸のオートフォーマット
+        fig.autofmt_xdate()
+
+        # set candlestick
+        self.add_ax_candlestick(ax, _df)
+
+        # plot macd
+        ax.plot(_df.index, _df['sma_long'], color="#dc143c", label="sma_long")
+        ax.plot(_df.index, _df['sma_medium'], color="#ffa500", label="sma_medium")
+        ax.plot(_df.index, _df['sma_short'], color="#1e90ff", label="sma_short")
+
+        ax.legend(loc="best")  # 各線のラベルを表示
+        return fig
