@@ -654,6 +654,18 @@ optional = false
 python-versions = ">=3.5"
 
 [[package]]
+name = "mplfinance"
+version = "0.12.7a7"
+description = "Utilities for the visualization, and visual analysis, of financial data"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+matplotlib = "*"
+pandas = "*"
+
+[[package]]
 name = "multidict"
 version = "4.7.6"
 description = "multidict implementation"
@@ -1433,7 +1445,7 @@ testing = ["jaraco.itertools", "func-timeout"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "982222446dd41cc65b469e3a55a95c8381d2137b1daeb58f198651ca64e6d2f7"
+content-hash = "e7f5f71bfbf02b7db1b53cbffe1ddaa237e2a284efb7cdfe1b77dc17ae9faf5b"
 
 [metadata.files]
 aiobotocore = [
@@ -1871,6 +1883,10 @@ mistune = [
 more-itertools = [
     {file = "more-itertools-8.5.0.tar.gz", hash = "sha256:6f83822ae94818eae2612063a5101a7311e68ae8002005b5e05f03fd74a86a20"},
     {file = "more_itertools-8.5.0-py3-none-any.whl", hash = "sha256:9b30f12df9393f0d28af9210ff8efe48d10c94f73e5daf886f10c4b0b0b4f03c"},
+]
+mplfinance = [
+    {file = "mplfinance-0.12.7a7-py3-none-any.whl", hash = "sha256:08ac09b922c0e0482aadbb9a72f600415ad287db00f67227e042fd9a048e4d90"},
+    {file = "mplfinance-0.12.7a7.tar.gz", hash = "sha256:a404e2a6b4c42edf06ac491e2a320b3dfa5d3435687b1e6df8c73ee8683b70f6"},
 ]
 multidict = [
     {file = "multidict-4.7.6-cp35-cp35m-macosx_10_14_x86_64.whl", hash = "sha256:275ca32383bc5d1894b6975bb4ca6a7ff16ab76fa622967625baeebcf8079000"},
