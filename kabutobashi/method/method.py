@@ -1,6 +1,9 @@
 from abc import abstractmethod
 from kabutobashi.attributes import Field, StockDf
+import matplotlib.dates as mdates
 import pandas as pd
+import numpy as np
+from mplfinance.original_flavor import candlestick_ohlc
 import logging
 
 
@@ -108,6 +111,12 @@ class Method(AbstractMethod):
     def _method(self, _df: pd.DataFrame) -> pd.DataFrame:
         raise NotImplementedError("please implement your code")
 
+    def visualize(self, _df: pd.DataFrame):
+        return self._visualize(_df=_df)
+
+    def _visualize(self, _df: pd.DataFrame):
+        raise NotImplementedError("please implement your code")
+
     def signal(self, _df: pd.DataFrame) -> pd.DataFrame:
         """
         テクニカル分析の手法の結果により、買いと売りのタイミングを計算する
@@ -202,3 +211,9 @@ class Method(AbstractMethod):
         buy_impact_index = _df['buy_impact'].iloc[-tail:].sum()
         sell_impact_index = _df['sell_impact'].iloc[-tail:].sum()
         return round(buy_impact_index - sell_impact_index, 5)
+
+    @staticmethod
+    def add_ax_candlestick(ax, _df: pd.DataFrame):
+        # datetime -> float
+        ohlc = np.vstack((mdates.date2num(_df.index), _df.values.T)).T
+        candlestick_ohlc(ax, ohlc, width=0.7, colorup='g', colordown='r')
