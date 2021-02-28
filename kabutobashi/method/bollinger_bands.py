@@ -25,8 +25,12 @@ class BollingerBands(Method):
             std=_df['close'].rolling(self.band_term).std()
         )
         _df = _df.assign(
+            upper_1_sigma=_df.apply(lambda x: x['mean'] + x['std'] * 1, axis=1),
+            lower_1_sigma=_df.apply(lambda x: x['mean'] - x['std'] * 1, axis=1),
             upper_2_sigma=_df.apply(lambda x: x['mean'] + x['std'] * 2, axis=1),
-            lower_2_sigma=_df.apply(lambda x: x['mean'] - x['std'] * 2, axis=1)
+            lower_2_sigma=_df.apply(lambda x: x['mean'] - x['std'] * 2, axis=1),
+            upper_3_sigma=_df.apply(lambda x: x['mean'] + x['std'] * 3, axis=1),
+            lower_3_sigma=_df.apply(lambda x: x['mean'] - x['std'] * 3, axis=1),
         )
         return _df
 
@@ -50,8 +54,13 @@ class BollingerBands(Method):
         # set candlestick
         self.add_ax_candlestick(ax, _df)
 
-        # plot macd
-        ax.plot(_df.index, _df['sma_long'], color="#dc143c", label="sma_long")
+        # plot
+        ax.plot(_df.index, _df['upper_1_sigma'], color="#dc143c", label="+1s")
+        ax.plot(_df.index, _df['lower_1_sigma'], color="#dc143c", label="-1s")
+        ax.plot(_df.index, _df['upper_2_sigma'], color="#ffa500", label="+2s")
+        ax.plot(_df.index, _df['lower_2_sigma'], color="#ffa500", label="-2s")
+        ax.plot(_df.index, _df['upper_3_sigma'], color="#1e90ff", label="+3s")
+        ax.plot(_df.index, _df['lower_3_sigma'], color="#1e90ff", label="-3s")
 
         ax.legend(loc="best")  # 各線のラベルを表示
         return fig
