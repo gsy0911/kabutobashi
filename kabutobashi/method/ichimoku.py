@@ -55,6 +55,7 @@ class Ichimoku(Method):
         return _df
 
     def _visualize(self, _df: pd.DataFrame):
+        # TODO implement
         fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(6, 5))
         # x軸のオートフォーマット
         fig.autofmt_xdate()
