@@ -40,7 +40,9 @@ setuptools.setup(
         "jpholiday",
         "lxml",
         "requests",
-        "beautifulsoup4"
+        "beautifulsoup4",
+        "mplfinance",
+        "matplotlib"
     ],
     license="MIT",
     classifiers=[

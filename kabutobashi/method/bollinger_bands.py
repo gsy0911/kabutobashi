@@ -1,6 +1,7 @@
 import pandas as pd
 from kabutobashi.method.method import Method
 from kabutobashi.attributes import Field
+import matplotlib.pyplot as plt
 
 
 class BollingerBands(Method):
@@ -24,8 +25,12 @@ class BollingerBands(Method):
             std=_df['close'].rolling(self.band_term).std()
         )
         _df = _df.assign(
+            upper_1_sigma=_df.apply(lambda x: x['mean'] + x['std'] * 1, axis=1),
+            lower_1_sigma=_df.apply(lambda x: x['mean'] - x['std'] * 1, axis=1),
             upper_2_sigma=_df.apply(lambda x: x['mean'] + x['std'] * 2, axis=1),
-            lower_2_sigma=_df.apply(lambda x: x['mean'] - x['std'] * 2, axis=1)
+            lower_2_sigma=_df.apply(lambda x: x['mean'] - x['std'] * 2, axis=1),
+            upper_3_sigma=_df.apply(lambda x: x['mean'] + x['std'] * 3, axis=1),
+            lower_3_sigma=_df.apply(lambda x: x['mean'] - x['std'] * 3, axis=1),
         )
         return _df
 
@@ -40,3 +45,22 @@ class BollingerBands(Method):
         _df['buy_signal'] = _df['over_upper'].apply(lambda x: 1 if x > 0 else 0)
         _df['sell_signal'] = _df['over_lower'].apply(lambda x: 1 if x > 0 else 0)
         return _df
+
+    def _visualize(self, _df: pd.DataFrame):
+        fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(6, 5))
+        # x軸のオートフォーマット
+        fig.autofmt_xdate()
+
+        # set candlestick
+        self.add_ax_candlestick(ax, _df)
+
+        # plot
+        ax.plot(_df.index, _df['upper_1_sigma'], color="#dc143c", label="+1s")
+        ax.plot(_df.index, _df['lower_1_sigma'], color="#dc143c", label="-1s")
+        ax.plot(_df.index, _df['upper_2_sigma'], color="#ffa500", label="+2s")
+        ax.plot(_df.index, _df['lower_2_sigma'], color="#ffa500", label="-2s")
+        ax.plot(_df.index, _df['upper_3_sigma'], color="#1e90ff", label="+3s")
+        ax.plot(_df.index, _df['lower_3_sigma'], color="#1e90ff", label="-3s")
+
+        ax.legend(loc="best")  # 各線のラベルを表示
+        return fig

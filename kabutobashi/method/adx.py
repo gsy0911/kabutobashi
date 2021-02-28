@@ -1,6 +1,7 @@
 import pandas as pd
 from .method import Method
 from kabutobashi.attributes import Field
+import matplotlib.pyplot as plt
 
 
 class ADX(Method):
@@ -103,7 +104,7 @@ class ADX(Method):
         )
 
         _df = _df.dropna()
-        required_columns = ["sum_plus_dm", "sum_minus_dm", "sum_tr"]
+        required_columns = ["open", "high", "low", "close", "sum_plus_dm", "sum_minus_dm", "sum_tr"]
         _df = _df.loc[:, required_columns]
         
         # +DI, -DI
@@ -155,3 +156,21 @@ class ADX(Method):
         _df['sell_signal'] = _df.apply(lambda x: self._sell_signal)
 
         return _df
+
+    def _visualize(self, _df: pd.DataFrame):
+        fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1, gridspec_kw={'height_ratios': [3, 1]}, figsize=(6, 5))
+        # x軸のオートフォーマット
+        fig.autofmt_xdate()
+
+        # set candlestick
+        self.add_ax_candlestick(ax1, _df)
+
+        # plot adx
+        ax2.plot(_df.index, _df['plus_di'], label="+DI")
+        ax2.plot(_df.index, _df['minus_di'], label="-di")
+        ax2.plot(_df.index, _df['ADX'], label="ADX")
+        ax2.plot(_df.index, _df['ADXR'], label="ADXR")
+        ax2.legend(loc="center left")  # 各線のラベルを表示
+
+        ax1.legend(loc="best")  # 各線のラベルを表示
+        return fig
