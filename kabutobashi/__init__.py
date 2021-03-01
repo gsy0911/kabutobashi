@@ -8,7 +8,8 @@ from kabutobashi.method import (
     BollingerBands,
     Ichimoku,
     Momentum,
-    PsychoLogical
+    PsychoLogical,
+    Fitting
 )
 
 from kabutobashi.core import (
@@ -49,7 +50,9 @@ from .utilities import (
     # 銘柄コードでイテレーションする関数
     iter_by_code,
     # window幅でデータを取得しつつデータを返す関数
-    train_test_sliding_split
+    train_test_sliding_split,
+    # 株価の動きを様々な統計量で表現
+    compute_statistical_values
 
 )
 
@@ -62,7 +65,7 @@ bollinger_bands = BollingerBands()
 ichimoku = Ichimoku()
 momentum = Momentum()
 psycho_logical = PsychoLogical()
-
+fitting = Fitting()
 
 # comparable tuple
 VERSION = (0, 1, 5)

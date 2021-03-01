@@ -167,7 +167,7 @@ class ADX(Method):
 
         # plot adx
         ax2.plot(_df.index, _df['plus_di'], label="+DI")
-        ax2.plot(_df.index, _df['minus_di'], label="-di")
+        ax2.plot(_df.index, _df['minus_di'], label="-DI")
         ax2.plot(_df.index, _df['ADX'], label="ADX")
         ax2.plot(_df.index, _df['ADXR'], label="ADXR")
         ax2.legend(loc="center left")  # 各線のラベルを表示
