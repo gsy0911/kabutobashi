@@ -1,7 +1,9 @@
+import matplotlib.pyplot as plt
 import pandas as pd
+import seaborn as sns
+
 from kabutobashi.method.method import Method
 from kabutobashi.attributes import Field
-import matplotlib.pyplot as plt
 
 
 class SMA(Method):
@@ -47,9 +49,9 @@ class SMA(Method):
         self.add_ax_candlestick(ax, _df)
 
         # plot macd
-        ax.plot(_df.index, _df['sma_long'], color="#dc143c", label="sma_long")
-        ax.plot(_df.index, _df['sma_medium'], color="#ffa500", label="sma_medium")
-        ax.plot(_df.index, _df['sma_short'], color="#1e90ff", label="sma_short")
+        sns.lineplot(x=_df.index, y=_df['sma_long'], color="#dc143c", label="sma_long", ax=ax)
+        sns.lineplot(x=_df.index, y=_df['sma_medium'], color="#ffa500", label="sma_medium", ax=ax)
+        sns.lineplot(x=_df.index, y=_df['sma_short'], color="#1e90ff", label="sma_short", ax=ax)
 
         ax.legend(loc="best")  # 各線のラベルを表示
         return fig
