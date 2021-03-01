@@ -8,7 +8,8 @@ from kabutobashi.method import (
     BollingerBands,
     Ichimoku,
     Momentum,
-    PsychoLogical
+    PsychoLogical,
+    Fitting
 )
 
 from kabutobashi.core import (
@@ -62,7 +63,7 @@ bollinger_bands = BollingerBands()
 ichimoku = Ichimoku()
 momentum = Momentum()
 psycho_logical = PsychoLogical()
-
+fitting = Fitting()
 
 # comparable tuple
 VERSION = (0, 1, 5)

@@ -12,3 +12,4 @@ from .bollinger_bands import BollingerBands
 from .ichimoku import Ichimoku
 from .momentum import Momentum
 from .psycho_logical import PsychoLogical
+from .fitting import Fitting
