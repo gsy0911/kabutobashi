@@ -3,6 +3,7 @@ import jpholiday
 import numpy as np
 import pandas as pd
 from .errors import PyStockBaseError, StockDfError
+from scipy.optimize import curve_fit
 
 
 def get_past_n_days(current_date: str, n: int = 60) -> list:
@@ -123,3 +124,26 @@ def train_test_sliding_split(
     for idx, i in enumerate(range(0, loop, step)):
         offset = i+sliding_window
         yield idx, stock_df[i: offset], stock_df[offset: offset + buy_sell_term_days]
+
+
+def compute_statistical_values(stock_df: pd.DataFrame) -> dict:
+    statistical_values = {}
+    array_y = stock_df['close']
+    array_x = np.array(range(0, len(array_y)))
+
+    def _linear_fit(x, a, b):
+        return a*x + b
+
+    def _square_fit(x, a, b, c):
+        return a*x*x + b*x + c
+
+    def _cube_fit(x, a, b, c, d):
+        return a*x*x*x + b*x*x + c*x + d
+
+    linear_param, _ = curve_fit(_linear_fit, array_x, array_y)
+    statistical_values.update({f"linear_{idx}": p for idx, p in enumerate(linear_param)})
+    square_param, _ = curve_fit(_square_fit, array_x, array_y)
+    statistical_values.update({f"square_{idx}": p for idx, p in enumerate(square_param)})
+    cube_param, _ = curve_fit(_cube_fit, array_x, array_y)
+    statistical_values.update({f"cube_{idx}": p for idx, p in enumerate(cube_param)})
+    return statistical_values
