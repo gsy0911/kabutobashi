@@ -42,7 +42,8 @@ setuptools.setup(
         "requests",
         "beautifulsoup4",
         "mplfinance",
-        "matplotlib"
+        "matplotlib",
+        "scipy"
     ],
     license="MIT",
     classifiers=[
