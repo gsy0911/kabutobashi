@@ -1,3 +1,5 @@
+import seaborn as sns
+
 # methods to analysis
 from kabutobashi.method import (
     Method,
@@ -55,6 +57,8 @@ from .utilities import (
     compute_statistical_values
 
 )
+
+sns.set()
 
 # create and initialize instance
 sma = SMA(short_term=5, medium_term=21, long_term=70)
