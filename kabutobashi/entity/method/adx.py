@@ -1,9 +1,10 @@
+from dataclasses import dataclass
 import pandas as pd
 from .method import Method
-from kabutobashi.attributes import Field
 import matplotlib.pyplot as plt
 
 
+@dataclass(frozen=True)
 class ADX(Method):
     """
     相場のトレンドの強さを見るための指標である`ADX`を計算するクラス。
@@ -25,16 +26,10 @@ class ADX(Method):
         * https://www.sevendata.co.jp/shihyou/technical/adx.html
 
     """
-
-    term = Field(required_type=int)
-    adx_term = Field(required_type=int)
-    adxr_term = Field(required_type=int)
-
-    def __init__(self, term=14, adx_term=14, adxr_term=28):
-        super().__init__(method_name="adx")
-        self.term = term
-        self.adx_term = adx_term
-        self.adxr_term = adxr_term
+    term: int = 14
+    adx_term: int = 14
+    adxr_term: int = 28
+    method_name: str = "adx"
 
     @staticmethod
     def _true_range(x: pd.DataFrame):

@@ -1,27 +1,19 @@
+from dataclasses import dataclass
 import matplotlib.pyplot as plt
 import pandas as pd
-from kabutobashi.attributes import Field
 from .method import Method
 
 
+@dataclass(frozen=True)
 class MACD(Method):
     """
 
     """
 
-    short_term = Field()
-    long_term = Field()
-    macd_span = Field()
-
-    def __init__(
-            self,
-            short_term: int = 12,
-            long_term: int = 26,
-            macd_span: int = 9):
-        super().__init__(method_name="macd")
-        self.short_term = short_term
-        self.long_term = long_term
-        self.macd_span = macd_span
+    short_term: int = 12
+    long_term: int = 26
+    macd_span: int = 9
+    method_name = "macd"
 
     def _method(self, _df: pd.DataFrame) -> pd.DataFrame:
         """

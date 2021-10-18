@@ -1,9 +1,11 @@
+from dataclasses import dataclass
 import math
 import matplotlib.pyplot as plt
 import pandas as pd
 from .method import Method
 
 
+@dataclass(frozen=True)
 class Stochastics(Method):
     """
     買いのシグナルを計算で求める
@@ -15,9 +17,7 @@ class Stochastics(Method):
         * https://www.moneypartners.co.jp/support/tech/sct.html
 
     """
-
-    def __init__(self):
-        super().__init__(method_name="stochastics")
+    method_name = "stochastics"
 
     def _method(self, _df: pd.DataFrame) -> pd.DataFrame:
 

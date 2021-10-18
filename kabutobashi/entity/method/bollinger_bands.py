@@ -1,9 +1,10 @@
+from dataclasses import dataclass
 import pandas as pd
 import matplotlib.pyplot as plt
-from kabutobashi.attributes import Field
 from .method import Method
 
 
+@dataclass(frozen=True)
 class BollingerBands(Method):
     """
     株価の勢いの変化や反転の目安、方向を見る`BollingerBands`を計算するクラス。
@@ -11,13 +12,9 @@ class BollingerBands(Method):
     See Also:
         * https://www.sevendata.co.jp/shihyou/technical/bori.html
     """
-    band_term = Field()
-    continuity_term = Field()
-
-    def __init__(self, band_term=12, continuity_term=10):
-        super().__init__(method_name="bollinger_bands")
-        self.band_term = band_term
-        self.continuity_term = continuity_term
+    band_term: int = 12
+    continuity_term: int = 10
+    method_name = "bollinger_bands"
 
     def _method(self, _df: pd.DataFrame) -> pd.DataFrame:
         _df = _df.assign(

@@ -1,27 +1,19 @@
+from dataclasses import dataclass
 import pandas as pd
 import matplotlib.pyplot as plt
-from kabutobashi.attributes import Field
 from .method import Method
 
 
+@dataclass(frozen=True)
 class PsychoLogical(Method):
     """
     See Also:
         https://www.sevendata.co.jp/shihyou/technical/psycho.html
     """
-    upper_threshold = Field(required_type=float)
-    lower_threshold = Field(required_type=float)
-    psycho_term = Field(required_type=int)
-
-    def __init__(
-            self,
-            upper_threshold=0.75,
-            lower_threshold=0.25,
-            psycho_term=12):
-        super().__init__(method_name="psycho_logical")
-        self.upper_threshold = upper_threshold
-        self.lower_threshold = lower_threshold
-        self.psycho_term = psycho_term
+    upper_threshold: float = 0.75
+    lower_threshold: float = 0.25
+    psycho_term: float = 12
+    method_name = "psycho_logical"
 
     def _method(self, _df: pd.DataFrame) -> pd.DataFrame:
         _df['shift_close'] = _df['close'].shift(1)

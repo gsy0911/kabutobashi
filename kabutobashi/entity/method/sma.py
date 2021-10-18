@@ -1,24 +1,15 @@
+from dataclasses import dataclass
 import matplotlib.pyplot as plt
 import pandas as pd
-from kabutobashi.attributes import Field
 from .method import Method
 
 
+@dataclass(frozen=True)
 class SMA(Method):
-
-    short_term = Field(required_type=int)
-    medium_term = Field(required_type=int)
-    long_term = Field(required_type=int)
-
-    def __init__(
-            self,
-            short_term: int = 5,
-            medium_term: int = 21,
-            long_term: int = 70):
-        super().__init__(method_name="sma")
-        self.short_term = short_term
-        self.medium_term = medium_term
-        self.long_term = long_term
+    short_term: int = 5
+    medium_term: int = 21
+    long_term: int = 70
+    method_name = "sma"
 
     def _method(self, _df: pd.DataFrame) -> pd.DataFrame:
         _df = _df.assign(

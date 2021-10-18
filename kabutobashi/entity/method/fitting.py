@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 import pandas as pd
 from scipy.optimize import curve_fit
 import numpy as np
@@ -5,6 +6,7 @@ import matplotlib.pyplot as plt
 from .method import Method
 
 
+@dataclass(frozen=True)
 class Fitting(Method):
     """
 

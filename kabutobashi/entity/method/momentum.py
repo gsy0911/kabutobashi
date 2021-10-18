@@ -1,19 +1,17 @@
+from dataclasses import dataclass
 import matplotlib.pyplot as plt
 import pandas as pd
-from kabutobashi.attributes import Field
 from .method import Method
 
 
+@dataclass(frozen=True)
 class Momentum(Method):
     """
     See Also:
         https://www.sevendata.co.jp/shihyou/technical/momentum.html
     """
-    term = Field()
-
-    def __init__(self, term=25):
-        super().__init__(method_name="momentum")
-        self.term = term
+    term: int = 25
+    method_name: str = "momentum"
 
     def _method(self, _df: pd.DataFrame) -> pd.DataFrame:
         _df = _df.assign(

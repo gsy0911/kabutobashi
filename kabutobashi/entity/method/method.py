@@ -1,12 +1,13 @@
+from dataclasses import dataclass
 from abc import abstractmethod, ABCMeta
 from kabutobashi.attributes import StockDf
 import matplotlib.dates as mdates
 import pandas as pd
 import numpy as np
 from mplfinance.original_flavor import candlestick_ohlc
-import logging
 
 
+@dataclass(frozen=True)
 class Method(metaclass=ABCMeta):
     """
     株のテクニカル分析に関するメソッドを提供するクラス
@@ -25,18 +26,8 @@ class Method(metaclass=ABCMeta):
         >>> sma_signal = stock_df.pipe(kb.macd, impact="true", influence=5, tail=5)
     """
     # 株価を保持するDataFrame
+    method_name: str
     stock_df = StockDf()
-
-    def __init__(self, method_name: str, *, logger=None):
-        """
-        :params method_name: 分析手法の名前、__str__()で表示させる文字列
-        """
-        self.method_name = method_name
-        if logger is None:
-            self.logger = logging.getLogger()
-            self.logger.setLevel(logging.INFO)
-        else:
-            self.logger = logger
 
     def __call__(self, stock_df: pd.DataFrame, **kwargs):
         """
@@ -67,6 +58,7 @@ class Method(metaclass=ABCMeta):
         return self.method_name
 
     def validate(self, _df: pd.DataFrame) -> pd.DataFrame:
+        # TODO ここの修正
         self.stock_df = _df
         return self.stock_df
 

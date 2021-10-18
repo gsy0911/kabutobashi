@@ -1,9 +1,10 @@
+from dataclasses import dataclass
 import pandas as pd
 import matplotlib.pyplot as plt
-from kabutobashi.attributes import Field
 from .method import Method
 
 
+@dataclass(frozen=True)
 class Ichimoku(Method):
     """
 
@@ -11,15 +12,10 @@ class Ichimoku(Method):
         https://kabu.com/investment/guide/technical/04.html
     """
 
-    short_term = Field()
-    medium_term = Field()
-    long_term = Field
-
-    def __init__(self, short_term=12, medium_term=26, long_term=52):
-        super().__init__(method_name="ichimoku")
-        self.short_term = short_term
-        self.medium_term = medium_term
-        self.long_term = long_term
+    short_term: int = 12
+    medium_term: int = 26
+    long_term: int = 52
+    method_name = "ichimoku"
 
     def _method(self, _df: pd.DataFrame) -> pd.DataFrame:
         _df = _df.assign(
