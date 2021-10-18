@@ -1,5 +1,5 @@
-from abc import abstractmethod
-from kabutobashi.attributes import Field, StockDf
+from abc import abstractmethod, ABCMeta
+from kabutobashi.attributes import StockDf
 import matplotlib.dates as mdates
 import pandas as pd
 import numpy as np
@@ -7,32 +7,7 @@ from mplfinance.original_flavor import candlestick_ohlc
 import logging
 
 
-class MetaMethod(type):
-    """
-    値のget/setに関するメタクラス
-    """
-    def __new__(mcs, name, bases, class_dict):
-        for key, value in class_dict.items():
-            if isinstance(value, StockDf):
-                value.name = key
-                value.internal_name = '_' + key
-            elif isinstance(value, Field):
-                value.name = key
-                value.internal_name = '_' + key
-        cls = type.__new__(mcs, name, bases, class_dict)
-        return cls
-
-
-class AbstractMethod(object, metaclass=MetaMethod):
-    """
-    MetaMethodを継承するクラス
-
-    FieldClassとStockDfClassの値のget/setに関する操作をhookする
-    """
-    pass
-
-
-class Method(AbstractMethod):
+class Method(metaclass=ABCMeta):
     """
     株のテクニカル分析に関するメソッドを提供するクラス
 

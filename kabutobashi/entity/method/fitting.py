@@ -1,8 +1,8 @@
 import pandas as pd
-from kabutobashi.method.method import Method
 from scipy.optimize import curve_fit
 import numpy as np
 import matplotlib.pyplot as plt
+from .method import Method
 
 
 class Fitting(Method):

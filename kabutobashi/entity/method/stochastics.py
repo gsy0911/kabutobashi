@@ -1,7 +1,7 @@
 import math
-import pandas as pd
-from kabutobashi.method.method import Method
 import matplotlib.pyplot as plt
+import pandas as pd
+from .method import Method
 
 
 class Stochastics(Method):

@@ -1,7 +1,7 @@
 import pandas as pd
-from kabutobashi.method.method import Method
-from kabutobashi.attributes import Field
 import matplotlib.pyplot as plt
+from kabutobashi.attributes import Field
+from .method import Method
 
 
 class PsychoLogical(Method):
