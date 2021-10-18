@@ -17,7 +17,7 @@ class Stochastics(Method):
         * https://www.moneypartners.co.jp/support/tech/sct.html
 
     """
-    method_name = "stochastics"
+    method_name: str = "stochastics"
 
     def _method(self, _df: pd.DataFrame) -> pd.DataFrame:
 

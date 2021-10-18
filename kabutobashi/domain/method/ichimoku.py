@@ -15,7 +15,7 @@ class Ichimoku(Method):
     short_term: int = 12
     medium_term: int = 26
     long_term: int = 52
-    method_name = "ichimoku"
+    method_name: str = "ichimoku"
 
     def _method(self, _df: pd.DataFrame) -> pd.DataFrame:
         _df = _df.assign(

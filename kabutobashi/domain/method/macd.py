@@ -13,7 +13,7 @@ class MACD(Method):
     short_term: int = 12
     long_term: int = 26
     macd_span: int = 9
-    method_name = "macd"
+    method_name: str = "macd"
 
     def _method(self, _df: pd.DataFrame) -> pd.DataFrame:
         """

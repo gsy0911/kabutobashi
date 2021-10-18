@@ -13,7 +13,7 @@ class PsychoLogical(Method):
     upper_threshold: float = 0.75
     lower_threshold: float = 0.25
     psycho_term: float = 12
-    method_name = "psycho_logical"
+    method_name: str = "psycho_logical"
 
     def _method(self, _df: pd.DataFrame) -> pd.DataFrame:
         _df['shift_close'] = _df['close'].shift(1)

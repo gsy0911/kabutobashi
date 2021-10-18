@@ -9,7 +9,7 @@ class SMA(Method):
     short_term: int = 5
     medium_term: int = 21
     long_term: int = 70
-    method_name = "sma"
+    method_name: str = "sma"
 
     def _method(self, _df: pd.DataFrame) -> pd.DataFrame:
         _df = _df.assign(

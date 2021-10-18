@@ -14,7 +14,7 @@ class BollingerBands(Method):
     """
     band_term: int = 12
     continuity_term: int = 10
-    method_name = "bollinger_bands"
+    method_name: str = "bollinger_bands"
 
     def _method(self, _df: pd.DataFrame) -> pd.DataFrame:
         _df = _df.assign(
