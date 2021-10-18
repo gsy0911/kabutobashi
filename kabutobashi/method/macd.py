@@ -1,7 +1,10 @@
+import matplotlib.dates as mdates
+import matplotlib.pyplot as plt
 import pandas as pd
+import seaborn as sns
+
 from kabutobashi.method.method import Method
 from kabutobashi.attributes import Field
-import matplotlib.pyplot as plt
 
 
 class MACD(Method):
@@ -61,9 +64,10 @@ class MACD(Method):
         self.add_ax_candlestick(ax1, _df)
 
         # plot macd
-        ax2.plot(_df.index, _df['macd'], label="macd")
-        ax2.plot(_df.index, _df['signal'], label="signal")
-        ax2.bar(_df.index, _df['histogram'], label="histogram")
+        array_x = [d.strftime("%Y-%m-%d") for d in _df.index]
+        sns.lineplot(x=array_x, y=_df['macd'], label="macd", ax=ax2)
+        sns.lineplot(x=array_x, y=_df['signal'], label="signal", ax=ax2)
+        sns.barplot(x=array_x, y=_df['histogram'], label="histogram", ax=ax2)
         ax2.legend(loc="center left")  # 各線のラベルを表示
 
         ax1.legend(loc="best")  # 各線のラベルを表示
