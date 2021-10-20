@@ -1,5 +1,5 @@
 # methods to analysis
-from kabutobashi.entity.method import (
+from kabutobashi.domain.method import (
     Method,
     SMA,
     MACD,

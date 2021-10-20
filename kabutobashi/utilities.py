@@ -5,7 +5,7 @@ import pandas as pd
 from scipy.optimize import curve_fit
 
 from .errors import PyStockBaseError, StockDfError
-from .method import *
+from kabutobashi.domain.method import *
 
 
 def get_past_n_days(current_date: str, n: int = 60) -> list:
