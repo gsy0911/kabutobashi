@@ -1,9 +1,6 @@
 from kabutobashi.attributes import Field
 from kabutobashi.crawler.user_agent import UserAgent
-from kabutobashi.errors import (
-    CrawlPageNotFoundError,
-    PyStockCrawlerError
-)
+from kabutobashi.errors import CrawlPageNotFoundError, PyStockCrawlerError
 from datetime import datetime, timedelta, timezone
 import requests
 
@@ -12,11 +9,12 @@ class MetaCrawler(type):
     """
     値のget, setに関するメタクラス
     """
+
     def __new__(mcs, name, bases, class_dict):
         for key, value in class_dict.items():
             if isinstance(value, Field):
                 value.name = key
-                value.internal_name = '_' + key
+                value.internal_name = "_" + key
         cls = type.__new__(mcs, name, bases, class_dict)
         return cls
 
@@ -26,7 +24,6 @@ class AbstractCrawler(object, metaclass=MetaCrawler):
 
 
 class Crawler(AbstractCrawler):
-
     def __init__(self):
         """
         インスタンスを生成
@@ -37,11 +34,11 @@ class Crawler(AbstractCrawler):
         url = None
         text = None
         if "url" in kwargs:
-            url = kwargs['url']
+            url = kwargs["url"]
             text = self.get_url_text(target_url=url)
             url = None
         if "text" in kwargs:
-            text = kwargs['text']
+            text = kwargs["text"]
         # 両方に値が含まれている場合は例外を投げる
         if (url is not None) and (text is not None):
             raise PyStockCrawlerError("両方に値を設定しないでください")
@@ -63,9 +60,7 @@ class Crawler(AbstractCrawler):
         requestsを使って、webからページを取得し、htmlを返す
         """
         user_agent = UserAgent.get_user_agent_header()
-        r = requests.get(
-            target_url,
-            headers=user_agent)
+        r = requests.get(target_url, headers=user_agent)
 
         if r.status_code != 200:
             raise CrawlPageNotFoundError(url=target_url)
@@ -76,6 +71,6 @@ class Crawler(AbstractCrawler):
 
     @staticmethod
     def get_crawl_datetime() -> str:
-        jst = timezone(timedelta(hours=+9), 'JST')
+        jst = timezone(timedelta(hours=+9), "JST")
         now = datetime.now(jst)
         return now.strftime("%Y-%m-%dT%H:%M:%S")

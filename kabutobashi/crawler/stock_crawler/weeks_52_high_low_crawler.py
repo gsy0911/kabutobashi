@@ -4,9 +4,7 @@ from typing import Union
 from bs4 import BeautifulSoup
 
 from kabutobashi.crawler.crawler import Crawler
-from kabutobashi.crawler.stock_crawler.weeks_52_high_low_page import (
-    Week52HighLowStockPricePageTable
-)
+from kabutobashi.crawler.stock_crawler.weeks_52_high_low_page import Week52HighLowStockPricePageTable
 from kabutobashi.errors import PyStockMethodError
 
 
@@ -54,8 +52,8 @@ class Week52HighLowStockPriceCrawler(Crawler):
         super().__init__()
 
     def web_scraping(self, text: str) -> dict:
-        res = BeautifulSoup(text, 'lxml')
+        res = BeautifulSoup(text, "lxml")
 
-        content = res.find('tbody', class_="tv-data-table__tbody")
+        content = res.find("tbody", class_="tv-data-table__tbody")
         page = Week52HighLowStockPricePageTable(content)
         return page.get_info()

@@ -7,18 +7,20 @@ class PageContent(object):
     WebPageからCrawlしてきた値を保持するクラス。
     値を入力する際に改行や空白などの文字を自動で削除する
     """
+
     def __init__(
-            self,
-            tag1: str = None,
-            _class1: str = None,
-            _id1: str = None,
-            tag2: str = None,
-            _class2: str = None,
-            _id2: str = None,
-            required=False,
-            alternative_data=None,
-            required_type=None,
-            value_candidate=None):
+        self,
+        tag1: str = None,
+        _class1: str = None,
+        _id1: str = None,
+        tag2: str = None,
+        _class2: str = None,
+        _id2: str = None,
+        required=False,
+        alternative_data=None,
+        required_type=None,
+        value_candidate=None,
+    ):
         """
         :params required: True if value is required
         :params required_type: specify type if the type is fixed
@@ -54,7 +56,7 @@ class PageContent(object):
         set_value = None
         # tag1から取得
         if self.tag1 is not None:
-            if self._class1['class'] is not None:
+            if self._class1["class"] is not None:
                 set_value = value.find(self.tag1, self._class1)
             else:
                 set_value = value.find(self.tag1)
@@ -65,7 +67,7 @@ class PageContent(object):
 
         # tag2もある場合は、追加で取得
         if self.tag2 is not None:
-            if self._class2['class'] is not None:
+            if self._class2["class"] is not None:
                 set_value = set_value.find(self.tag2, self._class2)
             else:
                 set_value = set_value.find(self.tag2)

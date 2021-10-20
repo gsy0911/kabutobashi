@@ -6,7 +6,7 @@ from typing import Union
 def get_ipo_list_from_year(year: Union[str, int]) -> dict:
     """
     IPOのリストを取得する関数
-    
+
     Args:
         year: 取得対象の年
     """
@@ -40,7 +40,7 @@ class IPOListCrawler(Crawler):
         """
         :params text: webページ
         """
-        res = BeautifulSoup(text, 'lxml')
+        res = BeautifulSoup(text, "lxml")
         table_content = res.find("div", {"class": "tablewrap"})
         table_thead = table_content.find("thead")
         # headの取得

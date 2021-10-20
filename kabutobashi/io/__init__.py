@@ -44,11 +44,12 @@ def read_csv(path_candidate: Union[str, list], **kwargs) -> Optional[pd.DataFram
 
 
 def read_stock_csv(
-        path_candidate: Union[str, list],
-        code_list: Optional[list] = None,
-        drop_reit: bool = True,
-        row_more_than: Optional[int] = None,
-        **kwargs) -> Optional[pd.DataFrame]:
+    path_candidate: Union[str, list],
+    code_list: Optional[list] = None,
+    drop_reit: bool = True,
+    row_more_than: Optional[int] = None,
+    **kwargs
+) -> Optional[pd.DataFrame]:
     """
     本APIにてCrawlしたデータを扱いやすい形式にデータ変換する関数
 
@@ -67,14 +68,14 @@ def read_stock_csv(
     else:
         decoded_df = _decode_stock_data(_df=df)
         if code_list:
-            decoded_df = decoded_df[decoded_df['code'].isin(code_list)]
+            decoded_df = decoded_df[decoded_df["code"].isin(code_list)]
         if drop_reit:
-            decoded_df = decoded_df[~(decoded_df['market'] == " 東証REIT")]
+            decoded_df = decoded_df[~(decoded_df["market"] == " 東証REIT")]
         if row_more_than:
             dt_count = decoded_df.loc[:, ["code", "dt"]].groupby("code").count().reset_index()
-            dt_count = dt_count[dt_count['dt'] >= row_more_than]
-            _code_list = list(dt_count['code'].values)
-            decoded_df = decoded_df[decoded_df['code'].isin(_code_list)]
+            dt_count = dt_count[dt_count["dt"] >= row_more_than]
+            _code_list = list(dt_count["code"].values)
+            decoded_df = decoded_df[decoded_df["code"].isin(_code_list)]
         return decoded_df
 
 
@@ -90,16 +91,16 @@ def _decode_stock_data(_df: pd.DataFrame) -> pd.DataFrame:
 
     # 正規表現を利用して数値のみにする
     _df = _df.assign(
-        market=_df['stock_label'].str.extract('[0-9]+ (.+)', expand=False),
-        open=_df['open'].str.extract('(.+)円', expand=False),
-        high=_df['high'].str.extract('(.+)円', expand=False),
-        low=_df['low'].str.extract('(.+)円', expand=False),
-        unit=_df['unit'].str.extract('(.+)株', expand=False),
-        per=_df['per'].str.extract('(.+)倍', expand=False),
-        psr=_df['psr'].str.extract('(.+)倍', expand=False),
-        pbr=_df['pbr'].str.extract('(.+)倍', expand=False),
-        volume=_df['volume'].str.extract('(.+)株', expand=False),
-        dt=_df['crawl_datetime'].apply(lambda x: datetime.strptime(x, "%Y-%m-%dT%H:%M:%S").strftime("%Y-%m-%d"))
+        market=_df["stock_label"].str.extract("[0-9]+ (.+)", expand=False),
+        open=_df["open"].str.extract("(.+)円", expand=False),
+        high=_df["high"].str.extract("(.+)円", expand=False),
+        low=_df["low"].str.extract("(.+)円", expand=False),
+        unit=_df["unit"].str.extract("(.+)株", expand=False),
+        per=_df["per"].str.extract("(.+)倍", expand=False),
+        psr=_df["psr"].str.extract("(.+)倍", expand=False),
+        pbr=_df["pbr"].str.extract("(.+)倍", expand=False),
+        volume=_df["volume"].str.extract("(.+)株", expand=False),
+        dt=_df["crawl_datetime"].apply(lambda x: datetime.strptime(x, "%Y-%m-%dT%H:%M:%S").strftime("%Y-%m-%d")),
     )
 
     # 必要なカラムに絞る

@@ -7,6 +7,7 @@ class Week52HighLowStockPricePageTable(Page):
     """
     を取得する
     """
+
     def __init__(self, content: BeautifulSoup):
         # テーブル要素をすべて取得
         table = content.find_all("tr")
@@ -62,7 +63,7 @@ class Week52HighLowStockPricePageRow(Page):
             "close": self.close,
             "buy_or_sell": self.buy_or_sell,
             "volatility_ratio": self.volatility_ratio,
-            "volatility_value": self.volatility_value
+            "volatility_value": self.volatility_value,
         }
 
     def _crawl_volatility_info(self, table: BeautifulSoup) -> dict:
@@ -82,7 +83,4 @@ class Week52HighLowStockPricePageRow(Page):
             return {}
         rate_candidate = volatility_list[0].text
         value_candidate = volatility_list[1].text
-        return {
-            "volatility_ratio": rate_candidate,
-            "volatility_value": value_candidate
-            }
+        return {"volatility_ratio": rate_candidate, "volatility_value": value_candidate}

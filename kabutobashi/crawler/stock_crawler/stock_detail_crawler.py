@@ -2,9 +2,7 @@ from typing import Union
 from bs4 import BeautifulSoup
 
 from kabutobashi.crawler.crawler import Crawler
-from kabutobashi.crawler.stock_crawler.stock_detail_page import (
-    StockBoard, StockDetail
-)
+from kabutobashi.crawler.stock_crawler.stock_detail_page import StockBoard, StockDetail
 
 
 def get_stock_detail(code: Union[str, int]) -> dict:
@@ -32,7 +30,7 @@ class StockDetailCrawler(Crawler):
         Args:
             text:
         """
-        res = BeautifulSoup(text, 'lxml')
+        res = BeautifulSoup(text, "lxml")
         stock_detail_dict = {}
 
         stock_board_tag = "ly_col ly_colsize_7 md_box ly_row ly_gutters"
@@ -46,5 +44,5 @@ class StockDetailCrawler(Crawler):
         sd = StockDetail(stock_detail)
         stock_detail_dict.update(sd.get_info())
 
-        stock_detail_dict['crawl_datetime'] = self.get_crawl_datetime()
+        stock_detail_dict["crawl_datetime"] = self.get_crawl_datetime()
         return stock_detail_dict

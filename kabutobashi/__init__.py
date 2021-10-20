@@ -9,14 +9,14 @@ from kabutobashi.domain.method import (
     Ichimoku,
     Momentum,
     PsychoLogical,
-    Fitting
+    Fitting,
 )
 
 from kabutobashi.core import (
     # technical analysis function
     analysis_with,
     # get buy or sell signal value
-    get_impact_with
+    get_impact_with,
 )
 
 # functions to load or save files
@@ -26,7 +26,7 @@ from kabutobashi.io import (
     # provide example stock data
     example_data,
     # read stock data
-    read_stock_csv
+    read_stock_csv,
 )
 
 # import errors
@@ -41,7 +41,7 @@ from kabutobashi.crawler import (
     # ある年にIPOした銘柄の情報を取得する
     get_ipo_list_from_year,
     # 52週高値・底値を取得する関数
-    get_52_weeks_high_low
+    get_52_weeks_high_low,
 )
 
 from .utilities import (
@@ -52,8 +52,7 @@ from .utilities import (
     # window幅でデータを取得しつつデータを返す関数
     train_test_sliding_split,
     # 株価の動きを様々な統計量で表現
-    compute_statistical_values
-
+    compute_statistical_values,
 )
 
 # create and initialize instance

@@ -33,3 +33,8 @@ build:
 
 clean:
 	rm -f -r kabutobashi.egg-info/* dist/* -y
+
+
+.PHONY: format
+format: ## format with black ## make format
+	black kabutobashi --line-length 120

@@ -25,6 +25,7 @@ class Method(metaclass=ABCMeta):
         # get macd-base-buy or sell signal
         >>> sma_signal = stock_df.pipe(kb.macd, impact="true", influence=5, tail=5)
     """
+
     # 株価を保持するDataFrame
     method_name: str
     stock_df = StockDf()
@@ -42,9 +43,7 @@ class Method(metaclass=ABCMeta):
             }
         """
         # 各手法指標となる値を計算し、買いと売りの指標を付与
-        signal_df = stock_df.pipe(self.validate) \
-            .pipe(self.method) \
-            .pipe(self.signal)
+        signal_df = stock_df.pipe(self.validate).pipe(self.method).pipe(self.signal)
         # 買い・売りのシグナルを算出する場合
         if "impact" in kwargs:
             return signal_df.pipe(self._get_impact, **kwargs)
@@ -101,13 +100,10 @@ class Method(metaclass=ABCMeta):
         raise NotImplementedError("please implement your code")
 
     @staticmethod
-    def _cross(
-            _s: pd.Series,
-            to_plus_name=None,
-            to_minus_name=None) -> pd.DataFrame:
+    def _cross(_s: pd.Series, to_plus_name=None, to_minus_name=None) -> pd.DataFrame:
         """
         0を基準としてプラスかマイナスのどちらかに振れたかを判断する関数
-        
+
         Args:
             _s: 対象のpd.Series
             to_plus_name: 上抜けた場合のカラムの名前
@@ -116,29 +112,26 @@ class Method(metaclass=ABCMeta):
         # shorten vaiable name
         col = "original"
         shifted = "shifted"
-        
-        # shiftしたDataFrameの作成        
+
+        # shiftしたDataFrameの作成
         shift_s = _s.shift(1)
         _df = pd.DataFrame({col: _s, shifted: shift_s})
-        
+
         # 正負が交差した点
         _df = _df.assign(
             is_cross=_df.apply(lambda x: 1 if x[col] * x[shifted] < 0 else 0, axis=1),
             is_higher=_df.apply(lambda x: 1 if x[col] > x[shifted] else 0, axis=1),
-            is_lower=_df.apply(lambda x: 1 if x[col] < x[shifted] else 0, axis=1)
+            is_lower=_df.apply(lambda x: 1 if x[col] < x[shifted] else 0, axis=1),
         )
 
         # 上抜けか下抜けかを判断している
-        _df = _df.assign(
-            to_plus=_df['is_cross'] * _df['is_higher'],
-            to_minus=_df['is_cross'] * _df['is_lower']
-        )
+        _df = _df.assign(to_plus=_df["is_cross"] * _df["is_higher"], to_minus=_df["is_cross"] * _df["is_lower"])
         if to_plus_name is not None:
             _df = _df.rename(columns={"to_plus": to_plus_name})
         if to_minus_name is not None:
             _df = _df.rename(columns={"to_minus": to_minus_name})
         return _df
-        
+
     @staticmethod
     def _trend(_s: pd.Series) -> pd.Series:
         """
@@ -148,39 +141,35 @@ class Method(metaclass=ABCMeta):
         # shorten variable name
         col = "original"
         shifted = "shifted"
-        
-        # shiftしたDataFrameの作成        
+
+        # shiftしたDataFrameの作成
         shift_s = _s.shift(1)
         _df = pd.DataFrame({col: _s, shifted: shift_s})
-        _df['diff'] = _df['original'] - _df['shifted']
-        _df['diff_rolling_sum'] = _df['diff'].rolling(5).sum()
-        return _df['diff_rolling_sum']
+        _df["diff"] = _df["original"] - _df["shifted"]
+        _df["diff_rolling_sum"] = _df["diff"].rolling(5).sum()
+        return _df["diff_rolling_sum"]
 
     @staticmethod
-    def _get_impact(
-            _df: pd.DataFrame,
-            influence: int = 2,
-            tail: int = 5,
-            **kwargs) -> float:
+    def _get_impact(_df: pd.DataFrame, influence: int = 2, tail: int = 5, **kwargs) -> float:
         """
         売りと買いのシグナルの余波の合計値を返す。
-        
+
         Args:
-            _df: 
+            _df:
             influence:
             tail:
-            
+
         Returns:
             [-1,1]の値をとる。-1: 売り、1: 買いを表す
         """
-        _df['buy_impact'] = _df['buy_signal'].ewm(span=influence).mean()
-        _df['sell_impact'] = _df['sell_signal'].ewm(span=influence).mean()
-        buy_impact_index = _df['buy_impact'].iloc[-tail:].sum()
-        sell_impact_index = _df['sell_impact'].iloc[-tail:].sum()
+        _df["buy_impact"] = _df["buy_signal"].ewm(span=influence).mean()
+        _df["sell_impact"] = _df["sell_signal"].ewm(span=influence).mean()
+        buy_impact_index = _df["buy_impact"].iloc[-tail:].sum()
+        sell_impact_index = _df["sell_impact"].iloc[-tail:].sum()
         return round(buy_impact_index - sell_impact_index, 5)
 
     @staticmethod
     def add_ax_candlestick(ax, _df: pd.DataFrame):
         # datetime -> float
         ohlc = np.vstack((mdates.date2num(_df.index), _df.values.T)).T
-        candlestick_ohlc(ax, ohlc, width=0.7, colorup='g', colordown='r')
+        candlestick_ohlc(ax, ohlc, width=0.7, colorup="g", colordown="r")
