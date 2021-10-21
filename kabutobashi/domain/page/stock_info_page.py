@@ -3,11 +3,18 @@ from typing import Union
 
 from bs4 import BeautifulSoup
 
+from kabutobashi.domain.entity import StockInfo
 from .page import Page, PageDecoder
 
 
 @dataclass(frozen=True)
 class StockInfoPage(Page):
+    """
+
+    Examples:
+        >>> sip = StockInfoPage(code="0001")
+        >>> result = sip.get()
+    """
     code: Union[int, str]
     base_url: str = "https://minkabu.jp/stock/{code}"
 
@@ -47,4 +54,4 @@ class StockInfoPage(Page):
             "market_capitalization": info["時価総額"],
             "issued_shares": info["発行済株数"],
         })
-        return result
+        return StockInfo.from_page_of(data=result).dumps()
