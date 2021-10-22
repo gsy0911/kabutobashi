@@ -39,7 +39,7 @@ from .domain.page import (
     # 単一の株価の詳細情報を取得する
     StockInfoPage,
     # 52週高値底値の値を取得
-    Weeks52HighLowPage
+    Weeks52HighLowPage,
 )
 
 from .domain.entity import StockIpo, StockInfo

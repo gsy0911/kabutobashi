@@ -50,9 +50,9 @@ class Weeks52HighLowPage(Page):
         """
         if len(volatility_list) == 0:
             return {}
-        rate_candidate = volatility_list[0].text
+        ratio_candidate = volatility_list[0].text.replace("%", "")
         value_candidate = volatility_list[1].text
-        return {"volatility_ratio": rate_candidate, "volatility_value": value_candidate}
+        return {"volatility_ratio": ratio_candidate, "volatility_value": value_candidate}
 
     def _get(self) -> dict:
         res = BeautifulSoup(self.get_url_text(url=self.url()), "lxml")
@@ -72,7 +72,7 @@ class Weeks52HighLowPage(Page):
         content = res.find("tbody", class_="tv-data-table__tbody")
         table = content.find_all("tr")
         whole_result = []
-        for t in table[:5]:
+        for t in table:
             volatility_dict = self._crawl_volatility_info(
                 table=t, volatility_up_tag=volatility_up_tag, volatility_down_tag=volatility_down_tag
             )
@@ -88,7 +88,8 @@ class Weeks52HighLowPage(Page):
                 "sell": PageDecoder(tag1="span", class1=sell_tag).decode(bs=t),
                 "strong_sell": PageDecoder(tag1="span", class1=strong_sell_tag).decode(bs=t),
                 "volatility_ratio": volatility_dict.get("volatility_ratio", "-"),
-                "volatility_value": volatility_dict.get("volatility_value", "-")
+                "volatility_value": volatility_dict.get("volatility_value", "-"),
             }
             whole_result.append(Weeks52HighLow.from_page_of(data=data).dumps())
+
         return {"weeks_52_high_low": whole_result}

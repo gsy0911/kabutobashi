@@ -4,7 +4,9 @@ from dataclasses import dataclass, asdict
 @dataclass(frozen=True)
 class Weeks52HighLow:
     """
+    52週高値・底値
     """
+
     code: int
     brand_name: str
     close: int
@@ -26,7 +28,7 @@ class Weeks52HighLow:
         strong_sell = data["strong_sell"]
 
         return Weeks52HighLow(
-            code=data["code"],
+            code=int(data["code"]),
             brand_name=data["brand_name"],
             close=data["close"],
             buy=buy,
@@ -37,7 +39,7 @@ class Weeks52HighLow:
             volatility_up=data["volatility_up"],
             volatility_down=data["volatility_down"],
             volatility_ratio=data["volatility_ratio"],
-            volatility_value=data["volatility_value"]
+            volatility_value=data["volatility_value"],
         )
 
     def dumps(self) -> dict:
