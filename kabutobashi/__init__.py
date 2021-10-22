@@ -33,16 +33,16 @@ from kabutobashi.io import (
 from kabutobashi import errors
 
 # classes or functions about crawl web pages
-from kabutobashi.crawler import (
-    # beautifulsoupを利用してウェブページを取得する
-    get_web_page,
-    # 単一の株価の詳細情報を取得する
-    get_stock_detail,
+from .domain.page import (
     # ある年にIPOした銘柄の情報を取得する
-    get_ipo_list_from_year,
-    # 52週高値・底値を取得する関数
-    get_52_weeks_high_low,
+    StockIpoPage,
+    # 単一の株価の詳細情報を取得する
+    StockInfoPage,
+    # 52週高値底値の値を取得
+    Weeks52HighLowPage
 )
+
+from .domain.entity import StockIpo, StockInfo
 
 from .utilities import (
     # n営業日前までの日付のリストを返す関数
