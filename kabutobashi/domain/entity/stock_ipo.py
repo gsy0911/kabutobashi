@@ -11,6 +11,7 @@ class StockIpo:
     '(騰落率)損益': '(+1.1%)+2,100円00001',
 
     """
+
     code: int
     market: str = field(metadata={"jp": "市場"})
     manager: str = field(metadata={"jp": "主幹"})

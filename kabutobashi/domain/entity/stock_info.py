@@ -24,12 +24,12 @@ class StockInfo:
 
     @staticmethod
     def from_page_of(data: dict) -> "StockInfo":
-        label_split = data['stock_label'].split("  ")
+        label_split = data["stock_label"].split("  ")
         return StockInfo(
             code=label_split[0],
             market=label_split[1],
-            industry_type=data['industry_type'],
-            open=data['open'],
+            industry_type=data["industry_type"],
+            open=data["open"],
             high=data["high"],
             low=data["low"],
             close=data["close"],
@@ -40,7 +40,7 @@ class StockInfo:
             volume=data["volume"],
             market_capitalization=data["market_capitalization"],
             issued_shares=data["issued_shares"],
-            dt=data["crawl_datetime"]
+            dt=data["crawl_datetime"],
         )
 
     def dumps(self) -> dict:

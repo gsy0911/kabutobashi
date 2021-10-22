@@ -19,6 +19,7 @@ class PageDecoder:
     tag2: str = None
     class2: str = None
     id2: str = None
+    default: str = ""
 
     def _decode(self, value):
         class1 = {"class": self.class1}
@@ -41,6 +42,9 @@ class PageDecoder:
             else:
                 set_value = set_value.find(self.tag2)
 
+        if set_value is None:
+            return self.default
+
         # 文字列を置換して保持
         return self.replace(set_value.get_text())
 
@@ -60,7 +64,6 @@ class PageDecoder:
 
 @dataclass(frozen=True)
 class Page(metaclass=ABCMeta):
-
     @abstractmethod
     def url(self) -> str:
         raise NotImplementedError()
