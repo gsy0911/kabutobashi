@@ -1,10 +1,11 @@
-from dataclasses import dataclass
 from abc import abstractmethod, ABCMeta
-from kabutobashi.attributes import StockDf
+from dataclasses import dataclass
 import matplotlib.dates as mdates
-import pandas as pd
-import numpy as np
 from mplfinance.original_flavor import candlestick_ohlc
+import numpy as np
+import pandas as pd
+
+from kabutobashi.domain import StockDf
 
 
 @dataclass(frozen=True)
@@ -28,7 +29,7 @@ class Method(metaclass=ABCMeta):
 
     # 株価を保持するDataFrame
     method_name: str
-    stock_df = StockDf()
+    stock_df: StockDf = None
 
     def __call__(self, stock_df: pd.DataFrame, **kwargs):
         """
@@ -57,9 +58,7 @@ class Method(metaclass=ABCMeta):
         return self.method_name
 
     def validate(self, _df: pd.DataFrame) -> pd.DataFrame:
-        # TODO ここの修正
-        self.stock_df = _df
-        return self.stock_df
+        return StockDf.of(df=_df).data_df
 
     def method(self, _df: pd.DataFrame) -> pd.DataFrame:
         """

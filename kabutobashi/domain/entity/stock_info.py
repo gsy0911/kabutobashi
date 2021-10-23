@@ -40,7 +40,7 @@ class StockInfo:
             volume=data["volume"],
             market_capitalization=data["market_capitalization"],
             issued_shares=data["issued_shares"],
-            dt=data["crawl_datetime"],
+            dt=data["date"],
         )
 
     def dumps(self) -> dict:

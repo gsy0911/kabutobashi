@@ -9,7 +9,6 @@ from .page import Page, PageDecoder
 
 @dataclass(frozen=True)
 class Weeks52HighLowPage(Page):
-    year: Union[str, int]
     data_type: str
     base_url: str = "https://jp.tradingview.com/markets/stocks-japan"
 
