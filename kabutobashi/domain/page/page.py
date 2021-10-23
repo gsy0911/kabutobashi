@@ -5,7 +5,7 @@ from functools import reduce
 from typing import List, Union
 
 from bs4 import BeautifulSoup
-from kabutobashi.errors import TagNotFoundError, CrawlPageNotFoundError
+from kabutobashi.errors import KabutobashiPageError
 import requests
 
 from .user_agent import UserAgent
@@ -86,7 +86,7 @@ class Page(metaclass=ABCMeta):
         r = requests.get(url, headers=user_agent)
 
         if r.status_code != 200:
-            raise CrawlPageNotFoundError(url=url)
+            raise KabutobashiPageError(url=url)
 
         # 日本語に対応
         r.encoding = r.apparent_encoding

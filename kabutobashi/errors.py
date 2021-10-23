@@ -1,8 +1,8 @@
-class PyStockBaseError(Exception):
+class KabutobashiBaseError(Exception):
     pass
 
 
-class PyStockCrawlerError(PyStockBaseError):
+class KabutobashiPageError(KabutobashiBaseError):
     """
     Crawlが失敗したときに返すエラー
     """
@@ -14,19 +14,7 @@ class PyStockCrawlerError(PyStockBaseError):
         return f"error occurred when crawling [{self.url}]"
 
 
-class CrawlPageNotFoundError(PyStockCrawlerError):
-    """
-    crawlしたいページがない場合に返すエラー
-    """
-
-    def __init__(self, url: str = ""):
-        super().__init__(url=url)
-
-    def __str__(self):
-        return f"Page not found [{self.url}]"
-
-
-class TagNotFoundError(PyStockCrawlerError):
+class TagNotFoundError(KabutobashiPageError):
     """
     crawlしたいページに対象のtagがない場合に返すエラー
     """
@@ -39,17 +27,17 @@ class TagNotFoundError(PyStockCrawlerError):
         return f"tag [{self.tag}] not found"
 
 
-class StockDfError(PyStockBaseError):
+class StockDfError(KabutobashiBaseError):
     pass
 
 
-class PyStockMethodError(PyStockBaseError):
+class KabutobashiMethodError(KabutobashiBaseError):
     pass
 
 
-class PyStockVisualizeError(PyStockBaseError):
+class KabutobashiVisualizeError(KabutobashiBaseError):
     pass
 
 
-class PyStockAttributeError(PyStockBaseError):
+class KabutobashiAttributeError(KabutobashiBaseError):
     pass
