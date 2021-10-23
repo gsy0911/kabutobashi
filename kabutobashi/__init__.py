@@ -1,5 +1,5 @@
 # methods to analysis
-from kabutobashi.method import (
+from kabutobashi.domain.method import (
     Method,
     SMA,
     MACD,
@@ -9,14 +9,14 @@ from kabutobashi.method import (
     Ichimoku,
     Momentum,
     PsychoLogical,
-    Fitting
+    Fitting,
 )
 
 from kabutobashi.core import (
     # technical analysis function
     analysis_with,
     # get buy or sell signal value
-    get_impact_with
+    get_impact_with,
 )
 
 # functions to load or save files
@@ -26,23 +26,23 @@ from kabutobashi.io import (
     # provide example stock data
     example_data,
     # read stock data
-    read_stock_csv
+    read_stock_csv,
 )
 
 # import errors
 from kabutobashi import errors
 
 # classes or functions about crawl web pages
-from kabutobashi.crawler import (
-    # beautifulsoupを利用してウェブページを取得する
-    get_web_page,
-    # 単一の株価の詳細情報を取得する
-    get_stock_detail,
+from .domain.page import (
     # ある年にIPOした銘柄の情報を取得する
-    get_ipo_list_from_year,
-    # 52週高値・底値を取得する関数
-    get_52_weeks_high_low
+    StockIpoPage,
+    # 単一の株価の詳細情報を取得する
+    StockInfoPage,
+    # 52週高値底値の値を取得
+    Weeks52HighLowPage,
 )
+
+from .domain.entity import StockIpo, StockInfo
 
 from .utilities import (
     # n営業日前までの日付のリストを返す関数
@@ -52,8 +52,7 @@ from .utilities import (
     # window幅でデータを取得しつつデータを返す関数
     train_test_sliding_split,
     # 株価の動きを様々な統計量で表現
-    compute_statistical_values
-
+    compute_statistical_values,
 )
 
 # create and initialize instance

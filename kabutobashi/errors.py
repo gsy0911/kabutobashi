@@ -1,5 +1,3 @@
-
-
 class PyStockBaseError(Exception):
     pass
 

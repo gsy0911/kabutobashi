@@ -5,7 +5,7 @@ import pandas as pd
 from scipy.optimize import curve_fit
 
 from .errors import PyStockBaseError, StockDfError
-from .method import *
+from kabutobashi.domain.method import *
 
 
 def get_past_n_days(current_date: str, n: int = 60) -> list:
@@ -30,7 +30,7 @@ def get_past_n_days(current_date: str, n: int = 60) -> list:
 def _get_past_n_days(current_date: str, n: int, multiply: int) -> list:
     """
     n*multiplyの日数分のうち、商取引が行われる日を取得する
-    
+
     Args:
         current_date: n日前を計算する起点となる日
         n: n日前
@@ -87,27 +87,25 @@ def replace_comma(x) -> float:
 
 
 def format_to_stock_df(_df: pd.DataFrame) -> pd.DataFrame:
-    stock_df = _df \
-        .replace("---", np.nan) \
-        .dropna(subset=["open", "close", "high", "low"]) \
-        .fillna(0) \
+    stock_df = (
+        _df.replace("---", np.nan)
+        .dropna(subset=["open", "close", "high", "low"])
+        .fillna(0)
         .assign(
-            open=_df['open'].apply(replace_comma),
-            close=_df['close'].apply(replace_comma),
-            high=_df['high'].apply(replace_comma),
-            low=_df['low'].apply(replace_comma),
-            volume=_df['volume'].apply(replace_comma),
-        ) \
+            open=_df["open"].apply(replace_comma),
+            close=_df["close"].apply(replace_comma),
+            high=_df["high"].apply(replace_comma),
+            low=_df["low"].apply(replace_comma),
+            volume=_df["volume"].apply(replace_comma),
+        )
         .convert_dtypes()
+    )
     return stock_df
 
 
 def train_test_sliding_split(
-        stock_df: pd.DataFrame,
-        *,
-        buy_sell_term_days: int = 5,
-        sliding_window: int = 60,
-        step: int = 2):
+    stock_df: pd.DataFrame, *, buy_sell_term_days: int = 5, sliding_window: int = 60, step: int = 2
+):
     """
 
     Args:
@@ -124,8 +122,8 @@ def train_test_sliding_split(
         raise StockDfError("入力されたDataFrameの長さがwindow幅よりも小さいです")
     loop = df_length - (buy_sell_term_days + sliding_window)
     for idx, i in enumerate(range(0, loop, step)):
-        offset = i+sliding_window
-        yield idx, stock_df[i: offset], stock_df[offset: offset + buy_sell_term_days]
+        offset = i + sliding_window
+        yield idx, stock_df[i:offset], stock_df[offset : offset + buy_sell_term_days]
 
 
 def compute_fitting(array_y: list, prefix: str) -> dict:
@@ -133,13 +131,14 @@ def compute_fitting(array_y: list, prefix: str) -> dict:
     array_x = np.array(range(0, len(array_y)))
 
     def _linear_fit(x, a, b):
-        return a*x + b
+        return a * x + b
 
     def _square_fit(x, a, b, c):
-        return a*x*x + b*x + c
+        return a * x * x + b * x + c
 
     def _cube_fit(x, a, b, c, d):
-        return a*x*x*x + b*x*x + c*x + d
+        return a * x * x * x + b * x * x + c * x + d
+
     linear_param, _ = curve_fit(_linear_fit, array_x, array_y)
     statistical_values.update({f"{prefix}_linear_{idx}": p for idx, p in enumerate(linear_param[:-1])})
     square_param, _ = curve_fit(_square_fit, array_x, array_y)
@@ -157,23 +156,23 @@ def compute_statistical_values(stock_df: pd.DataFrame, fitting_term: int = 10, t
     _stochastics = Stochastics()
 
     statistical_values = {}
-    statistical_values.update(compute_fitting(stock_df['close'], prefix="close"))
+    statistical_values.update(compute_fitting(stock_df["close"], prefix="close"))
     # params with SMA0
     sma_df = stock_df.pipe(_sma)
-    statistical_values.update(compute_fitting(sma_df['sma_short'][-fitting_term:], "sma_short"))
-    statistical_values.update(compute_fitting(sma_df['sma_medium'][-fitting_term:], "sma_medium"))
-    statistical_values.update(compute_fitting(sma_df['sma_long'][-fitting_term:], "sma_long"))
+    statistical_values.update(compute_fitting(sma_df["sma_short"][-fitting_term:], "sma_short"))
+    statistical_values.update(compute_fitting(sma_df["sma_medium"][-fitting_term:], "sma_medium"))
+    statistical_values.update(compute_fitting(sma_df["sma_long"][-fitting_term:], "sma_long"))
     # params with MACD
     macd_df = stock_df.pipe(_macd)
-    statistical_values.update({f"histogram_{idx}": v for idx, v in enumerate(macd_df[-taken:]['histogram'].values)})
+    statistical_values.update({f"histogram_{idx}": v for idx, v in enumerate(macd_df[-taken:]["histogram"].values)})
     adx_df = stock_df.pipe(_adx)
-    statistical_values.update({f"plus_di_{idx}": v for idx, v in enumerate(adx_df[-taken:]['plus_di'].values)})
-    statistical_values.update({f"minus_di_{idx}": v for idx, v in enumerate(adx_df[-taken:]['minus_di'].values)})
-    statistical_values.update({f"ADX_{idx}": v for idx, v in enumerate(adx_df[-taken:]['ADX'].values)})
-    statistical_values.update({f"ADXR_{idx}": v for idx, v in enumerate(adx_df[-taken:]['ADXR'].values)})
+    statistical_values.update({f"plus_di_{idx}": v for idx, v in enumerate(adx_df[-taken:]["plus_di"].values)})
+    statistical_values.update({f"minus_di_{idx}": v for idx, v in enumerate(adx_df[-taken:]["minus_di"].values)})
+    statistical_values.update({f"ADX_{idx}": v for idx, v in enumerate(adx_df[-taken:]["ADX"].values)})
+    statistical_values.update({f"ADXR_{idx}": v for idx, v in enumerate(adx_df[-taken:]["ADXR"].values)})
     # params with Stochastics
     stochastics_df = stock_df.pipe(_stochastics)
-    statistical_values.update({f"D_{idx}": v for idx, v in enumerate(stochastics_df[-taken:]['D'].values)})
-    statistical_values.update({f"SD_{idx}": v for idx, v in enumerate(stochastics_df[-taken:]['SD'].values)})
+    statistical_values.update({f"D_{idx}": v for idx, v in enumerate(stochastics_df[-taken:]["D"].values)})
+    statistical_values.update({f"SD_{idx}": v for idx, v in enumerate(stochastics_df[-taken:]["SD"].values)})
 
     return statistical_values
