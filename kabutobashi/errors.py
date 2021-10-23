@@ -39,5 +39,5 @@ class KabutobashiVisualizeError(KabutobashiBaseError):
     pass
 
 
-class KabutobashiAttributeError(KabutobashiBaseError):
+class KabutobashiEntityError(KabutobashiBaseError):
     pass
