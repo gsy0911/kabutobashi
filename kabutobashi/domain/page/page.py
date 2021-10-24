@@ -16,16 +16,10 @@ class PageDecoder:
     tag1: str = None
     class1: str = None
     id1: str = None
-    tag2: str = None
-    class2: str = None
-    id2: str = None
     default: str = ""
 
     def _decode(self, value):
         class1 = {"class": self.class1}
-        # id1 = {"id": self.id1}
-        class2 = {"class": self.class2}
-        # id2 = {"id": self.id2}
 
         set_value = None
         # tag1から取得
@@ -34,13 +28,6 @@ class PageDecoder:
                 set_value = value.find(self.tag1, self.class1)
             else:
                 set_value = value.find(self.tag1)
-
-        # tag2もある場合は、追加で取得
-        if self.tag2 is not None:
-            if class2["class"] is not None:
-                set_value = set_value.find(self.tag2, self.class2)
-            else:
-                set_value = set_value.find(self.tag2)
 
         if set_value is None:
             return self.default

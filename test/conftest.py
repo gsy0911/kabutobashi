@@ -10,3 +10,5 @@ sys.path.append(f"{SOURCE_PATH}")
 
 # テスト対象のディレクトリに移動
 os.chdir("./kabutobashi")
+
+# skip if: https://thinkami.hatenablog.com/entry/2017/10/25/222551
