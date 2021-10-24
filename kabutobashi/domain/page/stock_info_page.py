@@ -23,7 +23,7 @@ class StockInfoPage(Page):
         return self.base_url.format(code=self.code)
 
     def _get(self) -> dict:
-        soup = BeautifulSoup(self.get_url_text(url=self.url()))
+        soup = BeautifulSoup(self.get_url_text(url=self.url()), features="lxml")
         result = {}
 
         stock_board_tag = "ly_col ly_colsize_7 md_box ly_row ly_gutters"

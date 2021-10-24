@@ -20,7 +20,7 @@ class StockIpoPage(Page):
         return f"{self.base_url}?year={year}"
 
     def _get(self) -> dict:
-        res = BeautifulSoup(self.get_url_text(url=self.url()), "lxml")
+        res = BeautifulSoup(self.get_url_text(url=self.url()), features="lxml")
         table_content = res.find("div", {"class": "tablewrap"})
         table_thead = table_content.find("thead")
         # headの取得

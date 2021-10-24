@@ -53,7 +53,7 @@ class Weeks52HighLowPage(Page):
         return {"volatility_ratio": ratio_candidate, "volatility_value": value_candidate}
 
     def _get(self) -> dict:
-        res = BeautifulSoup(self.get_url_text(url=self.url()), "lxml")
+        res = BeautifulSoup(self.get_url_text(url=self.url()), features="lxml")
 
         # ここからcrawlするページのタグ
         cell = "tv-screener-table__cell"
