@@ -25,6 +25,6 @@ build: clean ## create wheel ## make build
 clean: ## clean the wheel directory ## make clean
 	rm -f -r kabutobashi.egg-info/* dist/* -y
 
-.PHONY: test-python
-test-python: ## execute test with pytest ## make test-python
+.PHONY: pytest
+pytest: ## execute test with pytest ## make test-python
 	pytest ./test -vv --cov=./kabutobashi --cov-report=html
