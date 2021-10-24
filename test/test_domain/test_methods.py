@@ -1,10 +1,10 @@
 import pytest
-import kabutobashi as ps
+import kabutobashi as kb
 
 
 @pytest.fixture(scope="module", autouse=True)
 def var_stock_df():
-    stock_df = ps.example_data()
+    stock_df = kb.example_data()
     yield stock_df
 
 
@@ -19,14 +19,11 @@ def test_example_data(var_stock_df):
 
 def test_read_stock_data():
     none_paths = []
-    df = ps.read_stock_csv(none_paths)
+    df = kb.read_stock_csv(none_paths)
     assert df is None
 
-    paths = [
-        "../data/dt=2020-02-29.csv",
-        "../data/dt=2020-03-01.csv"
-        ]
-    df = ps.read_stock_csv(paths)
+    paths = ["../data/dt=2020-02-29.csv", "../data/dt=2020-03-01.csv"]
+    df = kb.read_stock_csv(paths)
     columns = df.columns
     assert "code" in columns
     assert "close" in columns
@@ -43,7 +40,7 @@ def test_read_stock_data():
 
 
 def test_analysis_with_sma(var_stock_df):
-    analysis_df = ps.analysis_with(var_stock_df, ps.sma)
+    analysis_df = kb.analysis_with(var_stock_df, kb.sma)
     columns = analysis_df.columns
     assert "sma_short" in columns
     assert "sma_medium" in columns
@@ -53,7 +50,7 @@ def test_analysis_with_sma(var_stock_df):
 
 
 def test_analysis_with_macd(var_stock_df):
-    analysis_df = ps.analysis_with(var_stock_df, ps.macd)
+    analysis_df = kb.analysis_with(var_stock_df, kb.macd)
     columns = analysis_df.columns
     assert "ema_short" in columns
     assert "ema_long" in columns
@@ -65,7 +62,7 @@ def test_analysis_with_macd(var_stock_df):
 
 
 def test_analysis_with_stochastics(var_stock_df):
-    analysis_df = ps.analysis_with(var_stock_df, ps.stochastics)
+    analysis_df = kb.analysis_with(var_stock_df, kb.stochastics)
     columns = analysis_df.columns
     assert "K" in columns
     assert "D" in columns
@@ -75,7 +72,7 @@ def test_analysis_with_stochastics(var_stock_df):
 
 
 def test_analysis_with_adx(var_stock_df):
-    analysis_df = ps.analysis_with(var_stock_df, ps.adx)
+    analysis_df = kb.analysis_with(var_stock_df, kb.adx)
     columns = analysis_df.columns
     assert "plus_di" in columns
     assert "minus_di" in columns
@@ -87,7 +84,7 @@ def test_analysis_with_adx(var_stock_df):
 
 
 def test_analysis_with_ichimoku(var_stock_df):
-    analysis_df = ps.analysis_with(var_stock_df, ps.ichimoku)
+    analysis_df = kb.analysis_with(var_stock_df, kb.ichimoku)
     columns = analysis_df.columns
     assert "line_change" in columns
     assert "line_base" in columns
@@ -97,7 +94,7 @@ def test_analysis_with_ichimoku(var_stock_df):
 
 
 def test_analysis_with_momentum(var_stock_df):
-    analysis_df = ps.analysis_with(var_stock_df, ps.momentum)
+    analysis_df = kb.analysis_with(var_stock_df, kb.momentum)
     columns = analysis_df.columns
     assert "momentum" in columns
     assert "sma_momentum" in columns
@@ -106,7 +103,7 @@ def test_analysis_with_momentum(var_stock_df):
 
 
 def test_analysis_with_spycho_logical(var_stock_df):
-    analysis_df = ps.analysis_with(var_stock_df, ps.psycho_logical)
+    analysis_df = kb.analysis_with(var_stock_df, kb.psycho_logical)
     columns = analysis_df.columns
     assert "psycho_line" in columns
     assert "bought_too_much" in columns
@@ -116,7 +113,7 @@ def test_analysis_with_spycho_logical(var_stock_df):
 
 
 def test_analysis_with_bollinger_bands(var_stock_df):
-    analysis_df = ps.analysis_with(var_stock_df, ps.bollinger_bands)
+    analysis_df = kb.analysis_with(var_stock_df, kb.bollinger_bands)
     columns = analysis_df.columns
     assert "upper_2_sigma" in columns
     assert "lower_2_sigma" in columns
@@ -126,16 +123,24 @@ def test_analysis_with_bollinger_bands(var_stock_df):
     assert "sell_signal" in columns
 
 
+def test_analysis_with_fitting(var_stock_df):
+    analysis_df = kb.analysis_with(var_stock_df, kb.fitting)
+    columns = analysis_df.columns
+    assert "linear_fitting" in columns
+    assert "square_fitting" in columns
+    assert "cube_fitting" in columns
+
+
 def test_get_impact_with(var_stock_df):
-    result_1 = ps.get_impact_with(var_stock_df, ps.sma)
+    result_1 = kb.get_impact_with(var_stock_df, kb.sma)
     assert "sma" in result_1.keys()
-    result_2 = ps.get_impact_with(var_stock_df, [ps.sma, ps.macd])
+    result_2 = kb.get_impact_with(var_stock_df, [kb.sma, kb.macd])
     assert "sma" in result_2.keys()
     assert "macd" in result_2.keys()
 
 
 def test_io_read_csv():
-    _df = ps.read_csv(1)
+    _df = kb.read_csv(1)
     assert _df is None
-    _df = ps.read_csv("../data/stooq.csv")
+    _df = kb.read_csv("../data/stooq.csv")
     assert _df is not None

@@ -1,8 +1,8 @@
-import kabutobashi as ps
+import kabutobashi as kb
 
 
 def test_workday():
-    date_list = ps.get_past_n_days("2020-03-31", 30)
+    date_list = kb.get_past_n_days("2020-03-31", 30)
     assert len(date_list) == 30
     # 祝日が除かれていることを確認
     assert "2020-03-20" not in date_list

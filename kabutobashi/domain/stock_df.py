@@ -1,33 +1,39 @@
+from dataclasses import dataclass
 import pandas as pd
 from kabutobashi.errors import StockDfError
 
 
-class StockDf(object):
-    """
-    様々な値の保持に用いるクラス。
-    値を代入する際にバリデーションが行われる。
-    """
-    def __init__(self):
-        """
-        """
-        self.name = None
-        self.internal_name = None
+@dataclass(frozen=True)
+class StockDf:
+    data_df: pd.DataFrame
+    REQUIRED_COL = ["open", "high", "low", "close"]
 
-    def __get__(self, instance, instance_type):
-        return getattr(instance, self.internal_name, None)
+    def __post_init__(self):
+        self._null_check()
+        self._code_constraint_check()
 
-    def __set__(self, instance, value):
-        if value is None:
+    def _null_check(self):
+        if self.data_df is None:
             raise StockDfError("required")
 
-        df_columns = value.columns
+    def _code_constraint_check(self):
+        df_columns = self.data_df.columns
         if "code" in df_columns:
-            code = list(set(value.code.values))
+            code = list(set(self.data_df.code.values))
             if len(code) > 1:
                 raise StockDfError("multiple code")
             elif len(code) == 0:
                 raise StockDfError("no code")
 
+    def _required_column_check(self):
+        columns = list(self.data_df.columns)
+        # 必須のカラム確認
+        if not all([item in columns for item in self.REQUIRED_COL]):
+            raise StockDfError(f"required: {self.REQUIRED_COL}, input: {columns}")
+
+    @staticmethod
+    def of(df: pd.DataFrame):
+        df_columns = df.columns
         # 日付カラムの候補値を探す
         date_column = None
         if "date" in df_columns:
@@ -40,18 +46,15 @@ class StockDf(object):
             raise StockDfError("日付のカラム[dt, date]は片方しか存在できません")
 
         # indexにdateを指定
-        value.index = pd.to_datetime(value[date_column])
-        value = value.sort_index()
+        df.index = pd.to_datetime(df[date_column]).sort_index()
 
         # 必要なカラムに絞る
-        value = value.loc[:, ["open", "high", "low", "close"]]
-        open_s = value['open'].apply(self._replace_comma)
-        close_s = value['close'].apply(self._replace_comma)
-        high_s = value['high'].apply(self._replace_comma)
-        low_s = value['low'].apply(self._replace_comma)
-        new_value = pd.DataFrame({"open": open_s, "high": high_s, "low": low_s, "close": close_s})
-        # 型の指定
-        setattr(instance, self.internal_name, new_value)
+        df = df[StockDf.REQUIRED_COL]
+        open_s = df["open"].apply(StockDf._replace_comma)
+        close_s = df["close"].apply(StockDf._replace_comma)
+        high_s = df["high"].apply(StockDf._replace_comma)
+        low_s = df["low"].apply(StockDf._replace_comma)
+        return StockDf(data_df=pd.DataFrame({"open": open_s, "high": high_s, "low": low_s, "close": close_s}))
 
     @staticmethod
     def _replace_comma(x) -> float:
