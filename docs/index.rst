@@ -110,11 +110,3 @@ For Users
    :maxdepth: 2
 
    sources/api
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`

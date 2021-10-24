@@ -1,11 +1,8 @@
 API Reference
 =============
 
-kabutobashi
------------
-
-Method Classes
---------------
+Method
+------
 
 .. automodule:: kabutobashi.domain.method
    :members:
