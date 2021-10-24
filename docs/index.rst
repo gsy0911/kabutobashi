@@ -20,7 +20,7 @@ code status
 
 package status
 
-.. image:: https://img.shields.io/badge/python-3.7|3.8-blue.svg
+.. image:: https://img.shields.io/badge/python-3.7|3.8|3.9-blue.svg
    :target: https://www.python.org/downloads/release/python-377/
 
 .. image:: https://img.shields.io/pypi/v/kabutobashi.svg
@@ -99,7 +99,7 @@ Utilities
     import kabutobashi as kb
 
     # n日前までの営業日の日付リストを取得する関数
-    target_date = “2020-01-01”
+    target_date = "2020-01-01"
     date_list = kb.get_past_n_days(target_date, n=40)
     
 
@@ -110,11 +110,3 @@ For Users
    :maxdepth: 2
 
    sources/api
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
