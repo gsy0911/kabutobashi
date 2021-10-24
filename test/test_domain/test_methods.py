@@ -123,6 +123,14 @@ def test_analysis_with_bollinger_bands(var_stock_df):
     assert "sell_signal" in columns
 
 
+def test_analysis_with_fitting(var_stock_df):
+    analysis_df = kb.analysis_with(var_stock_df, kb.fitting)
+    columns = analysis_df.columns
+    assert "linear_fitting" in columns
+    assert "square_fitting" in columns
+    assert "cube_fitting" in columns
+
+
 def test_get_impact_with(var_stock_df):
     result_1 = kb.get_impact_with(var_stock_df, kb.sma)
     assert "sma" in result_1.keys()
