@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 from scipy.optimize import curve_fit
 
-from .errors import PyStockBaseError, StockDfError
+from .errors import KabutobashiBaseError, StockDfError
 from kabutobashi.domain.method import *
 
 
@@ -24,7 +24,7 @@ def get_past_n_days(current_date: str, n: int = 60) -> list:
         return_candidate = _get_past_n_days(current_date=current_date, n=n, multiply=multiply)
         if len(return_candidate) == n:
             return return_candidate
-    raise PyStockBaseError(f"{n}日前を正しく取得できませんでした")
+    raise KabutobashiBaseError(f"{n}日前を正しく取得できませんでした")
 
 
 def _get_past_n_days(current_date: str, n: int, multiply: int) -> list:

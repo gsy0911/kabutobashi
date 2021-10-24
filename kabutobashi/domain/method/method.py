@@ -29,7 +29,6 @@ class Method(metaclass=ABCMeta):
 
     # 株価を保持するDataFrame
     method_name: str
-    stock_df: StockDf = None
 
     def __call__(self, stock_df: pd.DataFrame, **kwargs):
         """
@@ -108,7 +107,7 @@ class Method(metaclass=ABCMeta):
             to_plus_name: 上抜けた場合のカラムの名前
             to_minus_name: 下抜けた場合のカラムの名前
         """
-        # shorten vaiable name
+        # shorten variable name
         col = "original"
         shifted = "shifted"
 

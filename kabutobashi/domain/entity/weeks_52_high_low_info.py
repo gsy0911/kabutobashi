@@ -1,24 +1,36 @@
 from dataclasses import dataclass, asdict
+from cerberus import Validator
+from kabutobashi.errors import KabutobashiEntityError
 
 
 @dataclass(frozen=True)
 class Weeks52HighLow:
     """
     52週高値・底値
+
+    Args:
+        buy_or_sell: "買い", "強い買い", "売り", "強い売り"
     """
 
     code: int
     brand_name: str
-    close: int
-    buy: str
-    strong_buy: str
-    sell: str
-    strong_sell: str
+    close: float
     buy_or_sell: str
-    volatility_up: float
-    volatility_down: float
     volatility_ratio: float
     volatility_value: float
+    _SCHEMA = {
+        "code": {"type": "string"},
+        "brand_name": {"type": "string"},
+        "close": {"type": "float"},
+        "buy_or_sell": {"type": "string", "allowed": ["買い", "強い買い", "売り", "強い売り"]},
+        "volatility_ratio": {"type": "float"},
+        "volatility_value": {"type": "float"},
+    }
+
+    def __post_init__(self):
+        validator = Validator(self._SCHEMA)
+        if not validator.validate(self.dumps()):
+            raise KabutobashiEntityError(validator)
 
     @staticmethod
     def from_page_of(data: dict) -> "Weeks52HighLow":
@@ -28,19 +40,19 @@ class Weeks52HighLow:
         strong_sell = data["strong_sell"]
 
         return Weeks52HighLow(
-            code=int(data["code"]),
+            code=data["code"],
             brand_name=data["brand_name"],
-            close=data["close"],
-            buy=buy,
-            strong_buy=strong_buy,
-            sell=sell,
-            strong_sell=strong_sell,
+            close=float(data["close"]),
             buy_or_sell=f"{buy}{strong_buy}{sell}{strong_sell}",
-            volatility_up=data["volatility_up"],
-            volatility_down=data["volatility_down"],
-            volatility_ratio=data["volatility_ratio"],
-            volatility_value=data["volatility_value"],
+            volatility_ratio=float(Weeks52HighLow._convert(data["volatility_ratio"])),
+            volatility_value=float(Weeks52HighLow._convert(data["volatility_value"])),
         )
+
+    @staticmethod
+    def _convert(input_value: str) -> str:
+        if input_value == "-":
+            return "0"
+        return input_value.replace("%", "").replace(",", "")
 
     def dumps(self) -> dict:
         return asdict(self)
