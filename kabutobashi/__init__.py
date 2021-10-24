@@ -42,7 +42,7 @@ from .domain.page import (
     Weeks52HighLowPage,
 )
 
-from .domain.entity import StockIpo, StockInfo
+from .domain.entity import StockIpo, StockInfo, Weeks52HighLow
 
 from .utilities import (
     # n営業日前までの日付のリストを返す関数
