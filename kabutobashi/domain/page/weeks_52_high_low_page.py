@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from bs4 import BeautifulSoup
 
 from kabutobashi.domain.entity import Weeks52HighLow
+
 from .page import Page, PageDecoder
 
 

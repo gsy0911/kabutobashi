@@ -1,9 +1,10 @@
-from abc import abstractmethod, ABCMeta
+from abc import ABCMeta, abstractmethod
 from dataclasses import dataclass
+
 import matplotlib.dates as mdates
-from mplfinance.original_flavor import candlestick_ohlc
 import numpy as np
 import pandas as pd
+from mplfinance.original_flavor import candlestick_ohlc
 
 from kabutobashi.domain import StockDf
 

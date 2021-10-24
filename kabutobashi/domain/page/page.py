@@ -4,9 +4,10 @@ from datetime import datetime, timedelta, timezone
 from functools import reduce
 from typing import List, Union
 
-from bs4 import BeautifulSoup
-from kabutobashi.errors import KabutobashiPageError
 import requests
+from bs4 import BeautifulSoup
+
+from kabutobashi.errors import KabutobashiPageError
 
 from .user_agent import UserAgent
 

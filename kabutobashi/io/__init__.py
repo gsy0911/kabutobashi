@@ -3,7 +3,7 @@ io module provides input/output method
 """
 
 from datetime import datetime
-from typing import Union, Optional
+from typing import Optional, Union
 
 import pandas as pd
 
