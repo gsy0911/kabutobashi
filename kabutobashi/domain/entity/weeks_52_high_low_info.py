@@ -1,5 +1,7 @@
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
+
 from cerberus import Validator
+
 from kabutobashi.errors import KabutobashiEntityError
 
 

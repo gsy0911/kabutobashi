@@ -4,6 +4,7 @@ from typing import Union
 from bs4 import BeautifulSoup
 
 from kabutobashi.domain.entity import StockIpo
+
 from .page import Page
 
 

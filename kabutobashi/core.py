@@ -1,6 +1,8 @@
-import pandas as pd
-from kabutobashi.domain.method import Method
 from typing import Union
+
+import pandas as pd
+
+from kabutobashi.domain.method import Method
 
 # http://www.kabuciao.com/tech/deki/
 

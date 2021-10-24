@@ -4,6 +4,7 @@ from typing import Union
 from bs4 import BeautifulSoup
 
 from kabutobashi.domain.entity import StockInfo
+
 from .page import Page, PageDecoder
 
 

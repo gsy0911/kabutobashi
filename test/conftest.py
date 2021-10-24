@@ -1,5 +1,5 @@
-import sys
 import os
+import sys
 
 # テスト対象のファイルへのパスを通している
 # pytestの設定

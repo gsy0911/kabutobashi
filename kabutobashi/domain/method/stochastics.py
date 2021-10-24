@@ -1,7 +1,9 @@
-from dataclasses import dataclass
 import math
+from dataclasses import dataclass
+
 import matplotlib.pyplot as plt
 import pandas as pd
+
 from .method import Method
 
 
