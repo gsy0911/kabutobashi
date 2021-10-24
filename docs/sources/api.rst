@@ -7,13 +7,13 @@ kabutobashi
 Method Classes
 --------------
 
-.. automodule:: kabutobashi.method
+.. automodule:: kabutobashi.domain.method
    :members:
    :undoc-members:
    :show-inheritance:
 
 
-.. automodule:: kabutobashi.method.method
+.. automodule:: kabutobashi.domain.method.method
    :members:
    :undoc-members:
    :show-inheritance:
@@ -22,49 +22,49 @@ Method Classes
 methods
 ^^^^^^^
 
-.. automodule:: kabutobashi.method.adx
+.. automodule:: kabutobashi.domain.method.adx
    :members:
    :undoc-members:
    :show-inheritance:
 
 
-.. automodule:: kabutobashi.method.bollinger_bands
+.. automodule:: kabutobashi.domain.method.bollinger_bands
    :members:
    :undoc-members:
    :show-inheritance:
 
 
-.. automodule:: kabutobashi.method.ichimoku
+.. automodule:: kabutobashi.domain.method.ichimoku
    :members:
    :undoc-members:
    :show-inheritance:
 
 
-.. automodule:: kabutobashi.method.macd
+.. automodule:: kabutobashi.domain.method.macd
    :members:
    :undoc-members:
    :show-inheritance:
 
 
-.. automodule:: kabutobashi.method.momentum
+.. automodule:: kabutobashi.domain.method.momentum
    :members:
    :undoc-members:
    :show-inheritance:
 
 
-.. automodule:: kabutobashi.method.psycho_logical
+.. automodule:: kabutobashi.domain.method.psycho_logical
    :members:
    :undoc-members:
    :show-inheritance:
 
 
-.. automodule:: kabutobashi.method.sma
+.. automodule:: kabutobashi.domain.method.sma
    :members:
    :undoc-members:
    :show-inheritance:
 
 
-.. automodule:: kabutobashi.method.stochastics
+.. automodule:: kabutobashi.domain.method.stochastics
    :members:
    :undoc-members:
    :show-inheritance:
