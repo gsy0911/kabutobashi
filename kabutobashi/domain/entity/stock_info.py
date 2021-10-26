@@ -1,5 +1,7 @@
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
+
 from cerberus import Validator
+
 from kabutobashi.errors import KabutobashiEntityError
 
 
@@ -18,6 +20,7 @@ class StockInfo:
 
     code: str
     market: str
+    name: str
     industry_type: str
     open: float
     high: float
@@ -35,6 +38,7 @@ class StockInfo:
         "code": {"type": "string"},
         "market": {"type": "string"},
         "industry_type": {"type": "string"},
+        "name": {"type": "string"},
         "open": {"type": "float"},
         "high": {"type": "float"},
         "low": {"type": "float"},
@@ -55,11 +59,16 @@ class StockInfo:
             raise KabutobashiEntityError(validator)
 
     @staticmethod
+    def schema() -> list:
+        return list(StockInfo._SCHEMA.keys())
+
+    @staticmethod
     def from_page_of(data: dict) -> "StockInfo":
         label_split = data["stock_label"].split("  ")
         return StockInfo(
             code=label_split[0],
             market=label_split[1],
+            name=data["name"],
             industry_type=data["industry_type"],
             open=float(StockInfo._convert(data["open"])),
             high=float(StockInfo._convert(data["high"])),

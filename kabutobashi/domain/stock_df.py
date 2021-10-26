@@ -1,5 +1,7 @@
 from dataclasses import dataclass
+
 import pandas as pd
+
 from kabutobashi.errors import StockDfError
 
 

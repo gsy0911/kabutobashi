@@ -110,3 +110,12 @@ For Users
    :maxdepth: 2
 
    sources/api
+
+
+Other
+=====
+
+.. toctree::
+   :maxdepth: 2
+
+   sources/release

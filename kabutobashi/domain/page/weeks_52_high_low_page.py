@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from bs4 import BeautifulSoup
 
 from kabutobashi.domain.entity import Weeks52HighLow
+
 from .page import Page, PageDecoder
 
 
@@ -53,7 +54,7 @@ class Weeks52HighLowPage(Page):
         return {"volatility_ratio": ratio_candidate, "volatility_value": value_candidate}
 
     def _get(self) -> dict:
-        res = BeautifulSoup(self.get_url_text(url=self.url()), "lxml")
+        res = BeautifulSoup(self.get_url_text(url=self.url()), features="lxml")
 
         # ここからcrawlするページのタグ
         cell = "tv-screener-table__cell"

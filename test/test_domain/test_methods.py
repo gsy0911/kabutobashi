@@ -1,4 +1,5 @@
 import pytest
+
 import kabutobashi as kb
 
 
