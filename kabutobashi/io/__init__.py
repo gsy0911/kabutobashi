@@ -6,6 +6,7 @@ from datetime import datetime
 from typing import Optional, Union
 
 import pandas as pd
+from kabutobashi.domain.entity import StockInfo
 
 
 def example_data() -> pd.DataFrame:
@@ -81,31 +82,18 @@ def read_stock_csv(
 
 def _decode_stock_data(_df: pd.DataFrame) -> pd.DataFrame:
     """
-    以下のような株のデータを扱いやすいように整形する関数
-    stock_label,name,close,date,industry_type,open,high,low,unit,per,psr,pbr,volume,market_capitalization,issued_shares,crawl_datetime,code
-    1436  東証マザーズ,フィット,540.0,株価(15:00),業種建設業,555.0円,557.0円,482.0円,100株,---,0.46倍,0.54倍,"22,000株","2,312百万円","4,282千株",2020-03-13T23:31:04,1436
-    1438  名証２部,岐阜造園,"1,098.0",株価(12:38),業種建設業,"1,110.0円","1,150.0円","1,098.0円",100株,9.19倍,0.38倍,0.62倍,"3,100株","1,594百万円","1,451千株",2020-03-13T23:31:06,1438
-    :param _df:
-    :return:
+
+    Args:
+        _df:
+
+    Returns:
+
     """
-
     # 正規表現を利用して数値のみにする
-    _df = _df.assign(
-        market=_df["stock_label"].str.extract("[0-9]+ (.+)", expand=False),
-        open=_df["open"].str.extract("(.+)円", expand=False),
-        high=_df["high"].str.extract("(.+)円", expand=False),
-        low=_df["low"].str.extract("(.+)円", expand=False),
-        unit=_df["unit"].str.extract("(.+)株", expand=False),
-        per=_df["per"].str.extract("(.+)倍", expand=False),
-        psr=_df["psr"].str.extract("(.+)倍", expand=False),
-        pbr=_df["pbr"].str.extract("(.+)倍", expand=False),
-        volume=_df["volume"].str.extract("(.+)株", expand=False),
-        dt=_df["crawl_datetime"].apply(lambda x: datetime.strptime(x, "%Y-%m-%dT%H:%M:%S").strftime("%Y-%m-%d")),
+    return (
+        _df.assign(
+            dt=_df["crawl_datetime"].apply(lambda x: datetime.fromisoformat(x).strftime("%Y-%m-%d")),
+        )
+        .loc[:, StockInfo.schema()]
+        .drop_duplicates()
     )
-
-    # 必要なカラムに絞る
-    required_columns = ["code", "open", "close", "high", "low", "unit", "volume", "per", "psr", "pbr", "market", "dt"]
-    _df = _df.loc[:, required_columns].drop_duplicates()
-    # 変な値はpd.NAに変換
-    _df = _df.replace("---", pd.NA)
-    return _df

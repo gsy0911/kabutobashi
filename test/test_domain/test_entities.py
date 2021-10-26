@@ -9,6 +9,7 @@ class TestStockInfo:
             _ = kb.StockInfo(
                 code="1234",
                 market="market",
+                name="",
                 industry_type="industry_type",
                 open="",
                 high="",

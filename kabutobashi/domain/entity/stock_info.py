@@ -37,8 +37,8 @@ class StockInfo:
     _SCHEMA = {
         "code": {"type": "string"},
         "market": {"type": "string"},
-        "name": {"type": "string"},
         "industry_type": {"type": "string"},
+        "name": {"type": "string"},
         "open": {"type": "float"},
         "high": {"type": "float"},
         "low": {"type": "float"},
@@ -57,6 +57,10 @@ class StockInfo:
         validator = Validator(self._SCHEMA)
         if not validator.validate(self.dumps()):
             raise KabutobashiEntityError(validator)
+
+    @staticmethod
+    def schema() -> list:
+        return list(StockInfo._SCHEMA.keys())
 
     @staticmethod
     def from_page_of(data: dict) -> "StockInfo":
