@@ -23,13 +23,17 @@ project = 'kabutobashi'
 copyright = '2020, gsy0911'
 author = 'gsy0911'
 
-
 # -- General configuration ---------------------------------------------------
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.napoleon']
+extensions = [
+    'sphinx.ext.autodoc',
+    'sphinx.ext.napoleon',
+    # parse `markdown`: https://www.sphinx-doc.org/ja/master/usage/markdown.html
+    'myst_parser'
+]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
