@@ -20,6 +20,7 @@ class StockInfo:
 
     code: str
     market: str
+    name: str
     industry_type: str
     open: float
     high: float
@@ -36,6 +37,7 @@ class StockInfo:
     _SCHEMA = {
         "code": {"type": "string"},
         "market": {"type": "string"},
+        "name": {"type": "string"},
         "industry_type": {"type": "string"},
         "open": {"type": "float"},
         "high": {"type": "float"},
@@ -62,6 +64,7 @@ class StockInfo:
         return StockInfo(
             code=label_split[0],
             market=label_split[1],
+            name=data["name"],
             industry_type=data["industry_type"],
             open=float(StockInfo._convert(data["open"])),
             high=float(StockInfo._convert(data["high"])),
