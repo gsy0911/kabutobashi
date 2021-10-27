@@ -1,5 +1,9 @@
 # Release Note
 
+## 0.2.2
+
+- BUG FIX: Week52HighLow validator ([#62](https://github.com/gsy0911/kabutobashi/issues/62))
+
 ## 0.2.1
 
 - add release note ([#56](https://github.com/gsy0911/kabutobashi/issues/56))
