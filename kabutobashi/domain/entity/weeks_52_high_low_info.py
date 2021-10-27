@@ -24,7 +24,7 @@ class Weeks52HighLow:
         "code": {"type": "string"},
         "brand_name": {"type": "string"},
         "close": {"type": "float"},
-        "buy_or_sell": {"type": "string", "allowed": ["買い", "強い買い", "売り", "強い売り"]},
+        "buy_or_sell": {"type": "string", "allowed": ["買い", "強い買い", "売り", "強い売り", ""]},
         "volatility_ratio": {"type": "float"},
         "volatility_value": {"type": "float"},
     }
