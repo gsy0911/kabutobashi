@@ -4,3 +4,4 @@ lxml
 requests
 beautifulsoup4
 kabutobashi
+myst_parser
