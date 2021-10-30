@@ -20,8 +20,8 @@ code status
 
 package status
 
-.. image:: https://img.shields.io/badge/python-3.7|3.8|3.9-blue.svg
-   :target: https://www.python.org/downloads/release/python-377/
+.. image:: https://img.shields.io/pypi/pyversions/kabutobashi.svg
+   :target: https://pypi.org/project/kabutobashi/
 
 .. image:: https://img.shields.io/pypi/v/kabutobashi.svg
     :target: https://pypi.org/project/kabutobashi/
