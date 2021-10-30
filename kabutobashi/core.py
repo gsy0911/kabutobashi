@@ -1,12 +1,13 @@
-import pandas as pd
-from kabutobashi.method import Method
 from typing import Union
+
+import pandas as pd
+
+from kabutobashi.domain.method import Method
+
 # http://www.kabuciao.com/tech/deki/
 
 
-def analysis_with(
-        stock_df: pd.DataFrame,
-        method: Method) -> pd.DataFrame:
+def analysis_with(stock_df: pd.DataFrame, method: Method) -> pd.DataFrame:
     """
 
     Args:
@@ -19,10 +20,7 @@ def analysis_with(
     return stock_df.pipe(method)
 
 
-def get_impact_with(
-        stock_df: pd.DataFrame,
-        method: Union[Method, list],
-        **kwargs) -> dict:
+def get_impact_with(stock_df: pd.DataFrame, method: Union[Method, list], **kwargs) -> dict:
     """
     入力のDataFrameに対して、分析の結果を返す関数
 
