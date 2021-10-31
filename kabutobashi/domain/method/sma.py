@@ -1,9 +1,11 @@
 from dataclasses import dataclass
+from typing import Optional
 
 import matplotlib.pyplot as plt
 import pandas as pd
 
 from .method import Method
+from kabutobashi.domain.entity import StockProcessed
 
 
 @dataclass(frozen=True)
@@ -36,10 +38,13 @@ class SMA(Method):
         # set candlestick
         self.add_ax_candlestick(ax, _df)
 
-        # plot macd
+        # plot sma
         ax.plot(_df.index, _df["sma_long"], color="#dc143c", label="sma_long")
         ax.plot(_df.index, _df["sma_medium"], color="#ffa500", label="sma_medium")
         ax.plot(_df.index, _df["sma_short"], color="#1e90ff", label="sma_short")
 
         ax.legend(loc="best")  # 各線のラベルを表示
         return fig
+
+    def _process(self) -> dict:
+        return {"sma_long": "#dc143c", "sma_medium": "#ffa500", "sma_short": "#1e90ff"}

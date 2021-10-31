@@ -1,5 +1,6 @@
 from abc import ABCMeta, abstractmethod
 from dataclasses import dataclass
+from typing import Optional
 
 import matplotlib.dates as mdates
 import numpy as np
@@ -7,6 +8,7 @@ import pandas as pd
 from mplfinance.original_flavor import candlestick_ohlc
 
 from kabutobashi.domain import StockDf
+from kabutobashi.domain.entity import StockProcessed
 
 
 @dataclass(frozen=True)
@@ -74,6 +76,24 @@ class Method(metaclass=ABCMeta):
 
     @abstractmethod
     def _method(self, _df: pd.DataFrame) -> pd.DataFrame:
+        raise NotImplementedError("please implement your code")
+
+    def process(self, _df: pd.DataFrame) -> StockProcessed:
+        code_list = list(_df['code'].unique())
+        if len(code_list) > 1:
+            raise ValueError()
+        base_df = _df[list(StockProcessed.BASE_DF_SCHEMA.keys())]
+
+        return StockProcessed(
+            code=code_list[0],
+            base_df=base_df,
+            processed_dfs={self.method_name: _df.pipe(self._method).pipe(self._signal)},
+            methods=[self.method_name],
+            color_mapping=self._process()
+        )
+
+    @abstractmethod
+    def _process(self) -> Optional[dict]:
         raise NotImplementedError("please implement your code")
 
     def visualize(self, _df: pd.DataFrame):

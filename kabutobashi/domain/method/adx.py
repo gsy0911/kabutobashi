@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Optional
 
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -170,3 +171,6 @@ class ADX(Method):
 
         ax1.legend(loc="best")  # 各線のラベルを表示
         return fig
+
+    def _process(self) -> Optional[dict]:
+        return None
