@@ -1,11 +1,7 @@
-from dataclasses import asdict, dataclass, field
+from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Union
 
-from cerberus import Validator
 import pandas as pd
-
-#
-from kabutobashi.errors import KabutobashiEntityError
 
 
 @dataclass(frozen=True)
@@ -74,6 +70,26 @@ class StockProcessed:
         )
 
     def get_impact(self, influence: int = 2, tail: int = 5) -> dict:
+        """
+
+        Args:
+            influence:
+            tail:
+
+        Returns:
+            Dict[str, float]
+
+        Examples:
+            >>> import kabutobashi as kb
+            >>> df = kb.read_csv(...)
+            >>> processed = kb.StockProcessed.of(_df=df, methods=[kb.sma, kb.macd])
+            >>> processed.get_impact()
+            {"sma": 0.4, "macd": -0.04}
+            >>> sma = kb.SMA(short_term=3, medium_term=15, long_term=50)
+            >>> processed = kb.StockProcessed.of(_df=df, methods=[sma, kb.macd])
+            >>> processed.get_impact()
+            {"sma": 0.2, "macd": -0.04}
+        """
         return {k: self._get_impact(_df=v, influence=influence, tail=tail) for k, v in self.processed_dfs.items()}
 
     @staticmethod

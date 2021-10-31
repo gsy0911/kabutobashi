@@ -47,10 +47,6 @@ class Method(metaclass=ABCMeta):
         """
         # 各手法指標となる値を計算し、買いと売りの指標を付与
         signal_df = stock_df.pipe(self.validate).pipe(self.method).pipe(self.signal)
-        # 買い・売りのシグナルを算出する場合
-        if "impact" in kwargs:
-            return signal_df.pipe(self._get_impact, **kwargs)
-        # それ以外は解析結果のdfを返す
         return signal_df
 
     def __str__(self) -> str:
@@ -169,25 +165,6 @@ class Method(metaclass=ABCMeta):
         _df["diff"] = _df["original"] - _df["shifted"]
         _df["diff_rolling_sum"] = _df["diff"].rolling(5).sum()
         return _df["diff_rolling_sum"]
-
-    @staticmethod
-    def _get_impact(_df: pd.DataFrame, influence: int = 2, tail: int = 5, **kwargs) -> float:
-        """
-        売りと買いのシグナルの余波の合計値を返す。
-
-        Args:
-            _df:
-            influence:
-            tail:
-
-        Returns:
-            [-1,1]の値をとる。-1: 売り、1: 買いを表す
-        """
-        _df["buy_impact"] = _df["buy_signal"].ewm(span=influence).mean()
-        _df["sell_impact"] = _df["sell_signal"].ewm(span=influence).mean()
-        buy_impact_index = _df["buy_impact"].iloc[-tail:].sum()
-        sell_impact_index = _df["sell_impact"].iloc[-tail:].sum()
-        return round(buy_impact_index - sell_impact_index, 5)
 
     @staticmethod
     def add_ax_candlestick(ax, _df: pd.DataFrame):
