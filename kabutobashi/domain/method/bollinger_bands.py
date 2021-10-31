@@ -1,11 +1,9 @@
 from dataclasses import dataclass
-from typing import Optional
 
 import matplotlib.pyplot as plt
 import pandas as pd
 
 from .method import Method
-from kabutobashi.domain.entity import StockProcessed
 
 
 @dataclass(frozen=True)
@@ -66,5 +64,12 @@ class BollingerBands(Method):
         ax.legend(loc="best")  # 各線のラベルを表示
         return fig
 
-    def _process(self) -> Optional[dict]:
-        return None
+    def _process(self) -> list:
+        return [
+            {"df_key": "upper_1_sigma", "color": "", "label": "+1s"},
+            {"df_key": "lower_1_sigma", "color": "", "label": "-1s"},
+            {"df_key": "upper_2_sigma", "color": "", "label": "+2s"},
+            {"df_key": "lower_2_sigma", "color": "", "label": "-2s"},
+            {"df_key": "upper_3_sigma", "color": "", "label": "+3s"},
+            {"df_key": "lower_3_sigma", "color": "", "label": "-3s"},
+        ]

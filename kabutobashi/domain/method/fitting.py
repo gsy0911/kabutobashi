@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import Optional
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -7,7 +6,6 @@ import pandas as pd
 from scipy.optimize import curve_fit
 
 from .method import Method
-from kabutobashi.domain.entity import StockProcessed
 
 
 @dataclass(frozen=True)
@@ -65,5 +63,9 @@ class Fitting(Method):
         ax.legend(loc="best")  # 各線のラベルを表示
         return fig
 
-    def _process(self) -> Optional[dict]:
-        return None
+    def _process(self) -> list:
+        return [
+            {"df_key": "linear_fitting", "color": "", "label": ""},
+            {"df_key": "square_fitting", "color": "", "label": ""},
+            {"df_key": "cube_fitting", "color": "", "label": ""},
+        ]

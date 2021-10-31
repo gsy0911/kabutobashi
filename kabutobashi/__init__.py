@@ -24,7 +24,7 @@ from kabutobashi.io import (  # read csv data; provide example stock data; read 
     read_stock_csv,
 )
 
-from .domain.entity import StockInfo, StockIpo, Weeks52HighLow
+from .domain.entity import StockInfo, StockIpo, Weeks52HighLow, StockProcessed
 
 # classes or functions about crawl web pages
 from .domain.page import (  # ある年にIPOした銘柄の情報を取得する; 単一の株価の詳細情報を取得する; 52週高値底値の値を取得

@@ -79,17 +79,19 @@ class Method(metaclass=ABCMeta):
         raise NotImplementedError("please implement your code")
 
     def process(self, _df: pd.DataFrame) -> StockProcessed:
-        code_list = list(_df['code'].unique())
+        code_list = list(_df["code"].unique())
         if len(code_list) > 1:
             raise ValueError()
         base_df = _df[list(StockProcessed.BASE_DF_SCHEMA.keys())]
+        color_mapping = self._process()
+        columns = ["dt", "buy_signal", "sell_signal"] + [v["df_key"] for v in color_mapping]
 
         return StockProcessed(
             code=code_list[0],
             base_df=base_df,
-            processed_dfs={self.method_name: _df.pipe(self._method).pipe(self._signal)},
+            processed_dfs={self.method_name: _df.pipe(self._method).pipe(self._signal).loc[:, columns]},
             methods=[self.method_name],
-            color_mapping=self._process()
+            color_mapping=color_mapping,
         )
 
     @abstractmethod

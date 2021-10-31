@@ -46,5 +46,9 @@ class SMA(Method):
         ax.legend(loc="best")  # 各線のラベルを表示
         return fig
 
-    def _process(self) -> dict:
-        return {"sma_long": "#dc143c", "sma_medium": "#ffa500", "sma_short": "#1e90ff"}
+    def _process(self) -> list:
+        return [
+            {"df_key": "sma_long", "color": "#dc143c", "label": ""},
+            {"df_key": "sma_medium", "color": "#ffa500", "label": ""},
+            {"df_key": "sma_short", "color": "#1e90ff", "label": ""},
+        ]
