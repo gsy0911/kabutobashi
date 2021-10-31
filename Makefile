@@ -6,10 +6,10 @@ help: ## show commands ## make
 
 .PHONY: format
 format: ## format with black ## make format
-	black kabutobashi --line-length 120
-	black test --line-length 120
 	isort kabutobashi
 	isort test
+	black kabutobashi --line-length 120
+	black test --line-length 120
 
 .PHONY: deploy
 deploy: ## upload to pypi ## make deploy
