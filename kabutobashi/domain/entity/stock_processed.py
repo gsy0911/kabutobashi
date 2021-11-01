@@ -32,7 +32,12 @@ class StockProcessed:
             "type": "list",
             "schema": {
                 "type": "dict",
-                "schema": {"df_key": {"type": "string"}, "color": {"type": "string"}, "label": {"type": "string"}},
+                "schema": {
+                    "df_key": {"type": "string"},
+                    "color": {"type": "string"},
+                    "label": {"type": "string"},
+                    "plot": {"type": "string", "allowed": ["plot", "bar"], "required": False},
+                },
             },
         },
         "visualize_option": {"type": "dict", "schema": {"position": {"type": "string", "allowed": ["in", "lower"]}}},
@@ -133,7 +138,7 @@ class StockProcessed:
         ohlc = np.vstack((time_series, data)).T
         candlestick_ohlc(ax, ohlc, width=0.7, colorup="g", colordown="r")
 
-    def visualize(self):
+    def visualize(self, size_ratio: int = 2):
         """
         macdはlower
         sma、bolinger_bandsは同じところに表示させる。
@@ -155,14 +160,13 @@ class StockProcessed:
             return {"height_ratios": [3] + [1] * (n_rows - 1)}
 
         gridspec_kw = _gridspec_kw()
-        print(f"n_rows: {n_rows}, gridspec_kw: {gridspec_kw}")
-        fig, axs = plt.subplots(nrows=n_rows, ncols=1, figsize=(6, 5), gridspec_kw=gridspec_kw)
+        fig, axs = plt.subplots(
+            nrows=n_rows, ncols=1, figsize=(6 * size_ratio, 5 * size_ratio), gridspec_kw=gridspec_kw
+        )
         # auto-formatting x-axis
         fig.autofmt_xdate()
         # set candlestick base
         self.add_ax_candlestick(axs[0], self.base_df)
-        # display labels
-        axs[0].legend(loc="best")
 
         ax_idx = 1
         # plots
@@ -176,15 +180,21 @@ class StockProcessed:
                     df_key = m["df_key"]
                     color = m["color"]
                     label = m["label"]
-                    print(m)
                     axs[0].plot(time_series, df[df_key], label=label)
+                # display labels
+                axs[0].legend(loc="best")
             elif position == "lower":
                 for m in mapping:
                     df_key = m["df_key"]
                     color = m["color"]
                     label = m["label"]
-                    print(m)
-                    axs[ax_idx].plot(time_series, df[df_key], label=label)
+                    plot = m.get("plot", "plot")
+                    if plot == "plot":
+                        axs[ax_idx].plot(time_series, df[df_key], label=label)
+                    elif plot == "bar":
+                        axs[ax_idx].bar(time_series, df[df_key], label=label)
+                # display labels
+                axs[ax_idx].legend(loc="best")
                 # lower
                 ax_idx += 1
             else:
