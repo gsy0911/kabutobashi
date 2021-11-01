@@ -17,15 +17,7 @@ class StockProcessed:
     # {"method": "", "data": "", "color_mapping": List[dict]}
     processed_dfs: List[Dict[str, pd.DataFrame]] = field(repr=False)
 
-    BASE_DF_SCHEMA = {
-        "code": {"type": "string"},
-        "open": {"type": "float"},
-        "high": {"type": "float"},
-        "low": {"type": "float"},
-        "close": {"type": "float"},
-        "dt": {"type": "string"},
-    }
-
+    REQUIRED_DF_COLUMNS = ["code", "open", "close", "high", "low", "dt"]
     PROCESSED_SCHEMA = {
         "method": {"type": "string"},
         "data": {"required": True},
@@ -50,7 +42,14 @@ class StockProcessed:
         return base
 
     def _validate(self):
-        pass
+        columns = list(self.base_df.columns)
+        # 必須のカラム確認
+        if not all([item in columns for item in self.REQUIRED_DF_COLUMNS]):
+            return KabutobashiEntityError(columns)
+
+        validator = Validator(self.PROCESSED_SCHEMA)
+        if not validator.validate(self.processed_dfs):
+            raise KabutobashiEntityError(validator)
 
     def __add__(self, other: "StockProcessed") -> "StockProcessed":
         if not isinstance(other, StockProcessed):

@@ -78,7 +78,7 @@ class Method(metaclass=ABCMeta):
         code_list = list(_df["code"].unique())
         if len(code_list) > 1:
             raise ValueError()
-        base_df = _df[list(StockProcessed.BASE_DF_SCHEMA.keys())]
+        base_df = _df[StockProcessed.REQUIRED_DF_COLUMNS]
         color_mapping = self._process()
         columns = ["dt", "buy_signal", "sell_signal"] + [v["df_key"] for v in color_mapping]
 
