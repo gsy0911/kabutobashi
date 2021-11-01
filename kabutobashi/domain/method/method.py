@@ -90,7 +90,7 @@ class Method(metaclass=ABCMeta):
                     "method": self.method_name,
                     "data": _df.pipe(self._method).pipe(self._signal).loc[:, columns],
                     "color_mapping": color_mapping,
-                    "visualize_option": self._visualize_option()
+                    "visualize_option": self._visualize_option(),
                 }
             ],
         )
@@ -101,12 +101,6 @@ class Method(metaclass=ABCMeta):
 
     @abstractmethod
     def _visualize_option(self) -> dict:
-        raise NotImplementedError("please implement your code")
-
-    def visualize(self, _df: pd.DataFrame):
-        return self._visualize(_df=_df)
-
-    def _visualize(self, _df: pd.DataFrame):
         raise NotImplementedError("please implement your code")
 
     def signal(self, _df: pd.DataFrame) -> pd.DataFrame:

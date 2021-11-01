@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 
-import matplotlib.pyplot as plt
 import pandas as pd
 
 from .method import Method
@@ -28,27 +27,11 @@ class SMA(Method):
         _df = _df.rename(columns={"to_plus": "buy_signal", "to_minus": "sell_signal"})
         return _df
 
-    def _visualize(self, _df: pd.DataFrame):
-        fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(6, 5))
-        # x軸のオートフォーマット
-        fig.autofmt_xdate()
-
-        # set candlestick
-        self.add_ax_candlestick(ax, _df)
-
-        # plot sma
-        ax.plot(_df.index, _df["sma_long"], color="#dc143c", label="sma_long")
-        ax.plot(_df.index, _df["sma_medium"], color="#ffa500", label="sma_medium")
-        ax.plot(_df.index, _df["sma_short"], color="#1e90ff", label="sma_short")
-
-        ax.legend(loc="best")  # 各線のラベルを表示
-        return fig
-
     def _color_mapping(self) -> list:
         return [
-            {"df_key": "sma_long", "color": "#dc143c", "label": ""},
-            {"df_key": "sma_medium", "color": "#ffa500", "label": ""},
-            {"df_key": "sma_short", "color": "#1e90ff", "label": ""},
+            {"df_key": "sma_long", "color": "#dc143c", "label": f"sma({self.long_term})"},
+            {"df_key": "sma_medium", "color": "#ffa500", "label": f"sma({self.medium_term})"},
+            {"df_key": "sma_short", "color": "#1e90ff", "label": f"sma({self.short_term})"},
         ]
 
     def _visualize_option(self) -> dict:
