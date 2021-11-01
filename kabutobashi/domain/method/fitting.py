@@ -63,9 +63,12 @@ class Fitting(Method):
         ax.legend(loc="best")  # 各線のラベルを表示
         return fig
 
-    def _process(self) -> list:
+    def _color_mapping(self) -> list:
         return [
             {"df_key": "linear_fitting", "color": "", "label": ""},
             {"df_key": "square_fitting", "color": "", "label": ""},
             {"df_key": "cube_fitting", "color": "", "label": ""},
         ]
+
+    def _visualize_option(self) -> dict:
+        return {"position": "in"}

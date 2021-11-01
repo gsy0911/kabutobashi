@@ -79,7 +79,7 @@ class Method(metaclass=ABCMeta):
         if len(code_list) > 1:
             raise ValueError()
         base_df = _df[StockProcessed.REQUIRED_DF_COLUMNS]
-        color_mapping = self._process()
+        color_mapping = self._color_mapping()
         columns = ["dt", "buy_signal", "sell_signal"] + [v["df_key"] for v in color_mapping]
 
         return StockProcessed(
@@ -90,12 +90,17 @@ class Method(metaclass=ABCMeta):
                     "method": self.method_name,
                     "data": _df.pipe(self._method).pipe(self._signal).loc[:, columns],
                     "color_mapping": color_mapping,
+                    "visualize_option": self._visualize_option()
                 }
             ],
         )
 
     @abstractmethod
-    def _process(self) -> Optional[dict]:
+    def _color_mapping(self) -> list:
+        raise NotImplementedError("please implement your code")
+
+    @abstractmethod
+    def _visualize_option(self) -> dict:
         raise NotImplementedError("please implement your code")
 
     def visualize(self, _df: pd.DataFrame):

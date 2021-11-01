@@ -125,9 +125,12 @@ class Stochastics(Method):
         ax1.legend(loc="best")  # 各線のラベルを表示
         return fig
 
-    def _process(self) -> list:
+    def _color_mapping(self) -> list:
         return [
             {"df_key": "K", "color": "", "label": "%K"},
             {"df_key": "D", "color": "", "label": "%D"},
             {"df_key": "SD", "color": "", "label": "%SD"},
         ]
+
+    def _visualize_option(self) -> dict:
+        return {"position": "lower"}

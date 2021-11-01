@@ -51,7 +51,10 @@ class PsychoLogical(Method):
         ax1.legend(loc="best")  # 各線のラベルを表示
         return fig
 
-    def _process(self) -> list:
+    def _color_mapping(self) -> list:
         return [
             {"df_key": "psycho_line", "color": "", "label": ""},
         ]
+
+    def _visualize_option(self) -> dict:
+        return {"position": "in"}

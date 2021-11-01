@@ -58,9 +58,12 @@ class MACD(Method):
         ax1.legend(loc="best")  # 各線のラベルを表示
         return fig
 
-    def _process(self) -> list:
+    def _color_mapping(self) -> list:
         return [
             {"df_key": "macd", "color": "", "label": ""},
             {"df_key": "signal", "color": "", "label": ""},
             {"df_key": "histogram", "color": "", "label": ""},
         ]
+
+    def _visualize_option(self) -> dict:
+        return {"position": "lower"}

@@ -64,7 +64,7 @@ class BollingerBands(Method):
         ax.legend(loc="best")  # 各線のラベルを表示
         return fig
 
-    def _process(self) -> list:
+    def _color_mapping(self) -> list:
         return [
             {"df_key": "upper_1_sigma", "color": "", "label": "+1s"},
             {"df_key": "lower_1_sigma", "color": "", "label": "-1s"},
@@ -73,3 +73,6 @@ class BollingerBands(Method):
             {"df_key": "upper_3_sigma", "color": "", "label": "+3s"},
             {"df_key": "lower_3_sigma", "color": "", "label": "-3s"},
         ]
+
+    def _visualize_option(self) -> dict:
+        return {"position": "in"}

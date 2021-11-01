@@ -171,10 +171,13 @@ class ADX(Method):
         ax1.legend(loc="best")  # 各線のラベルを表示
         return fig
 
-    def _process(self) -> list:
+    def _color_mapping(self) -> list:
         return [
             {"df_key": "plus_di", "color": "", "label": "+DI"},
             {"df_key": "minus_di", "color": "", "label": "-DI"},
             {"df_key": "ADX", "color": "", "label": "ADX"},
             {"df_key": "ADXR", "color": "", "label": "ADXR"},
         ]
+
+    def _visualize_option(self) -> dict:
+        return {"position": "lower"}

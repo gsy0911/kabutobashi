@@ -22,6 +22,7 @@ class StockProcessed:
         "method": {"type": "string"},
         "data": {"required": True},
         "color_mapping": {"type": "list", "schema": {"type": "dict"}},
+        "visualize_option": {"type": "dict", "schema": {"position": {"type": "string", "allowed": ["in", "lower"]}}}
     }
 
     @staticmethod
