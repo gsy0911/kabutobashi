@@ -85,9 +85,13 @@ class Method(metaclass=ABCMeta):
         return StockProcessed(
             code=code_list[0],
             base_df=base_df,
-            processed_dfs={self.method_name: _df.pipe(self._method).pipe(self._signal).loc[:, columns]},
-            methods=[self.method_name],
-            color_mapping=color_mapping,
+            processed_dfs=[
+                {
+                    "method": self.method_name,
+                    "data": _df.pipe(self._method).pipe(self._signal).loc[:, columns],
+                    "color_mapping": color_mapping,
+                }
+            ],
         )
 
     @abstractmethod

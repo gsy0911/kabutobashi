@@ -3,7 +3,7 @@ import seaborn as sns
 # methods to analysis
 # import errors
 from kabutobashi import errors
-from kabutobashi.core import analysis_with, get_impact_with  # technical analysis function; get buy or sell signal value
+from kabutobashi.core import analysis_with  # technical analysis function; get buy or sell signal value
 from kabutobashi.domain.method import (
     ADX,
     MACD,
@@ -24,7 +24,7 @@ from kabutobashi.io import (  # read csv data; provide example stock data; read 
     read_stock_csv,
 )
 
-from .domain.entity import StockInfo, StockIpo, Weeks52HighLow, StockProcessed
+from .domain.entity import StockInfo, StockIpo, StockProcessed, Weeks52HighLow
 
 # classes or functions about crawl web pages
 from .domain.page import (  # ある年にIPOした銘柄の情報を取得する; 単一の株価の詳細情報を取得する; 52週高値底値の値を取得

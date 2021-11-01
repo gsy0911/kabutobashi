@@ -13,11 +13,9 @@ class StockProcessed:
     """
 
     code: Optional[Union[str, int]]
-    # str: methods, pd.DataFrame: ProcessedDataFrame
-    methods: List[str]
-    color_mapping: Optional[List[dict]]
     base_df: pd.DataFrame = field(repr=False)
-    processed_dfs: Dict[str, pd.DataFrame] = field(repr=False)
+    # {"method": "", "data": "", "color_mapping": List[dict]}
+    processed_dfs: List[Dict[str, pd.DataFrame]] = field(repr=False)
 
     BASE_DF_SCHEMA = {
         "code": {"type": "string"},
@@ -26,6 +24,12 @@ class StockProcessed:
         "low": {"type": "float"},
         "close": {"type": "float"},
         "dt": {"type": "string"},
+    }
+
+    PROCESSED_SCHEMA = {
+        "method": {"type": "string"},
+        "data": {"required": True},
+        "color_mapping": {"type": "list", "schema": {"type": "dict"}},
     }
 
     @staticmethod
@@ -53,20 +57,13 @@ class StockProcessed:
             raise ValueError()
 
         # update
-        color_mapping = []
-        color_mapping.extend(self.color_mapping)
-        color_mapping.extend(other.color_mapping)
-
-        # update
-        processed_dfs = {}
-        processed_dfs.update(self.processed_dfs)
-        processed_dfs.update(other.processed_dfs)
+        processed_dfs = []
+        processed_dfs.extend(self.processed_dfs)
+        processed_dfs.extend(other.processed_dfs)
         return StockProcessed(
             code=self.code,
-            methods=self.methods + other.methods,
-            color_mapping=color_mapping,
             base_df=self.base_df,
-            processed_dfs=processed_dfs
+            processed_dfs=processed_dfs,
         )
 
     def get_impact(self, influence: int = 2, tail: int = 5) -> dict:
@@ -90,7 +87,12 @@ class StockProcessed:
             >>> processed.get_impact()
             {"sma": 0.2, "macd": -0.04}
         """
-        return {k: self._get_impact(_df=v, influence=influence, tail=tail) for k, v in self.processed_dfs.items()}
+        result_dict = {}
+        for v in self.processed_dfs:
+            result_dict.update({
+                v['method']: self._get_impact(_df=v['data'], influence=influence, tail=tail)
+            })
+        return result_dict
 
     @staticmethod
     def _get_impact(_df: pd.DataFrame, influence: int, tail: int) -> float:
