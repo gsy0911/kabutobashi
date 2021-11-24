@@ -3,7 +3,6 @@ from datetime import datetime, timedelta
 import jpholiday
 import numpy as np
 import pandas as pd
-from scipy.optimize import curve_fit
 
 from kabutobashi.domain.method import *
 
@@ -129,6 +128,8 @@ def train_test_sliding_split(
 
 
 def compute_fitting(array_y: list, prefix: str) -> dict:
+    from scipy.optimize import curve_fit
+
     statistical_values = {}
     array_x = np.array(range(0, len(array_y)))
 

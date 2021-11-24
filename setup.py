@@ -43,9 +43,11 @@ setuptools.setup(
         "beautifulsoup4",
         "mplfinance",
         "matplotlib",
-        "scipy",
         "cerberus"
     ],
+    extra_require={
+        "ml": ["scipy"]
+    },
     license="MIT",
     classifiers=[
         "Programming Language :: Python :: 3",
