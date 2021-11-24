@@ -3,7 +3,6 @@ from dataclasses import dataclass
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from scipy.optimize import curve_fit
 
 from .method import Method
 
@@ -23,6 +22,8 @@ class Fitting(Method):
         :param _df:
         :return:
         """
+        from scipy.optimize import curve_fit
+
         # histogramが図として表現されるMACDの値
         array_y = _df["close"]
         array_x = np.array(range(0, len(array_y)))
