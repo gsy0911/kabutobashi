@@ -1,13 +1,11 @@
 from abc import ABCMeta, abstractmethod
 from dataclasses import dataclass
-from typing import Optional
 
 import matplotlib.dates as mdates
 import numpy as np
 import pandas as pd
 from mplfinance.original_flavor import candlestick_ohlc
 
-from kabutobashi.domain import StockDf
 from kabutobashi.domain.entity import StockProcessed, StockDataSingleCode
 
 
