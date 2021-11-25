@@ -130,7 +130,7 @@ class StockProcessed:
         return round(buy_impact_index - sell_impact_index, 5)
 
     @staticmethod
-    def add_ax_candlestick(ax, _df: pd.DataFrame):
+    def _add_ax_candlestick(ax, _df: pd.DataFrame):
         # datetime -> float
         time_series = mdates.date2num(_df["dt"])
         data = _df[["open", "high", "low", "close"]].values.T
@@ -166,7 +166,7 @@ class StockProcessed:
         # auto-formatting x-axis
         fig.autofmt_xdate()
         # set candlestick base
-        self.add_ax_candlestick(axs[0], self.base_df)
+        self._add_ax_candlestick(axs[0], self.base_df)
 
         ax_idx = 1
         # plots

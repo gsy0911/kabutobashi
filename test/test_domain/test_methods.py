@@ -124,6 +124,7 @@ def test_analysis_with_bollinger_bands(var_stock_df):
     assert "sell_signal" in columns
 
 
+@pytest.mark.skip
 def test_analysis_with_fitting(var_stock_df):
     analysis_df = kb.analysis_with(var_stock_df, kb.fitting)
     columns = analysis_df.columns

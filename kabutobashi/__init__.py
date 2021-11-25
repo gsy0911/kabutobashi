@@ -1,4 +1,4 @@
-import seaborn as sns
+# import seaborn as sns
 
 # methods to analysis
 # import errors
@@ -39,7 +39,7 @@ from .utilities import (  # n営業日前までの日付のリストを返す関
     train_test_sliding_split,
 )
 
-sns.set()
+# sns.set()
 
 # create and initialize instance
 sma = SMA(short_term=5, medium_term=21, long_term=70)
