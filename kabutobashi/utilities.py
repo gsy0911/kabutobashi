@@ -104,29 +104,6 @@ def format_to_stock_df(_df: pd.DataFrame) -> pd.DataFrame:
     return stock_df
 
 
-def train_test_sliding_split(
-    stock_df: pd.DataFrame, *, buy_sell_term_days: int = 5, sliding_window: int = 60, step: int = 2
-):
-    """
-
-    Args:
-        stock_df:
-        buy_sell_term_days:
-        sliding_window:
-        step:
-
-    Returns:
-
-    """
-    df_length = len(stock_df.index)
-    if df_length < buy_sell_term_days + sliding_window:
-        raise StockDfError("入力されたDataFrameの長さがwindow幅よりも小さいです")
-    loop = df_length - (buy_sell_term_days + sliding_window)
-    for idx, i in enumerate(range(0, loop, step)):
-        offset = i + sliding_window
-        yield idx, stock_df[i:offset], stock_df[offset : offset + buy_sell_term_days]
-
-
 def compute_fitting(array_y: list, prefix: str) -> dict:
     from scipy.optimize import curve_fit
 

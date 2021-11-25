@@ -97,16 +97,16 @@ class StockDataSingleDay:
 
 @dataclass(frozen=True)
 class StockDataSingleCode:
-    data_df: pd.DataFrame
+    df: pd.DataFrame
     code: str
     REQUIRED_COL = ["open", "high", "low", "close"]
 
     def __post_init__(self):
         self._null_check()
-        self._code_constraint_check(df=self.data_df)
+        self._code_constraint_check(df=self.df)
 
     def _null_check(self):
-        if self.data_df is None:
+        if self.df is None:
             raise KabutobashiEntityError("required")
 
     @staticmethod
@@ -120,7 +120,7 @@ class StockDataSingleCode:
                 raise KabutobashiEntityError("no code")
 
     def _required_column_check(self):
-        columns = list(self.data_df.columns)
+        columns = list(self.df.columns)
         # 必須のカラム確認
         if not all([item in columns for item in self.REQUIRED_COL]):
             raise KabutobashiEntityError(f"required: {self.REQUIRED_COL}, input: {columns}")
@@ -160,7 +160,7 @@ class StockDataSingleCode:
         data_df.index = idx
         return StockDataSingleCode(
             code=code,
-            data_df=data_df
+            df=data_df
         )
 
     @staticmethod
@@ -177,6 +177,26 @@ class StockDataSingleCode:
         except ValueError as e:
             raise KabutobashiEntityError(f"floatに変換できる値ではありません。{e}")
         return f
+
+    def sliding_split(self, *, buy_sell_term_days: int = 5, sliding_window: int = 60, step: int = 2):
+        """
+
+        Args:
+            buy_sell_term_days:
+            sliding_window:
+            step:
+
+        Returns:
+            idx, df_for_x, df_for_y
+
+        """
+        df_length = len(self.df.index)
+        if df_length < buy_sell_term_days + sliding_window:
+            raise KabutobashiEntityError("入力されたDataFrameの長さがwindow幅よりも小さいです")
+        loop = df_length - (buy_sell_term_days + sliding_window)
+        for idx, i in enumerate(range(0, loop, step)):
+            offset = i + sliding_window
+            yield idx, self.df[i:offset], self.df[offset: offset + buy_sell_term_days]
 
 
 @dataclass(frozen=True)
