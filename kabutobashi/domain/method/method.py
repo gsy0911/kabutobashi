@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 from mplfinance.original_flavor import candlestick_ohlc
 
-from kabutobashi.domain.entity import StockProcessed, StockDataSingleCode
+from kabutobashi.domain.entity import StockDataProcessed, StockDataSingleCode
 
 
 @dataclass(frozen=True)
@@ -72,15 +72,15 @@ class Method(metaclass=ABCMeta):
     def _method(self, _df: pd.DataFrame) -> pd.DataFrame:
         raise NotImplementedError("please implement your code")
 
-    def process(self, _df: pd.DataFrame) -> StockProcessed:
+    def process(self, _df: pd.DataFrame) -> StockDataProcessed:
         code_list = list(_df["code"].unique())
         if len(code_list) > 1:
             raise ValueError()
-        base_df = _df[StockProcessed.REQUIRED_DF_COLUMNS]
+        base_df = _df[StockDataProcessed.REQUIRED_DF_COLUMNS]
         color_mapping = self._color_mapping()
         columns = ["dt", "buy_signal", "sell_signal"] + [v["df_key"] for v in color_mapping]
 
-        return StockProcessed(
+        return StockDataProcessed(
             code=code_list[0],
             base_df=base_df,
             processed_dfs=[

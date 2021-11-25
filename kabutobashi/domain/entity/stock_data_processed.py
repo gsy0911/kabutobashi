@@ -12,7 +12,7 @@ from kabutobashi.errors import KabutobashiEntityError
 
 
 @dataclass(frozen=True)
-class StockProcessed:
+class StockDataProcessed:
     """
     methodで処理した後のデータを保持
     可視化などを実行する際に利用
@@ -44,7 +44,7 @@ class StockProcessed:
     }
 
     @staticmethod
-    def of(_df: pd.DataFrame, methods: list) -> "StockProcessed":
+    def of(_df: pd.DataFrame, methods: list) -> "StockDataProcessed":
         from kabutobashi.domain.method import Method
 
         # check all methods
@@ -70,15 +70,15 @@ class StockProcessed:
         if not validator.validate(self.processed_dfs):
             raise KabutobashiEntityError(validator)
 
-    def __add__(self, other: "StockProcessed") -> "StockProcessed":
-        if not isinstance(other, StockProcessed):
+    def __add__(self, other: "StockDataProcessed") -> "StockDataProcessed":
+        if not isinstance(other, StockDataProcessed):
             raise ValueError()
 
         # update
         processed_dfs = []
         processed_dfs.extend(self.processed_dfs)
         processed_dfs.extend(other.processed_dfs)
-        return StockProcessed(
+        return StockDataProcessed(
             code=self.code,
             base_df=self.base_df,
             processed_dfs=processed_dfs,
@@ -97,11 +97,11 @@ class StockProcessed:
         Examples:
             >>> import kabutobashi as kb
             >>> df = kb.read_csv(...)
-            >>> processed = kb.StockProcessed.of(_df=df, methods=[kb.sma, kb.macd])
+            >>> processed = kb.StockDataProcessed.of(_df=df, methods=[kb.sma, kb.macd])
             >>> processed.get_impact()
             {"sma": 0.4, "macd": -0.04}
             >>> sma = kb.SMA(short_term=3, medium_term=15, long_term=50)
-            >>> processed = kb.StockProcessed.of(_df=df, methods=[sma, kb.macd])
+            >>> processed = kb.StockDataProcessed.of(_df=df, methods=[sma, kb.macd])
             >>> processed.get_impact()
             {"sma": 0.2, "macd": -0.04}
         """
