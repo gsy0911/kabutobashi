@@ -134,13 +134,13 @@ def test_analysis_with_fitting(var_stock_df):
 
 
 def test_get_impact_with(var_stock_df):
-    var_stock_df['code'] = 1
-    var_stock_df['dt'] = var_stock_df["date"]
+    var_stock_df["code"] = 1
+    var_stock_df["dt"] = var_stock_df["date"]
     result_1 = kb.StockProcessed.of(_df=var_stock_df, methods=[kb.sma])
-    assert "sma" in [v['method'] for v in result_1.processed_dfs]
+    assert "sma" in [v["method"] for v in result_1.processed_dfs]
     result_2 = kb.StockProcessed.of(_df=var_stock_df, methods=[kb.sma, kb.macd])
-    assert "sma" in [v['method'] for v in result_2.processed_dfs]
-    assert "macd" in [v['method'] for v in result_2.processed_dfs]
+    assert "sma" in [v["method"] for v in result_2.processed_dfs]
+    assert "macd" in [v["method"] for v in result_2.processed_dfs]
 
 
 def test_io_read_csv():

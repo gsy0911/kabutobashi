@@ -9,15 +9,15 @@ from kabutobashi.errors import KabutobashiEntityError
 @dataclass(frozen=True)
 class StockDataSingleDay:
     """
-        Args:
-            code: 銘柄コード
-            market: 市場
-            industry_type: 業種
-            open: 円
-            high: 円
-            low: 円
-            close: 円
-        """
+    Args:
+        code: 銘柄コード
+        market: 市場
+        industry_type: 業種
+        open: 円
+        high: 円
+        low: 円
+        close: 円
+    """
 
     code: str
     market: str
