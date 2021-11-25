@@ -7,7 +7,7 @@ from typing import Optional, Union
 
 import pandas as pd
 
-from kabutobashi.domain.entity import StockInfo
+from kabutobashi.domain.entity import StockDataSingleDay
 
 
 def example_data() -> pd.DataFrame:
@@ -95,6 +95,6 @@ def _decode_stock_data(_df: pd.DataFrame) -> pd.DataFrame:
         _df.assign(
             dt=_df["crawl_datetime"].apply(lambda x: datetime.fromisoformat(x).strftime("%Y-%m-%d")),
         )
-        .loc[:, StockInfo.schema()]
+        .loc[:, StockDataSingleDay.schema()]
         .drop_duplicates()
     )

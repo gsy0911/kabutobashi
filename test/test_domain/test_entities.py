@@ -6,7 +6,7 @@ import kabutobashi as kb
 class TestStockInfo:
     def test_error_init(self):
         with pytest.raises(kb.errors.KabutobashiEntityError):
-            _ = kb.StockInfo(
+            _ = kb.StockDataSingleDay(
                 code="1234",
                 market="market",
                 name="",

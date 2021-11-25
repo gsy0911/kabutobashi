@@ -6,17 +6,17 @@ from kabutobashi.errors import KabutobashiEntityError
 
 
 @dataclass(frozen=True)
-class StockInfo:
+class StockDataSingleDay:
     """
-    Args:
-        code: 銘柄コード
-        market: 市場
-        industry_type: 業種
-        open: 円
-        high: 円
-        low: 円
-        close: 円
-    """
+        Args:
+            code: 銘柄コード
+            market: 市場
+            industry_type: 業種
+            open: 円
+            high: 円
+            low: 円
+            close: 円
+        """
 
     code: str
     market: str
@@ -60,25 +60,25 @@ class StockInfo:
 
     @staticmethod
     def schema() -> list:
-        return list(StockInfo._SCHEMA.keys())
+        return list(StockDataSingleDay._SCHEMA.keys())
 
     @staticmethod
-    def from_page_of(data: dict) -> "StockInfo":
+    def from_page_of(data: dict) -> "StockDataSingleDay":
         label_split = data["stock_label"].split("  ")
-        return StockInfo(
+        return StockDataSingleDay(
             code=label_split[0],
             market=label_split[1],
             name=data["name"],
             industry_type=data["industry_type"],
-            open=float(StockInfo._convert(data["open"])),
-            high=float(StockInfo._convert(data["high"])),
-            low=float(StockInfo._convert(data["low"])),
-            close=float(StockInfo._convert(data["close"])),
-            unit=int(StockInfo._convert(data["unit"])),
-            psr=float(StockInfo._convert(data["psr"])),
-            per=float(StockInfo._convert(data["per"])),
-            pbr=float(StockInfo._convert(data["pbr"])),
-            volume=int(StockInfo._convert(data["volume"])),
+            open=float(StockDataSingleDay._convert(data["open"])),
+            high=float(StockDataSingleDay._convert(data["high"])),
+            low=float(StockDataSingleDay._convert(data["low"])),
+            close=float(StockDataSingleDay._convert(data["close"])),
+            unit=int(StockDataSingleDay._convert(data["unit"])),
+            psr=float(StockDataSingleDay._convert(data["psr"])),
+            per=float(StockDataSingleDay._convert(data["per"])),
+            pbr=float(StockDataSingleDay._convert(data["pbr"])),
+            volume=int(StockDataSingleDay._convert(data["volume"])),
             market_capitalization=data["market_capitalization"],
             issued_shares=data["issued_shares"],
             dt=data["date"],
@@ -92,3 +92,13 @@ class StockInfo:
 
     def dumps(self) -> dict:
         return asdict(self)
+
+
+@dataclass(frozen=True)
+class StockDataSingleCode:
+    pass
+
+
+@dataclass(frozen=True)
+class StockDataMultipleCode:
+    pass
