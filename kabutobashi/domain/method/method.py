@@ -8,7 +8,7 @@ import pandas as pd
 from mplfinance.original_flavor import candlestick_ohlc
 
 from kabutobashi.domain import StockDf
-from kabutobashi.domain.entity import StockProcessed
+from kabutobashi.domain.entity import StockProcessed, StockDataSingleCode
 
 
 @dataclass(frozen=True)
@@ -56,7 +56,7 @@ class Method(metaclass=ABCMeta):
         return self.method_name
 
     def validate(self, _df: pd.DataFrame) -> pd.DataFrame:
-        return StockDf.of(df=_df).data_df
+        return StockDataSingleCode.of(df=_df).data_df
 
     def method(self, _df: pd.DataFrame) -> pd.DataFrame:
         """

@@ -140,8 +140,11 @@ class StockDataSingleCode:
             raise KabutobashiEntityError("日付のカラム[dt, date]は片方しか存在できません")
 
         # codeの確認
-        StockDataSingleCode._code_constraint_check(df=df)
-        code = list(set(df.code.values))[0]
+        # StockDataSingleCode._code_constraint_check(df=df)
+        if "code" in df_columns:
+            code = list(set(df.code.values))[0]
+        else:
+            code = "-"
 
         # indexにdateを指定
         idx = pd.to_datetime(df[date_column]).sort_index()
@@ -152,9 +155,12 @@ class StockDataSingleCode:
         close_s = df["close"].apply(StockDataSingleCode._replace_comma)
         high_s = df["high"].apply(StockDataSingleCode._replace_comma)
         low_s = df["low"].apply(StockDataSingleCode._replace_comma)
+
+        data_df = pd.DataFrame(data={"open": open_s, "high": high_s, "low": low_s, "close": close_s})
+        data_df.index = idx
         return StockDataSingleCode(
             code=code,
-            data_df=pd.DataFrame(data={"open": open_s, "high": high_s, "low": low_s, "close": close_s}, index=idx)
+            data_df=data_df
         )
 
     @staticmethod
