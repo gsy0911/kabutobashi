@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 
-import matplotlib.pyplot as plt
 import pandas as pd
 
 from .method import Method
@@ -45,21 +44,15 @@ class BollingerBands(Method):
         _df["sell_signal"] = _df["over_lower"].apply(lambda x: 1 if x > 0 else 0)
         return _df
 
-    def _visualize(self, _df: pd.DataFrame):
-        fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(6, 5))
-        # x軸のオートフォーマット
-        fig.autofmt_xdate()
+    def _color_mapping(self) -> list:
+        return [
+            {"df_key": "upper_1_sigma", "color": "#dc143c", "label": "+1s"},
+            {"df_key": "lower_1_sigma", "color": "#dc143c", "label": "-1s"},
+            {"df_key": "upper_2_sigma", "color": "#ffa500", "label": "+2s"},
+            {"df_key": "lower_2_sigma", "color": "#ffa500", "label": "-2s"},
+            {"df_key": "upper_3_sigma", "color": "#1e90ff", "label": "+3s"},
+            {"df_key": "lower_3_sigma", "color": "#1e90ff", "label": "-3s"},
+        ]
 
-        # set candlestick
-        self.add_ax_candlestick(ax, _df)
-
-        # plot
-        ax.plot(_df.index, _df["upper_1_sigma"], color="#dc143c", label="+1s")
-        ax.plot(_df.index, _df["lower_1_sigma"], color="#dc143c", label="-1s")
-        ax.plot(_df.index, _df["upper_2_sigma"], color="#ffa500", label="+2s")
-        ax.plot(_df.index, _df["lower_2_sigma"], color="#ffa500", label="-2s")
-        ax.plot(_df.index, _df["upper_3_sigma"], color="#1e90ff", label="+3s")
-        ax.plot(_df.index, _df["lower_3_sigma"], color="#1e90ff", label="-3s")
-
-        ax.legend(loc="best")  # 各線のラベルを表示
-        return fig
+    def _visualize_option(self) -> dict:
+        return {"position": "in"}

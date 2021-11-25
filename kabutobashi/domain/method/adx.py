@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 
-import matplotlib.pyplot as plt
 import pandas as pd
 
 from .method import Method
@@ -100,9 +99,6 @@ class ADX(Method):
         )
 
         _df = _df.dropna()
-        required_columns = ["open", "high", "low", "close", "sum_plus_dm", "sum_minus_dm", "sum_tr"]
-        _df = _df.loc[:, required_columns]
-
         # +DI, -DI
         _df = _df.assign(
             plus_di=_df.apply(lambda x: x["sum_plus_dm"] / x["sum_tr"] * 100, axis=1),
@@ -153,20 +149,13 @@ class ADX(Method):
 
         return _df
 
-    def _visualize(self, _df: pd.DataFrame):
-        fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1, gridspec_kw={"height_ratios": [3, 1]}, figsize=(6, 5))
-        # x軸のオートフォーマット
-        fig.autofmt_xdate()
+    def _color_mapping(self) -> list:
+        return [
+            {"df_key": "plus_di", "color": "", "label": "+DI"},
+            {"df_key": "minus_di", "color": "", "label": "-DI"},
+            {"df_key": "ADX", "color": "", "label": "ADX"},
+            {"df_key": "ADXR", "color": "", "label": "ADXR"},
+        ]
 
-        # set candlestick
-        self.add_ax_candlestick(ax1, _df)
-
-        # plot adx
-        ax2.plot(_df.index, _df["plus_di"], label="+DI")
-        ax2.plot(_df.index, _df["minus_di"], label="-DI")
-        ax2.plot(_df.index, _df["ADX"], label="ADX")
-        ax2.plot(_df.index, _df["ADXR"], label="ADXR")
-        ax2.legend(loc="center left")  # 各線のラベルを表示
-
-        ax1.legend(loc="best")  # 各線のラベルを表示
-        return fig
+    def _visualize_option(self) -> dict:
+        return {"position": "lower"}

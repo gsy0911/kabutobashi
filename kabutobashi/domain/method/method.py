@@ -1,5 +1,6 @@
 from abc import ABCMeta, abstractmethod
 from dataclasses import dataclass
+from typing import Optional
 
 import matplotlib.dates as mdates
 import numpy as np
@@ -7,6 +8,7 @@ import pandas as pd
 from mplfinance.original_flavor import candlestick_ohlc
 
 from kabutobashi.domain import StockDf
+from kabutobashi.domain.entity import StockProcessed
 
 
 @dataclass(frozen=True)
@@ -45,10 +47,6 @@ class Method(metaclass=ABCMeta):
         """
         # 各手法指標となる値を計算し、買いと売りの指標を付与
         signal_df = stock_df.pipe(self.validate).pipe(self.method).pipe(self.signal)
-        # 買い・売りのシグナルを算出する場合
-        if "impact" in kwargs:
-            return signal_df.pipe(self._get_impact, **kwargs)
-        # それ以外は解析結果のdfを返す
         return signal_df
 
     def __str__(self) -> str:
@@ -76,10 +74,33 @@ class Method(metaclass=ABCMeta):
     def _method(self, _df: pd.DataFrame) -> pd.DataFrame:
         raise NotImplementedError("please implement your code")
 
-    def visualize(self, _df: pd.DataFrame):
-        return self._visualize(_df=_df)
+    def process(self, _df: pd.DataFrame) -> StockProcessed:
+        code_list = list(_df["code"].unique())
+        if len(code_list) > 1:
+            raise ValueError()
+        base_df = _df[StockProcessed.REQUIRED_DF_COLUMNS]
+        color_mapping = self._color_mapping()
+        columns = ["dt", "buy_signal", "sell_signal"] + [v["df_key"] for v in color_mapping]
 
-    def _visualize(self, _df: pd.DataFrame):
+        return StockProcessed(
+            code=code_list[0],
+            base_df=base_df,
+            processed_dfs=[
+                {
+                    "method": self.method_name,
+                    "data": _df.pipe(self._method).pipe(self._signal).loc[:, columns],
+                    "color_mapping": color_mapping,
+                    "visualize_option": self._visualize_option(),
+                }
+            ],
+        )
+
+    @abstractmethod
+    def _color_mapping(self) -> list:
+        raise NotImplementedError("please implement your code")
+
+    @abstractmethod
+    def _visualize_option(self) -> dict:
         raise NotImplementedError("please implement your code")
 
     def signal(self, _df: pd.DataFrame) -> pd.DataFrame:
@@ -147,25 +168,6 @@ class Method(metaclass=ABCMeta):
         _df["diff"] = _df["original"] - _df["shifted"]
         _df["diff_rolling_sum"] = _df["diff"].rolling(5).sum()
         return _df["diff_rolling_sum"]
-
-    @staticmethod
-    def _get_impact(_df: pd.DataFrame, influence: int = 2, tail: int = 5, **kwargs) -> float:
-        """
-        売りと買いのシグナルの余波の合計値を返す。
-
-        Args:
-            _df:
-            influence:
-            tail:
-
-        Returns:
-            [-1,1]の値をとる。-1: 売り、1: 買いを表す
-        """
-        _df["buy_impact"] = _df["buy_signal"].ewm(span=influence).mean()
-        _df["sell_impact"] = _df["sell_signal"].ewm(span=influence).mean()
-        buy_impact_index = _df["buy_impact"].iloc[-tail:].sum()
-        sell_impact_index = _df["sell_impact"].iloc[-tail:].sum()
-        return round(buy_impact_index - sell_impact_index, 5)
 
     @staticmethod
     def add_ax_candlestick(ax, _df: pd.DataFrame):

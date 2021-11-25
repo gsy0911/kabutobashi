@@ -6,6 +6,7 @@ from datetime import datetime
 from typing import Optional, Union
 
 import pandas as pd
+
 from kabutobashi.domain.entity import StockInfo
 
 

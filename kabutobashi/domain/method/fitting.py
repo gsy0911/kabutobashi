@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
@@ -48,18 +47,12 @@ class Fitting(Method):
     def _signal(self, _df: pd.DataFrame) -> pd.DataFrame:
         return _df
 
-    def _visualize(self, _df: pd.DataFrame):
-        fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(6, 5))
-        # x軸のオートフォーマット
-        fig.autofmt_xdate()
+    def _color_mapping(self) -> list:
+        return [
+            {"df_key": "linear_fitting", "color": "#dc143c", "label": "linear"},
+            {"df_key": "square_fitting", "color": "#ffa500", "label": "square"},
+            {"df_key": "cube_fitting", "color": "#1e90ff", "label": "cube"},
+        ]
 
-        # set candlestick
-        self.add_ax_candlestick(ax, _df)
-
-        # plot
-        ax.plot(_df.index, _df["linear_fitting"], color="#dc143c", label="linear")
-        ax.plot(_df.index, _df["square_fitting"], color="#ffa500", label="square")
-        ax.plot(_df.index, _df["cube_fitting"], color="#1e90ff", label="cube")
-
-        ax.legend(loc="best")  # 各線のラベルを表示
-        return fig
+    def _visualize_option(self) -> dict:
+        return {"position": "in"}
