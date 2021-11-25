@@ -158,10 +158,7 @@ class StockDataSingleCode:
 
         data_df = pd.DataFrame(data={"open": open_s, "high": high_s, "low": low_s, "close": close_s})
         data_df.index = idx
-        return StockDataSingleCode(
-            code=code,
-            df=data_df
-        )
+        return StockDataSingleCode(code=code, df=data_df)
 
     @staticmethod
     def _replace_comma(x) -> float:
@@ -178,7 +175,9 @@ class StockDataSingleCode:
             raise KabutobashiEntityError(f"floatに変換できる値ではありません。{e}")
         return f
 
-    def sliding_split(self, *, buy_sell_term_days: int = 5, sliding_window: int = 60, step: int = 2):
+    def sliding_split(
+        self, *, buy_sell_term_days: int = 5, sliding_window: int = 60, step: int = 2
+    ) -> (int, pd.DataFrame, pd.DataFrame):
         """
 
         Args:
@@ -196,7 +195,8 @@ class StockDataSingleCode:
         loop = df_length - (buy_sell_term_days + sliding_window)
         for idx, i in enumerate(range(0, loop, step)):
             offset = i + sliding_window
-            yield idx, self.df[i:offset], self.df[offset: offset + buy_sell_term_days]
+            end = offset + buy_sell_term_days
+            yield idx, self.df[i:offset], self.df[offset:end]
 
 
 @dataclass(frozen=True)

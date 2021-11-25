@@ -24,7 +24,7 @@ from kabutobashi.io import (  # read csv data; provide example stock data; read 
     read_stock_csv,
 )
 
-from .domain.entity import StockDataSingleDay, StockDataSingleCode, StockIpo, StockDataProcessed, Weeks52HighLow
+from .domain.entity import StockDataProcessed, StockDataSingleCode, StockDataSingleDay, StockIpo, Weeks52HighLow
 
 # classes or functions about crawl web pages
 from .domain.page import (  # ある年にIPOした銘柄の情報を取得する; 単一の株価の詳細情報を取得する; 52週高値底値の値を取得
@@ -36,7 +36,6 @@ from .utilities import (  # n営業日前までの日付のリストを返す関
     compute_statistical_values,
     get_past_n_days,
     iter_by_code,
-    train_test_sliding_split,
 )
 
 # sns.set()
