@@ -9,6 +9,22 @@ from kabutobashi.errors import KabutobashiEntityError
 @dataclass(frozen=True)
 class StockDataSingleDay:
     """
+
+    * code: 銘柄コード
+    * open: 始値
+    * close: 終値
+    * high: 高値
+    * low: 底値
+    * unit: 単位
+    * volume: 出来高
+    * per: PER
+    * psr: PSR
+    * pbr: PBR
+    * market: 市場
+    * dt: その株価の値の日
+    * name: 名前
+    * industry_type: 業種
+
     Args:
         code: 銘柄コード
         market: 市場
@@ -97,17 +113,50 @@ class StockDataSingleDay:
 
 @dataclass(frozen=True)
 class StockDataSingleCode:
+    """
+    株のデータを保持するEntity
+
+    以下のデータを保持する
+
+    * code: 銘柄コード
+    * open: 始値
+    * close: 終値
+    * high: 高値
+    * low: 底値
+    * unit: 単位
+    * volume: 出来高
+    * per: PER
+    * psr: PSR
+    * pbr: PBR
+    * market: 市場
+    * dt: その株価の値の日
+    * name: 名前
+    * industry_type: 業種
+
+    """
+
     df: pd.DataFrame
     code: str
-    REQUIRED_COL = ["open", "high", "low", "close"]
+    # REQUIRED_COL = ["open", "high", "low", "close"]
+    REQUIRED_COL = ["code", "open", "close", "high", "low", "unit", "volume", "per", "psr", "pbr", "market", "dt"]
+    OPTIONAL_COL = ["name", "industry_type"]
 
     def __post_init__(self):
         self._null_check()
         self._code_constraint_check(df=self.df)
+        if not self._validate():
+            raise ValueError(f"不正なデータ構造です: {self.df.columns=}")
 
     def _null_check(self):
         if self.df is None:
             raise KabutobashiEntityError("required")
+
+    def _validate(self) -> bool:
+        columns = list(self.df.columns)
+        # 必須のカラム確認
+        if not all([item in columns for item in self.REQUIRED_COL]):
+            return False
+        return True
 
     @staticmethod
     def _code_constraint_check(df: pd.DataFrame):
@@ -198,7 +247,46 @@ class StockDataSingleCode:
             end = offset + buy_sell_term_days
             yield idx, self.df[i:offset], self.df[offset:end]
 
+    def get_df(self, minimum=True, latest=False, code_list: list = None):
+        df = self.df
+        if code_list:
+            df = df[df["code"].isin(code_list)]
+
+        if latest:
+            latest_dt = max(df["dt"])
+            df = df[df["dt"] == latest_dt]
+
+        if minimum:
+            return df[self.REQUIRED_COL]
+        else:
+            return df[self.REQUIRED_COL + self.OPTIONAL_COL]
+
 
 @dataclass(frozen=True)
 class StockDataMultipleCode:
-    pass
+    df: pd.DataFrame
+    REQUIRED_COL = StockDataSingleCode.REQUIRED_COL
+    OPTIONAL_COL = StockDataSingleCode.OPTIONAL_COL
+
+    def __post_init__(self):
+        self._null_check()
+        if not self._validate():
+            raise ValueError(f"不正なデータ構造です: {self.df.columns=}")
+
+    def _null_check(self):
+        if self.df is None:
+            raise KabutobashiEntityError("required")
+
+    def _validate(self) -> bool:
+        columns = list(self.df.columns)
+        # 必須のカラム確認
+        if not all([item in columns for item in self.REQUIRED_COL]):
+            return False
+        return True
+
+    @staticmethod
+    def of(df: pd.DataFrame) -> "StockDataMultipleCode":
+        return StockDataMultipleCode(df=df)
+
+    def to_single_code(self, code: str) -> StockDataSingleCode:
+        return StockDataSingleCode(code=code, df=self.df[self.df['code'] == code])
