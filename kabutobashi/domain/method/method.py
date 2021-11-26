@@ -53,8 +53,8 @@ class Method(metaclass=ABCMeta):
         """
         return self.method_name
 
-    def validate(self, _df: pd.DataFrame) -> pd.DataFrame:
-        return StockDataSingleCode.of(df=_df).df
+    def validate(self, df: pd.DataFrame) -> pd.DataFrame:
+        return StockDataSingleCode.of(df=df).df
 
     def method(self, _df: pd.DataFrame) -> pd.DataFrame:
         """

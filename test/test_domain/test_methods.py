@@ -11,7 +11,7 @@ def var_stock_df():
 
 def test_example_data(var_stock_df):
     columns = var_stock_df.columns
-    assert "date" in columns
+    assert "dt" in columns
     assert "open" in columns
     assert "close" in columns
     assert "high" in columns
@@ -135,7 +135,7 @@ def test_analysis_with_fitting(var_stock_df):
 
 def test_get_impact_with(var_stock_df):
     var_stock_df["code"] = 1
-    var_stock_df["dt"] = var_stock_df["date"]
+    # var_stock_df["dt"] = var_stock_df["date"]
     result_1 = kb.StockDataProcessed.of(_df=var_stock_df, methods=[kb.sma])
     assert "sma" in [v["method"] for v in result_1.processed_dfs]
     result_2 = kb.StockDataProcessed.of(_df=var_stock_df, methods=[kb.sma, kb.macd])

@@ -200,16 +200,14 @@ class StockDataSingleCode:
         # indexにdateを指定
         idx = pd.to_datetime(df[date_column]).sort_index()
 
-        # 必要なカラムに絞る
-        df = df[StockDataSingleCode.REQUIRED_COL]
-        open_s = df["open"].apply(StockDataSingleCode._replace_comma)
-        close_s = df["close"].apply(StockDataSingleCode._replace_comma)
-        high_s = df["high"].apply(StockDataSingleCode._replace_comma)
-        low_s = df["low"].apply(StockDataSingleCode._replace_comma)
+        # 数値に変換
+        df["open"] = df["open"].apply(StockDataSingleCode._replace_comma)
+        df["close"] = df["close"].apply(StockDataSingleCode._replace_comma)
+        df["high"] = df["high"].apply(StockDataSingleCode._replace_comma)
+        df["low"] = df["low"].apply(StockDataSingleCode._replace_comma)
 
-        data_df = pd.DataFrame(data={"open": open_s, "high": high_s, "low": low_s, "close": close_s})
-        data_df.index = idx
-        return StockDataSingleCode(code=code, df=data_df)
+        df.index = idx
+        return StockDataSingleCode(code=code, df=df)
 
     @staticmethod
     def _replace_comma(x) -> float:

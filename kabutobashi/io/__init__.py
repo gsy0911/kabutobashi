@@ -7,7 +7,7 @@ from typing import Optional, Union
 
 import pandas as pd
 
-from kabutobashi.domain.entity import StockDataSingleDay
+from kabutobashi.domain.entity import StockDataSingleDay, StockDataMultipleCode, StockDataRepository
 
 
 def example_data() -> pd.DataFrame:
@@ -17,11 +17,10 @@ def example_data() -> pd.DataFrame:
     Returns:
         stock data
     """
-    data_path_list = ["../data/stooq.csv"]
-    _df = read_csv(data_path_list)
-    _df = _df.sort_values("date", ascending=True)
-    _df = _df.convert_dtypes()
-    return _df
+    data_path_list = ["../data/example.csv.gz"]
+    sdmc: StockDataMultipleCode = StockDataRepository().read(data_path_list)
+    sdsc = sdmc.to_single_code(code=1375)
+    return sdsc.df
 
 
 def read_csv(path_candidate: Union[str, list], **kwargs) -> Optional[pd.DataFrame]:
