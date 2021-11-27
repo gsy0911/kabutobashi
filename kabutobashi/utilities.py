@@ -50,60 +50,6 @@ def _get_past_n_days(current_date: str, n: int, multiply: int) -> list:
     return list(map(lambda x: x.strftime("%Y-%m-%d"), filter_holiday[:n]))
 
 
-def iter_by_code(stock_df: pd.DataFrame, days_thresholds: int = 60) -> (int, pd.DataFrame):
-    """
-    銘柄コードでイテレーションを回しつつ、必要なデータ数がある銘柄のDataFrameのみを返す関数。
-
-    Args:
-        stock_df:
-        days_thresholds:
-
-    Returns:
-        (code: int, _df: pd.DataFrame)
-    """
-    for code, _df in stock_df.groupby("code"):
-        if len(_df.index) < days_thresholds:
-            continue
-        else:
-            yield code, format_to_stock_df(_df)
-
-
-def replace_comma(x) -> float:
-    """
-    pandas内の値がカンマ付きの場合に、カンマを削除する関数
-
-    Args:
-        x:
-
-    Returns:
-
-    """
-    if type(x) is str:
-        x = x.replace(",", "")
-    try:
-        f = float(x)
-    except ValueError:
-        raise StockDfError(f"floatに変換できる値ではありません。")
-    return f
-
-
-def format_to_stock_df(_df: pd.DataFrame) -> pd.DataFrame:
-    stock_df = (
-        _df.replace("---", np.nan)
-        .dropna(subset=["open", "close", "high", "low"])
-        .fillna(0)
-        .assign(
-            open=_df["open"].apply(replace_comma),
-            close=_df["close"].apply(replace_comma),
-            high=_df["high"].apply(replace_comma),
-            low=_df["low"].apply(replace_comma),
-            volume=_df["volume"].apply(replace_comma),
-        )
-        .convert_dtypes()
-    )
-    return stock_df
-
-
 def compute_fitting(array_y: list, prefix: str) -> dict:
     from scipy.optimize import curve_fit
 
