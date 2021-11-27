@@ -212,3 +212,56 @@ class StockDataProcessed:
                 raise ValueError()
 
         return fig
+
+    def parameterize(self) -> dict:
+        pass
+
+
+@dataclass(frozen=True)
+class StockDataParameterized:
+    start_at: str
+    end_at: str
+    days_after_n: int
+    day_after_diff: float
+    code: str
+    parameters: Dict[str, float]
+
+    @staticmethod
+    def of(df_x: pd.DataFrame, df_y: pd.DataFrame, methods: list) -> "StockDataParameterized":
+        from kabutobashi.domain.method import Method
+
+        # check all methods
+        for method in methods:
+            if not isinstance(method, Method):
+                raise ValueError()
+
+        initial_method: Method = methods[0]
+        rest_methods: List[Method] = methods[1:]
+        base = initial_method.parameterize(df_x=df_x, df_y=df_y)
+
+        for rest_method in rest_methods:
+            base = base + rest_method.parameterize(df_x=df_x, df_y=df_y)
+        return base
+
+    def __add__(self, other: "StockDataParameterized") -> "StockDataParameterized":
+        if not isinstance(other, StockDataParameterized):
+            raise ValueError()
+
+        # update
+        params = {}
+        params.update(self.parameters)
+        params.update(other.parameters)
+        return StockDataParameterized(
+            code=self.code,
+            start_at=self.start_at,
+            end_at=self.end_at,
+            days_after_n=self.days_after_n,
+            day_after_diff=self.day_after_diff,
+            parameters=params
+        )
+
+    def x(self) -> dict:
+        return self.parameters
+
+    def y(self) -> float:
+        return self.day_after_diff

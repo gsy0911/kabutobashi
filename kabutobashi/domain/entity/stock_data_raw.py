@@ -271,9 +271,20 @@ class StockDataSingleCode:
         else:
             return df[self.REQUIRED_COL + self.OPTIONAL_COL]
 
+    def to_processed(self, methods: list) -> StockDataProcessed:
+        return StockDataProcessed.of(df=self.df, methods=methods)
+
+    def to_parameterize(self, methods: list):
+        pass
+
 
 @dataclass(frozen=True)
 class StockDataMultipleCode:
+    """
+    複数銘柄の複数日の株データを保持するEntity
+
+    """
+
     df: pd.DataFrame
     REQUIRED_COL = StockDataSingleCode.REQUIRED_COL
     OPTIONAL_COL = StockDataSingleCode.OPTIONAL_COL

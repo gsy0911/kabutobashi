@@ -187,13 +187,17 @@ class Method(metaclass=ABCMeta):
         start = list(df_x['close'])[-1]
         end = list(df_y['close'])[-1]
         diff = end - start
+
+        params = {}
+        params.update(self.process(df=df_x).get_impact())
+        params.update(self._parameterize())
         return StockDataParameterized(
             code=code_list[0],
             start_at=start_at,
             end_at=end_at,
             days_after_n=len(df_y.index),
             day_after_diff=diff,
-            parameters=self._parameterize()
+            parameters=params
         )
 
     @abstractmethod
