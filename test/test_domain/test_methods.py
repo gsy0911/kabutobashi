@@ -5,8 +5,9 @@ import kabutobashi as kb
 
 @pytest.fixture(scope="module", autouse=True)
 def var_stock_df():
-    stock_df = kb.example_data()
-    yield stock_df
+    sdmc = kb.example()
+    sdsc = sdmc.to_single_code(code=1375)
+    yield sdsc.df
 
 
 def test_example_data(var_stock_df):

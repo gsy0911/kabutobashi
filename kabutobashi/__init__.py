@@ -19,7 +19,6 @@ from kabutobashi.domain.method import (
 
 # functions to load or save files
 from kabutobashi.io import (  # read csv data; provide example stock data; read stock data
-    example_data,
     read_csv,
     read_stock_csv,
 )
@@ -45,6 +44,8 @@ from .utilities import (  # n営業日前までの日付のリストを返す関
     get_past_n_days,
     iter_by_code,
 )
+
+from .example_data import example
 
 # sns.set()
 
