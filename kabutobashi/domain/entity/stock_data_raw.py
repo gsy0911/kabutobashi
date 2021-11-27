@@ -149,7 +149,7 @@ class StockDataSingleCode:
         self._null_check()
         self._code_constraint_check(df=self.df)
         if not self._validate():
-            raise KabutobashiEntityError(f"required: {self.REQUIRED_COL}, input: {self.df.column}")
+            raise KabutobashiEntityError(f"required: {self.REQUIRED_COL}, input: {self.df.columns}")
 
     def _null_check(self):
         if self.df is None:

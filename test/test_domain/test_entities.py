@@ -65,4 +65,19 @@ class TestStockDataSingleCode:
         df = pd.read_csv(f"{data_path}/example.csv.gz")
         single_code = df[df["code"] == 1375]
         sdsc = kb.StockDataSingleCode.of(df=single_code)
-        df_ = sdsc.get_df()
+
+        required_cols = kb.StockDataSingleCode.REQUIRED_COL
+        optional_cols = kb.StockDataSingleCode.OPTIONAL_COL
+
+        # check minimum df
+        minimum_df = sdsc.get_df()
+        assert all([(c in minimum_df.columns) for c in required_cols])
+        assert all([(c not in minimum_df.columns) for c in optional_cols])
+
+        # check full df
+        full_df = sdsc.get_df(minimum=False)
+        assert all([(c in full_df.columns) for c in required_cols])
+        assert all([(c in full_df.columns) for c in optional_cols])
+
+        latest_date_df = sdsc.get_df(latest=True)
+        assert len(latest_date_df.index) == 1
