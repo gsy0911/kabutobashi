@@ -206,10 +206,12 @@ class StockDataSingleCode:
             code = "-"
 
         # 数値に変換
-        df["open"] = df["open"].apply(StockDataSingleCode._replace_comma)
-        df["close"] = df["close"].apply(StockDataSingleCode._replace_comma)
-        df["high"] = df["high"].apply(StockDataSingleCode._replace_comma)
-        df["low"] = df["low"].apply(StockDataSingleCode._replace_comma)
+        df = df.assign(
+            open=df["open"].apply(StockDataSingleCode._replace_comma),
+            close=df["close"].apply(StockDataSingleCode._replace_comma),
+            high=df["high"].apply(StockDataSingleCode._replace_comma),
+            low=df["low"].apply(StockDataSingleCode._replace_comma),
+        )
 
         df.index = idx
         return StockDataSingleCode(code=code, df=df)
