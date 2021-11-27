@@ -1,11 +1,14 @@
 from abc import ABCMeta, abstractmethod
 from dataclasses import asdict, dataclass
+from datetime import datetime
 from typing import Optional, Union
 
 import pandas as pd
 from cerberus import Validator
 
 from kabutobashi.errors import KabutobashiEntityError
+
+from .stock_data_processed import StockDataProcessed
 
 
 @dataclass(frozen=True)
@@ -116,7 +119,7 @@ class StockDataSingleDay:
 @dataclass(frozen=True)
 class StockDataSingleCode:
     """
-    株のデータを保持するEntity
+    単一銘柄の複数日の株データを保持するEntity
 
     以下のデータを保持する
 
@@ -193,7 +196,7 @@ class StockDataSingleCode:
 
         # 変換
         if date_column == "crawl_datetime":
-            df['dt'] = df["crawl_datetime"].apply(lambda x: datetime.fromisoformat(x).strftime("%Y-%m-%d"))
+            df["dt"] = df["crawl_datetime"].apply(lambda x: datetime.fromisoformat(x).strftime("%Y-%m-%d"))
             date_column = "dt"
         # indexにdateを指定
         idx = pd.to_datetime(df[date_column]).sort_index()

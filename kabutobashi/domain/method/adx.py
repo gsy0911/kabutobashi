@@ -80,9 +80,7 @@ class ADX(Method):
 
     def _method(self, df: pd.DataFrame) -> pd.DataFrame:
         # 利用する値をshift
-        df = df.assign(
-            shift_high=df["high"].shift(1), shift_low=df["low"].shift(1), shift_close=df["close"].shift(1)
-        )
+        df = df.assign(shift_high=df["high"].shift(1), shift_low=df["low"].shift(1), shift_close=df["close"].shift(1))
         df = df.assign(
             plus_dm=df.apply(lambda x: x["high"] - x["shift_high"], axis=1),
             minus_dm=df.apply(lambda x: x["shift_low"] - x["low"], axis=1),

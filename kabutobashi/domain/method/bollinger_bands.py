@@ -19,9 +19,7 @@ class BollingerBands(Method):
     method_name: str = "bollinger_bands"
 
     def _method(self, df: pd.DataFrame) -> pd.DataFrame:
-        df = df.assign(
-            mean=df["close"].rolling(self.band_term).mean(), std=df["close"].rolling(self.band_term).std()
-        )
+        df = df.assign(mean=df["close"].rolling(self.band_term).mean(), std=df["close"].rolling(self.band_term).std())
         df = df.assign(
             upper_1_sigma=df.apply(lambda x: x["mean"] + x["std"] * 1, axis=1),
             lower_1_sigma=df.apply(lambda x: x["mean"] - x["std"] * 1, axis=1),
