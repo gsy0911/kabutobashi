@@ -217,6 +217,7 @@ class StockDataSingleCode:
         )
 
         df.index = idx
+        df = df.convert_dtypes()
         return StockDataSingleCode(code=code, df=df)
 
     @staticmethod

@@ -23,9 +23,6 @@ class Stochastics(Method):
 
     def _method(self, df: pd.DataFrame) -> pd.DataFrame:
 
-        df["close"] = df["close"].astype(float)
-        df["low"] = df["low"].astype(float)
-        df["high"] = df["high"].astype(float)
         df["K"] = Stochastics._fast_stochastic_k(df["close"], df["low"], df["high"], 9)
         df["D"] = Stochastics._fast_stochastic_d(df["K"])
         df["SD"] = Stochastics._slow_stochastic_d(df["D"])
