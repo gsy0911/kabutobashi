@@ -139,7 +139,6 @@ class StockDataSingleCode:
 
     df: pd.DataFrame
     code: str
-    # REQUIRED_COL = ["open", "high", "low", "close"]
     REQUIRED_COL = ["code", "open", "close", "high", "low", "unit", "volume", "per", "psr", "pbr", "market", "dt"]
     OPTIONAL_COL = ["name", "industry_type"]
 
@@ -185,20 +184,26 @@ class StockDataSingleCode:
             date_column = "date"
         elif "dt" in df_columns:
             date_column = "dt"
+        elif "crawl_datetime" in df_columns:
+            date_column = "crawl_datetime"
         if date_column is None:
-            raise KabutobashiEntityError("日付のカラム[dt, date]のいずれかが存在しません")
-        if "date" in df_columns and "dt" in df_columns:
+            raise KabutobashiEntityError("日付のカラム[dt, date, crawl_datetime]のいずれかが存在しません")
+        if ("date" in df_columns) and ("dt" in df_columns) and ("crawl_datetime" in df_columns):
             raise KabutobashiEntityError("日付のカラム[dt, date]は片方しか存在できません")
 
+        # 変換
+        if date_column == "crawl_datetime":
+            df['dt'] = df["crawl_datetime"].apply(lambda x: datetime.fromisoformat(x).strftime("%Y-%m-%d"))
+            date_column = "dt"
+        # indexにdateを指定
+        idx = pd.to_datetime(df[date_column]).sort_index()
+
         # codeの確認
-        # StockDataSingleCode._code_constraint_check(df=df)
+        StockDataSingleCode._code_constraint_check(df=df)
         if "code" in df_columns:
             code = list(set(df.code.values))[0]
         else:
             code = "-"
-
-        # indexにdateを指定
-        idx = pd.to_datetime(df[date_column]).sort_index()
 
         # 数値に変換
         df["open"] = df["open"].apply(StockDataSingleCode._replace_comma)
@@ -289,12 +294,22 @@ class StockDataMultipleCode:
         return StockDataMultipleCode(df=df)
 
     def to_single_code(self, code: str) -> StockDataSingleCode:
-        return StockDataSingleCode(code=code, df=self.df[self.df['code'] == code])
+        return StockDataSingleCode(code=code, df=self.df[self.df["code"] == code])
+
+    def to_code_iterable(self, *, skip_reit: bool = True, row_more_than: Optional[int] = None):
+        df = self.df
+        if skip_reit:
+            df = df[~(df["market"] == "東証REIT")]
+
+        for code, df_ in df.groupby("code"):
+            if row_more_than:
+                if len(df_.index) < row_more_than:
+                    continue
+            yield StockDataSingleCode(code=code, df=df_)
 
 
 @dataclass
 class IStockDataRepository(metaclass=ABCMeta):
-
     def read(self, path: Union[str, list]) -> StockDataMultipleCode:
         return self._read(path=path)
 

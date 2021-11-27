@@ -19,28 +19,6 @@ def test_example_data(var_stock_df):
     assert "low" in columns
 
 
-def test_read_stock_data():
-    none_paths = []
-    df = kb.read_stock_csv(none_paths)
-    assert df is None
-
-    paths = ["../data/dt=2020-02-29.csv", "../data/dt=2020-03-01.csv"]
-    df = kb.read_stock_csv(paths)
-    columns = df.columns
-    assert "code" in columns
-    assert "close" in columns
-    assert "open" in columns
-    assert "high" in columns
-    assert "low" in columns
-    assert "per" in columns
-    assert "pbr" in columns
-    assert "psr" in columns
-    assert "unit" in columns
-    assert "volume" in columns
-    assert "dt" in columns
-    assert "market" in columns
-
-
 def test_analysis_with_sma(var_stock_df):
     analysis_df = kb.analysis_with(var_stock_df, kb.sma)
     columns = analysis_df.columns
@@ -142,10 +120,3 @@ def test_get_impact_with(var_stock_df):
     result_2 = kb.StockDataProcessed.of(df=var_stock_df, methods=[kb.sma, kb.macd])
     assert "sma" in [v["method"] for v in result_2.processed_dfs]
     assert "macd" in [v["method"] for v in result_2.processed_dfs]
-
-
-def test_io_read_csv():
-    _df = kb.read_csv(1)
-    assert _df is None
-    _df = kb.read_csv("../data/stooq.csv")
-    assert _df is not None

@@ -17,18 +17,12 @@ from kabutobashi.domain.method import (
     Stochastics,
 )
 
-# functions to load or save files
-from kabutobashi.io import (  # read csv data; provide example stock data; read stock data
-    read_csv,
-    read_stock_csv,
-)
-
 from .domain.entity import (
     StockDataMultipleCode,
     StockDataProcessed,
+    StockDataRepository,
     StockDataSingleCode,
     StockDataSingleDay,
-    StockDataRepository,
     StockIpo,
     Weeks52HighLow,
 )
@@ -39,13 +33,12 @@ from .domain.page import (  # ある年にIPOした銘柄の情報を取得す�
     StockIpoPage,
     Weeks52HighLowPage,
 )
+from .example_data import example
 from .utilities import (  # n営業日前までの日付のリストを返す関数; 銘柄コードでイテレーションする関数; window幅でデータを取得しつつデータを返す関数; 株価の動きを様々な統計量で表現
     compute_statistical_values,
     get_past_n_days,
     iter_by_code,
 )
-
-from .example_data import example
 
 # sns.set()
 
