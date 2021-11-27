@@ -62,7 +62,10 @@ class ADX(Method):
         """
         numerator = abs(x["plus_di"] - x["minus_di"])
         denominator = x["plus_di"] + x["minus_di"]
-        return numerator / denominator * 100
+        try:
+            return numerator / denominator * 100
+        except ZeroDivisionError:
+            return 0
 
     @staticmethod
     def _fixed_plus_dm(x: pd.DataFrame) -> float:
