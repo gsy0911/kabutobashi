@@ -60,5 +60,5 @@ class Fitting(Method):
     def _processed_columns(self) -> list:
         return []
 
-    def _parameterize(self) -> dict:
+    def _parameterize(self, df_x: pd.DataFrame) -> dict:
         return {}

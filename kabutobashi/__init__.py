@@ -14,6 +14,7 @@ from kabutobashi.domain.method import (
     Momentum,
     PsychoLogical,
     Stochastics,
+    Basic
 )
 
 from .domain.entity import (
@@ -50,6 +51,7 @@ ichimoku = Ichimoku()
 momentum = Momentum()
 psycho_logical = PsychoLogical()
 fitting = Fitting()
+basic = Basic()
 
 methods = [sma, macd, stochastics, adx, bollinger_bands, momentum, psycho_logical]
 

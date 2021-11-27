@@ -276,3 +276,9 @@ class StockDataParameterized:
 
     def y(self) -> float:
         return self.day_after_diff
+
+    def row(self) -> dict:
+        row_ = {}
+        row_.update(self.x())
+        row_.update({"diff": self.y()})
+        return row_

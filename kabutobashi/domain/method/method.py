@@ -191,7 +191,7 @@ class Method(metaclass=ABCMeta):
 
         params = {}
         params.update(self.process(df=df_x).get_impact())
-        params.update(self._parameterize())
+        params.update(self._parameterize(df_x=df_x))
         return StockDataParameterized(
             code=code_list[0],
             start_at=start_at,
@@ -202,5 +202,5 @@ class Method(metaclass=ABCMeta):
         )
 
     @abstractmethod
-    def _parameterize(self) -> dict:
+    def _parameterize(self, df_x: pd.DataFrame) -> dict:
         raise NotImplementedError("please implement your code")

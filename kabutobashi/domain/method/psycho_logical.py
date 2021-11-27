@@ -47,5 +47,5 @@ class PsychoLogical(Method):
     def _processed_columns(self) -> list:
         return ["psycho_line", "bought_too_much", "sold_too_much"]
 
-    def _parameterize(self) -> dict:
+    def _parameterize(self, df_x: pd.DataFrame) -> dict:
         return {}

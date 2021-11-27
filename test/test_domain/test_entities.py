@@ -99,3 +99,4 @@ class TestStockDataParameterized:
             parameterized = kb.StockDataParameterized.of(df_x=df_x, df_y=df_y, methods=kb.methods)
             assert type(parameterized.x()) is dict
             assert type(parameterized.y()) is float
+            assert type(parameterized.row()) is dict

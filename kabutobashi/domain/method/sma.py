@@ -40,5 +40,5 @@ class SMA(Method):
     def _processed_columns(self) -> list:
         return ["sma_long", "sma_medium", "sma_short"]
 
-    def _parameterize(self) -> dict:
+    def _parameterize(self, df_x: pd.DataFrame) -> dict:
         return {}

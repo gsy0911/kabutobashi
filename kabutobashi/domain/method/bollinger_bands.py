@@ -58,5 +58,5 @@ class BollingerBands(Method):
     def _processed_columns(self) -> list:
         return ["upper_2_sigma", "lower_2_sigma", "over_upper_continuity", "over_lower_continuity"]
 
-    def _parameterize(self) -> dict:
+    def _parameterize(self, df_x: pd.DataFrame) -> dict:
         return {}

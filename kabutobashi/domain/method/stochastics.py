@@ -118,5 +118,5 @@ class Stochastics(Method):
     def _processed_columns(self) -> list:
         return ["K", "D", "SD"]
 
-    def _parameterize(self) -> dict:
+    def _parameterize(self, df_x: pd.DataFrame) -> dict:
         return {}

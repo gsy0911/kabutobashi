@@ -63,5 +63,5 @@ class Ichimoku(Method):
     def _processed_columns(self) -> list:
         return ["line_change", "line_base", "proceeding_span_1", "proceeding_span_2", "delayed_span"]
 
-    def _parameterize(self) -> dict:
+    def _parameterize(self, df_x: pd.DataFrame) -> dict:
         return {}
