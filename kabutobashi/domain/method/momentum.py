@@ -15,16 +15,16 @@ class Momentum(Method):
     term: int = 25
     method_name: str = "momentum"
 
-    def _method(self, _df: pd.DataFrame) -> pd.DataFrame:
-        _df = _df.assign(
-            momentum=_df["close"].shift(10), sma_momentum=lambda x: x["momentum"].rolling(self.term).mean()
+    def _method(self, df: pd.DataFrame) -> pd.DataFrame:
+        df = df.assign(
+            momentum=df["close"].shift(10), sma_momentum=lambda x: x["momentum"].rolling(self.term).mean()
         )
-        return _df
+        return df
 
-    def _signal(self, _df: pd.DataFrame) -> pd.DataFrame:
-        _df = _df.join(self._cross(_df["sma_momentum"]))
-        _df = _df.rename(columns={"to_plus": "buy_signal", "to_minus": "sell_signal"})
-        return _df
+    def _signal(self, df: pd.DataFrame) -> pd.DataFrame:
+        df = df.join(self._cross(df["sma_momentum"]))
+        df = df.rename(columns={"to_plus": "buy_signal", "to_minus": "sell_signal"})
+        return df
 
     def _color_mapping(self) -> list:
         return [

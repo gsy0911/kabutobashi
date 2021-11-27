@@ -13,18 +13,18 @@ class Fitting(Method):
     def __init__(self):
         super().__init__(method_name="macd")
 
-    def _method(self, _df: pd.DataFrame) -> pd.DataFrame:
+    def _method(self, df: pd.DataFrame) -> pd.DataFrame:
         """
         macdを基準として今後上昇するかどうかをスコアで返す。
         値が大きければその傾向が高いことを表している。
         最小値は0で、最大値は無限大である。
-        :param _df:
+        :param df:
         :return:
         """
         from scipy.optimize import curve_fit
 
         # histogramが図として表現されるMACDの値
-        array_y = _df["close"]
+        array_y = df["close"]
         array_x = np.array(range(0, len(array_y)))
 
         def _linear_fit(x, a, b):
@@ -39,13 +39,13 @@ class Fitting(Method):
         linear_param, _ = curve_fit(_linear_fit, array_x, array_y)
         square_param, _ = curve_fit(_square_fit, array_x, array_y)
         cube_param, _ = curve_fit(_cube_fit, array_x, array_y)
-        _df["linear_fitting"] = [_linear_fit(x, *linear_param) for x in array_x]
-        _df["square_fitting"] = [_square_fit(x, *square_param) for x in array_x]
-        _df["cube_fitting"] = [_cube_fit(x, *cube_param) for x in array_x]
-        return _df
+        df["linear_fitting"] = [_linear_fit(x, *linear_param) for x in array_x]
+        df["square_fitting"] = [_square_fit(x, *square_param) for x in array_x]
+        df["cube_fitting"] = [_cube_fit(x, *cube_param) for x in array_x]
+        return df
 
-    def _signal(self, _df: pd.DataFrame) -> pd.DataFrame:
-        return _df
+    def _signal(self, df: pd.DataFrame) -> pd.DataFrame:
+        return df
 
     def _color_mapping(self) -> list:
         return [

@@ -44,7 +44,7 @@ class StockDataProcessed:
     }
 
     @staticmethod
-    def of(_df: pd.DataFrame, methods: list) -> "StockDataProcessed":
+    def of(df: pd.DataFrame, methods: list) -> "StockDataProcessed":
         from kabutobashi.domain.method import Method
 
         # check all methods
@@ -54,10 +54,10 @@ class StockDataProcessed:
 
         initial_method: Method = methods[0]
         rest_methods: List[Method] = methods[1:]
-        base = initial_method.process(_df=_df)
+        base = initial_method.process(df=df)
 
         for rest_method in rest_methods:
-            base = base + rest_method.process(_df=_df)
+            base = base + rest_method.process(df=df)
         return base
 
     def _validate(self):

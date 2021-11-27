@@ -78,38 +78,38 @@ class ADX(Method):
         else:
             return 0
 
-    def _method(self, _df: pd.DataFrame) -> pd.DataFrame:
+    def _method(self, df: pd.DataFrame) -> pd.DataFrame:
         # 利用する値をshift
-        _df = _df.assign(
-            shift_high=_df["high"].shift(1), shift_low=_df["low"].shift(1), shift_close=_df["close"].shift(1)
+        df = df.assign(
+            shift_high=df["high"].shift(1), shift_low=df["low"].shift(1), shift_close=df["close"].shift(1)
         )
-        _df = _df.assign(
-            plus_dm=_df.apply(lambda x: x["high"] - x["shift_high"], axis=1),
-            minus_dm=_df.apply(lambda x: x["shift_low"] - x["low"], axis=1),
+        df = df.assign(
+            plus_dm=df.apply(lambda x: x["high"] - x["shift_high"], axis=1),
+            minus_dm=df.apply(lambda x: x["shift_low"] - x["low"], axis=1),
         )
-        _df = _df.assign(
-            fixed_plus_dm=_df.apply(lambda x: self._fixed_plus_dm(x), axis=1),
-            fixed_minus_dm=_df.apply(lambda x: self._fixed_minus_dm(x), axis=1),
+        df = df.assign(
+            fixed_plus_dm=df.apply(lambda x: self._fixed_plus_dm(x), axis=1),
+            fixed_minus_dm=df.apply(lambda x: self._fixed_minus_dm(x), axis=1),
         )
-        _df = _df.assign(
-            true_range=_df.apply(lambda x: self._true_range(x), axis=1),
+        df = df.assign(
+            true_range=df.apply(lambda x: self._true_range(x), axis=1),
             sum_tr=lambda x: x["true_range"].rolling(self.term).sum(),
             sum_plus_dm=lambda x: x["fixed_plus_dm"].rolling(self.term).sum(),
             sum_minus_dm=lambda x: x["fixed_minus_dm"].rolling(self.term).sum(),
         )
 
-        _df = _df.dropna()
+        df = df.dropna()
         # +DI, -DI
-        _df = _df.assign(
-            plus_di=_df.apply(lambda x: x["sum_plus_dm"] / x["sum_tr"] * 100, axis=1),
-            minus_di=_df.apply(lambda x: x["sum_minus_dm"] / x["sum_tr"] * 100, axis=1),
+        df = df.assign(
+            plus_di=df.apply(lambda x: x["sum_plus_dm"] / x["sum_tr"] * 100, axis=1),
+            minus_di=df.apply(lambda x: x["sum_minus_dm"] / x["sum_tr"] * 100, axis=1),
         )
-        _df = _df.assign(
-            DX=_df.apply(self._compute_dx, axis=1),
+        df = df.assign(
+            DX=df.apply(self._compute_dx, axis=1),
             ADX=lambda x: x["DX"].rolling(self.adx_term).mean(),
             ADXR=lambda x: x["DX"].rolling(self.adxr_term).mean(),
         )
-        return _df
+        return df
 
     @staticmethod
     def _buy_signal(x) -> float:
@@ -136,18 +136,18 @@ class ADX(Method):
             if x["to_minus"] > 0:
                 return 1
 
-    def _signal(self, _df: pd.DataFrame) -> pd.DataFrame:
+    def _signal(self, df: pd.DataFrame) -> pd.DataFrame:
         """
         buy_signalとsell_signalを付与
         """
-        _df["ADX_trend"] = self._trend(_df["ADX"])
-        _df["diff"] = _df["plus_di"] - _df["minus_di"]
-        _df = _df.join(self._cross(_df["diff"]))
+        df["ADX_trend"] = self._trend(df["ADX"])
+        df["diff"] = df["plus_di"] - df["minus_di"]
+        df = df.join(self._cross(df["diff"]))
 
-        _df["buy_signal"] = _df.apply(lambda x: self._buy_signal)
-        _df["sell_signal"] = _df.apply(lambda x: self._sell_signal)
+        df["buy_signal"] = df.apply(lambda x: self._buy_signal)
+        df["sell_signal"] = df.apply(lambda x: self._sell_signal)
 
-        return _df
+        return df
 
     def _color_mapping(self) -> list:
         return [

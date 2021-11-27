@@ -44,7 +44,7 @@ class Method(metaclass=ABCMeta):
             }
         """
         # 各手法指標となる値を計算し、買いと売りの指標を付与
-        signal_df = stock_df.pipe(self.validate).pipe(self.method).pipe(self.signal)
+        signal_df = stock_df.pipe(self._validate).pipe(self.method).pipe(self.signal)
         return signal_df
 
     def __str__(self) -> str:
@@ -53,30 +53,31 @@ class Method(metaclass=ABCMeta):
         """
         return self.method_name
 
-    def validate(self, df: pd.DataFrame) -> pd.DataFrame:
+    @staticmethod
+    def _validate(df: pd.DataFrame) -> pd.DataFrame:
         return StockDataSingleCode.of(df=df).df
 
-    def method(self, _df: pd.DataFrame) -> pd.DataFrame:
+    def method(self, df: pd.DataFrame) -> pd.DataFrame:
         """
         テクニカル分析の手法
 
         Args:
-            _df: 株の情報を含むDataFrame
+            df: 株の情報を含むDataFrame
 
         Returns:
             各分析手法の結果を付与したDataFrame
         """
-        return self._method(_df=_df)
+        return self._method(df=df)
 
     @abstractmethod
-    def _method(self, _df: pd.DataFrame) -> pd.DataFrame:
+    def _method(self, df: pd.DataFrame) -> pd.DataFrame:
         raise NotImplementedError("please implement your code")
 
-    def process(self, _df: pd.DataFrame) -> StockDataProcessed:
-        code_list = list(_df["code"].unique())
+    def process(self, df: pd.DataFrame) -> StockDataProcessed:
+        code_list = list(df["code"].unique())
         if len(code_list) > 1:
             raise ValueError()
-        base_df = _df[StockDataProcessed.REQUIRED_DF_COLUMNS]
+        base_df = df[StockDataProcessed.REQUIRED_DF_COLUMNS]
         color_mapping = self._color_mapping()
         columns = ["dt", "buy_signal", "sell_signal"] + [v["df_key"] for v in color_mapping]
 
@@ -86,7 +87,7 @@ class Method(metaclass=ABCMeta):
             processed_dfs=[
                 {
                     "method": self.method_name,
-                    "data": _df.pipe(self._method).pipe(self._signal).loc[:, columns],
+                    "data": df.pipe(self._method).pipe(self._signal).loc[:, columns],
                     "color_mapping": color_mapping,
                     "visualize_option": self._visualize_option(),
                 }
@@ -101,20 +102,20 @@ class Method(metaclass=ABCMeta):
     def _visualize_option(self) -> dict:
         raise NotImplementedError("please implement your code")
 
-    def signal(self, _df: pd.DataFrame) -> pd.DataFrame:
+    def signal(self, df: pd.DataFrame) -> pd.DataFrame:
         """
         テクニカル分析の手法の結果により、買いと売りのタイミングを計算する
 
         Args:
-            _df: 株の情報を含むDataFrame
+            df: 株の情報を含むDataFrame
 
         Returns:
 
         """
-        return self._signal(_df=_df)
+        return self._signal(df=df)
 
     @abstractmethod
-    def _signal(self, _df: pd.DataFrame) -> pd.DataFrame:
+    def _signal(self, df: pd.DataFrame) -> pd.DataFrame:
         raise NotImplementedError("please implement your code")
 
     @staticmethod
@@ -133,22 +134,22 @@ class Method(metaclass=ABCMeta):
 
         # shiftしたDataFrameの作成
         shift_s = _s.shift(1)
-        _df = pd.DataFrame({col: _s, shifted: shift_s})
+        df = pd.DataFrame({col: _s, shifted: shift_s})
 
         # 正負が交差した点
-        _df = _df.assign(
-            is_cross=_df.apply(lambda x: 1 if x[col] * x[shifted] < 0 else 0, axis=1),
-            is_higher=_df.apply(lambda x: 1 if x[col] > x[shifted] else 0, axis=1),
-            is_lower=_df.apply(lambda x: 1 if x[col] < x[shifted] else 0, axis=1),
+        df = df.assign(
+            is_cross=df.apply(lambda x: 1 if x[col] * x[shifted] < 0 else 0, axis=1),
+            is_higher=df.apply(lambda x: 1 if x[col] > x[shifted] else 0, axis=1),
+            is_lower=df.apply(lambda x: 1 if x[col] < x[shifted] else 0, axis=1),
         )
 
         # 上抜けか下抜けかを判断している
-        _df = _df.assign(to_plus=_df["is_cross"] * _df["is_higher"], to_minus=_df["is_cross"] * _df["is_lower"])
+        df = df.assign(to_plus=df["is_cross"] * df["is_higher"], to_minus=df["is_cross"] * df["is_lower"])
         if to_plus_name is not None:
-            _df = _df.rename(columns={"to_plus": to_plus_name})
+            df = df.rename(columns={"to_plus": to_plus_name})
         if to_minus_name is not None:
-            _df = _df.rename(columns={"to_minus": to_minus_name})
-        return _df
+            df = df.rename(columns={"to_minus": to_minus_name})
+        return df
 
     @staticmethod
     def _trend(_s: pd.Series) -> pd.Series:
@@ -162,13 +163,13 @@ class Method(metaclass=ABCMeta):
 
         # shiftしたDataFrameの作成
         shift_s = _s.shift(1)
-        _df = pd.DataFrame({col: _s, shifted: shift_s})
-        _df["diff"] = _df["original"] - _df["shifted"]
-        _df["diff_rolling_sum"] = _df["diff"].rolling(5).sum()
-        return _df["diff_rolling_sum"]
+        df = pd.DataFrame({col: _s, shifted: shift_s})
+        df["diff"] = df["original"] - df["shifted"]
+        df["diff_rolling_sum"] = df["diff"].rolling(5).sum()
+        return df["diff_rolling_sum"]
 
     @staticmethod
-    def add_ax_candlestick(ax, _df: pd.DataFrame):
+    def add_ax_candlestick(ax, df: pd.DataFrame):
         # datetime -> float
-        ohlc = np.vstack((mdates.date2num(_df.index), _df.values.T)).T
+        ohlc = np.vstack((mdates.date2num(df.index), df.values.T)).T
         candlestick_ohlc(ax, ohlc, width=0.7, colorup="g", colordown="r")
