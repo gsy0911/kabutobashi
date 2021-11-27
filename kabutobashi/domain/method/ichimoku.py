@@ -37,14 +37,14 @@ class Ichimoku(Method):
             line_change=lambda x: (x["short_max"] + x["short_min"]) / 2,
             line_base=lambda x: (x["medium_max"] + x["medium_min"]) / 2,
             # 先行線
-            proceding_span_1=lambda x: (x["line_change"] + x["line_base"]) / 2,
-            proceding_span_2=lambda x: (x["long_max"] + x["long_min"]) / 2,
+            proceeding_span_1=lambda x: (x["line_change"] + x["line_base"]) / 2,
+            proceeding_span_2=lambda x: (x["long_max"] + x["long_min"]) / 2,
         )
 
         # 値のshift
         df = df.assign(
-            proceding_span_1=df["proceding_span_1"].shift(26),
-            proceding_span_2=df["proceding_span_2"].shift(26),
+            proceeding_span_1=df["proceeding_span_1"].shift(26),
+            proceeding_span_2=df["proceeding_span_2"].shift(26),
             delayed_span=df["close"].shift(26),
         )
         return df
@@ -74,6 +74,9 @@ class Ichimoku(Method):
 
     def _visualize_option(self) -> dict:
         return {"position": "in"}
+
+    def _processed_columns(self) -> list:
+        return ["line_change", "line_base", "proceeding_span_1", "proceeding_span_2", "delayed_span"]
 
     def _parameterize(self) -> dict:
         return {}

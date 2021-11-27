@@ -229,6 +229,7 @@ class StockDataParameterized:
         ...     df_params = kb.StockDataParameterized.of(df_x, df_y, [kb.sma, kb.macd, kb.stochastics])
         ...     print(f"code:{code}, x:{df_params.x()}, y:{df_params.y()}")
     """
+
     start_at: str
     end_at: str
     days_after_n: int
@@ -267,7 +268,7 @@ class StockDataParameterized:
             end_at=self.end_at,
             days_after_n=self.days_after_n,
             day_after_diff=self.day_after_diff,
-            parameters=params
+            parameters=params,
         )
 
     def x(self) -> dict:

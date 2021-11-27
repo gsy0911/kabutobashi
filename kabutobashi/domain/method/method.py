@@ -79,7 +79,7 @@ class Method(metaclass=ABCMeta):
             raise ValueError()
         base_df = df[StockDataProcessed.REQUIRED_DF_COLUMNS]
         color_mapping = self._color_mapping()
-        columns = ["dt", "buy_signal", "sell_signal"] + [v["df_key"] for v in color_mapping]
+        columns = ["dt", "buy_signal", "sell_signal"] + self._processed_columns()
 
         return StockDataProcessed(
             code=code_list[0],
@@ -100,6 +100,16 @@ class Method(metaclass=ABCMeta):
 
     @abstractmethod
     def _visualize_option(self) -> dict:
+        raise NotImplementedError("please implement your code")
+
+    @abstractmethod
+    def _processed_columns(self) -> list:
+        """
+        各メソッドで計算時に出力されるカラムを明示する
+
+        Returns:
+
+        """
         raise NotImplementedError("please implement your code")
 
     def signal(self, df: pd.DataFrame) -> pd.DataFrame:
@@ -180,12 +190,12 @@ class Method(metaclass=ABCMeta):
             raise ValueError()
 
         # 日時
-        start_at = list(df_x['dt'])[0]
-        end_at = list(df_x['dt'])[-1]
+        start_at = list(df_x["dt"])[0]
+        end_at = list(df_x["dt"])[-1]
 
         # diff:= df_y.last - df_x.last
-        start = list(df_x['close'])[-1]
-        end = list(df_y['close'])[-1]
+        start = list(df_x["close"])[-1]
+        end = list(df_y["close"])[-1]
         diff = end - start
 
         params = {}
@@ -197,7 +207,7 @@ class Method(metaclass=ABCMeta):
             end_at=end_at,
             days_after_n=len(df_y.index),
             day_after_diff=diff,
-            parameters=params
+            parameters=params,
         )
 
     @abstractmethod

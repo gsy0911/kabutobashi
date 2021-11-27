@@ -118,5 +118,8 @@ class Stochastics(Method):
     def _visualize_option(self) -> dict:
         return {"position": "lower"}
 
+    def _processed_columns(self) -> list:
+        return ["K", "D", "SD"]
+
     def _parameterize(self) -> dict:
         return {}

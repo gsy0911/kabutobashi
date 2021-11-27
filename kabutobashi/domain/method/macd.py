@@ -50,5 +50,8 @@ class MACD(Method):
     def _visualize_option(self) -> dict:
         return {"position": "lower"}
 
+    def _processed_columns(self) -> list:
+        return ["ema_short", "ema_long", "signal", "macd", "histogram"]
+
     def _parameterize(self) -> dict:
         return {}

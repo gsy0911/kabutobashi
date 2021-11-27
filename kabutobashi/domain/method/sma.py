@@ -37,5 +37,8 @@ class SMA(Method):
     def _visualize_option(self) -> dict:
         return {"position": "in"}
 
+    def _processed_columns(self) -> list:
+        return ["sma_long", "sma_medium", "sma_short"]
+
     def _parameterize(self) -> dict:
         return {}

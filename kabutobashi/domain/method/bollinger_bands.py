@@ -55,5 +55,8 @@ class BollingerBands(Method):
     def _visualize_option(self) -> dict:
         return {"position": "in"}
 
+    def _processed_columns(self) -> list:
+        return ["upper_2_sigma", "lower_2_sigma", "over_upper_continuity", "over_lower_continuity"]
+
     def _parameterize(self) -> dict:
         return {}

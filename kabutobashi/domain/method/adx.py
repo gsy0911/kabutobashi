@@ -158,5 +158,8 @@ class ADX(Method):
     def _visualize_option(self) -> dict:
         return {"position": "lower"}
 
+    def _processed_columns(self) -> list:
+        return ["plus_di", "minus_di", "DX", "ADX", "ADXR"]
+
     def _parameterize(self) -> dict:
         return {}

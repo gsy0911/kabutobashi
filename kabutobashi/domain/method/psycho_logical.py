@@ -43,5 +43,8 @@ class PsychoLogical(Method):
     def _visualize_option(self) -> dict:
         return {"position": "lower"}
 
+    def _processed_columns(self) -> list:
+        return ["psycho_line", "bought_too_much", "sold_too_much"]
+
     def _parameterize(self) -> dict:
         return {}

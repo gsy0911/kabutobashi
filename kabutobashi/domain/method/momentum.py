@@ -33,5 +33,8 @@ class Momentum(Method):
     def _visualize_option(self) -> dict:
         return {"position": "lower"}
 
+    def _processed_columns(self) -> list:
+        return ["momentum", "sma_momentum"]
+
     def _parameterize(self) -> dict:
         return {}

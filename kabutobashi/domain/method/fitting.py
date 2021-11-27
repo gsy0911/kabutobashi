@@ -57,5 +57,8 @@ class Fitting(Method):
     def _visualize_option(self) -> dict:
         return {"position": "in"}
 
+    def _processed_columns(self) -> list:
+        return []
+
     def _parameterize(self) -> dict:
         return {}
