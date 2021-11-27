@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 from mplfinance.original_flavor import candlestick_ohlc
 
-from kabutobashi.domain.entity import StockDataProcessed, StockDataSingleCode
+from kabutobashi.domain.entity import StockDataParameterized, StockDataProcessed, StockDataSingleCode
 
 
 @dataclass(frozen=True)
@@ -173,3 +173,29 @@ class Method(metaclass=ABCMeta):
         # datetime -> float
         ohlc = np.vstack((mdates.date2num(df.index), df.values.T)).T
         candlestick_ohlc(ax, ohlc, width=0.7, colorup="g", colordown="r")
+
+    def parameterize(self, df_x: pd.DataFrame, df_y: pd.DataFrame) -> StockDataParameterized:
+        code_list = list(df_x["code"].unique())
+        if len(code_list) > 1:
+            raise ValueError()
+
+        # 日時
+        start_at = list(df_x['dt'])[0]
+        end_at = list(df_x['dt'])[-1]
+
+        # diff:= df_y.last - df_x.last
+        start = list(df_x['close'])[-1]
+        end = list(df_y['close'])[-1]
+        diff = end - start
+        return StockDataParameterized(
+            code=code_list[0],
+            start_at=start_at,
+            end_at=end_at,
+            days_after_n=len(df_y.index),
+            day_after_diff=diff,
+            parameters=self._parameterize()
+        )
+
+    @abstractmethod
+    def _parameterize(self) -> dict:
+        raise NotImplementedError("please implement your code")

@@ -301,7 +301,10 @@ class StockDataMultipleCode:
     def to_single_code(self, code: str) -> StockDataSingleCode:
         return StockDataSingleCode(code=code, df=self.df[self.df["code"] == code])
 
-    def to_code_iterable(self, *, skip_reit: bool = True, row_more_than: Optional[int] = None):
+    def to_code_iterable(
+        self, until: Optional[int] = None, *, skip_reit: bool = True, row_more_than: Optional[int] = 80
+    ):
+        _count = 0
         df = self.df
         if skip_reit:
             df = df[~(df["market"] == "東証REIT")]
@@ -310,6 +313,10 @@ class StockDataMultipleCode:
             if row_more_than:
                 if len(df_.index) < row_more_than:
                     continue
+            if until:
+                if _count >= until:
+                    return
+            _count += 1
             yield StockDataSingleCode(code=code, df=df_)
 
 
