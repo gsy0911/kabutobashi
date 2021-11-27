@@ -149,7 +149,7 @@ class StockDataSingleCode:
         self._null_check()
         self._code_constraint_check(df=self.df)
         if not self._validate():
-            raise ValueError(f"不正なデータ構造です: {self.df.columns=}")
+            raise KabutobashiEntityError(f"required: {self.REQUIRED_COL}, input: {self.df.column}")
 
     def _null_check(self):
         if self.df is None:
@@ -171,12 +171,6 @@ class StockDataSingleCode:
                 raise KabutobashiEntityError("multiple code")
             elif len(code) == 0:
                 raise KabutobashiEntityError("no code")
-
-    def _required_column_check(self):
-        columns = list(self.df.columns)
-        # 必須のカラム確認
-        if not all([item in columns for item in self.REQUIRED_COL]):
-            raise KabutobashiEntityError(f"required: {self.REQUIRED_COL}, input: {columns}")
 
     @staticmethod
     def of(df: pd.DataFrame):
@@ -258,10 +252,8 @@ class StockDataSingleCode:
             end = offset + buy_sell_term_days
             yield idx, self.df[i:offset], self.df[offset:end]
 
-    def get_df(self, minimum=True, latest=False, code_list: list = None):
+    def get_df(self, minimum=True, latest=False):
         df = self.df
-        if code_list:
-            df = df[df["code"].isin(code_list)]
 
         if latest:
             latest_dt = max(df["dt"])
@@ -293,7 +285,7 @@ class StockDataMultipleCode:
     def __post_init__(self):
         self._null_check()
         if not self._validate():
-            raise ValueError(f"不正なデータ構造です: {self.df.columns=}")
+            raise KabutobashiEntityError(f"不正なデータ構造です: {self.df.columns=}")
 
     def _null_check(self):
         if self.df is None:
@@ -314,10 +306,18 @@ class StockDataMultipleCode:
         return StockDataSingleCode(code=code, df=self.df[self.df["code"] == code])
 
     def to_code_iterable(
-        self, until: Optional[int] = None, *, skip_reit: bool = True, row_more_than: Optional[int] = 80
+        self,
+        until: Optional[int] = None,
+        *,
+        skip_reit: bool = True,
+        row_more_than: Optional[int] = 80,
+        code_list: list = None,
     ):
         _count = 0
-        df = self.df
+        df = self.df.copy()
+
+        if code_list:
+            df = df[df["code"].isin(code_list)]
         if skip_reit:
             df = df[~(df["market"] == "東証REIT")]
 

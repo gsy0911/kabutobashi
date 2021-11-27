@@ -3,7 +3,6 @@
 # methods to analysis
 # import errors
 from kabutobashi import errors
-from kabutobashi.core import analysis_with  # technical analysis function; get buy or sell signal value
 from kabutobashi.domain.method import (
     ADX,
     MACD,

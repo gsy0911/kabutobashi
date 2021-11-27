@@ -1,3 +1,4 @@
+import pandas as pd
 import pytest
 
 import kabutobashi as kb
@@ -40,3 +41,28 @@ class TestWeeks52HihLow:
             _ = kb.Weeks52HighLow(
                 code="", brand_name="", close="", buy_or_sell="", volatility_ratio="", volatility_value=""
             )
+
+
+class TestStockDataSingleCode:
+    def test_of(self, data_path):
+        df = pd.read_csv(f"{data_path}/example.csv.gz")
+        single_code = df[df["code"] == 1375]
+        _ = kb.StockDataSingleCode.of(df=single_code)
+
+        # check None
+        with pytest.raises(kb.errors.KabutobashiEntityError):
+            _ = kb.StockDataSingleCode(code="-", df=None)
+
+        # check multiple code
+        with pytest.raises(kb.errors.KabutobashiEntityError):
+            _ = kb.StockDataSingleCode(code="-", df=df)
+
+        # check invalid column
+        with pytest.raises(kb.errors.KabutobashiEntityError):
+            _ = kb.StockDataSingleCode(code="-", df=single_code[["close"]])
+
+    def test_get_df(self, data_path):
+        df = pd.read_csv(f"{data_path}/example.csv.gz")
+        single_code = df[df["code"] == 1375]
+        sdsc = kb.StockDataSingleCode.of(df=single_code)
+        df_ = sdsc.get_df()

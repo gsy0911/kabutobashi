@@ -2,7 +2,6 @@ import os
 
 from kabutobashi.domain.entity import StockDataMultipleCode, StockDataRepository
 
-# pytestの設定
 PARENT_PATH = os.path.abspath(os.path.dirname(__file__))
 SOURCE_PATH = os.path.abspath(os.path.dirname(PARENT_PATH))
 DATA_PATH = f"{SOURCE_PATH}/data"
