@@ -1,10 +1,7 @@
 from abc import ABCMeta, abstractmethod
 from dataclasses import dataclass
 
-import matplotlib.dates as mdates
-import numpy as np
 import pandas as pd
-from mplfinance.original_flavor import candlestick_ohlc
 
 from kabutobashi.domain.entity import StockDataParameterized, StockDataProcessed, StockDataSingleCode
 
@@ -177,12 +174,6 @@ class Method(metaclass=ABCMeta):
         df["diff"] = df["original"] - df["shifted"]
         df["diff_rolling_sum"] = df["diff"].rolling(5).sum()
         return df["diff_rolling_sum"]
-
-    @staticmethod
-    def add_ax_candlestick(ax, df: pd.DataFrame):
-        # datetime -> float
-        ohlc = np.vstack((mdates.date2num(df.index), df.values.T)).T
-        candlestick_ohlc(ax, ohlc, width=0.7, colorup="g", colordown="r")
 
     def parameterize(self, df_x: pd.DataFrame, df_y: pd.DataFrame) -> StockDataParameterized:
         code_list = list(df_x["code"].unique())

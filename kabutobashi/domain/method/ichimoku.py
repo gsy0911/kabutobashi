@@ -52,21 +52,6 @@ class Ichimoku(Method):
     def _signal(self, df: pd.DataFrame) -> pd.DataFrame:
         return df
 
-    def _visualize(self, df: pd.DataFrame):
-        # TODO implement
-        fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(6, 5))
-        # x軸のオートフォーマット
-        fig.autofmt_xdate()
-
-        # set candlestick
-        self.add_ax_candlestick(ax, df)
-
-        # plot macd
-        ax.plot(df.index, df["sma_long"], color="#dc143c", label="sma_long")
-
-        ax.legend(loc="best")  # 各線のラベルを表示
-        return fig
-
     def _color_mapping(self) -> list:
         return [
             {"df_key": "", "color": "", "label": ""},
