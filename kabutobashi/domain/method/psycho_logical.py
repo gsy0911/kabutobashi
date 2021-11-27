@@ -18,17 +18,18 @@ class PsychoLogical(Method):
     method_name: str = "psycho_logical"
 
     def _method(self, df: pd.DataFrame) -> pd.DataFrame:
-        df["shift_close"] = df["close"].shift(1)
-        df["diff"] = df.apply(lambda x: x["close"] - x["shift_close"], axis=1)
+        df_ = df.copy()
+        df_["shift_close"] = df_["close"].shift(1)
+        df_["diff"] = df_.apply(lambda x: x["close"] - x["shift_close"], axis=1)
 
-        df["is_raise"] = df["diff"].apply(lambda x: 1 if x > 0 else 0)
+        df_["is_raise"] = df_["diff"].apply(lambda x: 1 if x > 0 else 0)
 
-        df["psycho_sum"] = df["is_raise"].rolling(self.psycho_term).sum()
-        df["psycho_line"] = df["psycho_sum"].apply(lambda x: x / self.psycho_term)
+        df_["psycho_sum"] = df_["is_raise"].rolling(self.psycho_term).sum()
+        df_["psycho_line"] = df_["psycho_sum"].apply(lambda x: x / self.psycho_term)
 
-        df["bought_too_much"] = df["psycho_line"].apply(lambda x: 1 if x > self.upper_threshold else 0)
-        df["sold_too_much"] = df["psycho_line"].apply(lambda x: 1 if x < self.lower_threshold else 0)
-        return df
+        df_["bought_too_much"] = df_["psycho_line"].apply(lambda x: 1 if x > self.upper_threshold else 0)
+        df_["sold_too_much"] = df_["psycho_line"].apply(lambda x: 1 if x < self.lower_threshold else 0)
+        return df_
 
     def _signal(self, df: pd.DataFrame) -> pd.DataFrame:
         df["buy_signal"] = df["sold_too_much"]

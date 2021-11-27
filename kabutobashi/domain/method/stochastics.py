@@ -22,11 +22,11 @@ class Stochastics(Method):
     method_name: str = "stochastics"
 
     def _method(self, df: pd.DataFrame) -> pd.DataFrame:
-
-        df["K"] = Stochastics._fast_stochastic_k(df["close"], df["low"], df["high"], 9)
-        df["D"] = Stochastics._fast_stochastic_d(df["K"])
-        df["SD"] = Stochastics._slow_stochastic_d(df["D"])
-        return df
+        df_ = df.copy()
+        df_["K"] = Stochastics._fast_stochastic_k(df_["close"], df_["low"], df_["high"], 9)
+        df_["D"] = Stochastics._fast_stochastic_d(df_["K"])
+        df_["SD"] = Stochastics._slow_stochastic_d(df_["D"])
+        return df_
 
     def _signal(self, df: pd.DataFrame) -> pd.DataFrame:
         """
