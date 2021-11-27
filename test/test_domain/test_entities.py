@@ -81,3 +81,21 @@ class TestStockDataSingleCode:
 
         latest_date_df = sdsc.get_df(latest=True)
         assert len(latest_date_df.index) == 1
+
+
+class TestStockDataProcessed:
+    def test_of(self):
+        sdmc = kb.example()
+        sdsc = sdmc.to_single_code(code=1375)
+        processed = kb.StockDataProcessed.of(df=sdsc.df, methods=[kb.sma, kb.macd])
+        _ = processed.visualize()
+
+
+class TestStockDataParameterized:
+    def test_of(self):
+        sdmc = kb.example()
+        sdsc = sdmc.to_single_code(code=1375)
+        for idx, df_x, df_y in sdsc.sliding_split():
+            parameterized = kb.StockDataParameterized.of(df_x=df_x, df_y=df_y, methods=kb.methods)
+            assert type(parameterized.x()) is dict
+            assert type(parameterized.y()) is float
