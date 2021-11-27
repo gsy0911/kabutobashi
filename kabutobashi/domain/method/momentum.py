@@ -32,3 +32,6 @@ class Momentum(Method):
 
     def _visualize_option(self) -> dict:
         return {"position": "lower"}
+
+    def _parameterize(self) -> dict:
+        return {}

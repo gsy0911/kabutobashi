@@ -235,7 +235,7 @@ class StockDataSingleCode:
         return f
 
     def sliding_split(
-        self, *, buy_sell_term_days: int = 5, sliding_window: int = 60, step: int = 2
+        self, *, buy_sell_term_days: int = 5, sliding_window: int = 60, step: int = 3
     ) -> (int, pd.DataFrame, pd.DataFrame):
         """
 

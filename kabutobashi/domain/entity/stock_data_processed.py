@@ -219,6 +219,16 @@ class StockDataProcessed:
 
 @dataclass(frozen=True)
 class StockDataParameterized:
+    """
+    Examples:
+        >>> import kabutobashi as kb
+        >>> sdmc = kb.example()
+        >>> for sdsc in sdmc.to_code_iterable(until=1, row_more_than=80):
+        ... code = sdsc.code
+        ... for idx, df_x, df_y in sdsc.sliding_split():
+        ...     df_params = kb.StockDataParameterized.of(df_x, df_y, [kb.sma, kb.macd, kb.stochastics])
+        ...     print(f"code:{code}, x:{df_params.x()}, y:{df_params.y()}")
+    """
     start_at: str
     end_at: str
     days_after_n: int

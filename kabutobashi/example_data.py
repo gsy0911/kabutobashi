@@ -17,5 +17,4 @@ def example() -> StockDataMultipleCode:
         >>> sdmc.to_single_code(1375).to_processed([kb.sma, kb.macd])
     """
     file_name = "example.csv.gz"
-    print(SOURCE_PATH)
     return StockDataRepository().read(f"{DATA_PATH}/{file_name}")

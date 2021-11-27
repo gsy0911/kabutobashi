@@ -54,6 +54,8 @@ momentum = Momentum()
 psycho_logical = PsychoLogical()
 fitting = Fitting()
 
+methods = [sma, macd, stochastics, adx, bollinger_bands, momentum, psycho_logical]
+
 # comparable tuple
 VERSION = (0, 2, 2)
 # generate __version__ via VERSION tuple
