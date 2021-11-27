@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
@@ -17,12 +17,18 @@ class StockDataProcessed:
     methodで処理した後のデータを保持
     可視化などを実行する際に利用
 
+    Examples:
+        >>> import kabutobashi as kb
+        >>> sdmc = kb.example()
+        >>> sdp = sdmc.to_single_code(1375).to_processed([kb.sma, kb.macd])
+        >>> data = sdp.get_impact()
+
     """
 
     code: Optional[Union[str, int]]
     base_df: pd.DataFrame = field(repr=False)
-    # {"method": "", "data": "", "color_mapping": List[dict]}
-    processed_dfs: List[Dict[str, pd.DataFrame]] = field(repr=False)
+    # {"method": "", "data": pd.DataFrame, "color_mapping": List[dict], "visualize_option": dict}
+    processed_dfs: List[Dict[str, Any]] = field(repr=False)
 
     REQUIRED_DF_COLUMNS = ["code", "open", "close", "high", "low", "dt"]
     PROCESSED_SCHEMA = {
@@ -42,6 +48,11 @@ class StockDataProcessed:
         },
         "visualize_option": {"type": "dict", "schema": {"position": {"type": "string", "allowed": ["in", "lower"]}}},
     }
+
+    def __post_init__(self):
+        # pd.DataFrameの確認
+        # self._validate()
+        pass
 
     @staticmethod
     def of(df: pd.DataFrame, methods: list) -> "StockDataProcessed":
