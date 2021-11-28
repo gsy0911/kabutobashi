@@ -1,5 +1,11 @@
 # Release Note
 
+## 0.2.3
+
+- add `visualize()` function ([#49](https://github.com/gsy0911/kabutobashi/issues/49))
+- compatibility to M1 mac ([#67](https://github.com/gsy0911/kabutobashi/issues/67))
+- drop Python 3.7 ([#55](https://github.com/gsy0911/kabutobashi/issues/55))
+
 ## 0.2.2
 
 - BUG FIX: Week52HighLow validator ([#62](https://github.com/gsy0911/kabutobashi/issues/62))

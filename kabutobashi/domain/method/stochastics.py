@@ -21,30 +21,27 @@ class Stochastics(Method):
 
     method_name: str = "stochastics"
 
-    def _method(self, _df: pd.DataFrame) -> pd.DataFrame:
+    def _method(self, df: pd.DataFrame) -> pd.DataFrame:
+        df_ = df.copy()
+        df_["K"] = Stochastics._fast_stochastic_k(df_["close"], df_["low"], df_["high"], 9)
+        df_["D"] = Stochastics._fast_stochastic_d(df_["K"])
+        df_["SD"] = Stochastics._slow_stochastic_d(df_["D"])
+        return df_
 
-        _df["close"] = _df["close"].astype(float)
-        _df["low"] = _df["low"].astype(float)
-        _df["high"] = _df["high"].astype(float)
-        _df["K"] = Stochastics._fast_stochastic_k(_df["close"], _df["low"], _df["high"], 9)
-        _df["D"] = Stochastics._fast_stochastic_d(_df["K"])
-        _df["SD"] = Stochastics._slow_stochastic_d(_df["D"])
-        return _df
-
-    def _signal(self, _df: pd.DataFrame) -> pd.DataFrame:
+    def _signal(self, df: pd.DataFrame) -> pd.DataFrame:
         """
         買いと売りに関する指標を算出する
         """
-        _df = _df.assign(
+        df = df.assign(
             shift_K=lambda x: x["K"].shift(1),
             shift_D=lambda x: x["D"].shift(1),
             shift_SD=lambda x: x["SD"].shift(1),
         )
 
         # 複数引数は関数を利用することで吸収
-        _df["buy_signal"] = _df.apply(self._buy_signal_index_internal, axis=1)
-        _df["sell_signal"] = _df.apply(self._sell_signal_index_internal, axis=1)
-        return _df
+        df["buy_signal"] = df.apply(self._buy_signal_index_internal, axis=1)
+        df["sell_signal"] = df.apply(self._sell_signal_index_internal, axis=1)
+        return df
 
     @staticmethod
     def _fast_stochastic_k(close, low, high, n):
@@ -117,3 +114,9 @@ class Stochastics(Method):
 
     def _visualize_option(self) -> dict:
         return {"position": "lower"}
+
+    def _processed_columns(self) -> list:
+        return ["K", "D", "SD"]
+
+    def _parameterize(self, df_x: pd.DataFrame) -> dict:
+        return {}

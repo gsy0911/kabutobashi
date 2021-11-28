@@ -12,20 +12,20 @@ class SMA(Method):
     long_term: int = 70
     method_name: str = "sma"
 
-    def _method(self, _df: pd.DataFrame) -> pd.DataFrame:
-        _df = _df.assign(
-            sma_short=_df["close"].rolling(self.short_term).mean(),
-            sma_medium=_df["close"].rolling(self.medium_term).mean(),
-            sma_long=_df["close"].rolling(self.long_term).mean(),
+    def _method(self, df: pd.DataFrame) -> pd.DataFrame:
+        df = df.assign(
+            sma_short=df["close"].rolling(self.short_term).mean(),
+            sma_medium=df["close"].rolling(self.medium_term).mean(),
+            sma_long=df["close"].rolling(self.long_term).mean(),
         )
-        return _df
+        return df
 
-    def _signal(self, _df: pd.DataFrame) -> pd.DataFrame:
-        _df["diff"] = _df.apply(lambda x: x["sma_long"] - x["sma_short"], axis=1)
+    def _signal(self, df: pd.DataFrame) -> pd.DataFrame:
+        df["diff"] = df.apply(lambda x: x["sma_long"] - x["sma_short"], axis=1)
         # 正負が交差した点
-        _df = _df.join(self._cross(_df["diff"]))
-        _df = _df.rename(columns={"to_plus": "buy_signal", "to_minus": "sell_signal"})
-        return _df
+        df = df.join(self._cross(df["diff"]))
+        df = df.rename(columns={"to_plus": "buy_signal", "to_minus": "sell_signal"})
+        return df
 
     def _color_mapping(self) -> list:
         return [
@@ -36,3 +36,9 @@ class SMA(Method):
 
     def _visualize_option(self) -> dict:
         return {"position": "in"}
+
+    def _processed_columns(self) -> list:
+        return ["sma_long", "sma_medium", "sma_short"]
+
+    def _parameterize(self, df_x: pd.DataFrame) -> dict:
+        return {}

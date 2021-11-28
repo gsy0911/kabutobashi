@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
@@ -12,17 +12,23 @@ from kabutobashi.errors import KabutobashiEntityError
 
 
 @dataclass(frozen=True)
-class StockProcessed:
+class StockDataProcessed:
     """
     methodで処理した後のデータを保持
     可視化などを実行する際に利用
+
+    Examples:
+        >>> import kabutobashi as kb
+        >>> sdmc = kb.example()
+        >>> sdp = sdmc.to_single_code(1375).to_processed([kb.sma, kb.macd])
+        >>> data = sdp.get_impact()
 
     """
 
     code: Optional[Union[str, int]]
     base_df: pd.DataFrame = field(repr=False)
-    # {"method": "", "data": "", "color_mapping": List[dict]}
-    processed_dfs: List[Dict[str, pd.DataFrame]] = field(repr=False)
+    # {"method": "", "data": pd.DataFrame, "color_mapping": List[dict], "visualize_option": dict}
+    processed_dfs: List[Dict[str, Any]] = field(repr=False)
 
     REQUIRED_DF_COLUMNS = ["code", "open", "close", "high", "low", "dt"]
     PROCESSED_SCHEMA = {
@@ -43,21 +49,26 @@ class StockProcessed:
         "visualize_option": {"type": "dict", "schema": {"position": {"type": "string", "allowed": ["in", "lower"]}}},
     }
 
+    def __post_init__(self):
+        # pd.DataFrameの確認
+        # self._validate()
+        pass
+
     @staticmethod
-    def of(_df: pd.DataFrame, methods: list) -> "StockProcessed":
+    def of(df: pd.DataFrame, methods: list) -> "StockDataProcessed":
         from kabutobashi.domain.method import Method
 
         # check all methods
         for method in methods:
             if not isinstance(method, Method):
-                raise ValueError()
+                raise KabutobashiEntityError()
 
         initial_method: Method = methods[0]
         rest_methods: List[Method] = methods[1:]
-        base = initial_method.process(_df=_df)
+        base = initial_method.process(df=df)
 
         for rest_method in rest_methods:
-            base = base + rest_method.process(_df=_df)
+            base = base + rest_method.process(df=df)
         return base
 
     def _validate(self):
@@ -70,15 +81,15 @@ class StockProcessed:
         if not validator.validate(self.processed_dfs):
             raise KabutobashiEntityError(validator)
 
-    def __add__(self, other: "StockProcessed") -> "StockProcessed":
-        if not isinstance(other, StockProcessed):
-            raise ValueError()
+    def __add__(self, other: "StockDataProcessed") -> "StockDataProcessed":
+        if not isinstance(other, StockDataProcessed):
+            raise KabutobashiEntityError()
 
         # update
         processed_dfs = []
         processed_dfs.extend(self.processed_dfs)
         processed_dfs.extend(other.processed_dfs)
-        return StockProcessed(
+        return StockDataProcessed(
             code=self.code,
             base_df=self.base_df,
             processed_dfs=processed_dfs,
@@ -97,11 +108,11 @@ class StockProcessed:
         Examples:
             >>> import kabutobashi as kb
             >>> df = kb.read_csv(...)
-            >>> processed = kb.StockProcessed.of(_df=df, methods=[kb.sma, kb.macd])
+            >>> processed = kb.StockDataProcessed.of(_df=df, methods=[kb.sma, kb.macd])
             >>> processed.get_impact()
             {"sma": 0.4, "macd": -0.04}
             >>> sma = kb.SMA(short_term=3, medium_term=15, long_term=50)
-            >>> processed = kb.StockProcessed.of(_df=df, methods=[sma, kb.macd])
+            >>> processed = kb.StockDataProcessed.of(_df=df, methods=[sma, kb.macd])
             >>> processed.get_impact()
             {"sma": 0.2, "macd": -0.04}
         """
@@ -198,6 +209,76 @@ class StockProcessed:
                 # lower
                 ax_idx += 1
             else:
-                raise ValueError()
+                raise KabutobashiEntityError()
 
         return fig
+
+    def parameterize(self) -> dict:
+        pass
+
+
+@dataclass(frozen=True)
+class StockDataParameterized:
+    """
+    Examples:
+        >>> import kabutobashi as kb
+        >>> sdmc = kb.example()
+        >>> for sdsc in sdmc.to_code_iterable(until=1, row_more_than=80):
+        ... code = sdsc.code
+        ... for idx, df_x, df_y in sdsc.sliding_split():
+        ...     df_params = kb.StockDataParameterized.of(df_x, df_y, [kb.sma, kb.macd, kb.stochastics])
+        ...     print(f"code:{code}, x:{df_params.x()}, y:{df_params.y()}")
+    """
+
+    start_at: str
+    end_at: str
+    days_after_n: int
+    day_after_diff: float
+    code: str
+    parameters: Dict[str, float]
+
+    @staticmethod
+    def of(df_x: pd.DataFrame, df_y: pd.DataFrame, methods: list) -> "StockDataParameterized":
+        from kabutobashi.domain.method import Method
+
+        # check all methods
+        for method in methods:
+            if not isinstance(method, Method):
+                raise KabutobashiEntityError()
+
+        initial_method: Method = methods[0]
+        rest_methods: List[Method] = methods[1:]
+        base = initial_method.parameterize(df_x=df_x, df_y=df_y)
+
+        for rest_method in rest_methods:
+            base = base + rest_method.parameterize(df_x=df_x, df_y=df_y)
+        return base
+
+    def __add__(self, other: "StockDataParameterized") -> "StockDataParameterized":
+        if not isinstance(other, StockDataParameterized):
+            raise KabutobashiEntityError()
+
+        # update
+        params = {}
+        params.update(self.parameters)
+        params.update(other.parameters)
+        return StockDataParameterized(
+            code=self.code,
+            start_at=self.start_at,
+            end_at=self.end_at,
+            days_after_n=self.days_after_n,
+            day_after_diff=self.day_after_diff,
+            parameters=params,
+        )
+
+    def x(self) -> dict:
+        return self.parameters
+
+    def y(self) -> float:
+        return self.day_after_diff
+
+    def row(self) -> dict:
+        row_ = {}
+        row_.update(self.x())
+        row_.update({"diff": self.y()})
+        return row_

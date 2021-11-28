@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from bs4 import BeautifulSoup
 
 from kabutobashi.domain.entity import Weeks52HighLow
+from kabutobashi.errors import KabutobashiPageError
 
 from .page import Page, PageDecoder
 
@@ -14,7 +15,7 @@ class Weeks52HighLowPage(Page):
 
     def __post_init__(self):
         if self.data_type not in ["high", "low", "newly_high", "newly_low"]:
-            raise ValueError()
+            raise KabutobashiPageError()
 
     def url(self) -> str:
         prefix = None
@@ -29,7 +30,7 @@ class Weeks52HighLowPage(Page):
             prefix = "highs-and-lows-atl"
 
         if prefix is None:
-            raise ValueError()
+            raise KabutobashiPageError()
 
         return f"{self.base_url}/{prefix}"
 

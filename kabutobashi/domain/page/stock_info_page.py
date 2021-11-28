@@ -3,7 +3,7 @@ from typing import Union
 
 from bs4 import BeautifulSoup
 
-from kabutobashi.domain.entity import StockInfo
+from kabutobashi.domain.entity import StockDataSingleDay
 
 from .page import Page, PageDecoder
 
@@ -60,4 +60,4 @@ class StockInfoPage(Page):
                 "issued_shares": info["発行済株数"],
             }
         )
-        return StockInfo.from_page_of(data=result).dumps()
+        return StockDataSingleDay.from_page_of(data=result).dumps()

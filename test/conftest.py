@@ -1,6 +1,8 @@
 import os
 import sys
 
+import pytest
+
 # テスト対象のファイルへのパスを通している
 # pytestの設定
 PARENT_PATH = os.path.abspath(os.path.dirname(os.path.abspath(__file__)))
@@ -12,3 +14,10 @@ sys.path.append(f"{SOURCE_PATH}")
 os.chdir("./kabutobashi")
 
 # skip if: https://thinkami.hatenablog.com/entry/2017/10/25/222551
+
+DATA_PATH = f"{SOURCE_PATH}/data"
+
+
+@pytest.fixture
+def data_path():
+    yield DATA_PATH
