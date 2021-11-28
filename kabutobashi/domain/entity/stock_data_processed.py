@@ -22,6 +22,12 @@ class StockDataProcessed:
         >>> sdmc = kb.example()
         >>> sdp = sdmc.to_single_code(1375).to_processed([kb.sma, kb.macd])
         >>> data = sdp.get_impact()
+        {"sma": 0.4, "macd": -0.04}
+        >>> df = pd.read_csv(...)
+        >>> sma = kb.SMA(short_term=3, medium_term=15, long_term=50)
+        >>> processed = kb.StockDataProcessed.of(df=df, methods=[sma, kb.macd])
+        >>> processed.get_impact()
+        {"sma": 0.2, "macd": -0.04}
 
     """
 

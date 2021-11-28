@@ -35,7 +35,7 @@ package status
 ``kabutobashi`` can
 
 * crawl Japanese stock data
-* analyze stock based on charts
+* analyze, visualize and parameterize stock based on charts
 
 Installation
 ============
@@ -80,7 +80,7 @@ Visualize
 ---------
 
 
-Not Yet.
+Not Completed Yet.
 
 
 Utilities
