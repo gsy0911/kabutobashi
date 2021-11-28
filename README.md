@@ -14,21 +14,15 @@
 ```python
 import kabutobashi as kb
 
-# 例データの取得
-df_stock = kb.example_data()
-# 分析手法
-analysis_methods = [
-    kb.macd, 
-    kb.sma, 
-    kb.stochastics, 
-    kb.adx, 
-    kb.bollinger_bands, 
-    kb.momentum, 
-    kb.psycho_logical
-]
-kb.get_impact_with(df_stock, analysis_methods)
+file_path_list = [...]
+sdmc = kb.StockDataRepository().read(file_path_list)
+for sdsc in sdmc.to_code_iterable():
+    processed = sdsc.to_processed(methods=kb.methods)
+    print(processed.get_impact())
+
 
 # n日前までの営業日の日付リストを取得する関数
 target_date = "2020-01-01"
 date_list = kb.get_past_n_days(target_date, n=40)
+
 ```

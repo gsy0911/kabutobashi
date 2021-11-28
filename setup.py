@@ -15,6 +15,9 @@ def get_version(init_file_path):
     return ".".join(map(str, version_tuple))
 
 
+with open("requirements.txt") as f:
+    install_requires = f.read().splitlines()
+
 # get __version__ from __init__.py
 init = os.path.join(
     os.path.dirname(__file__), 'kabutobashi', '__init__.py'
@@ -35,21 +38,13 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/gsy0911/kabutobashi",
     packages=setuptools.find_packages(),
-    install_requires=[
-        "pandas",
-        "jpholiday",
-        "lxml",
-        "requests",
-        "beautifulsoup4",
-        "mplfinance",
-        "matplotlib",
-        "scipy",
-        "cerberus"
-    ],
+    install_requires=install_requires,
+    extra_require={
+        "ml": ["scipy"]
+    },
     license="MIT",
     classifiers=[
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Development Status :: 3 - Alpha",
@@ -57,5 +52,5 @@ setuptools.setup(
         "Intended Audience :: Developers",
         "License :: OSI Approved :: MIT License"
     ],
-    python_requires='>=3.7'
+    python_requires='>=3.8'
 )

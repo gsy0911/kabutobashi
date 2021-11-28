@@ -1,7 +1,6 @@
 import math
 from dataclasses import dataclass
 
-import matplotlib.pyplot as plt
 import pandas as pd
 
 from .method import Method
@@ -22,30 +21,27 @@ class Stochastics(Method):
 
     method_name: str = "stochastics"
 
-    def _method(self, _df: pd.DataFrame) -> pd.DataFrame:
+    def _method(self, df: pd.DataFrame) -> pd.DataFrame:
+        df_ = df.copy()
+        df_["K"] = Stochastics._fast_stochastic_k(df_["close"], df_["low"], df_["high"], 9)
+        df_["D"] = Stochastics._fast_stochastic_d(df_["K"])
+        df_["SD"] = Stochastics._slow_stochastic_d(df_["D"])
+        return df_
 
-        _df["close"] = _df["close"].astype(float)
-        _df["low"] = _df["low"].astype(float)
-        _df["high"] = _df["high"].astype(float)
-        _df["K"] = Stochastics._fast_stochastic_k(_df["close"], _df["low"], _df["high"], 9)
-        _df["D"] = Stochastics._fast_stochastic_d(_df["K"])
-        _df["SD"] = Stochastics._slow_stochastic_d(_df["D"])
-        return _df
-
-    def _signal(self, _df: pd.DataFrame) -> pd.DataFrame:
+    def _signal(self, df: pd.DataFrame) -> pd.DataFrame:
         """
         買いと売りに関する指標を算出する
         """
-        _df = _df.assign(
+        df = df.assign(
             shift_K=lambda x: x["K"].shift(1),
             shift_D=lambda x: x["D"].shift(1),
             shift_SD=lambda x: x["SD"].shift(1),
         )
 
         # 複数引数は関数を利用することで吸収
-        _df["buy_signal"] = _df.apply(self._buy_signal_index_internal, axis=1)
-        _df["sell_signal"] = _df.apply(self._sell_signal_index_internal, axis=1)
-        return _df
+        df["buy_signal"] = df.apply(self._buy_signal_index_internal, axis=1)
+        df["sell_signal"] = df.apply(self._sell_signal_index_internal, axis=1)
+        return df
 
     @staticmethod
     def _fast_stochastic_k(close, low, high, n):
@@ -109,18 +105,18 @@ class Stochastics(Method):
             math.pow(current_k - 20, 2) / 100 + math.pow(current_d - 20, 2) / 100 + math.pow(current_sd - 20, 2) / 100
         )
 
-    def _visualize(self, _df: pd.DataFrame):
-        fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1, gridspec_kw={"height_ratios": [3, 1]}, figsize=(6, 5))
-        # x軸のオートフォーマット
-        fig.autofmt_xdate()
+    def _color_mapping(self) -> list:
+        return [
+            {"df_key": "K", "color": "", "label": "%K"},
+            {"df_key": "D", "color": "", "label": "%D"},
+            {"df_key": "SD", "color": "", "label": "%SD"},
+        ]
 
-        # set candlestick
-        self.add_ax_candlestick(ax1, _df)
+    def _visualize_option(self) -> dict:
+        return {"position": "lower"}
 
-        # plot macd
-        ax2.plot(_df.index, _df["D"], label="%D")
-        ax2.plot(_df.index, _df["SD"], label="%SD")
-        ax2.legend(loc="center left")  # 各線のラベルを表示
+    def _processed_columns(self) -> list:
+        return ["K", "D", "SD"]
 
-        ax1.legend(loc="best")  # 各線のラベルを表示
-        return fig
+    def _parameterize(self, df_x: pd.DataFrame) -> dict:
+        return {}

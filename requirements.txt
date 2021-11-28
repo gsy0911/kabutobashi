@@ -3,5 +3,6 @@ jpholiday
 lxml
 requests
 beautifulsoup4
-kabutobashi
-myst_parser
+mplfinance
+matplotlib
+cerberus

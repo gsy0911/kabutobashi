@@ -1,9 +1,25 @@
 """
 Method modules provide technical analysis for stock chart.
 
+- technical analysis
+
+  - ADX
+  - BollingerBands
+  - Fitting
+  - Ichimoku
+  - MACD
+  - Momentum
+  - PsychoLogical
+  - SMA
+  - Stochastics
+
+- other
+
+  - Basic: only used `parameterize`
 
 """
 from .adx import ADX
+from .basic import Basic
 from .bollinger_bands import BollingerBands
 from .fitting import Fitting
 from .ichimoku import Ichimoku

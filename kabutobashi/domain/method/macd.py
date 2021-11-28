@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 
-import matplotlib.pyplot as plt
 import pandas as pd
 
 from .method import Method
@@ -15,16 +14,16 @@ class MACD(Method):
     macd_span: int = 9
     method_name: str = "macd"
 
-    def _method(self, _df: pd.DataFrame) -> pd.DataFrame:
+    def _method(self, df: pd.DataFrame) -> pd.DataFrame:
         """
         macdを基準として今後上昇するかどうかをスコアで返す。
         値が大きければその傾向が高いことを表している。
         最小値は0で、最大値は無限大である。
-        :param _df:
+        :param df:
         :return:
         """
         # histogramが図として表現されるMACDの値
-        _df = _df.assign(
+        df = df.assign(
             # MACDの計算
             ema_short=lambda x: x["close"].ewm(span=self.short_term).mean(),
             ema_long=lambda x: x["close"].ewm(span=self.long_term).mean(),
@@ -33,27 +32,26 @@ class MACD(Method):
             # ヒストグラム値
             histogram=lambda x: x["macd"] - x["signal"],
         )
-        return _df
+        return df
 
-    def _signal(self, _df: pd.DataFrame) -> pd.DataFrame:
+    def _signal(self, df: pd.DataFrame) -> pd.DataFrame:
         # 正負が交差した点
-        _df = _df.join(self._cross(_df["histogram"]))
-        _df = _df.rename(columns={"to_plus": "buy_signal", "to_minus": "sell_signal"})
-        return _df
+        df = df.join(self._cross(df["histogram"]))
+        df = df.rename(columns={"to_plus": "buy_signal", "to_minus": "sell_signal"})
+        return df
 
-    def _visualize(self, _df: pd.DataFrame):
-        fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1, gridspec_kw={"height_ratios": [3, 1]}, figsize=(6, 5))
-        # x軸のオートフォーマット
-        fig.autofmt_xdate()
+    def _color_mapping(self) -> list:
+        return [
+            {"df_key": "macd", "color": "", "label": "macd", "plot": "plot"},
+            {"df_key": "signal", "color": "", "label": "signal", "plot": "plot"},
+            {"df_key": "histogram", "color": "", "label": "histogram", "plot": "bar"},
+        ]
 
-        # set candlestick
-        self.add_ax_candlestick(ax1, _df)
+    def _visualize_option(self) -> dict:
+        return {"position": "lower"}
 
-        # plot macd
-        ax2.plot(_df.index, _df["macd"], label="macd")
-        ax2.plot(_df.index, _df["signal"], label="signal")
-        ax2.bar(_df.index, _df["histogram"], label="histogram")
-        ax2.legend(loc="center left")  # 各線のラベルを表示
+    def _processed_columns(self) -> list:
+        return ["ema_short", "ema_long", "signal", "macd", "histogram"]
 
-        ax1.legend(loc="best")  # 各線のラベルを表示
-        return fig
+    def _parameterize(self, df_x: pd.DataFrame) -> dict:
+        return {}

@@ -19,8 +19,8 @@ class Ichimoku(Method):
     long_term: int = 52
     method_name: str = "ichimoku"
 
-    def _method(self, _df: pd.DataFrame) -> pd.DataFrame:
-        _df = _df.assign(
+    def _method(self, df: pd.DataFrame) -> pd.DataFrame:
+        df = df.assign(
             # 短期の線
             short_max=lambda x: x["close"].rolling(self.short_term).max(),
             short_min=lambda x: x["close"].rolling(self.short_term).min(),
@@ -33,36 +33,35 @@ class Ichimoku(Method):
         )
 
         # 指標の計算
-        _df = _df.assign(
+        df = df.assign(
             line_change=lambda x: (x["short_max"] + x["short_min"]) / 2,
             line_base=lambda x: (x["medium_max"] + x["medium_min"]) / 2,
             # 先行線
-            proceding_span_1=lambda x: (x["line_change"] + x["line_base"]) / 2,
-            proceding_span_2=lambda x: (x["long_max"] + x["long_min"]) / 2,
+            proceeding_span_1=lambda x: (x["line_change"] + x["line_base"]) / 2,
+            proceeding_span_2=lambda x: (x["long_max"] + x["long_min"]) / 2,
         )
 
         # 値のshift
-        _df = _df.assign(
-            proceding_span_1=_df["proceding_span_1"].shift(26),
-            proceding_span_2=_df["proceding_span_2"].shift(26),
-            delayed_span=_df["close"].shift(26),
+        df = df.assign(
+            proceeding_span_1=df["proceeding_span_1"].shift(26),
+            proceeding_span_2=df["proceeding_span_2"].shift(26),
+            delayed_span=df["close"].shift(26),
         )
-        return _df
+        return df
 
-    def _signal(self, _df: pd.DataFrame) -> pd.DataFrame:
-        return _df
+    def _signal(self, df: pd.DataFrame) -> pd.DataFrame:
+        return df
 
-    def _visualize(self, _df: pd.DataFrame):
-        # TODO implement
-        fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(6, 5))
-        # x軸のオートフォーマット
-        fig.autofmt_xdate()
+    def _color_mapping(self) -> list:
+        return [
+            {"df_key": "", "color": "", "label": ""},
+        ]
 
-        # set candlestick
-        self.add_ax_candlestick(ax, _df)
+    def _visualize_option(self) -> dict:
+        return {"position": "in"}
 
-        # plot macd
-        ax.plot(_df.index, _df["sma_long"], color="#dc143c", label="sma_long")
+    def _processed_columns(self) -> list:
+        return ["line_change", "line_base", "proceeding_span_1", "proceeding_span_2", "delayed_span"]
 
-        ax.legend(loc="best")  # 各線のラベルを表示
-        return fig
+    def _parameterize(self, df_x: pd.DataFrame) -> dict:
+        return {}

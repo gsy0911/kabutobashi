@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 
-import matplotlib.pyplot as plt
 import pandas as pd
 
 from .method import Method
@@ -16,29 +15,29 @@ class Momentum(Method):
     term: int = 25
     method_name: str = "momentum"
 
-    def _method(self, _df: pd.DataFrame) -> pd.DataFrame:
-        _df = _df.assign(
-            momentum=_df["close"].shift(10), sma_momentum=lambda x: x["momentum"].rolling(self.term).mean()
-        )
-        return _df
+    def _method(self, df: pd.DataFrame) -> pd.DataFrame:
+        df = df.assign(
+            momentum=df["close"].shift(10),
+        ).fillna(0)
+        df = df.assign(sma_momentum=lambda x: x["momentum"].rolling(self.term).mean())
+        return df
 
-    def _signal(self, _df: pd.DataFrame) -> pd.DataFrame:
-        _df = _df.join(self._cross(_df["sma_momentum"]))
-        _df = _df.rename(columns={"to_plus": "buy_signal", "to_minus": "sell_signal"})
-        return _df
+    def _signal(self, df: pd.DataFrame) -> pd.DataFrame:
+        df = df.join(self._cross(df["sma_momentum"]))
+        df = df.rename(columns={"to_plus": "buy_signal", "to_minus": "sell_signal"})
+        return df
 
-    def _visualize(self, _df: pd.DataFrame):
-        fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1, gridspec_kw={"height_ratios": [3, 1]}, figsize=(6, 5))
-        # x軸のオートフォーマット
-        fig.autofmt_xdate()
+    def _color_mapping(self) -> list:
+        return [
+            {"df_key": "momentum", "color": "", "label": "momentum"},
+            {"df_key": "sma_momentum", "color": "", "label": "sma_momentum"},
+        ]
 
-        # set candlestick
-        self.add_ax_candlestick(ax1, _df)
+    def _visualize_option(self) -> dict:
+        return {"position": "lower"}
 
-        # plot macd
-        ax2.plot(_df.index, _df["momentum"], label="momentum")
-        ax2.plot(_df.index, _df["sma_momentum"], label="sma_momentum")
-        ax2.legend(loc="center left")  # 各線のラベルを表示
+    def _processed_columns(self) -> list:
+        return ["momentum", "sma_momentum"]
 
-        ax1.legend(loc="best")  # 各線のラベルを表示
-        return fig
+    def _parameterize(self, df_x: pd.DataFrame) -> dict:
+        return {}

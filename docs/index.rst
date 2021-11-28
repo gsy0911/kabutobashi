@@ -20,8 +20,8 @@ code status
 
 package status
 
-.. image:: https://img.shields.io/badge/python-3.7|3.8|3.9-blue.svg
-   :target: https://www.python.org/downloads/release/python-377/
+.. image:: https://img.shields.io/pypi/pyversions/kabutobashi.svg
+   :target: https://pypi.org/project/kabutobashi/
 
 .. image:: https://img.shields.io/pypi/v/kabutobashi.svg
     :target: https://pypi.org/project/kabutobashi/
@@ -35,7 +35,7 @@ package status
 ``kabutobashi`` can
 
 * crawl Japanese stock data
-* analyze stock based on charts
+* analyze, visualize and parameterize stock based on charts
 
 Installation
 ============
@@ -55,22 +55,14 @@ Analysis
 --------
 
 .. code-block:: python
-    
-    import kabutobashi as kb
 
-    # サンプルデータの取得
-    df_stock = kb.example_data()
-    # 分析手法
-    analysis_methods = [
-        kb.macd, 
-        kb.sma, 
-        kb.stochastics, 
-        kb.adx, 
-        kb.bollinger_bands, 
-        kb.momentum, 
-        kb.psycho_logical
-    ]
-    kb.get_impact_with(df_stock, analysis_methods)
+   import kabutobashi as kb
+
+   file_path_list = [...]
+   sdmc = kb.StockDataRepository().read(file_path_list)
+   for sdsc in sdmc.to_code_iterable():
+      processed = sdsc.to_processed(methods=kb.methods)
+      print(processed.get_impact())
 
 
 
@@ -88,7 +80,15 @@ Visualize
 ---------
 
 
-Not Yet.
+You can use, but Not Completed Yet.
+
+.. code-block:: python
+
+    import kabutobashi as kb
+    sdmc = kb.example()
+    sdp = sdmc.to_single_code(1375).to_processed([kb.sma, kb.macd])
+    sdp.visualize()
+
 
 
 Utilities

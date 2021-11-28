@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 
-import matplotlib.pyplot as plt
 import pandas as pd
 
 from .method import Method
@@ -13,33 +12,33 @@ class SMA(Method):
     long_term: int = 70
     method_name: str = "sma"
 
-    def _method(self, _df: pd.DataFrame) -> pd.DataFrame:
-        _df = _df.assign(
-            sma_short=_df["close"].rolling(self.short_term).mean(),
-            sma_medium=_df["close"].rolling(self.medium_term).mean(),
-            sma_long=_df["close"].rolling(self.long_term).mean(),
+    def _method(self, df: pd.DataFrame) -> pd.DataFrame:
+        df = df.assign(
+            sma_short=df["close"].rolling(self.short_term).mean(),
+            sma_medium=df["close"].rolling(self.medium_term).mean(),
+            sma_long=df["close"].rolling(self.long_term).mean(),
         )
-        return _df
+        return df
 
-    def _signal(self, _df: pd.DataFrame) -> pd.DataFrame:
-        _df["diff"] = _df.apply(lambda x: x["sma_long"] - x["sma_short"], axis=1)
+    def _signal(self, df: pd.DataFrame) -> pd.DataFrame:
+        df["diff"] = df.apply(lambda x: x["sma_long"] - x["sma_short"], axis=1)
         # 正負が交差した点
-        _df = _df.join(self._cross(_df["diff"]))
-        _df = _df.rename(columns={"to_plus": "buy_signal", "to_minus": "sell_signal"})
-        return _df
+        df = df.join(self._cross(df["diff"]))
+        df = df.rename(columns={"to_plus": "buy_signal", "to_minus": "sell_signal"})
+        return df
 
-    def _visualize(self, _df: pd.DataFrame):
-        fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(6, 5))
-        # x軸のオートフォーマット
-        fig.autofmt_xdate()
+    def _color_mapping(self) -> list:
+        return [
+            {"df_key": "sma_long", "color": "#dc143c", "label": f"sma({self.long_term})"},
+            {"df_key": "sma_medium", "color": "#ffa500", "label": f"sma({self.medium_term})"},
+            {"df_key": "sma_short", "color": "#1e90ff", "label": f"sma({self.short_term})"},
+        ]
 
-        # set candlestick
-        self.add_ax_candlestick(ax, _df)
+    def _visualize_option(self) -> dict:
+        return {"position": "in"}
 
-        # plot macd
-        ax.plot(_df.index, _df["sma_long"], color="#dc143c", label="sma_long")
-        ax.plot(_df.index, _df["sma_medium"], color="#ffa500", label="sma_medium")
-        ax.plot(_df.index, _df["sma_short"], color="#1e90ff", label="sma_short")
+    def _processed_columns(self) -> list:
+        return ["sma_long", "sma_medium", "sma_short"]
 
-        ax.legend(loc="best")  # 各線のラベルを表示
-        return fig
+    def _parameterize(self, df_x: pd.DataFrame) -> dict:
+        return {}
