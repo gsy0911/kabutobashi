@@ -58,21 +58,10 @@ Analysis
 
    import kabutobashi as kb
 
-   # 分析手法
-   analysis_methods = [
-      kb.macd,
-      kb.sma,
-      kb.stochastics,
-      kb.adx,
-      kb.bollinger_bands,
-      kb.momentum,
-      kb.psycho_logical
-   ]
-
    file_path_list = [...]
    sdmc = kb.StockDataRepository().read(file_path_list)
    for sdsc in sdmc.to_code_iterable():
-      processed = sdsc.to_processed(methods=analysis_methods)
+      processed = sdsc.to_processed(methods=kb.methods)
       print(processed.get_impact())
 
 
