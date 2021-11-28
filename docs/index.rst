@@ -35,7 +35,7 @@ package status
 ``kabutobashi`` can
 
 * crawl Japanese stock data
-* analyze stock based on charts
+* analyze, visualize and parameterize stock based on charts
 
 Installation
 ============
@@ -80,7 +80,15 @@ Visualize
 ---------
 
 
-Not Yet.
+You can use, but Not Completed Yet.
+
+.. code-block:: python
+
+    import kabutobashi as kb
+    sdmc = kb.example()
+    sdp = sdmc.to_single_code(1375).to_processed([kb.sma, kb.macd])
+    sdp.visualize()
+
 
 
 Utilities

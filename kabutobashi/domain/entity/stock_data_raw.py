@@ -138,6 +138,10 @@ class StockDataSingleCode:
     * name: 名前
     * industry_type: 業種
 
+    Args:
+        df: 複数日・単一銘柄を保持するDataFrame
+        code: 銘柄コード
+
     """
 
     df: pd.DataFrame
@@ -237,6 +241,8 @@ class StockDataSingleCode:
         self, *, buy_sell_term_days: int = 5, sliding_window: int = 60, step: int = 3
     ) -> (int, pd.DataFrame, pd.DataFrame):
         """
+        単一の銘柄に関してwindow幅を`sliding_window`日として、
+        保持しているデータの期間の間をslidingしていく関数。
 
         Args:
             buy_sell_term_days:
@@ -244,7 +250,9 @@ class StockDataSingleCode:
             step:
 
         Returns:
-            idx, df_for_x, df_for_y
+            idx: 切り出された番号。
+            df_for_x: 特徴量を計算するためのDataFrame。
+            df_for_y: `buy_sell_term_days`後のDataFrameを返す。値動きを追うため。
 
         """
         df_length = len(self.df.index)
@@ -280,6 +288,15 @@ class StockDataMultipleCode:
     """
     複数銘柄の複数日の株データを保持するEntity
 
+    単一銘柄のデータのみを返したり、複数銘柄のデータをループで取得できるクラス。
+
+    Args:
+        df: 複数日・複数銘柄を保持するDataFrame
+
+    Examples:
+        >>> import kabutobashi as kb
+        >>> sdmc = kb.example()
+        >>> sdsc = sdmc.to_single_code(code=1375)
     """
 
     df: pd.DataFrame
