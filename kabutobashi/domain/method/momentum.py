@@ -19,9 +19,7 @@ class Momentum(Method):
         df = df.assign(
             momentum=df["close"].shift(10),
         ).fillna(0)
-        df = df.assign(
-            sma_momentum=lambda x: x["momentum"].rolling(self.term).mean()
-        )
+        df = df.assign(sma_momentum=lambda x: x["momentum"].rolling(self.term).mean())
         return df
 
     def _signal(self, df: pd.DataFrame) -> pd.DataFrame:

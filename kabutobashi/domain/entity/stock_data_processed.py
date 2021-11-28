@@ -61,7 +61,7 @@ class StockDataProcessed:
         # check all methods
         for method in methods:
             if not isinstance(method, Method):
-                raise ValueError()
+                raise KabutobashiEntityError()
 
         initial_method: Method = methods[0]
         rest_methods: List[Method] = methods[1:]
@@ -83,7 +83,7 @@ class StockDataProcessed:
 
     def __add__(self, other: "StockDataProcessed") -> "StockDataProcessed":
         if not isinstance(other, StockDataProcessed):
-            raise ValueError()
+            raise KabutobashiEntityError()
 
         # update
         processed_dfs = []
@@ -209,7 +209,7 @@ class StockDataProcessed:
                 # lower
                 ax_idx += 1
             else:
-                raise ValueError()
+                raise KabutobashiEntityError()
 
         return fig
 
@@ -244,7 +244,7 @@ class StockDataParameterized:
         # check all methods
         for method in methods:
             if not isinstance(method, Method):
-                raise ValueError()
+                raise KabutobashiEntityError()
 
         initial_method: Method = methods[0]
         rest_methods: List[Method] = methods[1:]
@@ -256,7 +256,7 @@ class StockDataParameterized:
 
     def __add__(self, other: "StockDataParameterized") -> "StockDataParameterized":
         if not isinstance(other, StockDataParameterized):
-            raise ValueError()
+            raise KabutobashiEntityError()
 
         # update
         params = {}

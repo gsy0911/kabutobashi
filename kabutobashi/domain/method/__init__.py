@@ -4,6 +4,7 @@ Method modules provide technical analysis for stock chart.
 
 """
 from .adx import ADX
+from .basic import Basic
 from .bollinger_bands import BollingerBands
 from .fitting import Fitting
 from .ichimoku import Ichimoku
@@ -13,4 +14,3 @@ from .momentum import Momentum
 from .psycho_logical import PsychoLogical
 from .sma import SMA
 from .stochastics import Stochastics
-from .basic import Basic

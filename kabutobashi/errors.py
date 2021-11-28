@@ -27,10 +27,6 @@ class TagNotFoundError(KabutobashiPageError):
         return f"tag [{self.tag}] not found"
 
 
-class StockDfError(KabutobashiBaseError):
-    pass
-
-
 class KabutobashiMethodError(KabutobashiBaseError):
     pass
 

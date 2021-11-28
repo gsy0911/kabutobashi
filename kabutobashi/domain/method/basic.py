@@ -11,6 +11,7 @@ class Basic(Method):
     株のvolumeやPBR, PSR, PERなどの値を返す。
     parameterizeのみに利用される。
     """
+
     method_name: str = "basic"
 
     def _method(self, df: pd.DataFrame) -> pd.DataFrame:

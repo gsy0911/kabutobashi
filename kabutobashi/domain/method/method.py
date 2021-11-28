@@ -4,6 +4,7 @@ from dataclasses import dataclass
 import pandas as pd
 
 from kabutobashi.domain.entity import StockDataParameterized, StockDataProcessed, StockDataSingleCode
+from kabutobashi.errors import KabutobashiMethodError
 
 
 @dataclass(frozen=True)
@@ -73,7 +74,7 @@ class Method(metaclass=ABCMeta):
     def process(self, df: pd.DataFrame) -> StockDataProcessed:
         code_list = list(df["code"].unique())
         if len(code_list) > 1:
-            raise ValueError()
+            raise KabutobashiMethodError()
         base_df = df[StockDataProcessed.REQUIRED_DF_COLUMNS]
         color_mapping = self._color_mapping()
         columns = ["dt", "buy_signal", "sell_signal"] + self._processed_columns()
@@ -178,7 +179,7 @@ class Method(metaclass=ABCMeta):
     def parameterize(self, df_x: pd.DataFrame, df_y: pd.DataFrame) -> StockDataParameterized:
         code_list = list(df_x["code"].unique())
         if len(code_list) > 1:
-            raise ValueError()
+            raise KabutobashiMethodError()
 
         # 日時
         start_at = list(df_x["dt"])[0]

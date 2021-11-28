@@ -7,6 +7,7 @@ from kabutobashi.domain.method import (
     ADX,
     MACD,
     SMA,
+    Basic,
     BollingerBands,
     Fitting,
     Ichimoku,
@@ -14,7 +15,6 @@ from kabutobashi.domain.method import (
     Momentum,
     PsychoLogical,
     Stochastics,
-    Basic
 )
 
 from .domain.entity import (
