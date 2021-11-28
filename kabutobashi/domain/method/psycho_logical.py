@@ -20,6 +20,7 @@ class PsychoLogical(Method):
     def _method(self, df: pd.DataFrame) -> pd.DataFrame:
         df_ = df.copy()
         df_["shift_close"] = df_["close"].shift(1)
+        df_ = df_.fillna(0)
         df_["diff"] = df_.apply(lambda x: x["close"] - x["shift_close"], axis=1)
 
         df_["is_raise"] = df_["diff"].apply(lambda x: 1 if x > 0 else 0)

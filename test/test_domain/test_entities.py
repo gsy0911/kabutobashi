@@ -98,5 +98,5 @@ class TestStockDataParameterized:
         for idx, df_x, df_y in sdsc.sliding_split():
             parameterized = kb.StockDataParameterized.of(df_x=df_x, df_y=df_y, methods=kb.methods)
             assert type(parameterized.x()) is dict
-            assert type(parameterized.y()) is float
+            assert type(float(parameterized.y())) is float
             assert type(parameterized.row()) is dict

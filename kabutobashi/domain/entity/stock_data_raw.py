@@ -208,9 +208,13 @@ class StockDataSingleCode:
             close=df["close"].apply(StockDataSingleCode._replace_comma),
             high=df["high"].apply(StockDataSingleCode._replace_comma),
             low=df["low"].apply(StockDataSingleCode._replace_comma),
+            pbr=df["pbr"].apply(StockDataSingleCode._replace_comma),
+            psr=df["psr"].apply(StockDataSingleCode._replace_comma),
+            per=df["per"].apply(StockDataSingleCode._replace_comma),
         )
 
         df.index = idx
+        df = df.fillna(0)
         df = df.convert_dtypes()
         return StockDataSingleCode(code=code, df=df)
 
@@ -302,8 +306,8 @@ class StockDataMultipleCode:
     def of(df: pd.DataFrame) -> "StockDataMultipleCode":
         return StockDataMultipleCode(df=df)
 
-    def to_single_code(self, code: str) -> StockDataSingleCode:
-        return StockDataSingleCode(code=code, df=self.df[self.df["code"] == code])
+    def to_single_code(self, code: Union[str, int]) -> StockDataSingleCode:
+        return StockDataSingleCode.of(df=self.df[self.df["code"] == code])
 
     def to_code_iterable(
         self,
@@ -329,7 +333,7 @@ class StockDataMultipleCode:
                 if _count >= until:
                     return
             _count += 1
-            yield StockDataSingleCode(code=code, df=df_)
+            yield StockDataSingleCode.of(df=df_)
 
 
 @dataclass

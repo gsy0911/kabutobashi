@@ -43,6 +43,8 @@ class ADX(Method):
         Returns:
             maximum
         """
+        if x["high"] is pd.NA or x["low"] is pd.NA or x["shift_close"] is pd.NA:
+            return 0
         current_high = x["high"]
         current_low = x["low"]
         prev_close = x["shift_close"]
@@ -69,6 +71,8 @@ class ADX(Method):
 
     @staticmethod
     def _fixed_plus_dm(x: pd.DataFrame) -> float:
+        if x["plus_dm"] is pd.NA or x["minus_dm"] is pd.NA:
+            return 0
         if x["plus_dm"] > 0 and x["plus_dm"] > x["minus_dm"]:
             return x["plus_dm"]
         else:
@@ -76,6 +80,8 @@ class ADX(Method):
 
     @staticmethod
     def _fixed_minus_dm(x: pd.DataFrame) -> float:
+        if x["plus_dm"] is pd.NA or x["minus_dm"] is pd.NA:
+            return 0
         if x["minus_dm"] > 0 and x["minus_dm"] > x["plus_dm"]:
             return x["minus_dm"]
         else:
