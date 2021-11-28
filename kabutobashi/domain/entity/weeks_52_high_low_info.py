@@ -8,10 +8,15 @@ from kabutobashi.errors import KabutobashiEntityError
 @dataclass(frozen=True)
 class Weeks52HighLow:
     """
-    52週高値・底値
+    52週高値・底値の値を保持するクラス
 
     Args:
+        code: 銘柄コード
+        brand_name: 銘柄名
+        close: 終値
         buy_or_sell: "買い", "強い買い", "売り", "強い売り"
+        volatility_ratio: 価格変動比
+        volatility_value: 価格変動値
     """
 
     code: int

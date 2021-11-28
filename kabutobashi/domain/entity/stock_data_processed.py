@@ -222,12 +222,17 @@ class StockDataParameterized:
     """
     Examples:
         >>> import kabutobashi as kb
+        >>> import pandas as pd
+        >>> data_list = []
         >>> sdmc = kb.example()
+        >>> parameterize_methods = kb.methods + [kb.basic]
         >>> for sdsc in sdmc.to_code_iterable(until=1, row_more_than=80):
-        ... code = sdsc.code
-        ... for idx, df_x, df_y in sdsc.sliding_split():
-        ...     df_params = kb.StockDataParameterized.of(df_x, df_y, [kb.sma, kb.macd, kb.stochastics])
-        ...     print(f"code:{code}, x:{df_params.x()}, y:{df_params.y()}")
+        ...     code = sdsc.code
+        ...     for idx, df_x, df_y in sdsc.sliding_split():
+        ...         df_params = kb.StockDataParameterized.of(df_x=df_x, df_y=df_y, methods=parameterize_methods)
+        ...         print(f"code:{code}, x:{df_params.x()}, y:{df_params.y()}")
+        ...         data_list.append(df_params.row())
+        >>> data_for_ml = pd.DataFrame(data_list)
     """
 
     start_at: str
