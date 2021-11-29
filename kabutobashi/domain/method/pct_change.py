@@ -8,7 +8,7 @@ from .method import Method, MethodType
 @dataclass(frozen=True)
 class PctChange(Method):
     """
-
+    変化率を計算する
     """
 
     method_name: str = "basic"

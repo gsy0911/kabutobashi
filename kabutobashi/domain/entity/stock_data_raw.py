@@ -206,7 +206,7 @@ class StockDataSingleCode:
         else:
             code = "-"
 
-        # 数値に変換
+        # 数値に変換・「業種」という文字列削除
         df = df.assign(
             open=df["open"].apply(StockDataSingleCode._replace_comma),
             close=df["close"].apply(StockDataSingleCode._replace_comma),
@@ -216,6 +216,8 @@ class StockDataSingleCode:
             psr=df["psr"].apply(StockDataSingleCode._replace_comma),
             per=df["per"].apply(StockDataSingleCode._replace_comma),
         )
+        if "industry_type" in df_columns:
+            df["industry_type"] = df["industry_type"].apply(lambda x: x.replace("業種", ""))
 
         df.index = idx
         df = df.fillna(0)

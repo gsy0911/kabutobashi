@@ -8,7 +8,7 @@ from .method import Method, MethodType
 @dataclass(frozen=True)
 class Volatility(Method):
     """
-
+    変動幅を計算する
     """
 
     method_name: str = "basic"

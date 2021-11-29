@@ -11,12 +11,13 @@ from kabutobashi.domain.method import (
     BollingerBands,
     Fitting,
     Ichimoku,
+    IndustryCategories,
     Method,
     Momentum,
+    PctChange,
     PsychoLogical,
     Stochastics,
     Volatility,
-    PctChange
 )
 
 from .domain.entity import (
@@ -56,6 +57,7 @@ fitting = Fitting()
 basic = Basic()
 volatility = Volatility()
 pct_change = PctChange()
+industry_cat = IndustryCategories()
 
 methods = [sma, macd, stochastics, adx, bollinger_bands, momentum, psycho_logical]
 
