@@ -29,3 +29,5 @@ from .momentum import Momentum
 from .psycho_logical import PsychoLogical
 from .sma import SMA
 from .stochastics import Stochastics
+from .volatility import Volatility
+from .pct_change import PctChange

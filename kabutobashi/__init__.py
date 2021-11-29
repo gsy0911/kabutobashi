@@ -15,6 +15,8 @@ from kabutobashi.domain.method import (
     Momentum,
     PsychoLogical,
     Stochastics,
+    Volatility,
+    PctChange
 )
 
 from .domain.entity import (
@@ -52,6 +54,8 @@ momentum = Momentum()
 psycho_logical = PsychoLogical()
 fitting = Fitting()
 basic = Basic()
+volatility = Volatility()
+pct_change = PctChange()
 
 methods = [sma, macd, stochastics, adx, bollinger_bands, momentum, psycho_logical]
 
