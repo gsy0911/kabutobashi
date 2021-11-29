@@ -1,9 +1,8 @@
 from dataclasses import dataclass
 
-import matplotlib.pyplot as plt
 import pandas as pd
 
-from .method import Method
+from .method import Method, MethodType
 
 
 @dataclass(frozen=True)
@@ -18,6 +17,7 @@ class Ichimoku(Method):
     medium_term: int = 26
     long_term: int = 52
     method_name: str = "ichimoku"
+    method_type: MethodType = MethodType.TECHNICAL_ANALYSIS
 
     def _method(self, df: pd.DataFrame) -> pd.DataFrame:
         df = df.assign(

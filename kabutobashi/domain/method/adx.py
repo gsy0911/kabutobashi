@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 import pandas as pd
 
-from .method import Method
+from .method import Method, MethodType
 
 
 @dataclass(frozen=True)
@@ -32,6 +32,7 @@ class ADX(Method):
     adx_term: int = 14
     adxr_term: int = 28
     method_name: str = "adx"
+    method_type: MethodType = MethodType.TECHNICAL_ANALYSIS
 
     @staticmethod
     def _true_range(x: pd.DataFrame):

@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 import pandas as pd
 
-from .method import Method
+from .method import Method, MethodType
 
 
 @dataclass(frozen=True)
@@ -16,6 +16,7 @@ class PsychoLogical(Method):
     lower_threshold: float = 0.25
     psycho_term: float = 12
     method_name: str = "psycho_logical"
+    method_type: MethodType = MethodType.TECHNICAL_ANALYSIS
 
     def _method(self, df: pd.DataFrame) -> pd.DataFrame:
         df_ = df.copy()

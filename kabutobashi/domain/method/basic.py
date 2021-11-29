@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 import pandas as pd
 
-from .method import Method
+from .method import Method, MethodType
 
 
 @dataclass(frozen=True)
@@ -13,6 +13,7 @@ class Basic(Method):
     """
 
     method_name: str = "basic"
+    method_type: MethodType = MethodType.PARAMETERIZE
 
     def _method(self, df: pd.DataFrame) -> pd.DataFrame:
         return df

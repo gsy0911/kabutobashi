@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 import pandas as pd
 
-from .method import Method
+from .method import Method, MethodType
 
 
 @dataclass(frozen=True)
@@ -17,6 +17,7 @@ class BollingerBands(Method):
     band_term: int = 12
     continuity_term: int = 10
     method_name: str = "bollinger_bands"
+    method_type: MethodType = MethodType.TECHNICAL_ANALYSIS
 
     def _method(self, df: pd.DataFrame) -> pd.DataFrame:
         df = df.assign(mean=df["close"].rolling(self.band_term).mean(), std=df["close"].rolling(self.band_term).std())

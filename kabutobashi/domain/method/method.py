@@ -1,10 +1,16 @@
 from abc import ABCMeta, abstractmethod
 from dataclasses import dataclass
+from enum import Enum, auto
 
 import pandas as pd
 
 from kabutobashi.domain.entity import StockDataParameterized, StockDataProcessed, StockDataSingleCode
 from kabutobashi.errors import KabutobashiMethodError
+
+
+class MethodType(Enum):
+    TECHNICAL_ANALYSIS = auto()
+    PARAMETERIZE = auto()
 
 
 @dataclass(frozen=True)
@@ -26,8 +32,10 @@ class Method(metaclass=ABCMeta):
         >>> sma_signal = stock_df.pipe(kb.macd, impact="true", influence=5, tail=5)
     """
 
-    # 株価を保持するDataFrame
+    # 名前
     method_name: str
+    # 種類:
+    method_type: MethodType
 
     def __call__(self, stock_df: pd.DataFrame, **kwargs):
         """
