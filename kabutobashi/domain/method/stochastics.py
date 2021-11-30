@@ -119,5 +119,9 @@ class Stochastics(Method):
     def _processed_columns(self) -> list:
         return ["K", "D", "SD"]
 
-    def _parameterize(self, df_x: pd.DataFrame) -> dict:
-        return {}
+    def _parameterize(self, df_x: pd.DataFrame, df_p: pd.DataFrame) -> dict:
+        return {
+            "stochastics_k": df_p["K"].tail(3).mean(),
+            "stochastics_d": df_p["D"].tail(3).mean(),
+            "stochastics_sd": df_p["SD"].tail(3).mean(),
+        }

@@ -198,9 +198,11 @@ class Method(metaclass=ABCMeta):
         end = list(df_y["close"])[-1]
         diff = end - start
 
+        process_ = self.process(df=df_x)
+        df_p = process_.processed_dfs[0]["data"]
         params = {}
-        params.update(self.process(df=df_x).get_impact())
-        params.update(self._parameterize(df_x=df_x))
+        params.update(process_.get_impact())
+        params.update(self._parameterize(df_x=df_x, df_p=df_p))
         return StockDataParameterized(
             code=code_list[0],
             start_at=start_at,
@@ -211,5 +213,5 @@ class Method(metaclass=ABCMeta):
         )
 
     @abstractmethod
-    def _parameterize(self, df_x: pd.DataFrame) -> dict:
+    def _parameterize(self, df_x: pd.DataFrame, df_p: pd.DataFrame) -> dict:
         raise NotImplementedError("please implement your code")

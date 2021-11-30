@@ -34,7 +34,7 @@ class PctChange(Method):
     def _processed_columns(self) -> list:
         return []
 
-    def _parameterize(self, df_x: pd.DataFrame) -> dict:
+    def _parameterize(self, df_x: pd.DataFrame, df_p: pd.DataFrame) -> dict:
         pct_05 = df_x["close"].pct_change(5).mean()
         pct_10 = df_x["close"].pct_change(10).mean()
         pct_20 = df_x["close"].pct_change(20).mean()

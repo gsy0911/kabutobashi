@@ -72,7 +72,7 @@ class IndustryCategories(Method):
     def _processed_columns(self) -> list:
         return []
 
-    def _parameterize(self, df_x: pd.DataFrame) -> dict:
+    def _parameterize(self, df_x: pd.DataFrame, df_p: pd.DataFrame) -> dict:
         params = {v: 0 for v in self.INDUSTRY_TYPE_MAPPING.values()}
         industry_type_list = list(df_x["industry_type"].unique())
         if len(industry_type_list) > 1:

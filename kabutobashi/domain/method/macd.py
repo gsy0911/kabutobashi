@@ -54,5 +54,5 @@ class MACD(Method):
     def _processed_columns(self) -> list:
         return ["ema_short", "ema_long", "signal", "macd", "histogram"]
 
-    def _parameterize(self, df_x: pd.DataFrame) -> dict:
-        return {}
+    def _parameterize(self, df_x: pd.DataFrame, df_p: pd.DataFrame) -> dict:
+        return {"signal": df_p["signal"].tail(3).mean(), "histogram": df_p["histogram"].tail(3).mean()}

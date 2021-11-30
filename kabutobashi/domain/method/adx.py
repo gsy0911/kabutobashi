@@ -171,5 +171,9 @@ class ADX(Method):
     def _processed_columns(self) -> list:
         return ["plus_di", "minus_di", "DX", "ADX", "ADXR"]
 
-    def _parameterize(self, df_x: pd.DataFrame) -> dict:
-        return {}
+    def _parameterize(self, df_x: pd.DataFrame, df_p: pd.DataFrame) -> dict:
+        return {
+            "adx_dx": df_p["DX"].tail(3).mean(),
+            "adx_adx": df_p["ADX"].tail(3).mean(),
+            "adx_adxr": df_p["ADXR"].tail(3).mean(),
+        }

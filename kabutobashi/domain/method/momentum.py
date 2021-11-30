@@ -40,5 +40,5 @@ class Momentum(Method):
     def _processed_columns(self) -> list:
         return ["momentum", "sma_momentum"]
 
-    def _parameterize(self, df_x: pd.DataFrame) -> dict:
+    def _parameterize(self, df_x: pd.DataFrame, df_p: pd.DataFrame) -> dict:
         return {}

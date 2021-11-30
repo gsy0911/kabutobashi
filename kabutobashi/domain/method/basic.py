@@ -35,7 +35,7 @@ class Basic(Method):
     def _processed_columns(self) -> list:
         return []
 
-    def _parameterize(self, df_x: pd.DataFrame) -> dict:
+    def _parameterize(self, df_x: pd.DataFrame, df_p: pd.DataFrame) -> dict:
         pbr = list(df_x["pbr"])[-1]
         per = list(df_x["per"])[-1]
         psr = list(df_x["psr"])[-1]

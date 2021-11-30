@@ -49,5 +49,5 @@ class PsychoLogical(Method):
     def _processed_columns(self) -> list:
         return ["psycho_line", "bought_too_much", "sold_too_much"]
 
-    def _parameterize(self, df_x: pd.DataFrame) -> dict:
-        return {}
+    def _parameterize(self, df_x: pd.DataFrame, df_p: pd.DataFrame) -> dict:
+        return {"psycho_line": df_p["psycho_line"].tail(3).mean()}
