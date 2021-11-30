@@ -214,6 +214,9 @@ class StockDataProcessed:
                 axs[ax_idx].legend(loc="best")
                 # lower
                 ax_idx += 1
+            elif position == "-":
+                # technical_analysis以外のmethodが入っている場合
+                pass
             else:
                 raise KabutobashiEntityError()
 
