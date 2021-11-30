@@ -108,9 +108,7 @@ class StockDataSingleDay:
 
     @staticmethod
     def _convert(input_value: str) -> str:
-        if input_value == "---":
-            return "0"
-        return input_value.replace("円", "").replace("株", "").replace("倍", "").replace(",", "")
+        return input_value.replace("---", "0").replace("円", "").replace("株", "").replace("倍", "").replace(",", "")
 
     def dumps(self) -> dict:
         return asdict(self)
