@@ -29,7 +29,7 @@ class PctChange(Method):
         return []
 
     def _visualize_option(self) -> dict:
-        return {"position": "in"}
+        return {"position": "-"}
 
     def _processed_columns(self) -> list:
         return []

@@ -207,13 +207,18 @@ class StockDataProcessed:
                     label = m["label"]
                     plot = m.get("plot", "plot")
                     if plot == "plot":
-                        axs[ax_idx].plot(time_series, df[df_key], label=label)
+                        # type FloatingArray is no accepted ...
+                        # so `df[df_key].astype(float)`
+                        axs[ax_idx].plot(time_series, df[df_key].astype(float), label=label)
                     elif plot == "bar":
                         axs[ax_idx].bar(time_series, df[df_key], label=label)
                 # display labels
                 axs[ax_idx].legend(loc="best")
                 # lower
                 ax_idx += 1
+            elif position == "-":
+                # technical_analysis以外のmethodが入っている場合
+                pass
             else:
                 raise KabutobashiEntityError()
 
