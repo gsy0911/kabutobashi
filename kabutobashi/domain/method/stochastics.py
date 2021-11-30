@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 import pandas as pd
 
-from .method import Method
+from .method import Method, MethodType
 
 
 @dataclass(frozen=True)
@@ -20,6 +20,7 @@ class Stochastics(Method):
     """
 
     method_name: str = "stochastics"
+    method_type: MethodType = MethodType.TECHNICAL_ANALYSIS
 
     def _method(self, df: pd.DataFrame) -> pd.DataFrame:
         df_ = df.copy()
@@ -118,5 +119,9 @@ class Stochastics(Method):
     def _processed_columns(self) -> list:
         return ["K", "D", "SD"]
 
-    def _parameterize(self, df_x: pd.DataFrame) -> dict:
-        return {}
+    def _parameterize(self, df_x: pd.DataFrame, df_p: pd.DataFrame) -> dict:
+        return {
+            "stochastics_k": df_p["K"].tail(3).mean(),
+            "stochastics_d": df_p["D"].tail(3).mean(),
+            "stochastics_sd": df_p["SD"].tail(3).mean(),
+        }

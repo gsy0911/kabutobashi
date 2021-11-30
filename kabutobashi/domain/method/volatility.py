@@ -6,10 +6,9 @@ from .method import Method, MethodType
 
 
 @dataclass(frozen=True)
-class Basic(Method):
+class Volatility(Method):
     """
-    株のvolumeやPBR, PSR, PERなどの値を返す。
-    parameterizeのみに利用される。
+    変動幅を計算する
     """
 
     method_name: str = "basic"
@@ -36,8 +35,8 @@ class Basic(Method):
         return []
 
     def _parameterize(self, df_x: pd.DataFrame, df_p: pd.DataFrame) -> dict:
-        pbr = list(df_x["pbr"])[-1]
-        per = list(df_x["per"])[-1]
-        psr = list(df_x["psr"])[-1]
-        volume = list(df_x["volume"])[-1]
-        return {"pbr": pbr, "psr": psr, "per": per, "volume": volume}
+        df = df_x.copy()
+        df["volatility"] = (df["high"] - df["low"]) / df["close"]
+        volatility = df["volatility"].mean()
+        close_volatility = max(df["close"]) - min(df["close"]) / df["close"].median()
+        return {"volatility": volatility, "close_volatility": close_volatility}

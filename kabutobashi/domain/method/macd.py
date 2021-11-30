@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 import pandas as pd
 
-from .method import Method
+from .method import Method, MethodType
 
 
 @dataclass(frozen=True)
@@ -13,6 +13,7 @@ class MACD(Method):
     long_term: int = 26
     macd_span: int = 9
     method_name: str = "macd"
+    method_type: MethodType = MethodType.TECHNICAL_ANALYSIS
 
     def _method(self, df: pd.DataFrame) -> pd.DataFrame:
         """
@@ -53,5 +54,5 @@ class MACD(Method):
     def _processed_columns(self) -> list:
         return ["ema_short", "ema_long", "signal", "macd", "histogram"]
 
-    def _parameterize(self, df_x: pd.DataFrame) -> dict:
-        return {}
+    def _parameterize(self, df_x: pd.DataFrame, df_p: pd.DataFrame) -> dict:
+        return {"signal": df_p["signal"].tail(3).mean(), "histogram": df_p["histogram"].tail(3).mean()}

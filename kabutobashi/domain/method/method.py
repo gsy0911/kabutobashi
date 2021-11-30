@@ -1,10 +1,16 @@
 from abc import ABCMeta, abstractmethod
 from dataclasses import dataclass
+from enum import Enum, auto
 
 import pandas as pd
 
 from kabutobashi.domain.entity import StockDataParameterized, StockDataProcessed, StockDataSingleCode
 from kabutobashi.errors import KabutobashiMethodError
+
+
+class MethodType(Enum):
+    TECHNICAL_ANALYSIS = auto()
+    PARAMETERIZE = auto()
 
 
 @dataclass(frozen=True)
@@ -26,8 +32,10 @@ class Method(metaclass=ABCMeta):
         >>> sma_signal = stock_df.pipe(kb.macd, impact="true", influence=5, tail=5)
     """
 
-    # 株価を保持するDataFrame
+    # 名前
     method_name: str
+    # 種類:
+    method_type: MethodType
 
     def __call__(self, stock_df: pd.DataFrame, **kwargs):
         """
@@ -190,9 +198,11 @@ class Method(metaclass=ABCMeta):
         end = list(df_y["close"])[-1]
         diff = end - start
 
+        process_ = self.process(df=df_x)
+        df_p = process_.processed_dfs[0]["data"]
         params = {}
-        params.update(self.process(df=df_x).get_impact())
-        params.update(self._parameterize(df_x=df_x))
+        params.update(process_.get_impact())
+        params.update(self._parameterize(df_x=df_x, df_p=df_p))
         return StockDataParameterized(
             code=code_list[0],
             start_at=start_at,
@@ -203,5 +213,5 @@ class Method(metaclass=ABCMeta):
         )
 
     @abstractmethod
-    def _parameterize(self, df_x: pd.DataFrame) -> dict:
+    def _parameterize(self, df_x: pd.DataFrame, df_p: pd.DataFrame) -> dict:
         raise NotImplementedError("please implement your code")

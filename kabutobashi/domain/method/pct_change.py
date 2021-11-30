@@ -6,10 +6,9 @@ from .method import Method, MethodType
 
 
 @dataclass(frozen=True)
-class Basic(Method):
+class PctChange(Method):
     """
-    株のvolumeやPBR, PSR, PERなどの値を返す。
-    parameterizeのみに利用される。
+    変化率を計算する
     """
 
     method_name: str = "basic"
@@ -36,8 +35,9 @@ class Basic(Method):
         return []
 
     def _parameterize(self, df_x: pd.DataFrame, df_p: pd.DataFrame) -> dict:
-        pbr = list(df_x["pbr"])[-1]
-        per = list(df_x["per"])[-1]
-        psr = list(df_x["psr"])[-1]
-        volume = list(df_x["volume"])[-1]
-        return {"pbr": pbr, "psr": psr, "per": per, "volume": volume}
+        pct_05 = df_x["close"].pct_change(5).mean()
+        pct_10 = df_x["close"].pct_change(10).mean()
+        pct_20 = df_x["close"].pct_change(20).mean()
+        pct_30 = df_x["close"].pct_change(30).mean()
+        pct_40 = df_x["close"].pct_change(40).mean()
+        return {"pct_05": pct_05, "pct_10": pct_10, "pct_20": pct_20, "pct_30": pct_30, "pct_40": pct_40}

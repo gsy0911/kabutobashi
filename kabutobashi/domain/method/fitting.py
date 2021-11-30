@@ -3,15 +3,15 @@ from dataclasses import dataclass
 import numpy as np
 import pandas as pd
 
-from .method import Method
+from .method import Method, MethodType
 
 
 @dataclass(frozen=True)
 class Fitting(Method):
     """ """
 
-    def __init__(self):
-        super().__init__(method_name="macd")
+    method_name: str = "fitting"
+    method_type: MethodType = MethodType.TECHNICAL_ANALYSIS
 
     def _method(self, df: pd.DataFrame) -> pd.DataFrame:
         """
@@ -60,5 +60,5 @@ class Fitting(Method):
     def _processed_columns(self) -> list:
         return []
 
-    def _parameterize(self, df_x: pd.DataFrame) -> dict:
+    def _parameterize(self, df_x: pd.DataFrame, df_p: pd.DataFrame) -> dict:
         return {}
