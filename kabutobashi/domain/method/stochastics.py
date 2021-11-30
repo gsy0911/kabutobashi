@@ -37,7 +37,7 @@ class Stochastics(Method):
             shift_K=lambda x: x["K"].shift(1),
             shift_D=lambda x: x["D"].shift(1),
             shift_SD=lambda x: x["SD"].shift(1),
-        )
+        ).fillna(0)
 
         # 複数引数は関数を利用することで吸収
         df["buy_signal"] = df.apply(self._buy_signal_index_internal, axis=1)
@@ -108,9 +108,9 @@ class Stochastics(Method):
 
     def _color_mapping(self) -> list:
         return [
-            {"df_key": "K", "color": "", "label": "%K"},
-            {"df_key": "D", "color": "", "label": "%D"},
-            {"df_key": "SD", "color": "", "label": "%SD"},
+            {"df_key": "K", "color": "#dc143c", "label": "%K"},
+            {"df_key": "D", "color": "#ffa500", "label": "%D"},
+            {"df_key": "SD", "color": "#1e90ff", "label": "%SD"},
         ]
 
     def _visualize_option(self) -> dict:

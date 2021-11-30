@@ -207,7 +207,9 @@ class StockDataProcessed:
                     label = m["label"]
                     plot = m.get("plot", "plot")
                     if plot == "plot":
-                        axs[ax_idx].plot(time_series, df[df_key], label=label)
+                        # type FloatingArray is no accepted ...
+                        # so `df[df_key].astype(float)`
+                        axs[ax_idx].plot(time_series, df[df_key].astype(float), label=label)
                     elif plot == "bar":
                         axs[ax_idx].bar(time_series, df[df_key], label=label)
                 # display labels
