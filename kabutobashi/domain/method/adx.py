@@ -129,6 +129,7 @@ class ADX(Method):
         if x["ADX_trend"] > 0:
             if x["to_plus"] > 0:
                 return 1
+        return 0
 
         # +DIが-DIより上に位置している際に、
         # ADXが下向きから上向きに転換した場合
@@ -143,6 +144,7 @@ class ADX(Method):
         if x["ADX_trend"] < 0:
             if x["to_minus"] > 0:
                 return 1
+        return 0
 
     def _signal(self, df: pd.DataFrame) -> pd.DataFrame:
         """
