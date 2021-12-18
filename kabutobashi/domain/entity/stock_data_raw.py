@@ -1,7 +1,7 @@
 from abc import ABCMeta, abstractmethod
 from dataclasses import asdict, dataclass
 from datetime import datetime
-from typing import Optional, Union
+from typing import Optional, Tuple, Union
 
 import pandas as pd
 from cerberus import Validator
@@ -239,21 +239,20 @@ class StockDataSingleCode:
 
     def sliding_split(
         self, *, buy_sell_term_days: int = 5, sliding_window: int = 60, step: int = 3
-    ) -> (int, pd.DataFrame, pd.DataFrame):
+    ) -> Tuple[int, pd.DataFrame, pd.DataFrame]:
         """
-        単一の銘柄に関してwindow幅を`sliding_window`日として、
+        単一の銘柄に関してwindow幅を ``sliding_window`` 日として、
         保持しているデータの期間の間をslidingしていく関数。
 
         Args:
-            buy_sell_term_days:
-            sliding_window:
-            step:
+            buy_sell_term_days: この日数後までデータを切り出す。
+            sliding_window: slidingしていくwindow幅
+            step: windowsをずらしていく期間
 
         Returns:
             idx: 切り出された番号。
             df_for_x: 特徴量を計算するためのDataFrame。
             df_for_y: `buy_sell_term_days`後のDataFrameを返す。値動きを追うため。
-
         """
         df_length = len(self.df.index)
         if df_length < buy_sell_term_days + sliding_window:

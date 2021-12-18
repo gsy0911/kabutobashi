@@ -7,6 +7,9 @@ from .method import Method, MethodType
 
 @dataclass(frozen=True)
 class SMA(Method):
+    """
+    SMAを計算する
+    """
     short_term: int = 5
     medium_term: int = 21
     long_term: int = 70
