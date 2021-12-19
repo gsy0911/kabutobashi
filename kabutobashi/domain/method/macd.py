@@ -7,7 +7,11 @@ from .method import Method, MethodType
 
 @dataclass(frozen=True)
 class MACD(Method):
-    """ """
+    """
+    macdを基準として今後上昇するかどうかをスコアで返す。
+    値が大きければその傾向が高いことを表している。
+    最小値は0で、最大値は無限大である。
+    """
 
     short_term: int = 12
     long_term: int = 26
@@ -16,13 +20,6 @@ class MACD(Method):
     method_type: MethodType = MethodType.TECHNICAL_ANALYSIS
 
     def _method(self, df: pd.DataFrame) -> pd.DataFrame:
-        """
-        macdを基準として今後上昇するかどうかをスコアで返す。
-        値が大きければその傾向が高いことを表している。
-        最小値は0で、最大値は無限大である。
-        :param df:
-        :return:
-        """
         # histogramが図として表現されるMACDの値
         df = df.assign(
             # MACDの計算

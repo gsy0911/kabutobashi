@@ -8,7 +8,7 @@ from .method import Method, MethodType
 @dataclass(frozen=True)
 class BollingerBands(Method):
     """
-    株価の勢いの変化や反転の目安、方向を見る`BollingerBands`を計算するクラス。
+    株価の勢いの変化や反転の目安、方向を見る ``BollingerBands`` を計算するクラス。
 
     See Also:
         * https://www.sevendata.co.jp/shihyou/technical/bori.html
