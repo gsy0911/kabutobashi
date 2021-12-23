@@ -2,7 +2,7 @@ from abc import ABCMeta, abstractmethod
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from functools import reduce
-from typing import List, Union
+from typing import List, Optional, Union
 
 import requests
 from bs4 import BeautifulSoup
@@ -14,9 +14,9 @@ from .user_agent import UserAgent
 
 @dataclass(frozen=True)
 class PageDecoder:
-    tag1: str = None
-    class1: str = None
-    id1: str = None
+    tag1: Optional[str] = None
+    class1: Optional[str] = None
+    id1: Optional[str] = None
     default: str = ""
 
     def _decode(self, value):

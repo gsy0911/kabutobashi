@@ -16,8 +16,10 @@ class StockIpoPage(Page):
     def url(self) -> str:
         if type(self.year) is int:
             year = str(self.year)
-        else:
+        elif type(self.year) is str:
             year = self.year
+        else:
+            raise ValueError("")
         return f"{self.base_url}?year={year}"
 
     def _get(self) -> dict:
