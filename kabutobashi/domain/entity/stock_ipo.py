@@ -41,7 +41,7 @@ class StockIpo:
             raise KabutobashiEntityError(validator)
 
     @staticmethod
-    def from_page_of(data: dict) -> "StockCode":
+    def from_page_of(data: dict) -> "StockIpo":
         # current_split = data["現在値(差分)"].split("(")
         return StockIpo(
             code=data["code"],

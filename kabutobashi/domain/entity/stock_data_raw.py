@@ -1,7 +1,7 @@
 from abc import ABCMeta, abstractmethod
 from dataclasses import asdict, dataclass
 from datetime import datetime
-from typing import Optional, Tuple, Union
+from typing import Generator, Optional, Tuple, Union
 
 import pandas as pd
 from cerberus import Validator
@@ -239,7 +239,7 @@ class StockDataSingleCode:
 
     def sliding_split(
         self, *, buy_sell_term_days: int = 5, sliding_window: int = 60, step: int = 3
-    ) -> Tuple[int, pd.DataFrame, pd.DataFrame]:
+    ) -> Generator[Tuple[int, pd.DataFrame, pd.DataFrame], None, None]:
         """
         単一の銘柄に関してwindow幅を ``sliding_window`` 日として、
         保持しているデータの期間の間をslidingしていく関数。
@@ -352,7 +352,6 @@ class StockDataMultipleCode:
             yield StockDataSingleCode.of(df=df_)
 
 
-@dataclass
 class IStockDataRepository(metaclass=ABCMeta):
     def read(self, path: Union[str, list]) -> StockDataMultipleCode:
         return self._read(path=path)
@@ -390,7 +389,6 @@ class IStockDataRepository(metaclass=ABCMeta):
             return None
 
 
-@dataclass
 class StockDataRepository(IStockDataRepository):
     def _read(self, path: Union[str, list]) -> StockDataMultipleCode:
         df = self._read_csv(path_candidate=path)
