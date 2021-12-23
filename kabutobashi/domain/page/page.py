@@ -4,7 +4,7 @@ from datetime import datetime, timedelta, timezone
 from functools import reduce
 from typing import List, Optional, Union
 
-import requests
+import requests  # type: ignore
 from bs4 import BeautifulSoup
 
 from kabutobashi.errors import KabutobashiPageError
@@ -50,7 +50,7 @@ class PageDecoder:
         return result.replace("\xa0", " ")
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True)  # type: ignore
 class Page(metaclass=ABCMeta):
     @abstractmethod
     def url(self) -> str:

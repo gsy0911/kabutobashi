@@ -13,7 +13,7 @@ class MethodType(Enum):
     PARAMETERIZE = auto()
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True)  # type: ignore
 class Method(metaclass=ABCMeta):
     """
     株のテクニカル分析に関するメソッドを提供するクラス
