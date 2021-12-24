@@ -143,6 +143,7 @@ class StockDataSingleCode:
 
     df: pd.DataFrame
     code: str
+    _ignorable: bool
     REQUIRED_COL = ["code", "open", "close", "high", "low", "unit", "volume", "per", "psr", "pbr", "market", "dt"]
     OPTIONAL_COL = ["name", "industry_type"]
 
@@ -219,7 +220,7 @@ class StockDataSingleCode:
         df.index = idx
         df = df.fillna(0)
         df = df.convert_dtypes()
-        return StockDataSingleCode(code=code, df=df)
+        return StockDataSingleCode(code=code, df=df, _ignorable=StockDataSingleCode._is_ignorable(df=df))
 
     @staticmethod
     def _replace_comma(x) -> float:
@@ -235,6 +236,15 @@ class StockDataSingleCode:
         except ValueError as e:
             raise KabutobashiEntityError(f"floatに変換できる値ではありません。{e}")
         return f
+
+    @staticmethod
+    def _is_ignorable(df: pd.DataFrame) -> bool:
+        return (
+            (len(df["open"].unique()) == 1)
+            or (len(df["high"].unique()) == 1)
+            or (len(df["low"].unique()) == 1)
+            or (len(df["close"].unique()) == 1)
+        )
 
     def sliding_split(
         self, *, buy_sell_term_days: int = 5, sliding_window: int = 60, step: int = 3
