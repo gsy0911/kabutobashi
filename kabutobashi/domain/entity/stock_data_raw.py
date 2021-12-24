@@ -341,7 +341,7 @@ class StockDataMultipleCode:
         skip_reit: bool = True,
         row_more_than: Optional[int] = 80,
         code_list: list = None,
-    ):
+    ) -> Generator[StockDataSingleCode, None, None]:
         _count = 0
         df = self.df.copy()
 
@@ -358,4 +358,8 @@ class StockDataMultipleCode:
                 if _count >= until:
                     return
             _count += 1
-            yield StockDataSingleCode.of(df=df_)
+
+            sdsc = StockDataSingleCode.of(df=df_)
+            if sdsc.stop_updating:
+                continue
+            yield sdsc
