@@ -1,6 +1,7 @@
 import os
 
-from kabutobashi.domain.entity import StockDataMultipleCode, StockDataRepository
+from kabutobashi.domain.entity import StockDataMultipleCode
+from kabutobashi.repository import StockDataRepository
 
 PARENT_PATH = os.path.abspath(os.path.dirname(__file__))
 SOURCE_PATH = os.path.abspath(os.path.dirname(PARENT_PATH))
@@ -16,4 +17,4 @@ def example() -> StockDataMultipleCode:
         >>> sdmc.to_single_code(1375).to_processed([kb.sma, kb.macd])
     """
     file_name = "example.csv.gz"
-    return StockDataRepository().read(f"{DATA_PATH}/{file_name}")
+    return StockDataRepository.read_multiple_code(f"{DATA_PATH}/{file_name}")

@@ -11,17 +11,19 @@ from kabutobashi.domain.method import (
     BollingerBands,
     Fitting,
     Ichimoku,
+    IndustryCategories,
     Method,
     Momentum,
+    PctChange,
     PsychoLogical,
     Stochastics,
+    Volatility,
 )
 
 from .domain.entity import (
     StockDataMultipleCode,
     StockDataParameterized,
     StockDataProcessed,
-    StockDataRepository,
     StockDataSingleCode,
     StockDataSingleDay,
     StockIpo,
@@ -35,6 +37,7 @@ from .domain.page import (  # ある年にIPOした銘柄の情報を取得す�
     Weeks52HighLowPage,
 )
 from .example_data import example
+from .repository import StockDataRepository
 
 # n営業日前までの日付のリストを返す関数; 銘柄コードでイテレーションする関数; window幅でデータを取得しつつデータを返す関数; 株価の動きを様々な統計量で表現
 from .utilities import get_past_n_days
@@ -52,11 +55,14 @@ momentum = Momentum()
 psycho_logical = PsychoLogical()
 fitting = Fitting()
 basic = Basic()
+volatility = Volatility()
+pct_change = PctChange()
+industry_cat = IndustryCategories()
 
 methods = [sma, macd, stochastics, adx, bollinger_bands, momentum, psycho_logical]
 
 # comparable tuple
-VERSION = (0, 2, 3)
+VERSION = (0, 2, 4)
 # generate __version__ via VERSION tuple
 __version__ = ".".join(map(str, VERSION))
 

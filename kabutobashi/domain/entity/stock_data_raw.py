@@ -1,7 +1,6 @@
-from abc import ABCMeta, abstractmethod
 from dataclasses import asdict, dataclass
 from datetime import datetime
-from typing import Optional, Union
+from typing import Generator, Optional, Tuple, Union
 
 import pandas as pd
 from cerberus import Validator
@@ -108,9 +107,7 @@ class StockDataSingleDay:
 
     @staticmethod
     def _convert(input_value: str) -> str:
-        if input_value == "---":
-            return "0"
-        return input_value.replace("円", "").replace("株", "").replace("倍", "").replace(",", "")
+        return input_value.replace("---", "0").replace("円", "").replace("株", "").replace("倍", "").replace(",", "")
 
     def dumps(self) -> dict:
         return asdict(self)
@@ -146,6 +143,7 @@ class StockDataSingleCode:
 
     df: pd.DataFrame
     code: str
+    stop_updating: bool
     REQUIRED_COL = ["code", "open", "close", "high", "low", "unit", "volume", "per", "psr", "pbr", "market", "dt"]
     OPTIONAL_COL = ["name", "industry_type"]
 
@@ -206,7 +204,7 @@ class StockDataSingleCode:
         else:
             code = "-"
 
-        # 数値に変換
+        # 数値に変換・「業種」という文字列削除
         df = df.assign(
             open=df["open"].apply(StockDataSingleCode._replace_comma),
             close=df["close"].apply(StockDataSingleCode._replace_comma),
@@ -216,11 +214,13 @@ class StockDataSingleCode:
             psr=df["psr"].apply(StockDataSingleCode._replace_comma),
             per=df["per"].apply(StockDataSingleCode._replace_comma),
         )
+        if "industry_type" in df_columns:
+            df["industry_type"] = df["industry_type"].apply(lambda x: x.replace("業種", ""))
 
         df.index = idx
         df = df.fillna(0)
         df = df.convert_dtypes()
-        return StockDataSingleCode(code=code, df=df)
+        return StockDataSingleCode(code=code, df=df, stop_updating=StockDataSingleCode._check_recent_update(df=df))
 
     @staticmethod
     def _replace_comma(x) -> float:
@@ -237,23 +237,31 @@ class StockDataSingleCode:
             raise KabutobashiEntityError(f"floatに変換できる値ではありません。{e}")
         return f
 
+    @staticmethod
+    def _check_recent_update(df: pd.DataFrame) -> bool:
+        return (
+            (len(df["open"].tail(10).unique()) == 1)
+            or (len(df["high"].tail(10).unique()) == 1)
+            or (len(df["low"].tail(10).unique()) == 1)
+            or (len(df["close"].tail(10).unique()) == 1)
+        )
+
     def sliding_split(
         self, *, buy_sell_term_days: int = 5, sliding_window: int = 60, step: int = 3
-    ) -> (int, pd.DataFrame, pd.DataFrame):
+    ) -> Generator[Tuple[int, pd.DataFrame, pd.DataFrame], None, None]:
         """
-        単一の銘柄に関してwindow幅を`sliding_window`日として、
+        単一の銘柄に関してwindow幅を ``sliding_window`` 日として、
         保持しているデータの期間の間をslidingしていく関数。
 
         Args:
-            buy_sell_term_days:
-            sliding_window:
-            step:
+            buy_sell_term_days: この日数後までデータを切り出す。
+            sliding_window: slidingしていくwindow幅
+            step: windowsをずらしていく期間
 
         Returns:
             idx: 切り出された番号。
             df_for_x: 特徴量を計算するためのDataFrame。
             df_for_y: `buy_sell_term_days`後のDataFrameを返す。値動きを追うため。
-
         """
         df_length = len(self.df.index)
         if df_length < buy_sell_term_days + sliding_window:
@@ -333,7 +341,7 @@ class StockDataMultipleCode:
         skip_reit: bool = True,
         row_more_than: Optional[int] = 80,
         code_list: list = None,
-    ):
+    ) -> Generator[StockDataSingleCode, None, None]:
         _count = 0
         df = self.df.copy()
 
@@ -350,52 +358,8 @@ class StockDataMultipleCode:
                 if _count >= until:
                     return
             _count += 1
-            yield StockDataSingleCode.of(df=df_)
 
-
-@dataclass
-class IStockDataRepository(metaclass=ABCMeta):
-    def read(self, path: Union[str, list]) -> StockDataMultipleCode:
-        return self._read(path=path)
-
-    @abstractmethod
-    def _read(self, path: Union[str, list]) -> StockDataMultipleCode:
-        raise NotImplementedError()
-
-    def save(self, stock_data_multiple_code: StockDataMultipleCode, path: str):
-        return self._save(stock_data_multiple_code=stock_data_multiple_code, path=path)
-
-    @abstractmethod
-    def _save(self, stock_data_multiple_code: StockDataMultipleCode, path: str):
-        raise NotImplementedError()
-
-    @staticmethod
-    def _read_csv(path_candidate: Union[str, list], **kwargs) -> Optional[pd.DataFrame]:
-        """
-        通常のread_csvの関数に加えて、strとlist[str]の場合に縦方向に結合してDataFrameを返す
-
-        Args:
-            path_candidate: "path" or ["path_1", "path_2"]
-
-        Returns:
-            株のDataFrame
-        """
-        if type(path_candidate) is str:
-            return pd.read_csv(path_candidate, **kwargs)
-        elif type(path_candidate) is list:
-            if not path_candidate:
-                return None
-            df_list = [pd.read_csv(p, **kwargs) for p in path_candidate]
-            return pd.concat(df_list)
-        else:
-            return None
-
-
-@dataclass
-class StockDataRepository(IStockDataRepository):
-    def _read(self, path: Union[str, list]) -> StockDataMultipleCode:
-        df = self._read_csv(path_candidate=path)
-        return StockDataMultipleCode.of(df=df)
-
-    def _save(self, stock_data_multiple_code: StockDataMultipleCode, path: str):
-        pass
+            sdsc = StockDataSingleCode.of(df=df_)
+            if sdsc.stop_updating:
+                continue
+            yield sdsc

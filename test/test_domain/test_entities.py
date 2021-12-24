@@ -51,15 +51,15 @@ class TestStockDataSingleCode:
 
         # check None
         with pytest.raises(kb.errors.KabutobashiEntityError):
-            _ = kb.StockDataSingleCode(code="-", df=None)
+            _ = kb.StockDataSingleCode(code="-", df=None, stop_updating=False)
 
         # check multiple code
         with pytest.raises(kb.errors.KabutobashiEntityError):
-            _ = kb.StockDataSingleCode(code="-", df=df)
+            _ = kb.StockDataSingleCode(code="-", df=df, stop_updating=False)
 
         # check invalid column
         with pytest.raises(kb.errors.KabutobashiEntityError):
-            _ = kb.StockDataSingleCode(code="-", df=single_code[["close"]])
+            _ = kb.StockDataSingleCode(code="-", df=single_code[["close"]], stop_updating=False)
 
     def test_get_df(self, data_path):
         df = pd.read_csv(f"{data_path}/example.csv.gz")
@@ -95,8 +95,10 @@ class TestStockDataParameterized:
     def test_of(self):
         sdmc = kb.example()
         sdsc = sdmc.to_single_code(code=1375)
+
+        methods = kb.methods + [kb.basic, kb.pct_change, kb.volatility, kb.industry_cat]
         for idx, df_x, df_y in sdsc.sliding_split():
-            parameterized = kb.StockDataParameterized.of(df_x=df_x, df_y=df_y, methods=kb.methods)
+            parameterized = kb.StockDataParameterized.of(df_x=df_x, df_y=df_y, methods=methods)
             assert type(parameterized.x()) is dict
             assert type(float(parameterized.y())) is float
             assert type(parameterized.row()) is dict

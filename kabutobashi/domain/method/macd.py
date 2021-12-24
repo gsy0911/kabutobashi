@@ -2,26 +2,24 @@ from dataclasses import dataclass
 
 import pandas as pd
 
-from .method import Method
+from .method import Method, MethodType
 
 
 @dataclass(frozen=True)
 class MACD(Method):
-    """ """
+    """
+    macdを基準として今後上昇するかどうかをスコアで返す。
+    値が大きければその傾向が高いことを表している。
+    最小値は0で、最大値は無限大である。
+    """
 
     short_term: int = 12
     long_term: int = 26
     macd_span: int = 9
     method_name: str = "macd"
+    method_type: MethodType = MethodType.TECHNICAL_ANALYSIS
 
     def _method(self, df: pd.DataFrame) -> pd.DataFrame:
-        """
-        macdを基準として今後上昇するかどうかをスコアで返す。
-        値が大きければその傾向が高いことを表している。
-        最小値は0で、最大値は無限大である。
-        :param df:
-        :return:
-        """
         # histogramが図として表現されるMACDの値
         df = df.assign(
             # MACDの計算
@@ -53,5 +51,5 @@ class MACD(Method):
     def _processed_columns(self) -> list:
         return ["ema_short", "ema_long", "signal", "macd", "histogram"]
 
-    def _parameterize(self, df_x: pd.DataFrame) -> dict:
-        return {}
+    def _parameterize(self, df_x: pd.DataFrame, df_p: pd.DataFrame) -> dict:
+        return {"signal": df_p["signal"].tail(3).mean(), "histogram": df_p["histogram"].tail(3).mean()}

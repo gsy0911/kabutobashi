@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 import pandas as pd
 
-from .method import Method
+from .method import Method, MethodType
 
 
 @dataclass(frozen=True)
@@ -20,6 +20,7 @@ class Stochastics(Method):
     """
 
     method_name: str = "stochastics"
+    method_type: MethodType = MethodType.TECHNICAL_ANALYSIS
 
     def _method(self, df: pd.DataFrame) -> pd.DataFrame:
         df_ = df.copy()
@@ -36,7 +37,7 @@ class Stochastics(Method):
             shift_K=lambda x: x["K"].shift(1),
             shift_D=lambda x: x["D"].shift(1),
             shift_SD=lambda x: x["SD"].shift(1),
-        )
+        ).fillna(0)
 
         # 複数引数は関数を利用することで吸収
         df["buy_signal"] = df.apply(self._buy_signal_index_internal, axis=1)
@@ -107,9 +108,9 @@ class Stochastics(Method):
 
     def _color_mapping(self) -> list:
         return [
-            {"df_key": "K", "color": "", "label": "%K"},
-            {"df_key": "D", "color": "", "label": "%D"},
-            {"df_key": "SD", "color": "", "label": "%SD"},
+            {"df_key": "K", "color": "#dc143c", "label": "%K"},
+            {"df_key": "D", "color": "#ffa500", "label": "%D"},
+            {"df_key": "SD", "color": "#1e90ff", "label": "%SD"},
         ]
 
     def _visualize_option(self) -> dict:
@@ -118,5 +119,9 @@ class Stochastics(Method):
     def _processed_columns(self) -> list:
         return ["K", "D", "SD"]
 
-    def _parameterize(self, df_x: pd.DataFrame) -> dict:
-        return {}
+    def _parameterize(self, df_x: pd.DataFrame, df_p: pd.DataFrame) -> dict:
+        return {
+            "stochastics_k": df_p["K"].tail(3).mean(),
+            "stochastics_d": df_p["D"].tail(3).mean(),
+            "stochastics_sd": df_p["SD"].tail(3).mean(),
+        }

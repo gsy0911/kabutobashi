@@ -115,6 +115,13 @@ def test_analysis_with_fitting(sdsc):
     assert "cube_fitting" in columns
 
 
+def test_analysis_with_basic(sdsc):
+    processed = sdsc.to_processed([kb.basic])
+    columns = processed.processed_dfs[0]["data"].columns
+    assert "buy_signal" in columns
+    assert "sell_signal" in columns
+
+
 def test_get_impact_with(sdsc):
     df = sdsc.df
     # var_stock_df["code"] = 1

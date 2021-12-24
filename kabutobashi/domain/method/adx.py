@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 import pandas as pd
 
-from .method import Method
+from .method import Method, MethodType
 
 
 @dataclass(frozen=True)
@@ -32,6 +32,7 @@ class ADX(Method):
     adx_term: int = 14
     adxr_term: int = 28
     method_name: str = "adx"
+    method_type: MethodType = MethodType.TECHNICAL_ANALYSIS
 
     @staticmethod
     def _true_range(x: pd.DataFrame):
@@ -128,6 +129,7 @@ class ADX(Method):
         if x["ADX_trend"] > 0:
             if x["to_plus"] > 0:
                 return 1
+        return 0
 
         # +DIが-DIより上に位置している際に、
         # ADXが下向きから上向きに転換した場合
@@ -142,6 +144,7 @@ class ADX(Method):
         if x["ADX_trend"] < 0:
             if x["to_minus"] > 0:
                 return 1
+        return 0
 
     def _signal(self, df: pd.DataFrame) -> pd.DataFrame:
         """
@@ -170,5 +173,9 @@ class ADX(Method):
     def _processed_columns(self) -> list:
         return ["plus_di", "minus_di", "DX", "ADX", "ADXR"]
 
-    def _parameterize(self, df_x: pd.DataFrame) -> dict:
-        return {}
+    def _parameterize(self, df_x: pd.DataFrame, df_p: pd.DataFrame) -> dict:
+        return {
+            "adx_dx": df_p["DX"].tail(3).mean(),
+            "adx_adx": df_p["ADX"].tail(3).mean(),
+            "adx_adxr": df_p["ADXR"].tail(3).mean(),
+        }

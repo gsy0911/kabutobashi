@@ -8,8 +8,8 @@ help: ## show commands ## make
 format: ## format with black ## make format
 	isort kabutobashi
 	isort test
-	black kabutobashi --line-length 120
-	black test --line-length 120
+	black .
+	mypy kabutobashi
 
 .PHONY: deploy
 deploy: ## upload to pypi ## make deploy
