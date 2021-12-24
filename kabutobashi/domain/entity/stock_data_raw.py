@@ -143,7 +143,7 @@ class StockDataSingleCode:
 
     df: pd.DataFrame
     code: str
-    _ignorable: bool
+    stop_updating: bool
     REQUIRED_COL = ["code", "open", "close", "high", "low", "unit", "volume", "per", "psr", "pbr", "market", "dt"]
     OPTIONAL_COL = ["name", "industry_type"]
 
@@ -220,7 +220,7 @@ class StockDataSingleCode:
         df.index = idx
         df = df.fillna(0)
         df = df.convert_dtypes()
-        return StockDataSingleCode(code=code, df=df, _ignorable=StockDataSingleCode._is_ignorable(df=df))
+        return StockDataSingleCode(code=code, df=df, stop_updating=StockDataSingleCode._check_recent_update(df=df))
 
     @staticmethod
     def _replace_comma(x) -> float:
@@ -238,12 +238,12 @@ class StockDataSingleCode:
         return f
 
     @staticmethod
-    def _is_ignorable(df: pd.DataFrame) -> bool:
+    def _check_recent_update(df: pd.DataFrame) -> bool:
         return (
-            (len(df["open"].unique()) == 1)
-            or (len(df["high"].unique()) == 1)
-            or (len(df["low"].unique()) == 1)
-            or (len(df["close"].unique()) == 1)
+            (len(df["open"].tail(10).unique()) == 1)
+            or (len(df["high"].tail(10).unique()) == 1)
+            or (len(df["low"].tail(10).unique()) == 1)
+            or (len(df["close"].tail(10).unique()) == 1)
         )
 
     def sliding_split(
