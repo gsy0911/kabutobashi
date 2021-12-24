@@ -143,6 +143,7 @@ class StockDataSingleCode:
 
     df: pd.DataFrame
     code: str
+    stop_updating: bool
     REQUIRED_COL = ["code", "open", "close", "high", "low", "unit", "volume", "per", "psr", "pbr", "market", "dt"]
     OPTIONAL_COL = ["name", "industry_type"]
 
@@ -219,7 +220,7 @@ class StockDataSingleCode:
         df.index = idx
         df = df.fillna(0)
         df = df.convert_dtypes()
-        return StockDataSingleCode(code=code, df=df)
+        return StockDataSingleCode(code=code, df=df, stop_updating=StockDataSingleCode._check_recent_update(df=df))
 
     @staticmethod
     def _replace_comma(x) -> float:
@@ -235,6 +236,15 @@ class StockDataSingleCode:
         except ValueError as e:
             raise KabutobashiEntityError(f"floatに変換できる値ではありません。{e}")
         return f
+
+    @staticmethod
+    def _check_recent_update(df: pd.DataFrame) -> bool:
+        return (
+            (len(df["open"].tail(10).unique()) == 1)
+            or (len(df["high"].tail(10).unique()) == 1)
+            or (len(df["low"].tail(10).unique()) == 1)
+            or (len(df["close"].tail(10).unique()) == 1)
+        )
 
     def sliding_split(
         self, *, buy_sell_term_days: int = 5, sliding_window: int = 60, step: int = 3
@@ -331,7 +341,7 @@ class StockDataMultipleCode:
         skip_reit: bool = True,
         row_more_than: Optional[int] = 80,
         code_list: list = None,
-    ):
+    ) -> Generator[StockDataSingleCode, None, None]:
         _count = 0
         df = self.df.copy()
 
@@ -348,4 +358,8 @@ class StockDataMultipleCode:
                 if _count >= until:
                     return
             _count += 1
-            yield StockDataSingleCode.of(df=df_)
+
+            sdsc = StockDataSingleCode.of(df=df_)
+            if sdsc.stop_updating:
+                continue
+            yield sdsc
