@@ -1,4 +1,3 @@
-from abc import ABCMeta, abstractmethod
 from dataclasses import asdict, dataclass
 from datetime import datetime
 from typing import Generator, Optional, Tuple, Union
@@ -350,49 +349,3 @@ class StockDataMultipleCode:
                     return
             _count += 1
             yield StockDataSingleCode.of(df=df_)
-
-
-class IStockDataRepository(metaclass=ABCMeta):
-    def read(self, path: Union[str, list]) -> StockDataMultipleCode:
-        return self._read(path=path)
-
-    @abstractmethod
-    def _read(self, path: Union[str, list]) -> StockDataMultipleCode:
-        raise NotImplementedError()
-
-    def save(self, stock_data_multiple_code: StockDataMultipleCode, path: str):
-        return self._save(stock_data_multiple_code=stock_data_multiple_code, path=path)
-
-    @abstractmethod
-    def _save(self, stock_data_multiple_code: StockDataMultipleCode, path: str):
-        raise NotImplementedError()
-
-    @staticmethod
-    def _read_csv(path_candidate: Union[str, list], **kwargs) -> Optional[pd.DataFrame]:
-        """
-        通常のread_csvの関数に加えて、strとlist[str]の場合に縦方向に結合してDataFrameを返す
-
-        Args:
-            path_candidate: "path" or ["path_1", "path_2"]
-
-        Returns:
-            株のDataFrame
-        """
-        if type(path_candidate) is str:
-            return pd.read_csv(path_candidate, **kwargs)
-        elif type(path_candidate) is list:
-            if not path_candidate:
-                return None
-            df_list = [pd.read_csv(p, **kwargs) for p in path_candidate]
-            return pd.concat(df_list)
-        else:
-            return None
-
-
-class StockDataRepository(IStockDataRepository):
-    def _read(self, path: Union[str, list]) -> StockDataMultipleCode:
-        df = self._read_csv(path_candidate=path)
-        return StockDataMultipleCode.of(df=df)
-
-    def _save(self, stock_data_multiple_code: StockDataMultipleCode, path: str):
-        pass
