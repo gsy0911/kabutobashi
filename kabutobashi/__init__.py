@@ -62,7 +62,7 @@ industry_cat = IndustryCategories()
 methods = [sma, macd, stochastics, adx, bollinger_bands, momentum, psycho_logical]
 
 # comparable tuple
-VERSION = (0, 2, 3)
+VERSION = (0, 2, 4)
 # generate __version__ via VERSION tuple
 __version__ = ".".join(map(str, VERSION))
 
