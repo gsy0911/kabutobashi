@@ -1,5 +1,15 @@
 # Release Note
 
+## 0.2.4
+
+
+- add `stop-updating-flag` ([#76](https://github.com/gsy0911/kabutobashi/issues/76))
+- implements `save()` function ([#74](https://github.com/gsy0911/kabutobashi/issues/74))
+- add `mypy` ([#75](https://github.com/gsy0911/kabutobashi/issues/75))
+- fix `visualize()` function ([#68](https://github.com/gsy0911/kabutobashi/issues/68))
+- add new `index` value ([#70](https://github.com/gsy0911/kabutobashi/issues/70))
+
+
 ## 0.2.3
 
 - re-build entities ([#65](https://github.com/gsy0911/kabutobashi/issues/65))
