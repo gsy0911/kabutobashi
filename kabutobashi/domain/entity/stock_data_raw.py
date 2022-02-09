@@ -389,3 +389,17 @@ class StockDataMultipleCode:
             if sdsc.contains_outlier:
                 continue
             yield sdsc
+
+    def get_df(self, minimum=True, latest=False, code_list: list = None):
+        df = self.df
+
+        if code_list:
+            df = df[df["code"].isin(code_list)]
+        if latest:
+            latest_dt = max(df["dt"])
+            df = df[df["dt"] == latest_dt]
+
+        if minimum:
+            return df[self.REQUIRED_COL]
+        else:
+            return df[self.REQUIRED_COL + self.OPTIONAL_COL]
