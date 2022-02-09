@@ -2,6 +2,7 @@ from dataclasses import dataclass
 
 import numpy as np
 import pandas as pd
+from scipy.optimize import curve_fit
 
 from .method import Method, MethodType
 
@@ -15,13 +16,8 @@ class Fitting(Method):
 
     def _method(self, df: pd.DataFrame) -> pd.DataFrame:
         """
-        macdを基準として今後上昇するかどうかをスコアで返す。
-        値が大きければその傾向が高いことを表している。
-        最小値は0で、最大値は無限大である。
-        :param df:
-        :return:
+        1次、2次、3次の関数でfittingした値を返す
         """
-        from scipy.optimize import curve_fit
 
         # histogramが図として表現されるMACDの値
         array_y = df["close"]
@@ -45,7 +41,12 @@ class Fitting(Method):
         return df
 
     def _signal(self, df: pd.DataFrame) -> pd.DataFrame:
-        return df
+        df_ = df.copy()
+        df_["diff"] = -1
+        # 正負が交差した点
+        df_ = df_.join(self._cross(df_["diff"]))
+        df_ = df_.rename(columns={"to_plus": "buy_signal", "to_minus": "sell_signal"})
+        return df_
 
     def _color_mapping(self) -> list:
         return [
@@ -58,7 +59,7 @@ class Fitting(Method):
         return {"position": "in"}
 
     def _processed_columns(self) -> list:
-        return []
+        return ["linear_fitting", "square_fitting", "cube_fitting"]
 
     def _parameterize(self, df_x: pd.DataFrame, df_p: pd.DataFrame) -> dict:
         return {}
