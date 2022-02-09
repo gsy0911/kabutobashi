@@ -1,5 +1,10 @@
 # Release Note
 
+## 0.2.5
+
+- add `contains_outlier-flag` ([#80](https://github.com/gsy0911/kabutobashi/issues/80))
+- add `get_df()` in `StockDataMultipleCode` ([#80](https://github.com/gsy0911/kabutobashi/issues/80))
+
 ## 0.2.4
 
 
