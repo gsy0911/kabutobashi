@@ -225,7 +225,7 @@ class StockDataSingleCode:
             code=code,
             df=df,
             stop_updating=StockDataSingleCode._check_recent_update(df=df),
-            contains_outlier=StockDataSingleCode._check_outlier_value(df=df)
+            contains_outlier=StockDataSingleCode._check_outlier_value(df=df),
         )
 
     @staticmethod
@@ -385,5 +385,7 @@ class StockDataMultipleCode:
 
             sdsc = StockDataSingleCode.of(df=df_)
             if sdsc.stop_updating:
+                continue
+            if sdsc.contains_outlier:
                 continue
             yield sdsc
