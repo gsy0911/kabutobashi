@@ -144,6 +144,7 @@ class StockDataSingleCode:
     df: pd.DataFrame
     code: str
     stop_updating: bool
+    contains_outlier: bool
     REQUIRED_COL = ["code", "open", "close", "high", "low", "unit", "volume", "per", "psr", "pbr", "market", "dt"]
     OPTIONAL_COL = ["name", "industry_type"]
 
@@ -220,7 +221,12 @@ class StockDataSingleCode:
         df.index = idx
         df = df.fillna(0)
         df = df.convert_dtypes()
-        return StockDataSingleCode(code=code, df=df, stop_updating=StockDataSingleCode._check_recent_update(df=df))
+        return StockDataSingleCode(
+            code=code,
+            df=df,
+            stop_updating=StockDataSingleCode._check_recent_update(df=df),
+            contains_outlier=StockDataSingleCode._check_outlier_value(df=df),
+        )
 
     @staticmethod
     def _replace_comma(x) -> float:
@@ -239,11 +245,29 @@ class StockDataSingleCode:
 
     @staticmethod
     def _check_recent_update(df: pd.DataFrame) -> bool:
+        """
+        直近の更新が止まっているかどうか
+        """
         return (
             (len(df["open"].tail(10).unique()) == 1)
             or (len(df["high"].tail(10).unique()) == 1)
             or (len(df["low"].tail(10).unique()) == 1)
             or (len(df["close"].tail(10).unique()) == 1)
+        )
+
+    @staticmethod
+    def _check_outlier_value(df: pd.DataFrame) -> bool:
+        """
+        不正な値が含まれている場合にtrueを返す
+
+        以下の場合にTrueになる
+        - 急に0になる値が含まれている
+        """
+        return (
+            (len(df[df["open"] == 0].index) > 0)
+            or (len(df[df["high"] == 0].index) > 0)
+            or (len(df[df["low"] == 0].index) > 0)
+            or (len(df[df["close"] == 0].index) > 0)
         )
 
     def sliding_split(
@@ -361,5 +385,7 @@ class StockDataMultipleCode:
 
             sdsc = StockDataSingleCode.of(df=df_)
             if sdsc.stop_updating:
+                continue
+            if sdsc.contains_outlier:
                 continue
             yield sdsc
