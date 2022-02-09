@@ -35,7 +35,6 @@ setuptools.setup(
     url="https://github.com/gsy0911/kabutobashi",
     packages=setuptools.find_packages(),
     install_requires=install_requires,
-    extra_require={"ml": ["scipy"]},
     license="MIT",
     classifiers=[
         "Programming Language :: Python :: 3",
