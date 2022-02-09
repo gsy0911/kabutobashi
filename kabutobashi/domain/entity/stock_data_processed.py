@@ -224,9 +224,6 @@ class StockDataProcessed:
 
         return fig
 
-    def parameterize(self) -> dict:
-        pass
-
 
 @dataclass(frozen=True)
 class StockDataParameterized:

@@ -7,7 +7,7 @@ from cerberus import Validator
 
 from kabutobashi.errors import KabutobashiEntityError
 
-from .stock_data_processed import StockDataProcessed
+from .stock_data_processed import StockDataParameterized, StockDataProcessed
 
 
 @dataclass(frozen=True)
@@ -221,6 +221,8 @@ class StockDataSingleCode:
         df.index = idx
         df = df.fillna(0)
         df = df.convert_dtypes()
+        # order by dt
+        df = df.sort_index()
         return StockDataSingleCode(
             code=code,
             df=df,
@@ -311,8 +313,10 @@ class StockDataSingleCode:
     def to_processed(self, methods: list) -> StockDataProcessed:
         return StockDataProcessed.of(df=self.df, methods=methods)
 
-    def to_parameterize(self, methods: list):
-        pass
+    def to_parameterize(self, methods: list, buy_sell_term_days: int = 5):
+        df_x = self.df[:-buy_sell_term_days]
+        df_y = self.df[-buy_sell_term_days:]
+        return StockDataParameterized.of(df_x=df_x, df_y=df_y, methods=methods)
 
 
 @dataclass(frozen=True)

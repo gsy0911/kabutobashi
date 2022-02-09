@@ -59,7 +59,7 @@ volatility = Volatility()
 pct_change = PctChange()
 industry_cat = IndustryCategories()
 
-methods = [sma, macd, stochastics, adx, bollinger_bands, momentum, psycho_logical]
+methods = [sma, macd, stochastics, adx, bollinger_bands, momentum, psycho_logical, fitting]
 
 # comparable tuple
 VERSION = (0, 2, 5)
