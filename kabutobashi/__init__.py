@@ -37,6 +37,7 @@ from .domain.page import (  # ある年にIPOした銘柄の情報を取得す�
     Weeks52HighLowPage,
 )
 from .example_data import example
+
 # read StockDataMultipleCode
 from .repository import reader
 

@@ -7,7 +7,6 @@ import pandas as pd
 from kabutobashi.domain.entity import StockDataMultipleCode
 from kabutobashi.utilities import get_past_n_days
 
-
 __all__ = ["StockDataMultipleCodeReader", "StockDataMultipleCodeWriter"]
 
 

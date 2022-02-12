@@ -313,7 +313,7 @@ class StockDataSingleCode:
     def to_processed(self, methods: list) -> StockDataProcessed:
         return StockDataProcessed.of(df=self.df, methods=methods)
 
-    def to_parameterize(self, methods: list, buy_sell_term_days: int = 5):
+    def to_parameterize(self, methods: list, buy_sell_term_days: int = 5) -> StockDataParameterized:
         df_x = self.df[:-buy_sell_term_days]
         df_y = self.df[-buy_sell_term_days:]
         return StockDataParameterized.of(df_x=df_x, df_y=df_y, methods=methods)
@@ -411,8 +411,10 @@ class StockDataMultipleCode:
     @staticmethod
     def read():
         from kabutobashi.repository.stock_data_repository import StockDataMultipleCodeReader
+
         return StockDataMultipleCodeReader()
 
     def write(self):
         from kabutobashi.repository.stock_data_repository import StockDataMultipleCodeWriter
+
         return StockDataMultipleCodeWriter(multiple_code=self)
