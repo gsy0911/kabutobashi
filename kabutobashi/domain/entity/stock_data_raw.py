@@ -407,3 +407,12 @@ class StockDataMultipleCode:
             return df[self.REQUIRED_COL]
         else:
             return df[self.REQUIRED_COL + self.OPTIONAL_COL]
+
+    @staticmethod
+    def read():
+        from kabutobashi.repository.stock_data_repository import StockDataMultipleCodeReader
+        return StockDataMultipleCodeReader()
+
+    def write(self):
+        from kabutobashi.repository.stock_data_repository import StockDataMultipleCodeWriter
+        return StockDataMultipleCodeWriter(multiple_code=self)
