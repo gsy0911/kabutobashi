@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Union
 
 import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
@@ -33,7 +33,7 @@ class StockDataAnalyzedBySingleMethod:
         "label": {"type": "string"},
         "plot": {"type": "string", "allowed": ["plot", "bar"], "required": False},
     }
-    VISUALIZE_OPTION_SCHEMA = {"position": {"type": "string", "allowed": ["in", "lower"]}}
+    VISUALIZE_OPTION_SCHEMA = {"position": {"type": "string", "allowed": ["in", "lower", "-"]}}
 
     def __post_init__(self):
         self._check_color_mapping(data=self.color_mapping)
@@ -122,6 +122,12 @@ class StockDataAnalyzedByMultipleMethod:
         data = {}
         for a in self.analyzed:
             data.update(a.get_impact(influence=influence, tail=tail))
+        return data
+
+    def get_parameters(self):
+        data = {}
+        for a in self.analyzed:
+            data.update(a.parameters)
         return data
 
     def visualize(self, size_ratio: int = 2):

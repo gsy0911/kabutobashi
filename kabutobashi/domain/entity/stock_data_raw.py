@@ -139,6 +139,25 @@ class StockDataSingleCode:
         df: 複数日・単一銘柄を保持するDataFrame
         code: 銘柄コード
 
+    Examples:
+        >>> import kabutobashi as kb
+        >>> import pandas as pd
+        >>> data_list = []
+        >>> sdmc = kb.example()
+        >>> parameterize_methods = kb.methods + [kb.basic, kb.pct_change, kb.volatility]
+        >>> for sdsc in sdmc.to_code_iterable(until=1, row_more_than=80):
+        >>>     code = sdsc.code
+        >>>     print(code)
+        >>>     for idx, df_x, df_y in sdsc.sliding_split():
+        >>>         df_params = kb.StockDataAnalyzedByMultipleMethod.of(df=df_x, methods=parameterize_methods)
+        >>>         # diff:= df_y.last - df_x.last
+        >>>         start = list(df_x["close"])[-1]
+        >>>         end = list(df_y["close"])[-1]
+        >>>         diff = end - start
+        >>>         d = df_params.get_parameters()
+        >>>         d.update({"diff": diff})
+        >>>         data_list.append(d)
+        >>>  data_for_ml = pd.DataFrame(data_list)
     """
 
     df: pd.DataFrame
