@@ -17,6 +17,7 @@ class StockDataAnalyzedBySingleMethod:
     単一のmethodで処理した後のデータを保持
     可視化などを実行する際に利用
     """
+
     target_stock_code: Union[str, int]
     start_at: str
     end_at: str
@@ -26,6 +27,28 @@ class StockDataAnalyzedBySingleMethod:
     parameters: Dict[str, Any]
     color_mapping: list = field(repr=False)
     visualize_option: dict = field(repr=False)
+    COLOR_MAPPING_SCHEMA = {
+        "df_key": {"type": "string"},
+        "color": {"type": "string"},
+        "label": {"type": "string"},
+        "plot": {"type": "string", "allowed": ["plot", "bar"], "required": False},
+    }
+    VISUALIZE_OPTION_SCHEMA = {"position": {"type": "string", "allowed": ["in", "lower"]}}
+
+    def __post_init__(self):
+        self._check_color_mapping(data=self.color_mapping)
+        self._check_visualize_option(data=self.visualize_option)
+
+    def _check_color_mapping(self, data: list):
+        validator = Validator(self.COLOR_MAPPING_SCHEMA)
+        for d in data:
+            if not validator.validate(d):
+                raise KabutobashiEntityError(validator)
+
+    def _check_visualize_option(self, data: dict):
+        validator = Validator(self.VISUALIZE_OPTION_SCHEMA)
+        if not validator.validate(data):
+            raise KabutobashiEntityError(validator)
 
     @staticmethod
     def of(df: pd.DataFrame, method: "Method") -> "StockDataAnalyzedBySingleMethod":
@@ -94,6 +117,12 @@ class StockDataAnalyzedByMultipleMethod:
         # data
         ohlc = np.vstack((time_series, data)).T
         candlestick_ohlc(ax, ohlc, width=0.7, colorup="g", colordown="r")
+
+    def get_impact(self, influence: int = 2, tail: int = 5) -> Dict[str, float]:
+        data = {}
+        for a in self.analyzed:
+            data.update(a.get_impact(influence=influence, tail=tail))
+        return data
 
     def visualize(self, size_ratio: int = 2):
         """
@@ -165,4 +194,3 @@ class StockDataAnalyzedByMultipleMethod:
                 raise KabutobashiEntityError()
 
         return fig
-
