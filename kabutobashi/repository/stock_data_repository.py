@@ -8,6 +8,9 @@ from kabutobashi.domain.entity import StockDataMultipleCode
 from kabutobashi.utilities import get_past_n_days
 
 
+__all__ = ["StockDataMultipleCodeReader", "StockDataMultipleCodeWriter"]
+
+
 class IStockDataMultipleCodeReader(metaclass=ABCMeta):
     @abstractmethod
     def _path(self) -> Generator[str, None, None]:
@@ -94,4 +97,24 @@ class StockDataRepository:
     def write_multiple_code(multiple_code: StockDataMultipleCode, path_candidate: str):
         return StockDataMultipleCodeBasicWriter(path_candidate=path_candidate).write(
             stock_data_multiple_code=multiple_code
+        )
+
+
+class StockDataMultipleCodeReader:
+    @staticmethod
+    def csv(path_candidate: Union[str, list]) -> StockDataMultipleCode:
+        return StockDataMultipleCodeBasicReader(path_candidate=path_candidate).read()
+
+    @staticmethod
+    def csv_from_past_n_days(path_format: str, start_date: str, n: int) -> StockDataMultipleCode:
+        return StockDataMultipleCodeTargetDateReader(path_format=path_format, start_date=start_date, n=n).read()
+
+
+@dataclass
+class StockDataMultipleCodeWriter:
+    multiple_code: StockDataMultipleCode
+
+    def csv(self, path_candidate: str):
+        return StockDataMultipleCodeBasicWriter(path_candidate=path_candidate).write(
+            stock_data_multiple_code=self.multiple_code
         )
