@@ -1,5 +1,11 @@
 # Release Note
 
+## 0.2.6
+
+- re-implement `Fitting(Method)` ([#44](https://github.com/gsy0911/kabutobashi/issues/44))
+- add `to_parameterize` ([#81](https://github.com/gsy0911/kabutobashi/issues/81))
+- add `read()` and `write()` in `StockDataMultipleCode` ([#82](https://github.com/gsy0911/kabutobashi/issues/82))
+
 ## 0.2.5
 
 - add `contains_outlier-flag` ([#80](https://github.com/gsy0911/kabutobashi/issues/80))

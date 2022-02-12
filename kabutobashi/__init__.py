@@ -37,6 +37,7 @@ from .domain.page import (  # ある年にIPOした銘柄の情報を取得す�
     Weeks52HighLowPage,
 )
 from .example_data import example
+
 # read StockDataMultipleCode
 from .repository import reader
 
@@ -63,7 +64,7 @@ industry_cat = IndustryCategories()
 methods = [sma, macd, stochastics, adx, bollinger_bands, momentum, psycho_logical, fitting]
 
 # comparable tuple
-VERSION = (0, 2, 5)
+VERSION = (0, 2, 6)
 # generate __version__ via VERSION tuple
 __version__ = ".".join(map(str, VERSION))
 
