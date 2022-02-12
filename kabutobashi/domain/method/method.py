@@ -4,7 +4,7 @@ from enum import Enum, auto
 
 import pandas as pd
 
-from kabutobashi.domain.entity import StockDataParameterized, StockDataProcessed, StockDataSingleCode
+from kabutobashi.domain.entity import StockDataParameterized, StockDataProcessed, StockDataSingleCode, StockDataAnalyzedBySingleMethod
 from kabutobashi.errors import KabutobashiMethodError
 
 
@@ -78,6 +78,32 @@ class Method(metaclass=ABCMeta):
     @abstractmethod
     def _method(self, df: pd.DataFrame) -> pd.DataFrame:
         raise NotImplementedError("please implement your code")
+
+    def analyzed(self, df: pd.DataFrame) -> StockDataAnalyzedBySingleMethod:
+        code_list = list(df["code"].unique())
+        if len(code_list) > 1:
+            raise KabutobashiMethodError()
+
+        # 日時
+        start_at = list(df["dt"])[0]
+        end_at = list(df["dt"])[-1]
+
+        # 必要なパラメータの作成
+        columns = ["dt", "buy_signal", "sell_signal"] + self._processed_columns()
+        df_p = df.pipe(self._method).pipe(self._signal).loc[:, columns]
+        params = self._parameterize(df_x=df, df_p=df_p)
+
+        return StockDataAnalyzedBySingleMethod(
+            target_stock_code=code_list[0],
+            start_at=start_at,
+            end_at=end_at,
+            applied_method_name=self.method_name,
+            df_data=df_p,
+            df_required_columns=columns,
+            parameters=params,
+            color_mapping=self._color_mapping(),
+            visualize_option=self._visualize_option()
+        )
 
     def process(self, df: pd.DataFrame) -> StockDataProcessed:
         code_list = list(df["code"].unique())
