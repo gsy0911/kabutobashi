@@ -76,6 +76,17 @@ class StockDataAnalyzedByMultipleMethod:
     analyzed: List[StockDataAnalyzedBySingleMethod] = field(default_factory=list)
 
     @staticmethod
+    def of(df: pd.DataFrame, methods: List["Method"]) -> "StockDataAnalyzedByMultipleMethod":
+        from kabutobashi.domain.method import Method
+
+        # check all methods
+        for method in methods:
+            if not isinstance(method, Method):
+                raise KabutobashiEntityError()
+
+        return StockDataAnalyzedByMultipleMethod(analyzed=[m.analyzed(df=df) for m in methods])
+
+    @staticmethod
     def _add_ax_candlestick(ax, _df: pd.DataFrame):
         # datetime -> float
         time_series = mdates.date2num(_df["dt"])
