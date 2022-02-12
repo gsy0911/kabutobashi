@@ -21,9 +21,8 @@ from kabutobashi.domain.method import (
 )
 
 from .domain.entity import (
+    StockDataAnalyzedByMultipleMethod,
     StockDataMultipleCode,
-    StockDataParameterized,
-    StockDataProcessed,
     StockDataSingleCode,
     StockDataSingleDay,
     StockIpo,

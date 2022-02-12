@@ -4,7 +4,7 @@ from enum import Enum, auto
 
 import pandas as pd
 
-from kabutobashi.domain.entity import StockDataParameterized, StockDataProcessed, StockDataSingleCode, StockDataAnalyzedBySingleMethod
+from kabutobashi.domain.entity import StockDataAnalyzedBySingleMethod, StockDataSingleCode
 from kabutobashi.errors import KabutobashiMethodError
 
 
@@ -102,28 +102,7 @@ class Method(metaclass=ABCMeta):
             df_required_columns=columns,
             parameters=params,
             color_mapping=self._color_mapping(),
-            visualize_option=self._visualize_option()
-        )
-
-    def process(self, df: pd.DataFrame) -> StockDataProcessed:
-        code_list = list(df["code"].unique())
-        if len(code_list) > 1:
-            raise KabutobashiMethodError()
-        base_df = df[StockDataProcessed.REQUIRED_DF_COLUMNS]
-        color_mapping = self._color_mapping()
-        columns = ["dt", "buy_signal", "sell_signal"] + self._processed_columns()
-
-        return StockDataProcessed(
-            code=code_list[0],
-            base_df=base_df,
-            processed_dfs=[
-                {
-                    "method": self.method_name,
-                    "data": df.pipe(self._method).pipe(self._signal).loc[:, columns],
-                    "color_mapping": color_mapping,
-                    "visualize_option": self._visualize_option(),
-                }
-            ],
+            visualize_option=self._visualize_option(),
         )
 
     @abstractmethod
@@ -209,34 +188,6 @@ class Method(metaclass=ABCMeta):
         df["diff"] = df["original"] - df["shifted"]
         df["diff_rolling_sum"] = df["diff"].rolling(5).sum()
         return df["diff_rolling_sum"]
-
-    def parameterize(self, df_x: pd.DataFrame, df_y: pd.DataFrame) -> StockDataParameterized:
-        code_list = list(df_x["code"].unique())
-        if len(code_list) > 1:
-            raise KabutobashiMethodError()
-
-        # 日時
-        start_at = list(df_x["dt"])[0]
-        end_at = list(df_x["dt"])[-1]
-
-        # diff:= df_y.last - df_x.last
-        start = list(df_x["close"])[-1]
-        end = list(df_y["close"])[-1]
-        diff = end - start
-
-        process_ = self.process(df=df_x)
-        df_p = process_.processed_dfs[0]["data"]
-        params = {}
-        params.update(process_.get_impact())
-        params.update(self._parameterize(df_x=df_x, df_p=df_p))
-        return StockDataParameterized(
-            code=code_list[0],
-            start_at=start_at,
-            end_at=end_at,
-            days_after_n=len(df_y.index),
-            day_after_diff=diff,
-            parameters=params,
-        )
 
     @abstractmethod
     def _parameterize(self, df_x: pd.DataFrame, df_p: pd.DataFrame) -> dict:
