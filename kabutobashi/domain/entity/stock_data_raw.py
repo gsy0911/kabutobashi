@@ -408,6 +408,17 @@ class StockDataMultipleCode:
                 continue
             yield sdsc
 
+    def to_analyzed(
+        self,
+        methods: List["Method"],
+        until: Optional[int] = None,
+        *,
+        skip_reit: bool = True,
+        row_more_than: Optional[int] = 80,
+    ) -> Generator[StockDataAnalyzedByMultipleMethod, None, None]:
+        for sdsc in self.to_code_iterable(until=until, skip_reit=skip_reit, row_more_than=row_more_than):
+            yield sdsc.to_analyzed(methods=methods)
+
     def get_df(self, minimum=True, latest=False, code_list: list = None):
         df = self.df
 
