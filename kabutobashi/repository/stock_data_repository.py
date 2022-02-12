@@ -7,6 +7,8 @@ import pandas as pd
 from kabutobashi.domain.entity import StockDataMultipleCode
 from kabutobashi.utilities import get_past_n_days
 
+__all__ = ["StockDataMultipleCodeReader", "StockDataMultipleCodeWriter"]
+
 
 class IStockDataMultipleCodeReader(metaclass=ABCMeta):
     @abstractmethod
@@ -78,20 +80,24 @@ class StockDataMultipleCodeBasicWriter(IStockDataMultipleCodeWriter):
     def _write(self, stock_data_multiple_code: StockDataMultipleCode):
         # zip()をyieldでも利用できる？
         for p in self._path():
-            stock_data_multiple_code.df.to_csv(p)
+            stock_data_multiple_code.df.to_csv(p, index=False)
 
 
-class StockDataRepository:
+class StockDataMultipleCodeReader:
     @staticmethod
-    def read_multiple_code(path_candidate: Union[str, list]) -> StockDataMultipleCode:
+    def csv(path_candidate: Union[str, list]) -> StockDataMultipleCode:
         return StockDataMultipleCodeBasicReader(path_candidate=path_candidate).read()
 
     @staticmethod
-    def read_multiple_code_from_past_n_days(path_format: str, start_date: str, n: int) -> StockDataMultipleCode:
+    def csv_from_past_n_days(path_format: str, start_date: str, n: int) -> StockDataMultipleCode:
         return StockDataMultipleCodeTargetDateReader(path_format=path_format, start_date=start_date, n=n).read()
 
-    @staticmethod
-    def write_multiple_code(multiple_code: StockDataMultipleCode, path_candidate: str):
+
+@dataclass
+class StockDataMultipleCodeWriter:
+    multiple_code: StockDataMultipleCode
+
+    def csv(self, path_candidate: str):
         return StockDataMultipleCodeBasicWriter(path_candidate=path_candidate).write(
-            stock_data_multiple_code=multiple_code
+            stock_data_multiple_code=self.multiple_code
         )

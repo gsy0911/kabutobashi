@@ -51,15 +51,15 @@ class TestStockDataSingleCode:
 
         # check None
         with pytest.raises(kb.errors.KabutobashiEntityError):
-            _ = kb.StockDataSingleCode(code="-", df=None, stop_updating=False)
+            _ = kb.StockDataSingleCode(code="-", df=None, stop_updating=False, contains_outlier=False)
 
         # check multiple code
         with pytest.raises(kb.errors.KabutobashiEntityError):
-            _ = kb.StockDataSingleCode(code="-", df=df, stop_updating=False)
+            _ = kb.StockDataSingleCode(code="-", df=df, stop_updating=False, contains_outlier=False)
 
         # check invalid column
         with pytest.raises(kb.errors.KabutobashiEntityError):
-            _ = kb.StockDataSingleCode(code="-", df=single_code[["close"]], stop_updating=False)
+            _ = kb.StockDataSingleCode(code="-", df=single_code[["close"]], stop_updating=False, contains_outlier=False)
 
     def test_get_df(self, data_path):
         df = pd.read_csv(f"{data_path}/example.csv.gz")

@@ -1,1 +1,3 @@
-from .stock_data_repository import StockDataRepository
+from .stock_data_repository import StockDataMultipleCodeReader, StockDataMultipleCodeWriter
+
+reader = StockDataMultipleCodeReader()

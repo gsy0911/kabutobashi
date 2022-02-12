@@ -106,7 +106,6 @@ def test_analysis_with_bollinger_bands(sdsc):
     assert "sell_signal" in columns
 
 
-@pytest.mark.skip(reason="scipy has no compatibility with m1 mac")
 def test_analysis_with_fitting(sdsc):
     processed = sdsc.to_processed([kb.fitting])
     columns = processed.processed_dfs[0]["data"].columns

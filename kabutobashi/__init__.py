@@ -37,7 +37,9 @@ from .domain.page import (  # ある年にIPOした銘柄の情報を取得す�
     Weeks52HighLowPage,
 )
 from .example_data import example
-from .repository import StockDataRepository
+
+# read StockDataMultipleCode
+from .repository import reader
 
 # n営業日前までの日付のリストを返す関数; 銘柄コードでイテレーションする関数; window幅でデータを取得しつつデータを返す関数; 株価の動きを様々な統計量で表現
 from .utilities import get_past_n_days
@@ -59,10 +61,10 @@ volatility = Volatility()
 pct_change = PctChange()
 industry_cat = IndustryCategories()
 
-methods = [sma, macd, stochastics, adx, bollinger_bands, momentum, psycho_logical]
+methods = [sma, macd, stochastics, adx, bollinger_bands, momentum, psycho_logical, fitting]
 
 # comparable tuple
-VERSION = (0, 2, 5)
+VERSION = (0, 2, 6)
 # generate __version__ via VERSION tuple
 __version__ = ".".join(map(str, VERSION))
 

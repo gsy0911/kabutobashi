@@ -15,7 +15,7 @@
 import kabutobashi as kb
 
 file_path_list = [...]
-sdmc = kb.StockDataRepository.read_multiple_code(file_path_list)
+sdmc = kb.reader.csv(file_path_list)
 for sdsc in sdmc.to_code_iterable():
     processed = sdsc.to_processed(methods=kb.methods)
     print(processed.get_impact())
