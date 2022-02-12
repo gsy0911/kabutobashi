@@ -78,7 +78,7 @@ class StockDataMultipleCodeBasicWriter(IStockDataMultipleCodeWriter):
     def _write(self, stock_data_multiple_code: StockDataMultipleCode):
         # zip()をyieldでも利用できる？
         for p in self._path():
-            stock_data_multiple_code.df.to_csv(p)
+            stock_data_multiple_code.df.to_csv(p, index=False)
 
 
 class StockDataRepository:
