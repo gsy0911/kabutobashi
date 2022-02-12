@@ -83,22 +83,10 @@ class TestStockDataSingleCode:
         assert len(latest_date_df.index) == 1
 
 
-class TestStockDataProcessed:
+class TestStockDataAnalyzedByMultipleMethod:
     def test_of(self):
         sdmc = kb.example()
         sdsc = sdmc.to_single_code(code=1375)
-        processed = kb.StockDataProcessed.of(df=sdsc.df, methods=[kb.sma, kb.macd])
+        parameterize_methods = kb.methods + [kb.basic, kb.pct_change, kb.volatility]
+        processed = kb.StockDataAnalyzedByMultipleMethod.of(df=sdsc.df, methods=parameterize_methods)
         _ = processed.visualize()
-
-
-class TestStockDataParameterized:
-    def test_of(self):
-        sdmc = kb.example()
-        sdsc = sdmc.to_single_code(code=1375)
-
-        methods = kb.methods + [kb.basic, kb.pct_change, kb.volatility, kb.industry_cat]
-        for idx, df_x, df_y in sdsc.sliding_split():
-            parameterized = kb.StockDataParameterized.of(df_x=df_x, df_y=df_y, methods=methods)
-            assert type(parameterized.x()) is dict
-            assert type(float(parameterized.y())) is float
-            assert type(parameterized.row()) is dict
