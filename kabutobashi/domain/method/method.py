@@ -89,7 +89,7 @@ class Method(metaclass=ABCMeta):
         end_at = list(df["dt"])[-1]
 
         # 必要なパラメータの作成
-        columns = ["dt", "buy_signal", "sell_signal"] + self._processed_columns()
+        columns = ["dt", "open", "close", "high", "low", "buy_signal", "sell_signal"] + self._processed_columns()
         df_p = df.pipe(self._method).pipe(self._signal).loc[:, columns]
         params = self._parameterize(df_x=df, df_p=df_p)
 

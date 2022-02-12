@@ -14,7 +14,7 @@ kabutobashiにおいて、株に関する操作をする際に基本となるデ
   - StockDataProcessed
   - StockDataParameterized
 """
-from .stock_data_analyzed import StockDataAnalyzedBySingleMethod
+from .stock_data_analyzed import StockDataAnalyzedBySingleMethod, StockDataAnalyzedByMultipleMethod
 from .stock_data_processed import StockDataParameterized, StockDataProcessed
 from .stock_data_raw import StockDataMultipleCode, StockDataSingleCode, StockDataSingleDay
 from .stock_ipo import StockIpo
