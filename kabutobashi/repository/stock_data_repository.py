@@ -84,22 +84,6 @@ class StockDataMultipleCodeBasicWriter(IStockDataMultipleCodeWriter):
             stock_data_multiple_code.df.to_csv(p, index=False)
 
 
-class StockDataRepository:
-    @staticmethod
-    def read_multiple_code(path_candidate: Union[str, list]) -> StockDataMultipleCode:
-        return StockDataMultipleCodeBasicReader(path_candidate=path_candidate).read()
-
-    @staticmethod
-    def read_multiple_code_from_past_n_days(path_format: str, start_date: str, n: int) -> StockDataMultipleCode:
-        return StockDataMultipleCodeTargetDateReader(path_format=path_format, start_date=start_date, n=n).read()
-
-    @staticmethod
-    def write_multiple_code(multiple_code: StockDataMultipleCode, path_candidate: str):
-        return StockDataMultipleCodeBasicWriter(path_candidate=path_candidate).write(
-            stock_data_multiple_code=multiple_code
-        )
-
-
 class StockDataMultipleCodeReader:
     @staticmethod
     def csv(path_candidate: Union[str, list]) -> StockDataMultipleCode:
