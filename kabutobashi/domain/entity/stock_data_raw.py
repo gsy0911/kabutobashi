@@ -5,9 +5,11 @@ from typing import Generator, List, Optional, Tuple, Union
 import pandas as pd
 from cerberus import Validator
 
+from kabutobashi.domain.estimate_filter import EstimateFilter
 from kabutobashi.domain.method import Method
 from kabutobashi.errors import KabutobashiEntityError
 
+from .stock_data_estimated import StockDataEstimatedByMultipleFilter
 from .stock_data_processed import StockDataProcessedByMultipleMethod, StockDataProcessedBySingleMethod
 
 
@@ -438,7 +440,7 @@ class StockDataMultipleCode:
 
     def to_processed(
         self,
-        methods: List["Method"],
+        methods: List[Method],
         until: Optional[int] = None,
         *,
         skip_reit: bool = True,
@@ -446,6 +448,20 @@ class StockDataMultipleCode:
     ) -> Generator[StockDataProcessedByMultipleMethod, None, None]:
         for sdsc in self.to_code_iterable(until=until, skip_reit=skip_reit, row_more_than=row_more_than):
             yield sdsc.to_processed(methods=methods)
+
+    def to_estimated(
+        self,
+        methods: List[Method],
+        estimate_filters: List[EstimateFilter],
+        until: Optional[int] = None,
+        *,
+        skip_reit: bool = True,
+        row_more_than: Optional[int] = 80,
+    ) -> Generator[StockDataEstimatedByMultipleFilter, None, None]:
+        for processed in self.to_processed(
+            methods=methods, until=until, skip_reit=skip_reit, row_more_than=row_more_than
+        ):
+            yield processed.to_estimated(estimate_filters=estimate_filters)
 
     def get_df(self, minimum=True, latest=False, code_list: list = None):
         df = self.df
