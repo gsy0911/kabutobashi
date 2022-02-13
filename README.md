@@ -9,6 +9,25 @@
 [![PiPY](https://img.shields.io/pypi/v/kabutobashi.svg)](https://pypi.org/project/kabutobashi/)
 [![Documentation Status](https://readthedocs.org/projects/kabutobashi/badge/?version=latest)](https://kabutobashi.readthedocs.io/en/latest/?badge=latest)
 
+## concept
+
+class-relationship.
+
+![conceptual_diagram](docs/image/conceptual_diagram.png)
+
+- StockDataMultipleCode 
+  - contains multiple code & multiple date
+- StockDataSingleCode
+  - contains single code & multiple date
+- Processed (Single)
+  - is from `StockDataSingleCode` using single `Method`
+- Processed (Multiple)
+  - is from `StockDataSingleCode` using multiple `Method`
+- Estimated (Single)
+  - is from `Processed (Multiple)` using single `EstimateFilter`
+- Estimated (Multiple)
+  - is from `Processed (Multiple)` using multiple `EstimateFilter`
+
 ## usage
 
 ```python
