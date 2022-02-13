@@ -1,8 +1,10 @@
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
-from typing import Union
+from typing import List, Union
 
 from bs4 import BeautifulSoup
 
+from kabutobashi.errors import KabutobashiPageError
 from kabutobashi.domain.entity import StockDataSingleDay
 
 from .page import Page, PageDecoder
@@ -61,3 +63,19 @@ class StockInfoPage(Page):
             }
         )
         return StockDataSingleDay.from_page_of(data=result).dumps()
+
+    @staticmethod
+    def crawl_single(code: Union[int, str]) -> dict:
+        try:
+            return StockInfoPage(code=code).get()
+        except KabutobashiPageError:
+            return {}
+
+    @staticmethod
+    def crawl_multiple(code_list: List[Union[int, str]], max_workers: int = 2) -> List[dict]:
+        response_list = []
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
+            map_gen = executor.map(StockInfoPage.crawl_single, code_list)
+            for response in map_gen:
+                response_list.append(response)
+        return response_list
