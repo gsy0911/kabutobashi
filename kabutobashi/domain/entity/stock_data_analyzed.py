@@ -50,16 +50,6 @@ class StockDataAnalyzedBySingleMethod:
         if not validator.validate(data):
             raise KabutobashiEntityError(validator)
 
-    @staticmethod
-    def of(df: pd.DataFrame, method: "Method") -> "StockDataAnalyzedBySingleMethod":
-        from kabutobashi.domain.method import Method
-
-        # check all methods
-        if not isinstance(method, Method):
-            raise KabutobashiEntityError()
-
-        return method.analyzed(df=df)
-
     def get_impact(self, influence: int = 2, tail: int = 5) -> Dict[str, float]:
         """
 
@@ -97,17 +87,6 @@ class StockDataAnalyzedBySingleMethod:
 @dataclass(frozen=True)
 class StockDataAnalyzedByMultipleMethod:
     analyzed: List[StockDataAnalyzedBySingleMethod] = field(default_factory=list)
-
-    @staticmethod
-    def of(df: pd.DataFrame, methods: List["Method"]) -> "StockDataAnalyzedByMultipleMethod":
-        from kabutobashi.domain.method import Method
-
-        # check all methods
-        for method in methods:
-            if not isinstance(method, Method):
-                raise KabutobashiEntityError()
-
-        return StockDataAnalyzedByMultipleMethod(analyzed=[m.analyzed(df=df) for m in methods])
 
     @staticmethod
     def _add_ax_candlestick(ax, _df: pd.DataFrame):

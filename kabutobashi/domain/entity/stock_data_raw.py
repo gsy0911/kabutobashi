@@ -5,9 +5,10 @@ from typing import Generator, List, Optional, Tuple, Union
 import pandas as pd
 from cerberus import Validator
 
+from kabutobashi.domain.method import Method
 from kabutobashi.errors import KabutobashiEntityError
 
-from .stock_data_analyzed import StockDataAnalyzedByMultipleMethod
+from .stock_data_analyzed import StockDataAnalyzedByMultipleMethod, StockDataAnalyzedBySingleMethod
 
 
 @dataclass(frozen=True)
@@ -329,8 +330,35 @@ class StockDataSingleCode:
         else:
             return df[self.REQUIRED_COL + self.OPTIONAL_COL]
 
-    def to_analyzed(self, methods: List["Method"]) -> StockDataAnalyzedByMultipleMethod:
-        return StockDataAnalyzedByMultipleMethod.of(df=self.df, methods=methods)
+    def _to_single_analyzed(self, method: Method) -> StockDataAnalyzedBySingleMethod:
+        # 日時
+        start_at = list(self.df["dt"])[0]
+        end_at = list(self.df["dt"])[-1]
+
+        # 必要なパラメータの作成
+        columns = ["dt", "open", "close", "high", "low", "buy_signal", "sell_signal"] + method.processed_columns()
+        df_p = self.df.pipe(method.method).pipe(method.signal).loc[:, columns]
+        params = method.parameterize(df_x=self.df, df_p=df_p)
+
+        return StockDataAnalyzedBySingleMethod(
+            target_stock_code=self.code,
+            start_at=start_at,
+            end_at=end_at,
+            applied_method_name=method.method_name,
+            df_data=df_p,
+            df_required_columns=columns,
+            parameters=params,
+            color_mapping=method.color_mapping(),
+            visualize_option=method.visualize_option(),
+        )
+
+    def to_analyzed(self, methods: List[Method]) -> StockDataAnalyzedByMultipleMethod:
+        # check all methods
+        for method in methods:
+            if not isinstance(method, Method):
+                raise KabutobashiEntityError()
+
+        return StockDataAnalyzedByMultipleMethod(analyzed=[self._to_single_analyzed(m) for m in methods])
 
 
 @dataclass(frozen=True)

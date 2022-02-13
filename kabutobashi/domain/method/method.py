@@ -4,9 +4,6 @@ from enum import Enum, auto
 
 import pandas as pd
 
-from kabutobashi.domain.entity import StockDataAnalyzedBySingleMethod, StockDataSingleCode
-from kabutobashi.errors import KabutobashiMethodError
-
 
 class MethodType(Enum):
     TECHNICAL_ANALYSIS = auto()
@@ -61,6 +58,8 @@ class Method(metaclass=ABCMeta):
 
     @staticmethod
     def _validate(df: pd.DataFrame) -> pd.DataFrame:
+        from kabutobashi.domain.entity import StockDataSingleCode
+
         return StockDataSingleCode.of(df=df).df
 
     def method(self, df: pd.DataFrame) -> pd.DataFrame:
@@ -79,39 +78,22 @@ class Method(metaclass=ABCMeta):
     def _method(self, df: pd.DataFrame) -> pd.DataFrame:
         raise NotImplementedError("please implement your code")
 
-    def analyzed(self, df: pd.DataFrame) -> StockDataAnalyzedBySingleMethod:
-        code_list = list(df["code"].unique())
-        if len(code_list) > 1:
-            raise KabutobashiMethodError()
-
-        # 日時
-        start_at = list(df["dt"])[0]
-        end_at = list(df["dt"])[-1]
-
-        # 必要なパラメータの作成
-        columns = ["dt", "open", "close", "high", "low", "buy_signal", "sell_signal"] + self._processed_columns()
-        df_p = df.pipe(self._method).pipe(self._signal).loc[:, columns]
-        params = self._parameterize(df_x=df, df_p=df_p)
-
-        return StockDataAnalyzedBySingleMethod(
-            target_stock_code=code_list[0],
-            start_at=start_at,
-            end_at=end_at,
-            applied_method_name=self.method_name,
-            df_data=df_p,
-            df_required_columns=columns,
-            parameters=params,
-            color_mapping=self._color_mapping(),
-            visualize_option=self._visualize_option(),
-        )
+    def color_mapping(self) -> list:
+        return self._color_mapping()
 
     @abstractmethod
     def _color_mapping(self) -> list:
         raise NotImplementedError("please implement your code")
 
+    def visualize_option(self) -> dict:
+        return self._visualize_option()
+
     @abstractmethod
     def _visualize_option(self) -> dict:
         raise NotImplementedError("please implement your code")
+
+    def processed_columns(self) -> list:
+        return self._processed_columns()
 
     @abstractmethod
     def _processed_columns(self) -> list:
@@ -188,6 +170,9 @@ class Method(metaclass=ABCMeta):
         df["diff"] = df["original"] - df["shifted"]
         df["diff_rolling_sum"] = df["diff"].rolling(5).sum()
         return df["diff_rolling_sum"]
+
+    def parameterize(self, df_x: pd.DataFrame, df_p: pd.DataFrame) -> dict:
+        return self._parameterize(df_x=df_x, df_p=df_p)
 
     @abstractmethod
     def _parameterize(self, df_x: pd.DataFrame, df_p: pd.DataFrame) -> dict:
