@@ -20,6 +20,12 @@ from kabutobashi.domain.method import (
     Volatility,
 )
 
+from kabutobashi.domain.estimate_filter import (
+EstimateFilter,
+EfFundamental,
+EfVolume
+)
+
 from .domain.entity import (
     StockDataMultipleCode,
     StockDataProcessedByMultipleMethod,
@@ -61,6 +67,12 @@ pct_change = PctChange()
 industry_cat = IndustryCategories()
 
 methods = [sma, macd, stochastics, adx, bollinger_bands, momentum, psycho_logical, fitting]
+
+# estimate filters
+ef_fundamental = EfFundamental()
+ef_volume = EfVolume()
+
+estimate_filters = [ef_fundamental, ef_volume]
 
 # comparable tuple
 VERSION = (0, 2, 6)
