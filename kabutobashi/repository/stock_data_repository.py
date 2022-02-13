@@ -1,4 +1,5 @@
 from abc import ABCMeta, abstractmethod
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from typing import Generator, Union
 
@@ -10,7 +11,11 @@ from kabutobashi.utilities import get_past_n_days
 __all__ = ["StockDataMultipleCodeReader", "StockDataMultipleCodeWriter"]
 
 
+@dataclass(frozen=True)  # type: ignore
 class IStockDataMultipleCodeReader(metaclass=ABCMeta):
+    use_mp: bool
+    max_workers: int
+
     @abstractmethod
     def _path(self) -> Generator[str, None, None]:
         raise NotImplementedError()
@@ -19,8 +24,16 @@ class IStockDataMultipleCodeReader(metaclass=ABCMeta):
         return self._read()
 
     def _read(self) -> StockDataMultipleCode:
-        df = pd.concat([pd.read_csv(p) for p in self._path()])
-        return StockDataMultipleCode.of(df=df)
+        df_list = []
+        if self.use_mp:
+            with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
+                map_gen = executor.map(pd.read_csv, self._path())
+                for response in map_gen:
+                    df_list.append(response)
+        else:
+            df_list = [pd.read_csv(p) for p in self._path()]
+
+        return StockDataMultipleCode.of(df=pd.concat(df_list))
 
 
 @dataclass(frozen=True)
@@ -83,14 +96,20 @@ class StockDataMultipleCodeBasicWriter(IStockDataMultipleCodeWriter):
             stock_data_multiple_code.df.to_csv(p, index=False)
 
 
+@dataclass
 class StockDataMultipleCodeReader:
-    @staticmethod
-    def csv(path_candidate: Union[str, list]) -> StockDataMultipleCode:
-        return StockDataMultipleCodeBasicReader(path_candidate=path_candidate).read()
+    use_mp: bool = False
+    max_workers: int = 2
 
-    @staticmethod
-    def csv_from_past_n_days(path_format: str, start_date: str, n: int) -> StockDataMultipleCode:
-        return StockDataMultipleCodeTargetDateReader(path_format=path_format, start_date=start_date, n=n).read()
+    def csv(self, path_candidate: Union[str, list]) -> StockDataMultipleCode:
+        return StockDataMultipleCodeBasicReader(
+            use_mp=self.use_mp, max_workers=self.max_workers, path_candidate=path_candidate
+        ).read()
+
+    def csv_from_past_n_days(self, path_format: str, start_date: str, n: int) -> StockDataMultipleCode:
+        return StockDataMultipleCodeTargetDateReader(
+            use_mp=self.use_mp, max_workers=self.max_workers, path_format=path_format, start_date=start_date, n=n
+        ).read()
 
 
 @dataclass

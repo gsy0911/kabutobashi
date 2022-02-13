@@ -3,6 +3,7 @@
 # methods to analysis
 # import errors
 from kabutobashi import errors
+from kabutobashi.domain.estimate_filter import EfFundamental, EfVolume, EstimateFilter
 from kabutobashi.domain.method import (
     ADX,
     MACD,
@@ -22,8 +23,7 @@ from kabutobashi.domain.method import (
 
 from .domain.entity import (
     StockDataMultipleCode,
-    StockDataParameterized,
-    StockDataProcessed,
+    StockDataProcessedByMultipleMethod,
     StockDataSingleCode,
     StockDataSingleDay,
     StockIpo,
@@ -63,8 +63,14 @@ industry_cat = IndustryCategories()
 
 methods = [sma, macd, stochastics, adx, bollinger_bands, momentum, psycho_logical, fitting]
 
+# estimate filters
+ef_fundamental = EfFundamental()
+ef_volume = EfVolume()
+
+estimate_filters = [ef_fundamental, ef_volume]
+
 # comparable tuple
-VERSION = (0, 2, 6)
+VERSION = (0, 3, 0)
 # generate __version__ via VERSION tuple
 __version__ = ".".join(map(str, VERSION))
 
