@@ -89,7 +89,7 @@ class StockDataProcessedBySingleMethod:
 
 @dataclass(frozen=True)
 class StockDataProcessedByMultipleMethod:
-    analyzed: List[StockDataProcessedBySingleMethod] = field(default_factory=list)
+    processed: List[StockDataProcessedBySingleMethod] = field(default_factory=list)
 
     @staticmethod
     def _add_ax_candlestick(ax, _df: pd.DataFrame):
@@ -102,13 +102,13 @@ class StockDataProcessedByMultipleMethod:
 
     def get_impact(self, influence: int = 2, tail: int = 5) -> Dict[str, float]:
         data = {}
-        for a in self.analyzed:
+        for a in self.processed:
             data.update(a.get_impact(influence=influence, tail=tail))
         return data
 
     def get_parameters(self):
         data = {}
-        for a in self.analyzed:
+        for a in self.processed:
             data.update(a.parameters)
         return data
 
@@ -123,7 +123,7 @@ class StockDataProcessedByMultipleMethod:
         """
 
         def _n_rows() -> int:
-            lower_nums = len([p for p in self.analyzed if p.visualize_option["position"] == "lower"])
+            lower_nums = len([p for p in self.processed if p.visualize_option["position"] == "lower"])
             return 1 + lower_nums
 
         n_rows = _n_rows()
@@ -141,12 +141,12 @@ class StockDataProcessedByMultipleMethod:
         fig.autofmt_xdate()
 
         # set candlestick base
-        base_df = self.analyzed[0].df_data[["dt", "open", "close", "high", "low"]]
+        base_df = self.processed[0].df_data[["dt", "open", "close", "high", "low"]]
         self._add_ax_candlestick(axs[0], base_df)
 
         ax_idx = 1
         # plots
-        for processed in self.analyzed:
+        for processed in self.processed:
             position = processed.visualize_option["position"]
             df = processed.df_data
             time_series = mdates.date2num(df["dt"])
@@ -191,7 +191,7 @@ class StockDataProcessedByMultipleMethod:
             data.update(self.get_impact())
             data.update(self.get_parameters())
         return StockDataEstimatedBySingleFilter(
-            target_stock_code=self.analyzed[0].target_stock_code,
+            target_stock_code=self.processed[0].target_stock_code,
             estimate_filter_name=estimate_filter.estimate_filter_name,
             estimated_value=estimate_filter.estimate(data=data),
         )

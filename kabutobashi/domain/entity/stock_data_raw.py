@@ -358,7 +358,7 @@ class StockDataSingleCode:
             if not isinstance(method, Method):
                 raise KabutobashiEntityError()
 
-        return StockDataProcessedByMultipleMethod(analyzed=[self._to_single_processed(m) for m in methods])
+        return StockDataProcessedByMultipleMethod(processed=[self._to_single_processed(m) for m in methods])
 
 
 @dataclass(frozen=True)
@@ -436,7 +436,7 @@ class StockDataMultipleCode:
                 continue
             yield sdsc
 
-    def to_analyzed(
+    def to_processed(
         self,
         methods: List["Method"],
         until: Optional[int] = None,
