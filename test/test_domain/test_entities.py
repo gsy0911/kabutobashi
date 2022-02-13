@@ -84,9 +84,9 @@ class TestStockDataSingleCode:
 
 
 class TestStockDataAnalyzedByMultipleMethod:
-    def test_of(self):
+    def test_visualize(self):
         sdmc = kb.example()
         sdsc = sdmc.to_single_code(code=1375)
         parameterize_methods = kb.methods + [kb.basic, kb.pct_change, kb.volatility]
-        processed = kb.StockDataAnalyzedByMultipleMethod.of(df=sdsc.df, methods=parameterize_methods)
+        processed = sdsc.to_processed(methods=parameterize_methods)
         _ = processed.visualize()
