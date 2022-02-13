@@ -1,5 +1,13 @@
 # Release Note
 
+## 0.3.0
+
+- multiprocessing `IStockDataMultipleCodeReader` ([#86](https://github.com/gsy0911/kabutobashi/issues/86))
+- multiprocessing `StockInfoPage` ([#85](https://github.com/gsy0911/kabutobashi/issues/85))
+- add `Estimated` and `EstimateFilter` ([#84](https://github.com/gsy0911/kabutobashi/issues/84))
+- merge `Parameterized` and `Processed` ([#83](https://github.com/gsy0911/kabutobashi/issues/83))
+
+
 ## 0.2.6
 
 - re-implement `Fitting(Method)` ([#44](https://github.com/gsy0911/kabutobashi/issues/44))
