@@ -4,8 +4,8 @@ from typing import List, Union
 
 from bs4 import BeautifulSoup
 
-from kabutobashi.errors import KabutobashiPageError
 from kabutobashi.domain.entity import StockDataSingleDay
+from kabutobashi.errors import KabutobashiPageError
 
 from .page import Page, PageDecoder
 

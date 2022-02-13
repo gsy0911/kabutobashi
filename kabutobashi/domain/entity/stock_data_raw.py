@@ -478,10 +478,10 @@ class StockDataMultipleCode:
             return df[self.REQUIRED_COL + self.OPTIONAL_COL]
 
     @staticmethod
-    def read():
+    def read(use_mp: bool = False, max_workers: int = 2):
         from kabutobashi.repository.stock_data_repository import StockDataMultipleCodeReader
 
-        return StockDataMultipleCodeReader()
+        return StockDataMultipleCodeReader(use_mp=use_mp, max_workers=max_workers)
 
     def write(self):
         from kabutobashi.repository.stock_data_repository import StockDataMultipleCodeWriter
