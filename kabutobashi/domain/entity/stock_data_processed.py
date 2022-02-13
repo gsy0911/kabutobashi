@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List, Optional, Union
 
 import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
@@ -8,7 +8,10 @@ import pandas as pd
 from cerberus import Validator
 from mplfinance.original_flavor import candlestick_ohlc
 
+from kabutobashi.domain.estimate_filter import EstimateFilter
 from kabutobashi.errors import KabutobashiEntityError
+
+from .stock_data_estimated import StockDataEstimatedByMultipleFilter, StockDataEstimatedBySingleFilter
 
 
 @dataclass(frozen=True)
@@ -179,3 +182,24 @@ class StockDataProcessedByMultipleMethod:
                 raise KabutobashiEntityError()
 
         return fig
+
+    def _to_single_estimated(
+        self, estimate_filter: EstimateFilter, data: Optional[dict] = None
+    ) -> StockDataEstimatedBySingleFilter:
+        if not data:
+            data = {}
+            data.update(self.get_impact())
+            data.update(self.get_parameters())
+        return StockDataEstimatedBySingleFilter(
+            target_stock_code=self.analyzed[0].target_stock_code,
+            estimate_filter_name=estimate_filter.estimate_filter_name,
+            estimated_value=estimate_filter.estimate(data=data),
+        )
+
+    def to_estimated(self, estimate_filters: List[EstimateFilter]) -> StockDataEstimatedByMultipleFilter:
+        data = {}
+        data.update(self.get_impact())
+        data.update(self.get_parameters())
+        return StockDataEstimatedByMultipleFilter(
+            estimated=[self._to_single_estimated(estimate_filter=ef) for ef in estimate_filters]
+        )
