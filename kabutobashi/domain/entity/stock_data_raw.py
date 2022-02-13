@@ -487,6 +487,12 @@ class StockDataMultipleCode:
 
         return StockDataMultipleCodeReader(use_mp=use_mp, max_workers=max_workers)
 
+    @staticmethod
+    def crawl(use_mp: bool = False, max_workers: int = 2):
+        from kabutobashi.repository.stock_data_repository import StockDataMultipleCodeCrawler
+
+        return StockDataMultipleCodeCrawler(use_mp=use_mp, max_workers=max_workers)
+
     def write(self):
         from kabutobashi.repository.stock_data_repository import StockDataMultipleCodeWriter
 
