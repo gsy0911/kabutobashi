@@ -36,8 +36,20 @@ class Basic(Method):
         return []
 
     def _parameterize(self, df_x: pd.DataFrame, df_p: pd.DataFrame) -> dict:
-        pbr = list(df_x["pbr"])[-1]
-        per = list(df_x["per"])[-1]
-        psr = list(df_x["psr"])[-1]
-        volume = list(df_x["volume"])[-1]
+        try:
+            pbr = float(list(df_x["pbr"])[-1])
+        except ValueError:
+            pbr = 0
+        try:
+            per = float(list(df_x["per"])[-1])
+        except ValueError:
+            per = 0
+        try:
+            psr = float(list(df_x["psr"])[-1])
+        except ValueError:
+            psr = 0
+        try:
+            volume = float(list(df_x["volume"])[-1])
+        except ValueError:
+            volume = 0
         return {"pbr": pbr, "psr": psr, "per": per, "volume": volume}
