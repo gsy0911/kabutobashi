@@ -15,8 +15,12 @@ class StockInfoPage(Page):
     """
 
     Examples:
+        >>> from kabutobashi import StockInfoPage
+        >>> # get single page
         >>> sip = StockInfoPage(code="0001")
         >>> result = sip.get()
+        >>> # get multiple page with multiprocessing
+        >>> results = StockInfoPage.crawl_multiple(code_list=["0001", "0002", ...], max_workers=4)
     """
 
     code: Union[int, str]
