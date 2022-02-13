@@ -426,16 +426,20 @@ class StockDataMultipleCode:
             if row_more_than:
                 if len(df_.index) < row_more_than:
                     continue
-            if until:
-                if _count >= until:
-                    return
-            _count += 1
 
+            # create sdsc
             sdsc = StockDataSingleCode.of(df=df_)
             if sdsc.stop_updating:
                 continue
             if sdsc.contains_outlier:
                 continue
+
+            # add counter if yield
+            if until:
+                if _count >= until:
+                    return
+            _count += 1
+
             yield sdsc
 
     def to_processed(
