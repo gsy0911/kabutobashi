@@ -8,7 +8,7 @@ from cerberus import Validator
 from kabutobashi.domain.method import Method
 from kabutobashi.errors import KabutobashiEntityError
 
-from .stock_data_analyzed import StockDataAnalyzedByMultipleMethod, StockDataAnalyzedBySingleMethod
+from .stock_data_processed import StockDataProcessedByMultipleMethod, StockDataProcessedBySingleMethod
 
 
 @dataclass(frozen=True)
@@ -330,7 +330,7 @@ class StockDataSingleCode:
         else:
             return df[self.REQUIRED_COL + self.OPTIONAL_COL]
 
-    def _to_single_analyzed(self, method: Method) -> StockDataAnalyzedBySingleMethod:
+    def _to_single_processed(self, method: Method) -> StockDataProcessedBySingleMethod:
         # 日時
         start_at = list(self.df["dt"])[0]
         end_at = list(self.df["dt"])[-1]
@@ -340,7 +340,7 @@ class StockDataSingleCode:
         df_p = self.df.pipe(method.method).pipe(method.signal).loc[:, columns]
         params = method.parameterize(df_x=self.df, df_p=df_p)
 
-        return StockDataAnalyzedBySingleMethod(
+        return StockDataProcessedBySingleMethod(
             target_stock_code=self.code,
             start_at=start_at,
             end_at=end_at,
@@ -352,13 +352,13 @@ class StockDataSingleCode:
             visualize_option=method.visualize_option(),
         )
 
-    def to_analyzed(self, methods: List[Method]) -> StockDataAnalyzedByMultipleMethod:
+    def to_processed(self, methods: List[Method]) -> StockDataProcessedByMultipleMethod:
         # check all methods
         for method in methods:
             if not isinstance(method, Method):
                 raise KabutobashiEntityError()
 
-        return StockDataAnalyzedByMultipleMethod(analyzed=[self._to_single_analyzed(m) for m in methods])
+        return StockDataProcessedByMultipleMethod(analyzed=[self._to_single_processed(m) for m in methods])
 
 
 @dataclass(frozen=True)
@@ -443,9 +443,9 @@ class StockDataMultipleCode:
         *,
         skip_reit: bool = True,
         row_more_than: Optional[int] = 80,
-    ) -> Generator[StockDataAnalyzedByMultipleMethod, None, None]:
+    ) -> Generator[StockDataProcessedByMultipleMethod, None, None]:
         for sdsc in self.to_code_iterable(until=until, skip_reit=skip_reit, row_more_than=row_more_than):
-            yield sdsc.to_analyzed(methods=methods)
+            yield sdsc.to_processed(methods=methods)
 
     def get_df(self, minimum=True, latest=False, code_list: list = None):
         df = self.df

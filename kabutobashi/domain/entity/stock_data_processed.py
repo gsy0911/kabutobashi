@@ -12,7 +12,7 @@ from kabutobashi.errors import KabutobashiEntityError
 
 
 @dataclass(frozen=True)
-class StockDataAnalyzedBySingleMethod:
+class StockDataProcessedBySingleMethod:
     """
     単一のmethodで処理した後のデータを保持
     可視化などを実行する際に利用
@@ -85,8 +85,8 @@ class StockDataAnalyzedBySingleMethod:
 
 
 @dataclass(frozen=True)
-class StockDataAnalyzedByMultipleMethod:
-    analyzed: List[StockDataAnalyzedBySingleMethod] = field(default_factory=list)
+class StockDataProcessedByMultipleMethod:
+    analyzed: List[StockDataProcessedBySingleMethod] = field(default_factory=list)
 
     @staticmethod
     def _add_ax_candlestick(ax, _df: pd.DataFrame):
