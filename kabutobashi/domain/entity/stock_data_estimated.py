@@ -25,3 +25,7 @@ class StockDataEstimatedByMultipleFilter:
         if not weights:
             weights = {}
         return sum([e.weighted_estimated_value(weights=weights) for e in self.estimated])
+
+    def estimate_filter_concat_name(self) -> str:
+        estimate_filter_names = sorted([e.estimate_filter_name for e in self.estimated])
+        return "_".join(estimate_filter_names)

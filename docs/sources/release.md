@@ -1,5 +1,13 @@
 # Release Note
 
+## 0.3.1
+
+- add `crawl()` in `StockDataMultipleCode` ([#89](https://github.com/gsy0911/kabutobashi/issues/89))
+- modify `Basic` methods, `volume` type ([#92](https://github.com/gsy0911/kabutobashi/issues/92))
+- add function to concat `filter_name` ([#88](https://github.com/gsy0911/kabutobashi/issues/88))
+- modify `to_code_iterable` ([#90](https://github.com/gsy0911/kabutobashi/issues/90))
+- update README ([#87](https://github.com/gsy0911/kabutobashi/issues/87))
+
 ## 0.3.0
 
 - multiprocessing `IStockDataMultipleCodeReader` ([#86](https://github.com/gsy0911/kabutobashi/issues/86))

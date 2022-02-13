@@ -426,16 +426,20 @@ class StockDataMultipleCode:
             if row_more_than:
                 if len(df_.index) < row_more_than:
                     continue
-            if until:
-                if _count >= until:
-                    return
-            _count += 1
 
+            # create sdsc
             sdsc = StockDataSingleCode.of(df=df_)
             if sdsc.stop_updating:
                 continue
             if sdsc.contains_outlier:
                 continue
+
+            # add counter if yield
+            if until:
+                if _count >= until:
+                    return
+            _count += 1
+
             yield sdsc
 
     def to_processed(
@@ -482,6 +486,12 @@ class StockDataMultipleCode:
         from kabutobashi.repository.stock_data_repository import StockDataMultipleCodeReader
 
         return StockDataMultipleCodeReader(use_mp=use_mp, max_workers=max_workers)
+
+    @staticmethod
+    def crawl(use_mp: bool = False, max_workers: int = 2):
+        from kabutobashi.repository.stock_data_repository import StockDataMultipleCodeCrawler
+
+        return StockDataMultipleCodeCrawler(use_mp=use_mp, max_workers=max_workers)
 
     def write(self):
         from kabutobashi.repository.stock_data_repository import StockDataMultipleCodeWriter
