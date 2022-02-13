@@ -5,10 +5,11 @@ from typing import Generator, Union
 
 import pandas as pd
 
+from kabutobashi.domain.page import StockInfoPage
 from kabutobashi.domain.entity import StockDataMultipleCode
 from kabutobashi.utilities import get_past_n_days
 
-__all__ = ["StockDataMultipleCodeReader", "StockDataMultipleCodeWriter"]
+__all__ = ["StockDataMultipleCodeReader", "StockDataMultipleCodeWriter", "StockDataMultipleCodeCrawler"]
 
 
 @dataclass(frozen=True)  # type: ignore
@@ -120,3 +121,18 @@ class StockDataMultipleCodeWriter:
         return StockDataMultipleCodeBasicWriter(path_candidate=path_candidate).write(
             stock_data_multiple_code=self.multiple_code
         )
+
+
+@dataclass
+class StockDataMultipleCodeCrawler:
+    use_mp: bool = False
+    max_workers: int = 2
+
+    def get(self, code_list: list, dt: str):
+        # 日次の株データ取得
+        stock_data: list = StockInfoPage.crawl_multiple(code_list=code_list, max_workers=self.max_workers)
+
+        # データを整形してStockDataとして保存
+        df = pd.DataFrame(stock_data)
+        df["dt"] = dt
+        return StockDataMultipleCode.of(df=df)
