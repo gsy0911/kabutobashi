@@ -1,13 +1,14 @@
 from dataclasses import asdict, dataclass
 from datetime import datetime
-from typing import Generator, Optional, Tuple, Union
+from typing import Generator, List, Optional, Tuple, Union
 
 import pandas as pd
 from cerberus import Validator
 
+from kabutobashi.domain.method import Method
 from kabutobashi.errors import KabutobashiEntityError
 
-from .stock_data_processed import StockDataParameterized, StockDataProcessed
+from .stock_data_processed import StockDataProcessedByMultipleMethod, StockDataProcessedBySingleMethod
 
 
 @dataclass(frozen=True)
@@ -139,6 +140,25 @@ class StockDataSingleCode:
         df: 複数日・単一銘柄を保持するDataFrame
         code: 銘柄コード
 
+    Examples:
+        >>> import kabutobashi as kb
+        >>> import pandas as pd
+        >>> data_list = []
+        >>> sdmc = kb.example()
+        >>> parameterize_methods = kb.methods + [kb.basic, kb.pct_change, kb.volatility]
+        >>> for sdsc in sdmc.to_code_iterable(until=1, row_more_than=80):
+        >>>     code = sdsc.code
+        >>>     print(code)
+        >>>     for idx, df_x, df_y in sdsc.sliding_split():
+        >>>         df_params = kb.StockDataAnalyzedByMultipleMethod.of(df=df_x, methods=parameterize_methods)
+        >>>         # diff:= df_y.last - df_x.last
+        >>>         start = list(df_x["close"])[-1]
+        >>>         end = list(df_y["close"])[-1]
+        >>>         diff = end - start
+        >>>         d = df_params.get_parameters()
+        >>>         d.update({"diff": diff})
+        >>>         data_list.append(d)
+        >>>  data_for_ml = pd.DataFrame(data_list)
     """
 
     df: pd.DataFrame
@@ -310,13 +330,35 @@ class StockDataSingleCode:
         else:
             return df[self.REQUIRED_COL + self.OPTIONAL_COL]
 
-    def to_processed(self, methods: list) -> StockDataProcessed:
-        return StockDataProcessed.of(df=self.df, methods=methods)
+    def _to_single_processed(self, method: Method) -> StockDataProcessedBySingleMethod:
+        # 日時
+        start_at = list(self.df["dt"])[0]
+        end_at = list(self.df["dt"])[-1]
 
-    def to_parameterize(self, methods: list, buy_sell_term_days: int = 5) -> StockDataParameterized:
-        df_x = self.df[:-buy_sell_term_days]
-        df_y = self.df[-buy_sell_term_days:]
-        return StockDataParameterized.of(df_x=df_x, df_y=df_y, methods=methods)
+        # 必要なパラメータの作成
+        columns = ["dt", "open", "close", "high", "low", "buy_signal", "sell_signal"] + method.processed_columns()
+        df_p = self.df.pipe(method.method).pipe(method.signal).loc[:, columns]
+        params = method.parameterize(df_x=self.df, df_p=df_p)
+
+        return StockDataProcessedBySingleMethod(
+            target_stock_code=self.code,
+            start_at=start_at,
+            end_at=end_at,
+            applied_method_name=method.method_name,
+            df_data=df_p,
+            df_required_columns=columns,
+            parameters=params,
+            color_mapping=method.color_mapping(),
+            visualize_option=method.visualize_option(),
+        )
+
+    def to_processed(self, methods: List[Method]) -> StockDataProcessedByMultipleMethod:
+        # check all methods
+        for method in methods:
+            if not isinstance(method, Method):
+                raise KabutobashiEntityError()
+
+        return StockDataProcessedByMultipleMethod(analyzed=[self._to_single_processed(m) for m in methods])
 
 
 @dataclass(frozen=True)
@@ -393,6 +435,17 @@ class StockDataMultipleCode:
             if sdsc.contains_outlier:
                 continue
             yield sdsc
+
+    def to_analyzed(
+        self,
+        methods: List["Method"],
+        until: Optional[int] = None,
+        *,
+        skip_reit: bool = True,
+        row_more_than: Optional[int] = 80,
+    ) -> Generator[StockDataProcessedByMultipleMethod, None, None]:
+        for sdsc in self.to_code_iterable(until=until, skip_reit=skip_reit, row_more_than=row_more_than):
+            yield sdsc.to_processed(methods=methods)
 
     def get_df(self, minimum=True, latest=False, code_list: list = None):
         df = self.df
