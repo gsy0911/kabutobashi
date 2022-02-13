@@ -3,6 +3,7 @@
 # methods to analysis
 # import errors
 from kabutobashi import errors
+from kabutobashi.domain.estimate_filter import EfFundamental, EfVolume, EstimateFilter
 from kabutobashi.domain.method import (
     ADX,
     MACD,
@@ -61,6 +62,12 @@ pct_change = PctChange()
 industry_cat = IndustryCategories()
 
 methods = [sma, macd, stochastics, adx, bollinger_bands, momentum, psycho_logical, fitting]
+
+# estimate filters
+ef_fundamental = EfFundamental()
+ef_volume = EfVolume()
+
+estimate_filters = [ef_fundamental, ef_volume]
 
 # comparable tuple
 VERSION = (0, 2, 6)

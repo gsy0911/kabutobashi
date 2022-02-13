@@ -83,6 +83,20 @@ class TestStockDataSingleCode:
         assert len(latest_date_df.index) == 1
 
 
+class TestStockDataMultipleCode:
+    def test_code_iterable(self):
+        sdmc = kb.example()
+        methods = kb.methods + [kb.basic, kb.pct_change, kb.volatility]
+        for _ in sdmc.to_code_iterable(until=1):
+            pass
+
+        for _ in sdmc.to_processed(methods=methods, until=1):
+            pass
+
+        for _ in sdmc.to_estimated(methods=methods, estimate_filters=kb.estimate_filters, until=1):
+            pass
+
+
 class TestStockDataAnalyzedByMultipleMethod:
     def test_visualize(self):
         sdmc = kb.example()
