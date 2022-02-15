@@ -13,7 +13,20 @@
 
 class-relationship.
 
-![conceptual_diagram](docs/image/conceptual_diagram.png)
+```mermaid
+graph TD;
+  Web --> | crawl | StockDataMultipleCode
+  Repository[(Repository)] --- | read/write | StockDataMultipleCode
+  StockDataMultipleCode --> | code | StockDataSingleCode
+  StockDataSingleCode -.-> | Method | Processed-Single
+  Processed-Single -.- | multiple | Processed-Multiple
+  StockDataSingleCode --> | Methods | Processed-Multiple
+  Processed-Multiple -.-> | Filters | Estimated-Single
+  Estimated-Single -.- | multiple | Estimated-Multiple
+  Processed-Multiple --> | Filters | Estimated-Multiple
+  StockDataMultipleCode ==> | Methods | Processed-Multiple
+  StockDataMultipleCode ==> | Methods,Filters | Estimated-Multiple
+```
 
 - StockDataMultipleCode 
   - contains multiple code & multiple date
