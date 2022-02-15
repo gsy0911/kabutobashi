@@ -15,17 +15,17 @@ class-relationship.
 
 ```mermaid
 graph TD;
-  Web --> | crawl | StockDataMultipleCode
-  Repository[(Repository)] --- | read/write | StockDataMultipleCode
-  StockDataMultipleCode --> | code | StockDataSingleCode
-  StockDataSingleCode -.-> | Method | Processed-Single
-  Processed-Single -.- | multiple | Processed-Multiple
-  StockDataSingleCode --> | Methods | Processed-Multiple
-  Processed-Multiple -.-> | Filters | Estimated-Single
-  Estimated-Single -.- | multiple | Estimated-Multiple
-  Processed-Multiple --> | Filters | Estimated-Multiple
-  StockDataMultipleCode ==> | Methods | Processed-Multiple
-  StockDataMultipleCode ==> | Methods,Filters | Estimated-Multiple
+  web[[Web]] --> | crawl | sdmc
+  repo[(Storage)] --- | read/write | sdmc
+  sdmc[StockDataMultipleCode] --> | code | sdsc
+  sdsc[StockDataSingleCode] -.-> | Method | ps
+  ps[Processed-Single] -.- | multiple | pm
+  sdsc --> | Methods | pm
+  pm[Processed-Multiple] -.-> | Filters | es
+  es[Estimated-Single] -.- | multiple | em[Estimated-Multiple]
+  pm --> | Filters | em
+  sdmc ==> | Methods | pm
+  sdmc ==> | Methods,Filters | em
 ```
 
 - StockDataMultipleCode 
