@@ -1,38 +1,41 @@
 methods
 =======
 
-.. automodule:: kabutobashi.domain.method.method
+.. autoclass:: kabutobashi.Method
    :members:
    :undoc-members:
-   :show-inheritance:
 
-.. automodule:: kabutobashi.domain.method.adx
+.. autoclass:: kabutobashi.ADX
    :members:
 
 
-.. automodule:: kabutobashi.domain.method.bollinger_bands
+.. autoclass:: kabutobashi.BollingerBands
    :members:
 
 
-.. automodule:: kabutobashi.domain.method.ichimoku
+.. autoclass:: kabutobashi.Ichimoku
    :members:
 
 
-.. automodule:: kabutobashi.domain.method.macd
+.. autoclass:: kabutobashi.MACD
    :members:
 
 
-.. automodule:: kabutobashi.domain.method.momentum
+.. autoclass:: kabutobashi.Momentum
    :members:
 
 
-.. automodule:: kabutobashi.domain.method.psycho_logical
+.. autoclass:: kabutobashi.PsychoLogical
    :members:
 
 
-.. automodule:: kabutobashi.domain.method.sma
+.. autoclass:: kabutobashi.SMA
    :members:
 
 
-.. automodule:: kabutobashi.domain.method.stochastics
+.. autoclass:: kabutobashi.Stochastics
+   :members:
+
+
+.. autoclass:: kabutobashi.IndustryCategories
    :members:

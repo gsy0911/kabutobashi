@@ -32,7 +32,8 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.napoleon',
     # parse `markdown`: https://www.sphinx-doc.org/ja/master/usage/markdown.html
-    'myst_parser'
+    'myst_parser',
+    'sphinxcontrib.mermaid'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
