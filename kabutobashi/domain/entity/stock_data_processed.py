@@ -8,7 +8,7 @@ import pandas as pd
 from cerberus import Validator
 from mplfinance.original_flavor import candlestick_ohlc
 
-from kabutobashi.domain.estimate_filter import EstimateFilter
+from kabutobashi import EstimateFilter
 from kabutobashi.errors import KabutobashiEntityError
 
 from .stock_data_estimated import StockDataEstimatedByMultipleFilter, StockDataEstimatedBySingleFilter
@@ -17,8 +17,7 @@ from .stock_data_estimated import StockDataEstimatedByMultipleFilter, StockDataE
 @dataclass(frozen=True)
 class StockDataProcessedBySingleMethod:
     """
-    単一のmethodで処理した後のデータを保持
-    可視化などを実行する際に利用
+    Holds data processed by singular-Method.
     """
 
     target_stock_code: Union[str, int]
@@ -89,6 +88,11 @@ class StockDataProcessedBySingleMethod:
 
 @dataclass(frozen=True)
 class StockDataProcessedByMultipleMethod:
+    """
+    Holds data processed by multiple-Methods.
+    Also used to visualize.
+    """
+
     processed: List[StockDataProcessedBySingleMethod] = field(default_factory=list)
 
     @staticmethod
@@ -114,12 +118,13 @@ class StockDataProcessedByMultipleMethod:
 
     def visualize(self, size_ratio: int = 2):
         """
-        macdはlower
-        sma、bolinger_bandsは同じところに表示させる。
-        買いのポイントも表示させる
+        Visualize Stock Data.
+
+        Args:
+            size_ratio: determine the size of the graph, default 2.
 
         Returns:
-
+            Figure
         """
 
         def _n_rows() -> int:
@@ -197,6 +202,11 @@ class StockDataProcessedByMultipleMethod:
         )
 
     def to_estimated(self, estimate_filters: List[EstimateFilter]) -> StockDataEstimatedByMultipleFilter:
+        """
+
+        Returns:
+            StockDataEstimatedByMultipleFilter
+        """
         data = {}
         data.update(self.get_impact())
         data.update(self.get_parameters())
