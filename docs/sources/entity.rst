@@ -2,33 +2,45 @@
 crawling
 ========
 
-.. autoclass:: kabutobashi.domain.entity.StockIpo
+.. autoclass:: kabutobashi.StockIpo
    :members:
 
-.. autoclass:: kabutobashi.domain.entity.Weeks52HighLow
+.. autoclass:: kabutobashi.Weeks52HighLow
    :members:
 
 
 basement
 ========
 
-.. autoclass:: kabutobashi.domain.entity.StockDataSingleDay
+.. autoclass:: kabutobashi.StockDataSingleDay
    :members:
 
 
-.. autoclass:: kabutobashi.domain.entity.StockDataSingleCode
+.. autoclass:: kabutobashi.StockDataSingleCode
    :members:
 
 
-.. autoclass:: kabutobashi.domain.entity.StockDataMultipleCode
+.. autoclass:: kabutobashi.StockDataMultipleCode
    :members:
 
-analysis
-========
+processed
+=========
 
-.. autoclass:: kabutobashi.domain.entity.StockDataProcessed
+.. autoclass:: kabutobashi.StockDataProcessedBySingleMethod
    :members:
 
 
-.. autoclass:: kabutobashi.domain.entity.StockDataParameterized
+.. autoclass:: kabutobashi.StockDataProcessedByMultipleMethod
    :members:
+
+
+processed
+=========
+
+.. autoclass:: kabutobashi.StockDataEstimatedBySingleFilter
+   :members:
+
+.. autoclass:: kabutobashi.StockDataEstimatedByMultipleFilter
+   :members:
+
+
