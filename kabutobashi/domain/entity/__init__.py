@@ -1,18 +1,28 @@
 """
-kabutobashiにおいて、株に関する操作をする際に基本となるデータ構造を保持する。
+define structures of the stock-data,
+when processing Methods like SMA, MCAD,
+and when estimating stock-code which is to rise in the next day or so on.
 
-- データ収集時に主に利用
+- Used for ``crawling``
 
   - StockIpo
   - Weeks52HighLow
 
-- 分析時に主に利用
+- define data-structure: ``basement``
 
   - StockDataSingleDay
   - StockDataSingleCode
   - StockDataMultipleCode
-  - StockDataProcessed
-  - StockDataParameterized
+
+- initial step to analyze:  ``processed``
+
+  - StockDataProcessedBySingleMethod
+  - StockDataProcessedByMultipleMethod
+
+- second step to analyze:  ``estimated``
+
+  - StockDataEstimatedBySingleFilter
+  - StockDataEstimatedByMultipleFilter
 """
 from .stock_data_estimated import StockDataEstimatedByMultipleFilter, StockDataEstimatedBySingleFilter
 from .stock_data_processed import StockDataProcessedByMultipleMethod, StockDataProcessedBySingleMethod

@@ -34,7 +34,7 @@ processed
    :members:
 
 
-processed
+estimated
 =========
 
 .. autoclass:: kabutobashi.StockDataEstimatedBySingleFilter
