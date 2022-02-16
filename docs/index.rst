@@ -47,6 +47,25 @@ Installation
    pip install kabutobashi
 
 
+Concept
+=======
+
+.. mermaid::
+
+   graph TD;
+     web[[Web]] --> | crawl | sdmc
+     repo[(Storage)] --- | read/write | sdmc
+     sdmc[StockDataMultipleCode] --> | code | sdsc
+     sdsc[StockDataSingleCode] -.-> | Method | ps
+     ps[Processed-Single] -.- | multiple | pm
+     sdsc --> | Methods | pm
+     pm[Processed-Multiple] -.-> | Filters | es
+     es[Estimated-Single] -.- | multiple | em[Estimated-Multiple]
+     pm --> | Filters | em
+     sdmc ==> | Methods | pm
+     sdmc ==> | Methods,Filters | em
+
+
 Usage
 =====
 
