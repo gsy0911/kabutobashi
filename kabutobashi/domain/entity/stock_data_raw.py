@@ -344,11 +344,11 @@ class StockDataSingleCode:
         params = method.parameterize(df_x=self.df, df_p=df_p)
 
         return StockDataProcessedBySingleMethod(
-            target_stock_code=self.code,
+            code=self.code,
             start_at=start_at,
             end_at=end_at,
             applied_method_name=method.method_name,
-            df_data=df_p,
+            df=df_p,
             df_required_columns=columns,
             parameters=params,
             color_mapping=method.color_mapping(),

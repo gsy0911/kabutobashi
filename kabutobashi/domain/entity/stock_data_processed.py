@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional
 
 import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
@@ -20,11 +20,11 @@ class StockDataProcessedBySingleMethod:
     Holds data processed by singular-Method.
     """
 
-    target_stock_code: Union[str, int]
+    code: str
     start_at: str
     end_at: str
     applied_method_name: str
-    df_data: pd.DataFrame = field(repr=False)
+    df: pd.DataFrame = field(repr=False)
     df_required_columns: List[str] = field(repr=False)
     parameters: Dict[str, Any]
     color_mapping: list = field(repr=False)
@@ -64,7 +64,7 @@ class StockDataProcessedBySingleMethod:
 
         Examples:
         """
-        return {self.applied_method_name: self._get_impact(df=self.df_data, influence=influence, tail=tail)}
+        return {self.applied_method_name: self._get_impact(df=self.df, influence=influence, tail=tail)}
 
     @staticmethod
     def _get_impact(df: pd.DataFrame, influence: int, tail: int) -> float:
@@ -146,14 +146,14 @@ class StockDataProcessedByMultipleMethod:
         fig.autofmt_xdate()
 
         # set candlestick base
-        base_df = self.processed[0].df_data[["dt", "open", "close", "high", "low"]]
+        base_df = self.processed[0].df[["dt", "open", "close", "high", "low"]]
         self._add_ax_candlestick(axs[0], base_df)
 
         ax_idx = 1
         # plots
         for processed in self.processed:
             position = processed.visualize_option["position"]
-            df = processed.df_data
+            df = processed.df
             time_series = mdates.date2num(df["dt"])
             mapping = processed.color_mapping
             if position == "in":
@@ -196,7 +196,7 @@ class StockDataProcessedByMultipleMethod:
             data.update(self.get_impact())
             data.update(self.get_parameters())
         return StockDataEstimatedBySingleFilter(
-            target_stock_code=self.processed[0].target_stock_code,
+            code=self.processed[0].code,
             estimate_filter_name=estimate_filter.estimate_filter_name,
             estimated_value=estimate_filter.estimate(data=data),
         )
