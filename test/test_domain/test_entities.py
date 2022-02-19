@@ -46,7 +46,8 @@ class TestWeeks52HihLow:
 class TestStockDataSingleCode:
     def test_of(self, data_path):
         df = pd.read_csv(f"{data_path}/example.csv.gz")
-        single_code = df[df["code"] == 1375]
+        df["code"] = df["code"].astype(str)
+        single_code = df[df["code"] == "1375"]
         _ = kb.StockDataSingleCode.of(df=single_code)
 
         # check None
@@ -63,7 +64,8 @@ class TestStockDataSingleCode:
 
     def test_get_df(self, data_path):
         df = pd.read_csv(f"{data_path}/example.csv.gz")
-        single_code = df[df["code"] == 1375]
+        df["code"] = df["code"].astype(str)
+        single_code = df[df["code"] == "1375"]
         sdsc = kb.StockDataSingleCode.of(df=single_code)
 
         required_cols = kb.StockDataSingleCode.REQUIRED_COL
@@ -100,7 +102,7 @@ class TestStockDataMultipleCode:
 class TestStockDataAnalyzedByMultipleMethod:
     def test_visualize(self):
         sdmc = kb.example()
-        sdsc = sdmc.to_single_code(code=1375)
+        sdsc = sdmc.to_single_code(code="1375")
         parameterize_methods = kb.methods + [kb.basic, kb.pct_change, kb.volatility]
         processed = sdsc.to_processed(methods=parameterize_methods)
         _ = processed.visualize()
