@@ -1,6 +1,6 @@
 from dataclasses import asdict, dataclass
 from datetime import datetime
-from typing import Generator, List, Optional, Tuple, Union
+from typing import Generator, List, Optional, Tuple
 
 import pandas as pd
 from cerberus import Validator
@@ -197,6 +197,8 @@ class StockDataSingleCode:
                 raise KabutobashiEntityError("multiple code")
             elif len(code) == 0:
                 raise KabutobashiEntityError("no code")
+            if type(code[0]) is not str:
+                raise KabutobashiEntityError(f"code must be type of `str`")
 
     @staticmethod
     def of(df: pd.DataFrame):
@@ -377,7 +379,7 @@ class StockDataMultipleCode:
     Examples:
         >>> import kabutobashi as kb
         >>> sdmc = kb.example()
-        >>> sdsc = sdmc.to_single_code(code=1375)
+        >>> sdsc = sdmc.to_single_code(code="1375")
     """
 
     df: pd.DataFrame
@@ -388,6 +390,7 @@ class StockDataMultipleCode:
         self._null_check()
         if not self._validate():
             raise KabutobashiEntityError(f"不正なデータ構造です: {self.df.columns=}")
+        self._convert_df_types()
 
     def _null_check(self):
         if self.df is None:
@@ -400,11 +403,16 @@ class StockDataMultipleCode:
             return False
         return True
 
+    def _convert_df_types(self):
+        self.df["code"] = self.df["code"].astype(str)
+
     @staticmethod
     def of(df: pd.DataFrame) -> "StockDataMultipleCode":
         return StockDataMultipleCode(df=df)
 
-    def to_single_code(self, code: Union[str, int]) -> StockDataSingleCode:
+    def to_single_code(self, code: str) -> StockDataSingleCode:
+        if type(code) is not str:
+            raise KabutobashiEntityError(f"code must be type of `str`")
         return StockDataSingleCode.of(df=self.df[self.df["code"] == code])
 
     def to_code_iterable(
