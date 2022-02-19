@@ -6,7 +6,7 @@ import kabutobashi as kb
 @pytest.fixture(scope="module", autouse=True)
 def sdsc() -> kb.StockDataSingleCode:
     sdmc = kb.example()
-    sdsc = sdmc.to_single_code(code=1375)
+    sdsc = sdmc.to_single_code(code="1375")
     yield sdsc
 
 
