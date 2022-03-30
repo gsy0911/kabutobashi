@@ -54,16 +54,16 @@ class StockInfoPage(Page):
         result.update(
             {
                 "industry_type": PageDecoder(tag1="div", class1="ly_content_wrapper size_ss").decode(bs=stock_detail),
-                "open": info.get("始値", 0),
-                "high": info.get("高値", 0),
-                "low": info.get("安値", 0),
-                "unit": info.get("単元株数", 0),
-                "per": info.get("PER(調整後)", 0),
-                "psr": info.get("PSR", 0),
-                "pbr": info.get("PBR", 0),
-                "volume": info.get("出来高", 0),
-                "market_capitalization": info.get("時価総額", "-"),
-                "issued_shares": info.get("発行済株数", "-"),
+                "open": info.get("始値", "0"),
+                "high": info.get("高値", "0"),
+                "low": info.get("安値", "0"),
+                "unit": info.get("単元株数", "0"),
+                "per": info.get("PER(調整後)", "0"),
+                "psr": info.get("PSR", "0"),
+                "pbr": info.get("PBR", "0"),
+                "volume": info.get("出来高", "0"),
+                "market_capitalization": info.get("時価総額", "---"),
+                "issued_shares": info.get("発行済株数", "---"),
             }
         )
         return StockDataSingleDay.from_page_of(data=result).dumps()
