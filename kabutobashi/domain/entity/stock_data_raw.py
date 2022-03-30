@@ -89,24 +89,44 @@ class StockDataSingleDay:
     @staticmethod
     def from_page_of(data: dict) -> "StockDataSingleDay":
         label_split = data["stock_label"].split("  ")
-        return StockDataSingleDay(
-            code=label_split[0],
-            market=label_split[1],
-            name=data["name"],
-            industry_type=data["industry_type"],
-            open=float(StockDataSingleDay._convert(data["open"])),
-            high=float(StockDataSingleDay._convert(data["high"])),
-            low=float(StockDataSingleDay._convert(data["low"])),
-            close=float(StockDataSingleDay._convert(data["close"])),
-            unit=int(StockDataSingleDay._convert(data["unit"])),
-            psr=float(StockDataSingleDay._convert(data["psr"])),
-            per=float(StockDataSingleDay._convert(data["per"])),
-            pbr=float(StockDataSingleDay._convert(data["pbr"])),
-            volume=int(StockDataSingleDay._convert(data["volume"])),
-            market_capitalization=data["market_capitalization"],
-            issued_shares=data["issued_shares"],
-            dt=data["date"],
-        )
+        try:
+            return StockDataSingleDay(
+                code=label_split[0],
+                market=label_split[1],
+                name=data["name"],
+                industry_type=data["industry_type"],
+                open=float(StockDataSingleDay._convert(data["open"])),
+                high=float(StockDataSingleDay._convert(data["high"])),
+                low=float(StockDataSingleDay._convert(data["low"])),
+                close=float(StockDataSingleDay._convert(data["close"])),
+                unit=int(StockDataSingleDay._convert(data["unit"])),
+                psr=float(StockDataSingleDay._convert(data["psr"])),
+                per=float(StockDataSingleDay._convert(data["per"])),
+                pbr=float(StockDataSingleDay._convert(data["pbr"])),
+                volume=int(StockDataSingleDay._convert(data["volume"])),
+                market_capitalization=data["market_capitalization"],
+                issued_shares=data["issued_shares"],
+                dt=data["date"],
+            )
+        except Exception:
+            return StockDataSingleDay(
+                code="",
+                market="",
+                name="",
+                industry_type="",
+                open=0,
+                high=0,
+                low=0,
+                close=0,
+                unit=0,
+                psr=0,
+                per=0,
+                pbr=0,
+                volume=0,
+                market_capitalization="",
+                issued_shares="",
+                dt="",
+            )
 
     @staticmethod
     def _convert(input_value: str) -> str:
