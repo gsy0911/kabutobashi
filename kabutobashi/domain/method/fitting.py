@@ -9,7 +9,9 @@ from .method import Method, MethodType
 
 @dataclass(frozen=True)
 class Fitting(Method):
-    """ """
+    """
+    1次、2次、3次の関数でfittingした値を返す
+    """
 
     method_name: str = "fitting"
     method_type: MethodType = MethodType.TECHNICAL_ANALYSIS
@@ -27,10 +29,6 @@ class Fitting(Method):
         return a * x * x * x + b * x * x + c * x + d
 
     def _method(self, df: pd.DataFrame) -> pd.DataFrame:
-        """
-        1次、2次、3次の関数でfittingした値を返す
-        """
-
         array_y = df["close"]
         array_x = np.array(range(0, len(array_y)))
 

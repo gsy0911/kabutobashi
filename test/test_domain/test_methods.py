@@ -6,7 +6,7 @@ import kabutobashi as kb
 @pytest.fixture(scope="module", autouse=True)
 def sdsc() -> kb.StockDataSingleCode:
     sdmc = kb.example()
-    sdsc = sdmc.to_single_code(code=1375)
+    sdsc = sdmc.to_single_code(code="1375")
     yield sdsc
 
 
@@ -21,7 +21,7 @@ def test_example_data(sdsc):
 
 def test_analysis_with_sma(sdsc):
     processed = sdsc.to_processed([kb.sma])
-    columns = processed.processed[0].df_data.columns
+    columns = processed.processed[0].df.columns
     assert "sma_short" in columns
     assert "sma_medium" in columns
     assert "sma_long" in columns
@@ -33,7 +33,7 @@ def test_analysis_with_sma(sdsc):
 
 def test_analysis_with_macd(sdsc):
     processed = sdsc.to_processed([kb.macd])
-    columns = processed.processed[0].df_data.columns
+    columns = processed.processed[0].df.columns
     assert "ema_short" in columns
     assert "ema_long" in columns
     assert "signal" in columns
@@ -45,7 +45,7 @@ def test_analysis_with_macd(sdsc):
 
 def test_analysis_with_stochastics(sdsc):
     processed = sdsc.to_processed([kb.stochastics])
-    columns = processed.processed[0].df_data.columns
+    columns = processed.processed[0].df.columns
     assert "K" in columns
     assert "D" in columns
     assert "SD" in columns
@@ -55,7 +55,7 @@ def test_analysis_with_stochastics(sdsc):
 
 def test_analysis_with_adx(sdsc):
     processed = sdsc.to_processed([kb.adx])
-    columns = processed.processed[0].df_data.columns
+    columns = processed.processed[0].df.columns
     assert "plus_di" in columns
     assert "minus_di" in columns
     assert "DX" in columns
@@ -68,7 +68,7 @@ def test_analysis_with_adx(sdsc):
 @pytest.mark.skip(reason="buy_signal and sell_signal is not implemented")
 def test_analysis_with_ichimoku(sdsc):
     processed = sdsc.to_processed([kb.ichimoku])
-    columns = processed.processed[0].df_data.columns
+    columns = processed.processed[0].df.columns
     assert "line_change" in columns
     assert "line_base" in columns
     assert "proceding_span_1" in columns
@@ -78,7 +78,7 @@ def test_analysis_with_ichimoku(sdsc):
 
 def test_analysis_with_momentum(sdsc):
     processed = sdsc.to_processed([kb.momentum])
-    columns = processed.processed[0].df_data.columns
+    columns = processed.processed[0].df.columns
     assert "momentum" in columns
     assert "sma_momentum" in columns
     assert "buy_signal" in columns
@@ -87,7 +87,7 @@ def test_analysis_with_momentum(sdsc):
 
 def test_analysis_with_psycho_logical(sdsc):
     processed = sdsc.to_processed([kb.psycho_logical])
-    columns = processed.processed[0].df_data.columns
+    columns = processed.processed[0].df.columns
     assert "psycho_line" in columns
     assert "bought_too_much" in columns
     assert "sold_too_much" in columns
@@ -97,7 +97,7 @@ def test_analysis_with_psycho_logical(sdsc):
 
 def test_analysis_with_bollinger_bands(sdsc):
     processed = sdsc.to_processed([kb.bollinger_bands])
-    columns = processed.processed[0].df_data.columns
+    columns = processed.processed[0].df.columns
     assert "upper_2_sigma" in columns
     assert "lower_2_sigma" in columns
     assert "over_upper_continuity" in columns
@@ -108,7 +108,7 @@ def test_analysis_with_bollinger_bands(sdsc):
 
 def test_analysis_with_fitting(sdsc):
     processed = sdsc.to_processed([kb.fitting])
-    columns = processed.processed[0].df_data.columns
+    columns = processed.processed[0].df.columns
     assert "linear_fitting" in columns
     assert "square_fitting" in columns
     assert "cube_fitting" in columns
@@ -116,7 +116,7 @@ def test_analysis_with_fitting(sdsc):
 
 def test_analysis_with_basic(sdsc):
     processed = sdsc.to_processed([kb.basic])
-    columns = processed.processed[0].df_data.columns
+    columns = processed.processed[0].df.columns
     assert "buy_signal" in columns
     assert "sell_signal" in columns
 

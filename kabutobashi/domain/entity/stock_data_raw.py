@@ -1,6 +1,6 @@
 from dataclasses import asdict, dataclass
 from datetime import datetime
-from typing import Generator, List, Optional, Tuple, Union
+from typing import Generator, List, Optional, Tuple
 
 import pandas as pd
 from cerberus import Validator
@@ -161,6 +161,7 @@ class StockDataSingleCode:
         >>>         d.update({"diff": diff})
         >>>         data_list.append(d)
         >>>  data_for_ml = pd.DataFrame(data_list)
+
     """
 
     df: pd.DataFrame
@@ -196,6 +197,8 @@ class StockDataSingleCode:
                 raise KabutobashiEntityError("multiple code")
             elif len(code) == 0:
                 raise KabutobashiEntityError("no code")
+            if type(code[0]) is not str:
+                raise KabutobashiEntityError(f"code must be type of `str`")
 
     @staticmethod
     def of(df: pd.DataFrame):
@@ -309,7 +312,7 @@ class StockDataSingleCode:
         Returns:
             idx: 切り出された番号。
             df_for_x: 特徴量を計算するためのDataFrame。
-            df_for_y: `buy_sell_term_days`後のDataFrameを返す。値動きを追うため。
+            df_for_y: ``buy_sell_term_days`` 後のDataFrameを返す。値動きを追うため。
         """
         df_length = len(self.df.index)
         if df_length < buy_sell_term_days + sliding_window:
@@ -343,11 +346,11 @@ class StockDataSingleCode:
         params = method.parameterize(df_x=self.df, df_p=df_p)
 
         return StockDataProcessedBySingleMethod(
-            target_stock_code=self.code,
+            code=self.code,
             start_at=start_at,
             end_at=end_at,
             applied_method_name=method.method_name,
-            df_data=df_p,
+            df=df_p,
             df_required_columns=columns,
             parameters=params,
             color_mapping=method.color_mapping(),
@@ -376,7 +379,7 @@ class StockDataMultipleCode:
     Examples:
         >>> import kabutobashi as kb
         >>> sdmc = kb.example()
-        >>> sdsc = sdmc.to_single_code(code=1375)
+        >>> sdsc = sdmc.to_single_code(code="1375")
     """
 
     df: pd.DataFrame
@@ -387,6 +390,7 @@ class StockDataMultipleCode:
         self._null_check()
         if not self._validate():
             raise KabutobashiEntityError(f"不正なデータ構造です: {self.df.columns=}")
+        self._convert_df_types()
 
     def _null_check(self):
         if self.df is None:
@@ -399,11 +403,16 @@ class StockDataMultipleCode:
             return False
         return True
 
+    def _convert_df_types(self):
+        self.df["code"] = self.df["code"].astype(str)
+
     @staticmethod
     def of(df: pd.DataFrame) -> "StockDataMultipleCode":
         return StockDataMultipleCode(df=df)
 
-    def to_single_code(self, code: Union[str, int]) -> StockDataSingleCode:
+    def to_single_code(self, code: str) -> StockDataSingleCode:
+        if type(code) is not str:
+            raise KabutobashiEntityError(f"code must be type of `str`")
         return StockDataSingleCode.of(df=self.df[self.df["code"] == code])
 
     def to_code_iterable(
@@ -450,6 +459,17 @@ class StockDataMultipleCode:
         skip_reit: bool = True,
         row_more_than: Optional[int] = 80,
     ) -> Generator[StockDataProcessedByMultipleMethod, None, None]:
+        """
+
+        Args:
+            methods:
+            until:
+            skip_reit:
+            row_more_than:
+
+        Returns:
+
+        """
         for sdsc in self.to_code_iterable(until=until, skip_reit=skip_reit, row_more_than=row_more_than):
             yield sdsc.to_processed(methods=methods)
 
@@ -462,12 +482,35 @@ class StockDataMultipleCode:
         skip_reit: bool = True,
         row_more_than: Optional[int] = 80,
     ) -> Generator[StockDataEstimatedByMultipleFilter, None, None]:
+        """
+
+        Args:
+            methods:
+            estimate_filters:
+            until:
+            skip_reit:
+            row_more_than:
+
+        Returns:
+
+        """
         for processed in self.to_processed(
             methods=methods, until=until, skip_reit=skip_reit, row_more_than=row_more_than
         ):
             yield processed.to_estimated(estimate_filters=estimate_filters)
 
-    def get_df(self, minimum=True, latest=False, code_list: list = None):
+    def get_df(self, minimum=True, latest=False, code_list: list = None) -> pd.DataFrame:
+        """
+        returns column-formatted DataFrame.
+
+        Args:
+            minimum:
+            latest:
+            code_list: filters specified code, default None.
+
+        Returns:
+            pd.DataFrame
+        """
         df = self.df
 
         if code_list:
@@ -483,17 +526,40 @@ class StockDataMultipleCode:
 
     @staticmethod
     def read(use_mp: bool = False, max_workers: int = 2):
+        """
+
+        Args:
+            use_mp: default False.
+            max_workers: default 2.
+
+        Returns:
+            StockDataMultipleCodeReader
+        """
         from kabutobashi.repository.stock_data_repository import StockDataMultipleCodeReader
 
         return StockDataMultipleCodeReader(use_mp=use_mp, max_workers=max_workers)
 
     @staticmethod
     def crawl(use_mp: bool = False, max_workers: int = 2):
+        """
+
+        Args:
+            use_mp: default False.
+            max_workers: default 2.
+
+        Returns:
+            StockDataMultipleCodeCrawler
+        """
         from kabutobashi.repository.stock_data_repository import StockDataMultipleCodeCrawler
 
         return StockDataMultipleCodeCrawler(use_mp=use_mp, max_workers=max_workers)
 
     def write(self):
+        """
+
+        Returns:
+            StockDataMultipleCodeWriter
+        """
         from kabutobashi.repository.stock_data_repository import StockDataMultipleCodeWriter
 
         return StockDataMultipleCodeWriter(multiple_code=self)

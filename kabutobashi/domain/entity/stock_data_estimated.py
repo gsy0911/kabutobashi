@@ -1,12 +1,12 @@
-from dataclasses import dataclass, field
-from typing import Any, Dict, List, Union
+from dataclasses import dataclass
+from typing import List, Union
 
 
 @dataclass(frozen=True)
 class StockDataEstimatedBySingleFilter:
     """ """
 
-    target_stock_code: Union[str, int]
+    code: str
     estimated_value: float
     estimate_filter_name: str
 
