@@ -5,3 +5,4 @@ requests
 beautifulsoup4
 kabutobashi
 myst_parser
+sphinxcontrib-mermaid
