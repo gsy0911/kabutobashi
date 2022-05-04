@@ -34,7 +34,7 @@ from .domain.entity import (
 )
 
 # classes or functions about crawl web pages
-from .domain.page import (  # ある年にIPOした銘柄の情報を取得する; 単一の株価の詳細情報を取得する; 52週高値底値の値を取得
+from .infrastructure.crawler import (  # ある年にIPOした銘柄の情報を取得する; 単一の株価の詳細情報を取得する; 52週高値底値の値を取得
     StockInfoPage,
     StockIpoPage,
     Weeks52HighLowPage,
