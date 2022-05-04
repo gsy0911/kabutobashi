@@ -1,6 +1,6 @@
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
 from datetime import datetime
-from typing import Generator, List, Optional, Tuple
+from typing import Generator, List, Optional, Tuple, Union
 
 import pandas as pd
 from cerberus import Validator
@@ -41,6 +41,7 @@ class StockData:
         low: 円
         close: 円
     """
+
     # TODO implements id_: str
     code: str
     market: str
@@ -63,15 +64,15 @@ class StockData:
         "market": {"type": "string"},
         "industry_type": {"type": "string"},
         "name": {"type": "string"},
-        "open": {"type": "float"},
-        "high": {"type": "float"},
-        "low": {"type": "float"},
-        "close": {"type": "float"},
-        "psr": {"type": "float"},
-        "per": {"type": "float"},
-        "pbr": {"type": "float"},
-        "volume": {"type": "integer"},
-        "unit": {"type": "integer"},
+        "open": {"type": "number"},
+        "high": {"type": "number"},
+        "low": {"type": "number"},
+        "close": {"type": "number"},
+        "psr": {"type": "number"},
+        "per": {"type": "number"},
+        "pbr": {"type": "number"},
+        "volume": {"type": "number"},
+        "unit": {"type": "number"},
         "market_capitalization": {"type": "string"},
         "issued_shares": {"type": "string"},
         "dt": {"type": "string"},
@@ -80,7 +81,7 @@ class StockData:
     def __post_init__(self):
         validator = Validator(self._SCHEMA)
         if not validator.validate(self.dumps()):
-            raise KabutobashiEntityError(validator)
+            raise KabutobashiEntityError(validator.errors)
 
     @staticmethod
     def schema() -> list:
@@ -128,9 +129,30 @@ class StockData:
                 dt="",
             )
 
+    def is_outlier(self) -> bool:
+        return self.open == 0 or self.high == 0 or self.low == 0 or self.close == 0
+
     @staticmethod
     def _convert(input_value: str) -> str:
         return input_value.replace("---", "0").replace("円", "").replace("株", "").replace("倍", "").replace(",", "")
+
+    @staticmethod
+    def _convert_float(input_value: Union[str, float, int]) -> float:
+        if type(input_value) == float or type(input_value) == int:
+            return input_value
+        try:
+            return float(StockData._convert(input_value=input_value))
+        except ValueError as e:
+            raise KabutobashiEntityError(f"floatに変換できる値ではありません。{e}")
+
+    @staticmethod
+    def _convert_int(input_value: Union[str, float, int]) -> int:
+        if type(input_value) == float or type(input_value) == int:
+            return input_value
+        try:
+            return int(StockData._convert(input_value=input_value))
+        except ValueError as e:
+            raise KabutobashiEntityError(f"floatに変換できる値ではありません。{e}")
 
     def dumps(self) -> dict:
         return asdict(self)
@@ -139,20 +161,20 @@ class StockData:
     def loads(data: dict) -> "StockData":
         return StockData(
             code=data["code"],
-            market=data.get("market"),
-            name=data.get("name"),
-            industry_type=data.get("industry_type"),
-            open=data["open"],
-            high=data["high"],
-            low=data["low"],
-            close=data["close"],
-            unit=data["unit"],
-            psr=data["psr"],
-            per=data["per"],
-            pbr=data["pbr"],
+            market=data.get("market", ""),
+            name=data.get("name", ""),
+            industry_type=data.get("industry_type", ""),
+            open=StockData._convert_float(data["open"]),
+            high=StockData._convert_float(data["high"]),
+            low=StockData._convert_float(data["low"]),
+            close=StockData._convert_float(data["close"]),
+            unit=StockData._convert_int(data["unit"]),
+            psr=StockData._convert_float(data["psr"]),
+            per=StockData._convert_float(data["per"]),
+            pbr=StockData._convert_float(data["pbr"]),
             volume=data["volume"],
-            market_capitalization=data.get("market_capitalization"),
-            issued_shares=data.get("issued_shares"),
+            market_capitalization=data.get("market_capitalization", ""),
+            issued_shares=data.get("issued_shares", ""),
             dt=data["dt"],
         )
 
@@ -205,112 +227,86 @@ class StockDataSingleCode:
 
     """
 
-    df: pd.DataFrame
+    # df: pd.DataFrame
     code: str
     stop_updating: bool
     contains_outlier: bool
+    _stock_data_list: List[StockData] = field(default_factory=list, repr=False)
     REQUIRED_COL = ["code", "open", "close", "high", "low", "unit", "volume", "per", "psr", "pbr", "market", "dt"]
     OPTIONAL_COL = ["name", "industry_type"]
-    # TODO implements stock_data_list: List[StockData]
 
     def __post_init__(self):
-        self._null_check()
-        self._code_constraint_check(df=self.df)
-        if not self._validate():
-            raise KabutobashiEntityError(f"required: {self.REQUIRED_COL}, input: {self.df.columns}")
-
-    def _null_check(self):
-        if self.df is None:
-            raise KabutobashiEntityError("required")
-
-    def _validate(self) -> bool:
-        columns = list(self.df.columns)
-        # 必須のカラム確認
-        if not all([item in columns for item in self.REQUIRED_COL]):
-            return False
-        return True
+        if not self._stock_data_list:
+            raise KabutobashiEntityError(f"required stock_data")
+        self._code_constraint_check(stock_data_list=self._stock_data_list)
 
     @staticmethod
-    def _code_constraint_check(df: pd.DataFrame):
-        df_columns = df.columns
-        if "code" in df_columns:
-            code = list(set(df.code.values))
-            if len(code) > 1:
-                raise KabutobashiEntityError("multiple code")
-            elif len(code) == 0:
-                raise KabutobashiEntityError("no code")
-            if type(code[0]) is not str:
-                raise KabutobashiEntityError(f"code must be type of `str`")
+    def _code_constraint_check(stock_data_list: List[StockData]):
+        code = [v.code for v in stock_data_list]
+        if len(set(code)) > 1:
+            raise KabutobashiEntityError("multiple code")
+        elif len(code) == 0:
+            raise KabutobashiEntityError("no code")
 
     @staticmethod
     def of(df: pd.DataFrame):
-        df_columns = df.columns
-        # 日付カラムの候補値を探す
-        date_column = None
-        if "date" in df_columns:
-            date_column = "date"
-        elif "dt" in df_columns:
-            date_column = "dt"
-        elif "crawl_datetime" in df_columns:
-            date_column = "crawl_datetime"
-        if date_column is None:
-            raise KabutobashiEntityError("日付のカラム[dt, date, crawl_datetime]のいずれかが存在しません")
-        if ("date" in df_columns) and ("dt" in df_columns) and ("crawl_datetime" in df_columns):
-            raise KabutobashiEntityError("日付のカラム[dt, date]は片方しか存在できません")
+        _stock_data_list = []
+        for _, row in df.iterrows():
+            _stock_data_list.append(StockData.loads(dict(row)))
 
-        # 変換
-        if date_column == "crawl_datetime":
-            df["dt"] = df["crawl_datetime"].apply(lambda x: datetime.fromisoformat(x).strftime("%Y-%m-%d"))
-            date_column = "dt"
-        # indexにdateを指定
-        idx = pd.to_datetime(df[date_column]).sort_index()
-
-        # codeの確認
-        StockDataSingleCode._code_constraint_check(df=df)
-        if "code" in df_columns:
-            code = list(set(df.code.values))[0]
-        else:
-            code = "-"
-
-        # 数値に変換・「業種」という文字列削除
-        df = df.assign(
-            open=df["open"].apply(StockDataSingleCode._replace_comma),
-            close=df["close"].apply(StockDataSingleCode._replace_comma),
-            high=df["high"].apply(StockDataSingleCode._replace_comma),
-            low=df["low"].apply(StockDataSingleCode._replace_comma),
-            pbr=df["pbr"].apply(StockDataSingleCode._replace_comma),
-            psr=df["psr"].apply(StockDataSingleCode._replace_comma),
-            per=df["per"].apply(StockDataSingleCode._replace_comma),
-        )
-        if "industry_type" in df_columns:
-            df["industry_type"] = df["industry_type"].apply(lambda x: x.replace("業種", ""))
-
-        df.index = idx
-        df = df.fillna(0)
-        df = df.convert_dtypes()
-        # order by dt
-        df = df.sort_index()
+        # df_columns = df.columns
+        # # 日付カラムの候補値を探す
+        # date_column = None
+        # if "date" in df_columns:
+        #     date_column = "date"
+        # elif "dt" in df_columns:
+        #     date_column = "dt"
+        # elif "crawl_datetime" in df_columns:
+        #     date_column = "crawl_datetime"
+        # if date_column is None:
+        #     raise KabutobashiEntityError("日付のカラム[dt, date, crawl_datetime]のいずれかが存在しません")
+        # if ("date" in df_columns) and ("dt" in df_columns) and ("crawl_datetime" in df_columns):
+        #     raise KabutobashiEntityError("日付のカラム[dt, date]は片方しか存在できません")
+        #
+        # # 変換
+        # if date_column == "crawl_datetime":
+        #     df["dt"] = df["crawl_datetime"].apply(lambda x: datetime.fromisoformat(x).strftime("%Y-%m-%d"))
+        #     date_column = "dt"
+        # # indexにdateを指定
+        # idx = pd.to_datetime(df[date_column]).sort_index()
+        #
+        # # codeの確認
+        StockDataSingleCode._code_constraint_check(stock_data_list=_stock_data_list)
+        code = _stock_data_list[0].code
+        # if "code" in df_columns:
+        #     code = list(set(df.code.values))[0]
+        # else:
+        #     code = "-"
+        #
+        # # 数値に変換・「業種」という文字列削除
+        # df = df.assign(
+        #     open=df["open"].apply(StockDataSingleCode._replace_comma),
+        #     close=df["close"].apply(StockDataSingleCode._replace_comma),
+        #     high=df["high"].apply(StockDataSingleCode._replace_comma),
+        #     low=df["low"].apply(StockDataSingleCode._replace_comma),
+        #     pbr=df["pbr"].apply(StockDataSingleCode._replace_comma),
+        #     psr=df["psr"].apply(StockDataSingleCode._replace_comma),
+        #     per=df["per"].apply(StockDataSingleCode._replace_comma),
+        # )
+        # if "industry_type" in df_columns:
+        #     df["industry_type"] = df["industry_type"].apply(lambda x: x.replace("業種", ""))
+        #
+        # df.index = idx
+        # df = df.fillna(0)
+        # df = df.convert_dtypes()
+        # # order by dt
+        # df = df.sort_index()
         return StockDataSingleCode(
             code=code,
-            df=df,
+            _stock_data_list=_stock_data_list,
             stop_updating=StockDataSingleCode._check_recent_update(df=df),
-            contains_outlier=StockDataSingleCode._check_outlier_value(df=df),
+            contains_outlier=any([v.is_outlier() for v in _stock_data_list])
         )
-
-    @staticmethod
-    def _replace_comma(x) -> float:
-        """
-        pandas内の値がカンマ付きの場合に、カンマを削除する関数
-        :param x:
-        :return:
-        """
-        if type(x) is str:
-            x = x.replace(",", "")
-        try:
-            f = float(x)
-        except ValueError as e:
-            raise KabutobashiEntityError(f"floatに変換できる値ではありません。{e}")
-        return f
 
     @staticmethod
     def _check_recent_update(df: pd.DataFrame) -> bool:
@@ -322,21 +318,6 @@ class StockDataSingleCode:
             or (len(df["high"].tail(10).unique()) == 1)
             or (len(df["low"].tail(10).unique()) == 1)
             or (len(df["close"].tail(10).unique()) == 1)
-        )
-
-    @staticmethod
-    def _check_outlier_value(df: pd.DataFrame) -> bool:
-        """
-        不正な値が含まれている場合にtrueを返す
-
-        以下の場合にTrueになる
-        - 急に0になる値が含まれている
-        """
-        return (
-            (len(df[df["open"] == 0].index) > 0)
-            or (len(df[df["high"] == 0].index) > 0)
-            or (len(df[df["low"] == 0].index) > 0)
-            or (len(df[df["close"] == 0].index) > 0)
         )
 
     def sliding_split(
@@ -356,17 +337,21 @@ class StockDataSingleCode:
             df_for_x: 特徴量を計算するためのDataFrame。
             df_for_y: ``buy_sell_term_days`` 後のDataFrameを返す。値動きを追うため。
         """
-        df_length = len(self.df.index)
+        df = self._to_df()
+        df_length = len(df.index)
         if df_length < buy_sell_term_days + sliding_window:
             raise KabutobashiEntityError("入力されたDataFrameの長さがwindow幅よりも小さいです")
         loop = df_length - (buy_sell_term_days + sliding_window)
         for idx, i in enumerate(range(0, loop, step)):
             offset = i + sliding_window
             end = offset + buy_sell_term_days
-            yield idx, self.df[i:offset], self.df[offset:end]
+            yield idx, df[i:offset], df[offset:end]
 
-    def get_df(self, minimum=True, latest=False):
-        df = self.df
+    def _to_df(self) -> pd.DataFrame:
+        return pd.DataFrame([v.dumps() for v in self._stock_data_list])
+
+    def to_df(self, minimum=True, latest=False):
+        df = self._to_df()
 
         if latest:
             latest_dt = max(df["dt"])
@@ -378,14 +363,15 @@ class StockDataSingleCode:
             return df[self.REQUIRED_COL + self.OPTIONAL_COL]
 
     def _to_single_processed(self, method: Method) -> StockDataProcessedBySingleMethod:
+        df = self._to_df()
         # 日時
-        start_at = list(self.df["dt"])[0]
-        end_at = list(self.df["dt"])[-1]
+        start_at = list(df["dt"])[0]
+        end_at = list(df["dt"])[-1]
 
         # 必要なパラメータの作成
         columns = ["dt", "open", "close", "high", "low", "buy_signal", "sell_signal"] + method.processed_columns()
-        df_p = self.df.pipe(method.method).pipe(method.signal).loc[:, columns]
-        params = method.parameterize(df_x=self.df, df_p=df_p)
+        df_p = df.pipe(method.method).pipe(method.signal).loc[:, columns]
+        params = method.parameterize(df_x=df, df_p=df_p)
 
         return StockDataProcessedBySingleMethod(
             code=self.code,

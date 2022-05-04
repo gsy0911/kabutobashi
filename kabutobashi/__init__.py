@@ -25,13 +25,13 @@ from kabutobashi.infrastructure.repository import reader
 
 from .domain import errors
 from .domain.entity import (
+    StockData,
     StockDataEstimatedByMultipleFilter,
     StockDataEstimatedBySingleFilter,
     StockDataMultipleCode,
     StockDataProcessedByMultipleMethod,
     StockDataProcessedBySingleMethod,
     StockDataSingleCode,
-    StockData,
     StockIpo,
     Weeks52HighLow,
 )
