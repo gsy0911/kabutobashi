@@ -127,3 +127,4 @@ notebook
 circleci_python_test.sh
 doc/_build
 *.ipynb_checkpoints
+.idea
