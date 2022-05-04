@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 import jpholiday
 
-from .errors import KabutobashiBaseError
+from kabutobashi.domain.errors import KabutobashiBaseError
 
 
 def get_past_n_days(current_date: str, n: int = 60) -> list:

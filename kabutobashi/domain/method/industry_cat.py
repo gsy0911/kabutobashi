@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 import pandas as pd
 
-from kabutobashi.errors import KabutobashiMethodError
+from kabutobashi.domain.errors import KabutobashiMethodError
 
 from .method import Method, MethodType
 

@@ -2,7 +2,7 @@ from dataclasses import asdict, dataclass, field
 
 from cerberus import Validator
 
-from kabutobashi.errors import KabutobashiEntityError
+from kabutobashi.domain.errors import KabutobashiEntityError
 
 
 @dataclass(frozen=True)

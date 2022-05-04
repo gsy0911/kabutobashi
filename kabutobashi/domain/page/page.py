@@ -7,7 +7,7 @@ from typing import List, Optional, Union
 import requests  # type: ignore
 from bs4 import BeautifulSoup
 
-from kabutobashi.errors import KabutobashiPageError
+from kabutobashi.domain.errors import KabutobashiPageError
 
 from .user_agent import UserAgent
 

@@ -7,7 +7,7 @@ from cerberus import Validator
 
 from kabutobashi.domain.estimate_filter import EstimateFilter
 from kabutobashi.domain.method import Method
-from kabutobashi.errors import KabutobashiEntityError
+from kabutobashi.domain.errors import KabutobashiEntityError
 
 from .stock_data_estimated import StockDataEstimatedByMultipleFilter
 from .stock_data_processed import StockDataProcessedByMultipleMethod, StockDataProcessedBySingleMethod
@@ -555,7 +555,7 @@ class StockDataMultipleCode:
         Returns:
             StockDataMultipleCodeReader
         """
-        from kabutobashi.repository.stock_data_repository import StockDataMultipleCodeReader
+        from kabutobashi.infrastructure.stock_data_repository import StockDataMultipleCodeReader
 
         return StockDataMultipleCodeReader(use_mp=use_mp, max_workers=max_workers)
 
@@ -570,7 +570,7 @@ class StockDataMultipleCode:
         Returns:
             StockDataMultipleCodeCrawler
         """
-        from kabutobashi.repository.stock_data_repository import StockDataMultipleCodeCrawler
+        from kabutobashi.infrastructure.stock_data_repository import StockDataMultipleCodeCrawler
 
         return StockDataMultipleCodeCrawler(use_mp=use_mp, max_workers=max_workers)
 
@@ -580,6 +580,6 @@ class StockDataMultipleCode:
         Returns:
             StockDataMultipleCodeWriter
         """
-        from kabutobashi.repository.stock_data_repository import StockDataMultipleCodeWriter
+        from kabutobashi.infrastructure.stock_data_repository import StockDataMultipleCodeWriter
 
         return StockDataMultipleCodeWriter(multiple_code=self)

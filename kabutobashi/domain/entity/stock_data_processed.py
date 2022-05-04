@@ -9,7 +9,7 @@ from cerberus import Validator
 from mplfinance.original_flavor import candlestick_ohlc
 
 from kabutobashi import EstimateFilter
-from kabutobashi.errors import KabutobashiEntityError
+from kabutobashi.domain.errors import KabutobashiEntityError
 
 from .stock_data_estimated import StockDataEstimatedByMultipleFilter, StockDataEstimatedBySingleFilter
 

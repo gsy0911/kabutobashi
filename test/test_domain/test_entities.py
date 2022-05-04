@@ -6,7 +6,7 @@ import kabutobashi as kb
 
 class TestStockInfo:
     def test_error_init(self):
-        with pytest.raises(kb.errors.KabutobashiEntityError):
+        with pytest.raises(kabutobashi.domain.errors.KabutobashiEntityError):
             _ = kb.StockDataSingleDay(
                 code="1234",
                 market="market",
@@ -29,7 +29,7 @@ class TestStockInfo:
 
 class TestStockIpo:
     def test_error_init(self):
-        with pytest.raises(kb.errors.KabutobashiEntityError):
+        with pytest.raises(kabutobashi.domain.errors.KabutobashiEntityError):
             _ = kb.StockIpo(
                 code="", market="", manager="", stock_listing_at="", public_offering="", evaluation="", initial_price=""
             )
@@ -37,7 +37,7 @@ class TestStockIpo:
 
 class TestWeeks52HihLow:
     def test_error_init(self):
-        with pytest.raises(kb.errors.KabutobashiEntityError):
+        with pytest.raises(kabutobashi.domain.errors.KabutobashiEntityError):
             _ = kb.Weeks52HighLow(
                 code="", brand_name="", close="", buy_or_sell="", volatility_ratio="", volatility_value=""
             )
@@ -51,15 +51,15 @@ class TestStockDataSingleCode:
         _ = kb.StockDataSingleCode.of(df=single_code)
 
         # check None
-        with pytest.raises(kb.errors.KabutobashiEntityError):
+        with pytest.raises(kabutobashi.domain.errors.KabutobashiEntityError):
             _ = kb.StockDataSingleCode(code="-", df=None, stop_updating=False, contains_outlier=False)
 
         # check multiple code
-        with pytest.raises(kb.errors.KabutobashiEntityError):
+        with pytest.raises(kabutobashi.domain.errors.KabutobashiEntityError):
             _ = kb.StockDataSingleCode(code="-", df=df, stop_updating=False, contains_outlier=False)
 
         # check invalid column
-        with pytest.raises(kb.errors.KabutobashiEntityError):
+        with pytest.raises(kabutobashi.domain.errors.KabutobashiEntityError):
             _ = kb.StockDataSingleCode(code="-", df=single_code[["close"]], stop_updating=False, contains_outlier=False)
 
     def test_get_df(self, data_path):

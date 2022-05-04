@@ -2,7 +2,7 @@
 
 # methods to analysis
 # import errors
-from kabutobashi import errors
+from .domain import errors
 from kabutobashi.domain.estimate_filter import EfFundamental, EfVolume, EstimateFilter
 from kabutobashi.domain.method import (
     ADX,
@@ -42,7 +42,7 @@ from .domain.page import (  # ある年にIPOした銘柄の情報を取得す�
 from .example_data import example
 
 # read StockDataMultipleCode
-from .repository import reader
+from .infrastructure import reader
 
 # n営業日前までの日付のリストを返す関数; 銘柄コードでイテレーションする関数; window幅でデータを取得しつつデータを返す関数; 株価の動きを様々な統計量で表現
 from .utilities import get_past_n_days
