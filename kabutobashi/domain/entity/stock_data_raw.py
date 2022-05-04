@@ -139,7 +139,7 @@ class StockData:
     @staticmethod
     def _convert_float(input_value: Union[str, float, int]) -> float:
         if type(input_value) == float or type(input_value) == int:
-            return input_value
+            return float(input_value)
         try:
             return float(StockData._convert(input_value=input_value))
         except ValueError as e:
@@ -148,7 +148,7 @@ class StockData:
     @staticmethod
     def _convert_int(input_value: Union[str, float, int]) -> int:
         if type(input_value) == float or type(input_value) == int:
-            return input_value
+            return int(input_value)
         try:
             return int(StockData._convert(input_value=input_value))
         except ValueError as e:
@@ -305,7 +305,7 @@ class StockDataSingleCode:
             code=code,
             _stock_data_list=_stock_data_list,
             stop_updating=StockDataSingleCode._check_recent_update(df=df),
-            contains_outlier=any([v.is_outlier() for v in _stock_data_list])
+            contains_outlier=any([v.is_outlier() for v in _stock_data_list]),
         )
 
     @staticmethod
