@@ -6,7 +6,7 @@ import pandas as pd
 from cerberus import Validator
 
 from kabutobashi.domain.errors import KabutobashiEntityError
-from kabutobashi.domain.estimate_filter import EstimateFilter
+from kabutobashi.domain.services.estimate_filter import EstimateFilter
 from kabutobashi.domain.services.method import Method
 
 from .stock_data_estimated import StockDataEstimatedByMultipleFilter
@@ -14,7 +14,7 @@ from .stock_data_processed import StockDataProcessedByMultipleMethod, StockDataP
 
 
 @dataclass(frozen=True)
-class StockDataSingleDay:
+class StockData:
     """
 
     * code: 銘柄コード
@@ -41,7 +41,7 @@ class StockDataSingleDay:
         low: 円
         close: 円
     """
-
+    # TODO implements id_: str
     code: str
     market: str
     name: str
@@ -84,32 +84,32 @@ class StockDataSingleDay:
 
     @staticmethod
     def schema() -> list:
-        return list(StockDataSingleDay._SCHEMA.keys())
+        return list(StockData._SCHEMA.keys())
 
     @staticmethod
-    def from_page_of(data: dict) -> "StockDataSingleDay":
+    def from_page_of(data: dict) -> "StockData":
         label_split = data["stock_label"].split("  ")
         try:
-            return StockDataSingleDay(
+            return StockData(
                 code=label_split[0],
                 market=label_split[1],
                 name=data["name"],
                 industry_type=data["industry_type"],
-                open=float(StockDataSingleDay._convert(data["open"])),
-                high=float(StockDataSingleDay._convert(data["high"])),
-                low=float(StockDataSingleDay._convert(data["low"])),
-                close=float(StockDataSingleDay._convert(data["close"])),
-                unit=int(StockDataSingleDay._convert(data["unit"])),
-                psr=float(StockDataSingleDay._convert(data["psr"])),
-                per=float(StockDataSingleDay._convert(data["per"])),
-                pbr=float(StockDataSingleDay._convert(data["pbr"])),
-                volume=int(StockDataSingleDay._convert(data["volume"])),
+                open=float(StockData._convert(data["open"])),
+                high=float(StockData._convert(data["high"])),
+                low=float(StockData._convert(data["low"])),
+                close=float(StockData._convert(data["close"])),
+                unit=int(StockData._convert(data["unit"])),
+                psr=float(StockData._convert(data["psr"])),
+                per=float(StockData._convert(data["per"])),
+                pbr=float(StockData._convert(data["pbr"])),
+                volume=int(StockData._convert(data["volume"])),
                 market_capitalization=data["market_capitalization"],
                 issued_shares=data["issued_shares"],
                 dt=data["date"],
             )
         except Exception:
-            return StockDataSingleDay(
+            return StockData(
                 code="",
                 market="",
                 name="",
@@ -134,6 +134,27 @@ class StockDataSingleDay:
 
     def dumps(self) -> dict:
         return asdict(self)
+
+    @staticmethod
+    def loads(data: dict) -> "StockData":
+        return StockData(
+            code=data["code"],
+            market=data.get("market"),
+            name=data.get("name"),
+            industry_type=data.get("industry_type"),
+            open=data["open"],
+            high=data["high"],
+            low=data["low"],
+            close=data["close"],
+            unit=data["unit"],
+            psr=data["psr"],
+            per=data["per"],
+            pbr=data["pbr"],
+            volume=data["volume"],
+            market_capitalization=data.get("market_capitalization"),
+            issued_shares=data.get("issued_shares"),
+            dt=data["dt"],
+        )
 
 
 @dataclass(frozen=True)
@@ -190,6 +211,7 @@ class StockDataSingleCode:
     contains_outlier: bool
     REQUIRED_COL = ["code", "open", "close", "high", "low", "unit", "volume", "per", "psr", "pbr", "market", "dt"]
     OPTIONAL_COL = ["name", "industry_type"]
+    # TODO implements stock_data_list: List[StockData]
 
     def __post_init__(self):
         self._null_check()
@@ -405,6 +427,7 @@ class StockDataMultipleCode:
     df: pd.DataFrame
     REQUIRED_COL = StockDataSingleCode.REQUIRED_COL
     OPTIONAL_COL = StockDataSingleCode.OPTIONAL_COL
+    # TODO implements stock_data_single_code_list: List[StockDataSingleCode]
 
     def __post_init__(self):
         self._null_check()

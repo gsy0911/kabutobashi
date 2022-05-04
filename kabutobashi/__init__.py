@@ -31,7 +31,7 @@ from .domain.entity import (
     StockDataProcessedByMultipleMethod,
     StockDataProcessedBySingleMethod,
     StockDataSingleCode,
-    StockDataSingleDay,
+    StockData,
     StockIpo,
     Weeks52HighLow,
 )
