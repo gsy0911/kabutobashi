@@ -159,6 +159,22 @@ class StockData:
 
     @staticmethod
     def loads(data: dict) -> "StockData":
+
+        data_date = data.get("date")
+        data_dt = data.get("dt")
+        data_crawl_datetime = data.get("crawl_datetime")
+
+        if data_date and data_dt and data_crawl_datetime:
+            raise KabutobashiEntityError("日付のカラム[dt, date, crawl_datetime]のいずれかしか選べません")
+        if data_date:
+            dt = data_date
+        elif data_dt:
+            dt = data_dt
+        elif data_crawl_datetime:
+            dt = datetime.fromisoformat(data_crawl_datetime).strftime("%Y-%m-%d")
+        else:
+            raise KabutobashiEntityError("日付のカラム[dt, date, crawl_datetime]のいずれかが存在しません")
+
         return StockData(
             code=data["code"],
             market=data.get("market", ""),
@@ -175,7 +191,7 @@ class StockData:
             volume=data["volume"],
             market_capitalization=data.get("market_capitalization", ""),
             issued_shares=data.get("issued_shares", ""),
-            dt=data["dt"],
+            dt=dt,
         )
 
 
@@ -254,53 +270,9 @@ class StockDataSingleCode:
         for _, row in df.iterrows():
             _stock_data_list.append(StockData.loads(dict(row)))
 
-        # df_columns = df.columns
-        # # 日付カラムの候補値を探す
-        # date_column = None
-        # if "date" in df_columns:
-        #     date_column = "date"
-        # elif "dt" in df_columns:
-        #     date_column = "dt"
-        # elif "crawl_datetime" in df_columns:
-        #     date_column = "crawl_datetime"
-        # if date_column is None:
-        #     raise KabutobashiEntityError("日付のカラム[dt, date, crawl_datetime]のいずれかが存在しません")
-        # if ("date" in df_columns) and ("dt" in df_columns) and ("crawl_datetime" in df_columns):
-        #     raise KabutobashiEntityError("日付のカラム[dt, date]は片方しか存在できません")
-        #
-        # # 変換
-        # if date_column == "crawl_datetime":
-        #     df["dt"] = df["crawl_datetime"].apply(lambda x: datetime.fromisoformat(x).strftime("%Y-%m-%d"))
-        #     date_column = "dt"
-        # # indexにdateを指定
-        # idx = pd.to_datetime(df[date_column]).sort_index()
-        #
-        # # codeの確認
+        # codeの確認
         StockDataSingleCode._code_constraint_check(stock_data_list=_stock_data_list)
         code = _stock_data_list[0].code
-        # if "code" in df_columns:
-        #     code = list(set(df.code.values))[0]
-        # else:
-        #     code = "-"
-        #
-        # # 数値に変換・「業種」という文字列削除
-        # df = df.assign(
-        #     open=df["open"].apply(StockDataSingleCode._replace_comma),
-        #     close=df["close"].apply(StockDataSingleCode._replace_comma),
-        #     high=df["high"].apply(StockDataSingleCode._replace_comma),
-        #     low=df["low"].apply(StockDataSingleCode._replace_comma),
-        #     pbr=df["pbr"].apply(StockDataSingleCode._replace_comma),
-        #     psr=df["psr"].apply(StockDataSingleCode._replace_comma),
-        #     per=df["per"].apply(StockDataSingleCode._replace_comma),
-        # )
-        # if "industry_type" in df_columns:
-        #     df["industry_type"] = df["industry_type"].apply(lambda x: x.replace("業種", ""))
-        #
-        # df.index = idx
-        # df = df.fillna(0)
-        # df = df.convert_dtypes()
-        # # order by dt
-        # df = df.sort_index()
         return StockDataSingleCode(
             code=code,
             _stock_data_list=_stock_data_list,
@@ -348,7 +320,13 @@ class StockDataSingleCode:
             yield idx, df[i:offset], df[offset:end]
 
     def _to_df(self) -> pd.DataFrame:
-        return pd.DataFrame([v.dumps() for v in self._stock_data_list])
+        df = pd.DataFrame([v.dumps() for v in self._stock_data_list])
+        df = df.convert_dtypes()
+        # order by dt
+        idx = pd.to_datetime(df["dt"]).sort_index()
+        df.index = idx
+        df = df.sort_index()
+        return df
 
     def to_df(self, minimum=True, latest=False):
         df = self._to_df()
