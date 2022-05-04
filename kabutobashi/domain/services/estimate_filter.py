@@ -1,6 +1,22 @@
+from abc import ABCMeta, abstractmethod
 from dataclasses import dataclass
 
-from .estimate_filter import EstimateFilter
+
+@dataclass(frozen=True)  # type: ignore
+class EstimateFilter(metaclass=ABCMeta):
+    estimate_filter_name: str
+
+    def estimate(self, data: dict) -> float:
+        self._validate(data=data)
+        return self._estimate(data=data)
+
+    @abstractmethod
+    def _validate(self, data: dict):
+        raise NotImplementedError()
+
+    @abstractmethod
+    def _estimate(self, data: dict) -> float:
+        raise NotImplementedError()
 
 
 @dataclass(frozen=True)
@@ -30,3 +46,16 @@ class EfFundamental(EstimateFilter):
             + data["momentum"]
             + data["psycho_logical"]
         )
+
+
+@dataclass(frozen=True)
+class EfVolume(EstimateFilter):
+    volume_threshold: int = 30_000
+    estimate_filter_name: str = "volume"
+
+    def _validate(self, data: dict):
+        if "volume" not in data.keys():
+            raise KeyError()
+
+    def _estimate(self, data: dict) -> float:
+        return 1 if data["volume"] >= self.volume_threshold else 0
