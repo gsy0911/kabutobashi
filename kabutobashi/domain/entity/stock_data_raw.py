@@ -555,7 +555,7 @@ class StockDataMultipleCode:
         Returns:
             StockDataMultipleCodeReader
         """
-        from kabutobashi.infrastructure.stock_data_repository import StockDataMultipleCodeReader
+        from kabutobashi.infrastructure.repository.stock_data_repository import StockDataMultipleCodeReader
 
         return StockDataMultipleCodeReader(use_mp=use_mp, max_workers=max_workers)
 
@@ -570,7 +570,7 @@ class StockDataMultipleCode:
         Returns:
             StockDataMultipleCodeCrawler
         """
-        from kabutobashi.infrastructure.stock_data_repository import StockDataMultipleCodeCrawler
+        from kabutobashi.infrastructure.repository.stock_data_repository import StockDataMultipleCodeCrawler
 
         return StockDataMultipleCodeCrawler(use_mp=use_mp, max_workers=max_workers)
 
@@ -580,6 +580,6 @@ class StockDataMultipleCode:
         Returns:
             StockDataMultipleCodeWriter
         """
-        from kabutobashi.infrastructure.stock_data_repository import StockDataMultipleCodeWriter
+        from kabutobashi.infrastructure.repository.stock_data_repository import StockDataMultipleCodeWriter
 
         return StockDataMultipleCodeWriter(multiple_code=self)
