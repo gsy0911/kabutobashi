@@ -2,8 +2,6 @@
 
 # methods to analysis
 # import errors
-from .domain import errors
-from kabutobashi.domain.estimate_filter import EfFundamental, EfVolume, EstimateFilter
 from kabutobashi.domain.method import (
     ADX,
     MACD,
@@ -20,7 +18,12 @@ from kabutobashi.domain.method import (
     Stochastics,
     Volatility,
 )
+from kabutobashi.domain.services import EfFundamental, EfVolume, EstimateFilter
 
+# read StockDataMultipleCode
+from kabutobashi.infrastructure.repository import reader
+
+from .domain import errors
 from .domain.entity import (
     StockDataEstimatedByMultipleFilter,
     StockDataEstimatedBySingleFilter,
@@ -32,6 +35,7 @@ from .domain.entity import (
     StockIpo,
     Weeks52HighLow,
 )
+from .example_data import example
 
 # classes or functions about crawl web pages
 from .infrastructure.crawler import (  # ある年にIPOした銘柄の情報を取得する; 単一の株価の詳細情報を取得する; 52週高値底値の値を取得
@@ -39,10 +43,6 @@ from .infrastructure.crawler import (  # ある年にIPOした銘柄の情報を
     StockIpoPage,
     Weeks52HighLowPage,
 )
-from .example_data import example
-
-# read StockDataMultipleCode
-from kabutobashi.infrastructure.repository import reader
 
 # n営業日前までの日付のリストを返す関数; 銘柄コードでイテレーションする関数; window幅でデータを取得しつつデータを返す関数; 株価の動きを様々な統計量で表現
 from .utilities import get_past_n_days
