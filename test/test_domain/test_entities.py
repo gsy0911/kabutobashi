@@ -2,11 +2,12 @@ import pandas as pd
 import pytest
 
 import kabutobashi as kb
+from kabutobashi.domain.errors import KabutobashiEntityError
 
 
 class TestStockInfo:
     def test_error_init(self):
-        with pytest.raises(kabutobashi.domain.errors.KabutobashiEntityError):
+        with pytest.raises(KabutobashiEntityError):
             _ = kb.StockData(
                 code="1234",
                 market="market",
@@ -29,7 +30,7 @@ class TestStockInfo:
 
 class TestStockIpo:
     def test_error_init(self):
-        with pytest.raises(kabutobashi.domain.errors.KabutobashiEntityError):
+        with pytest.raises(KabutobashiEntityError):
             _ = kb.StockIpo(
                 code="", market="", manager="", stock_listing_at="", public_offering="", evaluation="", initial_price=""
             )
@@ -37,7 +38,7 @@ class TestStockIpo:
 
 class TestWeeks52HihLow:
     def test_error_init(self):
-        with pytest.raises(kabutobashi.domain.errors.KabutobashiEntityError):
+        with pytest.raises(KabutobashiEntityError):
             _ = kb.Weeks52HighLow(
                 code="", brand_name="", close="", buy_or_sell="", volatility_ratio="", volatility_value=""
             )
@@ -51,16 +52,16 @@ class TestStockDataSingleCode:
         _ = kb.StockDataSingleCode.of(df=single_code)
 
         # check None
-        with pytest.raises(kabutobashi.domain.errors.KabutobashiEntityError):
-            _ = kb.StockDataSingleCode(code="-", df=None, stop_updating=False, contains_outlier=False)
+        with pytest.raises(KabutobashiEntityError):
+            _ = kb.StockDataSingleCode(code="-", _stock_data_list=[], stop_updating=False, contains_outlier=False)
 
         # check multiple code
-        with pytest.raises(kabutobashi.domain.errors.KabutobashiEntityError):
-            _ = kb.StockDataSingleCode(code="-", df=df, stop_updating=False, contains_outlier=False)
+        with pytest.raises(KabutobashiEntityError):
+            _ = kb.StockDataSingleCode.of(df=df)
 
         # check invalid column
-        with pytest.raises(kabutobashi.domain.errors.KabutobashiEntityError):
-            _ = kb.StockDataSingleCode(code="-", df=single_code[["close"]], stop_updating=False, contains_outlier=False)
+        with pytest.raises(KabutobashiEntityError):
+            _ = kb.StockDataSingleCode.of(df=single_code[["close"]])
 
     def test_get_df(self, data_path):
         df = pd.read_csv(f"{data_path}/example.csv.gz")
@@ -72,16 +73,16 @@ class TestStockDataSingleCode:
         optional_cols = kb.StockDataSingleCode.OPTIONAL_COL
 
         # check minimum df
-        minimum_df = sdsc.get_df()
+        minimum_df = sdsc.to_df()
         assert all([(c in minimum_df.columns) for c in required_cols])
         assert all([(c not in minimum_df.columns) for c in optional_cols])
 
         # check full df
-        full_df = sdsc.get_df(minimum=False)
+        full_df = sdsc.to_df(minimum=False)
         assert all([(c in full_df.columns) for c in required_cols])
         assert all([(c in full_df.columns) for c in optional_cols])
 
-        latest_date_df = sdsc.get_df(latest=True)
+        latest_date_df = sdsc.to_df(latest=True)
         assert len(latest_date_df.index) == 1
 
 

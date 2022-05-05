@@ -11,7 +11,7 @@ def sdsc() -> kb.StockDataSingleCode:
 
 
 def test_example_data(sdsc):
-    columns = sdsc.df.columns
+    columns = sdsc.to_df().columns
     assert "dt" in columns
     assert "open" in columns
     assert "close" in columns
