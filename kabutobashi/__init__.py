@@ -65,7 +65,7 @@ volatility = Volatility()
 pct_change = PctChange()
 industry_cat = IndustryCategories()
 
-methods = [sma, macd, stochastics, adx, bollinger_bands, momentum, psycho_logical, fitting]
+methods = [sma, macd, stochastics, adx, bollinger_bands, momentum, psycho_logical, fitting, basic]
 
 # estimate filters
 ef_fundamental = EfFundamental()

@@ -6,11 +6,6 @@ import pandas as pd
 from cerberus import Validator
 
 from kabutobashi.domain.errors import KabutobashiEntityError
-from kabutobashi.domain.services.estimate_filter import EstimateFilter
-from kabutobashi.domain.services.method import Method
-
-from .stock_data_estimated import StockDataEstimatedByMultipleFilter
-from .stock_data_processed import StockDataProcessedByMultipleMethod
 
 
 @dataclass(frozen=True)
@@ -426,54 +421,6 @@ class StockDataMultipleCode:
             _count += 1
 
             yield sdsc
-
-    def to_processed(
-        self,
-        methods: List[Method],
-        until: Optional[int] = None,
-        *,
-        skip_reit: bool = True,
-        row_more_than: Optional[int] = 80,
-    ) -> Generator[StockDataProcessedByMultipleMethod, None, None]:
-        """
-
-        Args:
-            methods:
-            until:
-            skip_reit:
-            row_more_than:
-
-        Returns:
-
-        """
-        for sdsc in self.to_code_iterable(until=until, skip_reit=skip_reit, row_more_than=row_more_than):
-            yield sdsc.to_processed(methods=methods)
-
-    def to_estimated(
-        self,
-        methods: List[Method],
-        estimate_filters: List[EstimateFilter],
-        until: Optional[int] = None,
-        *,
-        skip_reit: bool = True,
-        row_more_than: Optional[int] = 80,
-    ) -> Generator[StockDataEstimatedByMultipleFilter, None, None]:
-        """
-
-        Args:
-            methods:
-            estimate_filters:
-            until:
-            skip_reit:
-            row_more_than:
-
-        Returns:
-
-        """
-        for processed in self.to_processed(
-            methods=methods, until=until, skip_reit=skip_reit, row_more_than=row_more_than
-        ):
-            yield processed.to_estimated(estimate_filters=estimate_filters)
 
     def get_df(self, minimum=True, latest=False, code_list: list = None) -> pd.DataFrame:
         """

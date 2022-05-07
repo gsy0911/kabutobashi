@@ -1,9 +1,8 @@
 from dataclasses import asdict, dataclass, field
 from datetime import datetime
-from typing import Generator, List, Optional, Tuple, Union
+from typing import Dict, Generator, List, Optional, Tuple, Union
 
 import pandas as pd
-from cerberus import Validator
 
 from kabutobashi.domain.entity.stock_data_estimated import StockDataEstimatedBySingleFilter
 from kabutobashi.domain.entity.stock_data_processed import StockDataProcessedBySingleMethod
@@ -58,4 +57,39 @@ class StockCodeSingleAggregate:
 
         return StockCodeSingleAggregate(
             code=self.code, single_code=self.single_code, processed_list=[self._to_single_processed(m) for m in methods]
+        )
+
+    def _to_single_estimated(self, estimate_filter: EstimateFilter) -> StockDataEstimatedBySingleFilter:
+        def get_impacts(influence: int = 2, tail: int = 5) -> Dict[str, float]:
+            data_ = {}
+            for a in self.processed_list:
+                data_.update(a.get_impact(influence=influence, tail=tail))
+            return data_
+
+        def get_parameters():
+            data_ = {}
+            for a in self.processed_list:
+                data_.update(a.parameters)
+            return data_
+
+        data = {}
+        data.update(get_impacts())
+        data.update(get_parameters())
+        return StockDataEstimatedBySingleFilter(
+            code=self.code,
+            estimate_filter_name=estimate_filter.estimate_filter_name,
+            estimated_value=estimate_filter.estimate(data=data),
+        )
+
+    def with_estimated(self, estimate_filters: List[EstimateFilter]) -> "StockCodeSingleAggregate":
+        """
+
+        Returns:
+            StockDataEstimatedByMultipleFilter
+        """
+        return StockCodeSingleAggregate(
+            code=self.code,
+            single_code=self.single_code,
+            processed_list=self.processed_list,
+            estimated_list=[self._to_single_estimated(estimate_filter=ef) for ef in estimate_filters],
         )

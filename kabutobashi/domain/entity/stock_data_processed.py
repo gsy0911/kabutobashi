@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
@@ -8,10 +8,7 @@ import pandas as pd
 from cerberus import Validator
 from mplfinance.original_flavor import candlestick_ohlc
 
-from kabutobashi import EstimateFilter
 from kabutobashi.domain.errors import KabutobashiEntityError
-
-from .stock_data_estimated import StockDataEstimatedByMultipleFilter, StockDataEstimatedBySingleFilter
 
 
 @dataclass(frozen=True)
@@ -104,18 +101,6 @@ class StockDataProcessedByMultipleMethod:
         ohlc = np.vstack((time_series, data)).T
         candlestick_ohlc(ax, ohlc, width=0.7, colorup="g", colordown="r")
 
-    def get_impact(self, influence: int = 2, tail: int = 5) -> Dict[str, float]:
-        data = {}
-        for a in self.processed:
-            data.update(a.get_impact(influence=influence, tail=tail))
-        return data
-
-    def get_parameters(self):
-        data = {}
-        for a in self.processed:
-            data.update(a.parameters)
-        return data
-
     def visualize(self, size_ratio: int = 2):
         """
         Visualize Stock Data.
@@ -187,29 +172,3 @@ class StockDataProcessedByMultipleMethod:
                 raise KabutobashiEntityError()
 
         return fig
-
-    def _to_single_estimated(
-        self, estimate_filter: EstimateFilter, data: Optional[dict] = None
-    ) -> StockDataEstimatedBySingleFilter:
-        if not data:
-            data = {}
-            data.update(self.get_impact())
-            data.update(self.get_parameters())
-        return StockDataEstimatedBySingleFilter(
-            code=self.processed[0].code,
-            estimate_filter_name=estimate_filter.estimate_filter_name,
-            estimated_value=estimate_filter.estimate(data=data),
-        )
-
-    def to_estimated(self, estimate_filters: List[EstimateFilter]) -> StockDataEstimatedByMultipleFilter:
-        """
-
-        Returns:
-            StockDataEstimatedByMultipleFilter
-        """
-        data = {}
-        data.update(self.get_impact())
-        data.update(self.get_parameters())
-        return StockDataEstimatedByMultipleFilter(
-            estimated=[self._to_single_estimated(estimate_filter=ef) for ef in estimate_filters]
-        )
