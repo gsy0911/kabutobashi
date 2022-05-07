@@ -8,7 +8,7 @@ from kabutobashi.domain.errors import KabutobashiEntityError
 class TestStockInfo:
     def test_error_init(self):
         with pytest.raises(KabutobashiEntityError):
-            _ = kb.StockData(
+            _ = kb.StockRecord(
                 code="1234",
                 market="market",
                 name="",

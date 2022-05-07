@@ -4,7 +4,7 @@ from typing import List, Union
 
 from bs4 import BeautifulSoup
 
-from kabutobashi.domain.entity import StockData
+from kabutobashi.domain.entity import StockRecord
 from kabutobashi.domain.errors import KabutobashiPageError
 
 from .page import Page, PageDecoder
@@ -66,7 +66,7 @@ class StockInfoPage(Page):
                 "issued_shares": info.get("発行済株数", "---"),
             }
         )
-        return StockData.from_page_of(data=result).dumps()
+        return StockRecord.from_page_of(data=result).dumps()
 
     @staticmethod
     def crawl_single(code: Union[int, str]) -> dict:

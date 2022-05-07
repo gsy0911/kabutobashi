@@ -14,7 +14,7 @@ from .stock_data_processed import StockDataProcessedByMultipleMethod, StockDataP
 
 
 @dataclass(frozen=True)
-class StockData:
+class StockRecord:
     """
 
     * code: 銘柄コード
@@ -85,32 +85,32 @@ class StockData:
 
     @staticmethod
     def schema() -> list:
-        return list(StockData._SCHEMA.keys())
+        return list(StockRecord._SCHEMA.keys())
 
     @staticmethod
-    def from_page_of(data: dict) -> "StockData":
+    def from_page_of(data: dict) -> "StockRecord":
         label_split = data["stock_label"].split("  ")
         try:
-            return StockData(
+            return StockRecord(
                 code=label_split[0],
                 market=label_split[1],
                 name=data["name"],
                 industry_type=data["industry_type"],
-                open=float(StockData._convert(data["open"])),
-                high=float(StockData._convert(data["high"])),
-                low=float(StockData._convert(data["low"])),
-                close=float(StockData._convert(data["close"])),
-                unit=int(StockData._convert(data["unit"])),
-                psr=float(StockData._convert(data["psr"])),
-                per=float(StockData._convert(data["per"])),
-                pbr=float(StockData._convert(data["pbr"])),
-                volume=int(StockData._convert(data["volume"])),
+                open=float(StockRecord._convert(data["open"])),
+                high=float(StockRecord._convert(data["high"])),
+                low=float(StockRecord._convert(data["low"])),
+                close=float(StockRecord._convert(data["close"])),
+                unit=int(StockRecord._convert(data["unit"])),
+                psr=float(StockRecord._convert(data["psr"])),
+                per=float(StockRecord._convert(data["per"])),
+                pbr=float(StockRecord._convert(data["pbr"])),
+                volume=int(StockRecord._convert(data["volume"])),
                 market_capitalization=data["market_capitalization"],
                 issued_shares=data["issued_shares"],
                 dt=data["date"],
             )
         except Exception:
-            return StockData(
+            return StockRecord(
                 code="",
                 market="",
                 name="",
@@ -141,7 +141,7 @@ class StockData:
         if type(input_value) == float or type(input_value) == int:
             return float(input_value)
         try:
-            return float(StockData._convert(input_value=input_value))
+            return float(StockRecord._convert(input_value=input_value))
         except ValueError as e:
             raise KabutobashiEntityError(f"floatに変換できる値ではありません。{e}")
 
@@ -150,7 +150,7 @@ class StockData:
         if type(input_value) == float or type(input_value) == int:
             return int(input_value)
         try:
-            return int(StockData._convert(input_value=input_value))
+            return int(StockRecord._convert(input_value=input_value))
         except ValueError as e:
             raise KabutobashiEntityError(f"floatに変換できる値ではありません。{e}")
 
@@ -158,7 +158,7 @@ class StockData:
         return asdict(self)
 
     @staticmethod
-    def loads(data: dict) -> "StockData":
+    def loads(data: dict) -> "StockRecord":
 
         data_date = data.get("date")
         data_dt = data.get("dt")
@@ -175,19 +175,19 @@ class StockData:
         else:
             raise KabutobashiEntityError("日付のカラム[dt, date, crawl_datetime]のいずれかが存在しません")
 
-        return StockData(
+        return StockRecord(
             code=data["code"],
             market=data.get("market", ""),
             name=data.get("name", ""),
             industry_type=data.get("industry_type", ""),
-            open=StockData._convert_float(data["open"]),
-            high=StockData._convert_float(data["high"]),
-            low=StockData._convert_float(data["low"]),
-            close=StockData._convert_float(data["close"]),
-            unit=StockData._convert_int(data["unit"]),
-            psr=StockData._convert_float(data["psr"]),
-            per=StockData._convert_float(data["per"]),
-            pbr=StockData._convert_float(data["pbr"]),
+            open=StockRecord._convert_float(data["open"]),
+            high=StockRecord._convert_float(data["high"]),
+            low=StockRecord._convert_float(data["low"]),
+            close=StockRecord._convert_float(data["close"]),
+            unit=StockRecord._convert_int(data["unit"]),
+            psr=StockRecord._convert_float(data["psr"]),
+            per=StockRecord._convert_float(data["per"]),
+            pbr=StockRecord._convert_float(data["pbr"]),
             volume=data["volume"],
             market_capitalization=data.get("market_capitalization", ""),
             issued_shares=data.get("issued_shares", ""),
@@ -247,7 +247,7 @@ class StockDataSingleCode:
     code: str
     stop_updating: bool
     contains_outlier: bool
-    _stock_data_list: List[StockData] = field(default_factory=list, repr=False)
+    _stock_data_list: List[StockRecord] = field(default_factory=list, repr=False)
     REQUIRED_COL = ["code", "open", "close", "high", "low", "unit", "volume", "per", "psr", "pbr", "market", "dt"]
     OPTIONAL_COL = ["name", "industry_type"]
 
@@ -257,7 +257,7 @@ class StockDataSingleCode:
         self._code_constraint_check(stock_data_list=self._stock_data_list)
 
     @staticmethod
-    def _code_constraint_check(stock_data_list: List[StockData]):
+    def _code_constraint_check(stock_data_list: List[StockRecord]):
         code = [v.code for v in stock_data_list]
         if len(set(code)) > 1:
             raise KabutobashiEntityError("multiple code")
@@ -268,7 +268,7 @@ class StockDataSingleCode:
     def of(df: pd.DataFrame):
         _stock_data_list = []
         for _, row in df.iterrows():
-            _stock_data_list.append(StockData.loads(dict(row)))
+            _stock_data_list.append(StockRecord.loads(dict(row)))
 
         # codeの確認
         StockDataSingleCode._code_constraint_check(stock_data_list=_stock_data_list)
