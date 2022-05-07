@@ -24,8 +24,8 @@ from kabutobashi.domain.services.method import (
 from kabutobashi.infrastructure.repository import reader
 
 from .domain import errors
+from .domain.aggregates import StockCodeSingleAggregate
 from .domain.entity import (
-    StockRecord,
     StockDataEstimatedByMultipleFilter,
     StockDataEstimatedBySingleFilter,
     StockDataMultipleCode,
@@ -33,6 +33,7 @@ from .domain.entity import (
     StockDataProcessedBySingleMethod,
     StockDataSingleCode,
     StockIpo,
+    StockRecord,
     Weeks52HighLow,
 )
 from .example_data import example

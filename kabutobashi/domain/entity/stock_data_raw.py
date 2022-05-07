@@ -10,7 +10,7 @@ from kabutobashi.domain.services.estimate_filter import EstimateFilter
 from kabutobashi.domain.services.method import Method
 
 from .stock_data_estimated import StockDataEstimatedByMultipleFilter
-from .stock_data_processed import StockDataProcessedByMultipleMethod, StockDataProcessedBySingleMethod
+from .stock_data_processed import StockDataProcessedByMultipleMethod
 
 
 @dataclass(frozen=True)
@@ -339,37 +339,6 @@ class StockDataSingleCode:
             return df[self.REQUIRED_COL]
         else:
             return df[self.REQUIRED_COL + self.OPTIONAL_COL]
-
-    def _to_single_processed(self, method: Method) -> StockDataProcessedBySingleMethod:
-        df = self._to_df()
-        # 日時
-        start_at = list(df["dt"])[0]
-        end_at = list(df["dt"])[-1]
-
-        # 必要なパラメータの作成
-        columns = ["dt", "open", "close", "high", "low", "buy_signal", "sell_signal"] + method.processed_columns()
-        df_p = df.pipe(method.method).pipe(method.signal).loc[:, columns]
-        params = method.parameterize(df_x=df, df_p=df_p)
-
-        return StockDataProcessedBySingleMethod(
-            code=self.code,
-            start_at=start_at,
-            end_at=end_at,
-            applied_method_name=method.method_name,
-            df=df_p,
-            df_required_columns=columns,
-            parameters=params,
-            color_mapping=method.color_mapping(),
-            visualize_option=method.visualize_option(),
-        )
-
-    def to_processed(self, methods: List[Method]) -> StockDataProcessedByMultipleMethod:
-        # check all methods
-        for method in methods:
-            if not isinstance(method, Method):
-                raise KabutobashiEntityError()
-
-        return StockDataProcessedByMultipleMethod(processed=[self._to_single_processed(m) for m in methods])
 
 
 @dataclass(frozen=True)
