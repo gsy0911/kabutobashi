@@ -26,7 +26,6 @@ from kabutobashi.infrastructure.repository import reader
 from .domain import errors
 from .domain.aggregates import StockCodeSingleAggregate
 from .domain.entity import (
-    StockDataEstimatedByMultipleFilter,
     StockDataEstimatedBySingleFilter,
     StockDataMultipleCode,
     StockDataProcessedByMultipleMethod,
