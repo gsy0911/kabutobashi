@@ -28,9 +28,9 @@ from .domain.aggregates import StockCodeSingleAggregate
 from .domain.entity import (
     StockDataEstimatedBySingleFilter,
     StockDataMultipleCode,
-    StockDataProcessedByMultipleMethod,
     StockDataProcessedBySingleMethod,
     StockDataSingleCode,
+    StockDataVisualized,
     StockIpo,
     StockRecord,
     Weeks52HighLow,

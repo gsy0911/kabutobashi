@@ -25,7 +25,8 @@ and when estimating stock-code which is to rise in the next day or so on.
   - StockDataEstimatedByMultipleFilter
 """
 from .stock_data_estimated import StockDataEstimatedBySingleFilter
-from .stock_data_processed import StockDataProcessedByMultipleMethod, StockDataProcessedBySingleMethod
+from .stock_data_processed import StockDataProcessedBySingleMethod
 from .stock_data_raw import StockDataMultipleCode, StockDataSingleCode, StockRecord
+from .stock_data_visualized import StockDataVisualized
 from .stock_ipo import StockIpo
 from .weeks_52_high_low_info import Weeks52HighLow
