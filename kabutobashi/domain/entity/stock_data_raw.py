@@ -127,6 +127,9 @@ class StockRecord:
     def is_outlier(self) -> bool:
         return self.open == 0 or self.high == 0 or self.low == 0 or self.close == 0
 
+    def is_reit(self) -> bool:
+        return self.market == "東証REIT"
+
     @staticmethod
     def _convert(input_value: str) -> str:
         return input_value.replace("---", "0").replace("円", "").replace("株", "").replace("倍", "").replace(",", "")
@@ -191,6 +194,48 @@ class StockRecord:
 
 
 @dataclass(frozen=True)
+class StockRecordset:
+    recordset: List[StockRecord] = field(repr=False)
+    REQUIRED_COL = ["code", "open", "close", "high", "low", "unit", "volume", "per", "psr", "pbr", "market", "dt"]
+    OPTIONAL_COL = ["name", "industry_type"]
+
+    def __post_init__(self):
+        if not self.recordset:
+            raise KabutobashiEntityError(f"required stock_data")
+
+    @staticmethod
+    def of(df: pd.DataFrame) -> "StockRecordset":
+        recordset = []
+        for _, row in df.iterrows():
+            recordset.append(StockRecord.loads(dict(row)))
+        return StockRecordset(recordset=recordset)
+
+    def get_code_list(self) -> List[str]:
+        return list(set([v.code for v in self.recordset]))
+
+    def _to_df(self) -> pd.DataFrame:
+        df = pd.DataFrame([v.dumps() for v in self.recordset])
+        df = df.convert_dtypes()
+        # order by dt
+        idx = pd.to_datetime(df["dt"]).sort_index()
+        df.index = idx
+        df = df.sort_index()
+        return df
+
+    def to_df(self, minimum=True, latest=False):
+        df = self._to_df()
+
+        if latest:
+            latest_dt = max(df["dt"])
+            df = df[df["dt"] == latest_dt]
+
+        if minimum:
+            return df[self.REQUIRED_COL]
+        else:
+            return df[self.REQUIRED_COL + self.OPTIONAL_COL]
+
+
+@dataclass(frozen=True)
 class StockDataSingleCode:
     """
     単一銘柄の複数日の株データを保持するEntity
@@ -237,42 +282,36 @@ class StockDataSingleCode:
         >>>  data_for_ml = pd.DataFrame(data_list)
 
     """
-
-    # df: pd.DataFrame
     code: str
     stop_updating: bool
     contains_outlier: bool
-    _stock_data_list: List[StockRecord] = field(default_factory=list, repr=False)
-    REQUIRED_COL = ["code", "open", "close", "high", "low", "unit", "volume", "per", "psr", "pbr", "market", "dt"]
-    OPTIONAL_COL = ["name", "industry_type"]
+    _stock_recordset: StockRecordset
+    _len: int
 
     def __post_init__(self):
-        if not self._stock_data_list:
-            raise KabutobashiEntityError(f"required stock_data")
-        self._code_constraint_check(stock_data_list=self._stock_data_list)
+        self._code_constraint_check(stock_recordset=self._stock_recordset)
 
     @staticmethod
-    def _code_constraint_check(stock_data_list: List[StockRecord]):
-        code = [v.code for v in stock_data_list]
-        if len(set(code)) > 1:
+    def _code_constraint_check(stock_recordset: StockRecordset):
+        code = stock_recordset.get_code_list()
+        if len(code) > 1:
             raise KabutobashiEntityError("multiple code")
         elif len(code) == 0:
             raise KabutobashiEntityError("no code")
 
     @staticmethod
     def of(df: pd.DataFrame):
-        _stock_data_list = []
-        for _, row in df.iterrows():
-            _stock_data_list.append(StockRecord.loads(dict(row)))
+        recordset = StockRecordset.of(df=df)
 
         # codeの確認
-        StockDataSingleCode._code_constraint_check(stock_data_list=_stock_data_list)
-        code = _stock_data_list[0].code
+        StockDataSingleCode._code_constraint_check(stock_recordset=recordset)
+        code = recordset.get_code_list()[0]
         return StockDataSingleCode(
             code=code,
-            _stock_data_list=_stock_data_list,
+            _stock_recordset=recordset,
             stop_updating=StockDataSingleCode._check_recent_update(df=df),
-            contains_outlier=any([v.is_outlier() for v in _stock_data_list]),
+            contains_outlier=any([v.is_outlier() for v in recordset.recordset]),
+            _len=len(recordset.recordset)
         )
 
     @staticmethod
@@ -304,7 +343,7 @@ class StockDataSingleCode:
             df_for_x: 特徴量を計算するためのDataFrame。
             df_for_y: ``buy_sell_term_days`` 後のDataFrameを返す。値動きを追うため。
         """
-        df = self._to_df()
+        df = self.to_df()
         df_length = len(df.index)
         if df_length < buy_sell_term_days + sliding_window:
             raise KabutobashiEntityError("入力されたDataFrameの長さがwindow幅よりも小さいです")
@@ -314,26 +353,11 @@ class StockDataSingleCode:
             end = offset + buy_sell_term_days
             yield idx, df[i:offset], df[offset:end]
 
-    def _to_df(self) -> pd.DataFrame:
-        df = pd.DataFrame([v.dumps() for v in self._stock_data_list])
-        df = df.convert_dtypes()
-        # order by dt
-        idx = pd.to_datetime(df["dt"]).sort_index()
-        df.index = idx
-        df = df.sort_index()
-        return df
+    def to_df(self, minimum=True, latest=False) -> pd.DataFrame:
+        return self._stock_recordset.to_df(minimum=minimum, latest=latest)
 
-    def to_df(self, minimum=True, latest=False):
-        df = self._to_df()
-
-        if latest:
-            latest_dt = max(df["dt"])
-            df = df[df["dt"] == latest_dt]
-
-        if minimum:
-            return df[self.REQUIRED_COL]
-        else:
-            return df[self.REQUIRED_COL + self.OPTIONAL_COL]
+    def __len__(self):
+        return self._len
 
 
 @dataclass(frozen=True)
@@ -353,8 +377,8 @@ class StockDataMultipleCode:
     """
 
     df: pd.DataFrame
-    REQUIRED_COL = StockDataSingleCode.REQUIRED_COL
-    OPTIONAL_COL = StockDataSingleCode.OPTIONAL_COL
+    REQUIRED_COL = StockRecordset.REQUIRED_COL
+    OPTIONAL_COL = StockRecordset.OPTIONAL_COL
     # TODO implements stock_data_single_code_list: List[StockDataSingleCode]
 
     def __post_init__(self):

@@ -33,6 +33,7 @@ from .domain.entity import (
     StockDataVisualized,
     StockIpo,
     StockRecord,
+    StockRecordset,
     Weeks52HighLow,
 )
 from .example_data import example
