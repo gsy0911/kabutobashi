@@ -1,1 +1,1 @@
-from .single_code import StockCodeSingleAggregate
+from .single_code import StockCodeSingleAggregate, IStockCodeSingleAggregateRepository

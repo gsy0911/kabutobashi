@@ -1,5 +1,6 @@
+from abc import ABCMeta, abstractmethod
 from dataclasses import dataclass, field
-from typing import Dict, List
+from typing import Dict, List, NoReturn
 
 import pandas as pd
 
@@ -13,7 +14,7 @@ from kabutobashi.domain.errors import KabutobashiEntityError
 from kabutobashi.domain.services.estimate_filter import EstimateFilter
 from kabutobashi.domain.services.method import Method
 
-__all__ = ["StockCodeSingleAggregate"]
+__all__ = ["StockCodeSingleAggregate", "IStockCodeSingleAggregateRepository"]
 
 
 @dataclass(frozen=True)
@@ -109,3 +110,42 @@ class StockCodeSingleAggregate:
         if not self.processed_list:
             raise KabutobashiEntityError("call with_processed() before.")
         return StockDataVisualized.of(processed=self.processed_list, size_ratio=size_ratio)
+
+
+class IStockCodeSingleAggregateRepository(metaclass=ABCMeta):
+    def read(self, code: str) -> "StockCodeSingleAggregate":
+        return StockCodeSingleAggregate(
+            code=code,
+            single_code=self._stock_data_read(code=code),
+            processed_list=self._stock_processed_read(code=code),
+            estimated_list=self._stock_estimated_read(code=code)
+        )
+
+    @abstractmethod
+    def _stock_data_read(self, code: str) -> "StockDataSingleCode":
+        raise NotImplementedError()
+
+    @abstractmethod
+    def _stock_processed_read(self, code: str) -> List["StockDataProcessedBySingleMethod"]:
+        raise NotImplementedError()
+
+    @abstractmethod
+    def _stock_estimated_read(self, code: str) -> List["StockDataEstimatedBySingleFilter"]:
+        raise NotImplementedError()
+
+    def write(self, data: StockCodeSingleAggregate) -> NoReturn:
+        self._stock_data_write(data=data.single_code)
+        self._stock_processed_write(data=data.processed_list)
+        self._stock_estimated_write(data=data.estimated_list)
+
+    @abstractmethod
+    def _stock_data_write(self, data: StockDataSingleCode) -> NoReturn:
+        raise NotImplementedError()
+
+    @abstractmethod
+    def _stock_processed_write(self, data: List[StockDataProcessedBySingleMethod]) -> NoReturn:
+        raise NotImplementedError()
+
+    @abstractmethod
+    def _stock_estimated_write(self, data: List[StockDataEstimatedBySingleFilter]) -> NoReturn:
+        raise NotImplementedError()
