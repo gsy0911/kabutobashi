@@ -1,12 +1,14 @@
-from dataclasses import asdict, dataclass, field
-from datetime import datetime
-from typing import Dict, Generator, List, Optional, Tuple, Union
+from dataclasses import dataclass, field
+from typing import Dict, List
 
 import pandas as pd
 
-from kabutobashi.domain.entity.stock_data_estimated import StockDataEstimatedBySingleFilter
-from kabutobashi.domain.entity.stock_data_processed import StockDataProcessedBySingleMethod
-from kabutobashi.domain.entity.stock_data_raw import StockDataSingleCode
+from kabutobashi.domain.entity import (
+    StockDataEstimatedBySingleFilter,
+    StockDataProcessedBySingleMethod,
+    StockDataSingleCode,
+    StockDataVisualized,
+)
 from kabutobashi.domain.errors import KabutobashiEntityError
 from kabutobashi.domain.services.estimate_filter import EstimateFilter
 from kabutobashi.domain.services.method import Method
@@ -102,3 +104,8 @@ class StockCodeSingleAggregate:
     def estimate_filter_concat_name(self) -> str:
         estimate_filter_names = sorted([e.estimate_filter_name for e in self.estimated_list])
         return "_".join(estimate_filter_names)
+
+    def visualize(self, size_ratio: int = 2) -> StockDataVisualized:
+        if not self.processed_list:
+            raise KabutobashiEntityError("call with_processed() before.")
+        return StockDataVisualized.of(processed=self.processed_list, size_ratio=size_ratio)
