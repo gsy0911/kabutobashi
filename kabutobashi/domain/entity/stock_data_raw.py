@@ -1,6 +1,7 @@
+from abc import ABCMeta, abstractmethod
 from dataclasses import asdict, dataclass, field
 from datetime import datetime
-from typing import Generator, List, Optional, Tuple, Union
+from typing import Generator, List, NoReturn, Optional, Tuple, Union
 
 import pandas as pd
 from cerberus import Validator
@@ -233,6 +234,22 @@ class StockRecordset:
             return df[self.REQUIRED_COL]
         else:
             return df[self.REQUIRED_COL + self.OPTIONAL_COL]
+
+
+class IStockRecordsetRepository(metaclass=ABCMeta):
+    def read(self, code: str) -> "StockRecordset":
+        return StockRecordset(recordset=self._stock_recordset_read(code=code))
+
+    @abstractmethod
+    def _stock_recordset_read(self, code: str) -> List["StockRecord"]:
+        raise NotImplementedError()
+
+    def write(self, data: StockRecordset) -> NoReturn:
+        self._stock_recordset_write(data=data)
+
+    @abstractmethod
+    def _stock_recordset_write(self, data: StockRecordset) -> NoReturn:
+        raise NotImplementedError()
 
 
 @dataclass(frozen=True)
