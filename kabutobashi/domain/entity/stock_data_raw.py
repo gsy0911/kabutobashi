@@ -299,6 +299,7 @@ class StockDataSingleCode:
         >>>  data_for_ml = pd.DataFrame(data_list)
 
     """
+
     code: str
     stop_updating: bool
     contains_outlier: bool
@@ -328,7 +329,7 @@ class StockDataSingleCode:
             _stock_recordset=recordset,
             stop_updating=StockDataSingleCode._check_recent_update(df=df),
             contains_outlier=any([v.is_outlier() for v in recordset.recordset]),
-            _len=len(recordset.recordset)
+            _len=len(recordset.recordset),
         )
 
     @staticmethod

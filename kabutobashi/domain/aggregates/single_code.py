@@ -118,7 +118,7 @@ class IStockCodeSingleAggregateRepository(metaclass=ABCMeta):
             code=code,
             single_code=self._stock_data_read(code=code),
             processed_list=self._stock_processed_read(code=code),
-            estimated_list=self._stock_estimated_read(code=code)
+            estimated_list=self._stock_estimated_read(code=code),
         )
 
     @abstractmethod
