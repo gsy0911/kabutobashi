@@ -6,4 +6,5 @@ beautifulsoup4
 mplfinance
 matplotlib
 cerberus
+pydantic
 scipy
