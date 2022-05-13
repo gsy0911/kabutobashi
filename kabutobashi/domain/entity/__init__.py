@@ -12,7 +12,6 @@ and when estimating stock-code which is to rise in the next day or so on.
 
   - StockDataSingleDay
   - StockDataSingleCode
-  - StockDataMultipleCode
 
 - initial step to analyze:  ``processed``
 
@@ -26,13 +25,7 @@ and when estimating stock-code which is to rise in the next day or so on.
 """
 from .stock_data_estimated import StockDataEstimatedBySingleFilter
 from .stock_data_processed import StockDataProcessedBySingleMethod
-from .stock_data_raw import (
-    IStockRecordsetRepository,
-    StockDataMultipleCode,
-    StockDataSingleCode,
-    StockRecord,
-    StockRecordset,
-)
+from .stock_data_raw import IStockRecordsetRepository, StockBrand, StockDataSingleCode, StockRecord, StockRecordset
 from .stock_data_visualized import StockDataVisualized
 from .stock_ipo import StockIpo
 from .weeks_52_high_low_info import Weeks52HighLow

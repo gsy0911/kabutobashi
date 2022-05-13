@@ -20,14 +20,10 @@ from kabutobashi.domain.services.method import (
     Volatility,
 )
 
-# read StockDataMultipleCode
-from kabutobashi.infrastructure.repository import reader
-
 from .domain import errors
 from .domain.aggregates import StockCodeSingleAggregate
 from .domain.entity import (
     StockDataEstimatedBySingleFilter,
-    StockDataMultipleCode,
     StockDataProcessedBySingleMethod,
     StockDataSingleCode,
     StockDataVisualized,

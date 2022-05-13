@@ -1,17 +1,16 @@
 from abc import abstractmethod
 from concurrent.futures import ThreadPoolExecutor
-from typing import Generator, Union, NoReturn, List
+from typing import Generator, List, NoReturn, Union
 
 import pandas as pd
 
-from kabutobashi.domain.entity import StockRecordset, IStockRecordsetRepository
+from kabutobashi.domain.entity import IStockRecordsetRepository, StockRecordset
 from kabutobashi.infrastructure.crawler import StockInfoPage
 
 __all__ = ["IStockRecordsetStorageRepository", "StockRecordsetStorageBasicRepository", "StockDataMultipleCodeCrawler"]
 
 
 class IStockRecordsetStorageRepository(IStockRecordsetRepository):
-
     def __init__(self, use_mp: bool, max_workers: int):
         self.use_mp = use_mp
         self.max_workers = max_workers
@@ -44,7 +43,6 @@ class IStockRecordsetStorageRepository(IStockRecordsetRepository):
 
 
 class StockRecordsetStorageBasicRepository(IStockRecordsetStorageRepository):
-
     def __init__(self, path_candidate: Union[str, list], use_mp: bool = False, max_workers: int = 2):
         super().__init__(use_mp=use_mp, max_workers=max_workers)
         self.path_candidate = path_candidate
@@ -69,7 +67,6 @@ class StockRecordsetStorageBasicRepository(IStockRecordsetStorageRepository):
 
 
 class StockDataMultipleCodeCrawler:
-
     def __init__(self, use_mp: bool = False, max_workers: int = 2):
         self.use_mp = use_mp
         self.max_workers = max_workers

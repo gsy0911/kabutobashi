@@ -1,6 +1,6 @@
 from abc import ABCMeta, abstractmethod
 from datetime import datetime
-from typing import Generator, Set, List, NoReturn, Tuple, Union
+from typing import Generator, List, NoReturn, Optional, Set, Tuple, Union
 
 import pandas as pd
 from pydantic import BaseModel, Field
@@ -41,6 +41,9 @@ class StockBrand(BaseModel):
     industry_type: str
     market_capitalization: str
     issued_shares: str
+
+    def dumps(self) -> dict:
+        return self.dict()
 
     @staticmethod
     def loads(data: dict) -> "StockBrand":
@@ -195,8 +198,13 @@ class StockRecordset(BaseModel):
     def get_code_list(self) -> List[str]:
         return list(set([v.code for v in self.recordset]))
 
-    def _to_df(self) -> pd.DataFrame:
-        df = pd.DataFrame([v.dumps() for v in self.recordset])
+    def _to_df(self, code: Optional[str]) -> pd.DataFrame:
+        df_brand = pd.DataFrame([v.dumps() for v in self.brand_set])
+        if code:
+            df_brand = df_brand[df_brand["code"] == code]
+        df_record = pd.DataFrame([v.dumps() for v in self.recordset])
+        df = pd.merge(left=df_brand, right=df_record, how="inner", on="code")
+
         df = df.convert_dtypes()
         # order by dt
         idx = pd.to_datetime(df["dt"]).sort_index()
@@ -204,8 +212,8 @@ class StockRecordset(BaseModel):
         df = df.sort_index()
         return df
 
-    def to_df(self, minimum=True, latest=False):
-        df = self._to_df()
+    def to_df(self, *, minimum=True, latest=False, code: Optional[str] = None):
+        df = self._to_df(code=code)
 
         if latest:
             latest_dt = max(df["dt"])
@@ -215,6 +223,47 @@ class StockRecordset(BaseModel):
             return df[REQUIRED_COL]
         else:
             return df[REQUIRED_COL + OPTIONAL_COL]
+
+    def to_single_code(self, code: str) -> "StockDataSingleCode":
+        if type(code) is not str:
+            raise KabutobashiEntityError(f"code must be type of `str`")
+        return StockDataSingleCode.of(df=self._to_df(code=code))
+
+    def to_code_iterable(
+        self,
+        until: Optional[int] = None,
+        *,
+        skip_reit: bool = True,
+        row_more_than: Optional[int] = 80,
+        code_list: list = None,
+    ) -> Generator["StockDataSingleCode", None, None]:
+        _count = 0
+        df = self._to_df(code=None)
+
+        if code_list:
+            df = df[df["code"].isin(code_list)]
+        if skip_reit:
+            df = df[~(df["market"] == "東証REIT")]
+
+        for code, df_ in df.groupby("code"):
+            if row_more_than:
+                if len(df_.index) < row_more_than:
+                    continue
+
+            # create sdsc
+            sdsc = StockDataSingleCode.of(df=df_)
+            if sdsc.stop_updating:
+                continue
+            if sdsc.contains_outlier:
+                continue
+
+            # add counter if yield
+            if until:
+                if _count >= until:
+                    return
+            _count += 1
+
+            yield sdsc
 
 
 class IStockRecordsetRepository(metaclass=ABCMeta):
@@ -355,155 +404,4 @@ class StockDataSingleCode(BaseModel):
         return self.stock_recordset.to_df(minimum=minimum, latest=latest)
 
     def __len__(self):
-
-
-@dataclass(frozen=True)
-class StockDataMultipleCode:
-    """
-    複数銘柄の複数日の株データを保持するEntity
-
-    単一銘柄のデータのみを返したり、複数銘柄のデータをループで取得できるクラス。
-
-    Args:
-        df: 複数日・複数銘柄を保持するDataFrame
-
-    Examples:
-        >>> import kabutobashi as kb
-        >>> sdmc = kb.example()
-        >>> sdsc = sdmc.to_single_code(code="1375")
-    """
-
-    df: pd.DataFrame
-    REQUIRED_COL = StockRecordset.REQUIRED_COL
-    OPTIONAL_COL = StockRecordset.OPTIONAL_COL
-    # TODO implements stock_data_single_code_list: List[StockDataSingleCode]
-
-    def __post_init__(self):
-        self._null_check()
-        if not self._validate():
-            raise KabutobashiEntityError(f"不正なデータ構造です: {self.df.columns=}")
-        self._convert_df_types()
-
-    def _null_check(self):
-        if self.df is None:
-            raise KabutobashiEntityError("required")
-
-    def _validate(self) -> bool:
-        columns = list(self.df.columns)
-        # 必須のカラム確認
-        if not all([item in columns for item in self.REQUIRED_COL]):
-            return False
-        return True
-
-    def _convert_df_types(self):
-        self.df["code"] = self.df["code"].astype(str)
-
-    @staticmethod
-    def of(df: pd.DataFrame) -> "StockDataMultipleCode":
-        return StockDataMultipleCode(df=df)
-
-    def to_single_code(self, code: str) -> StockDataSingleCode:
-        if type(code) is not str:
-            raise KabutobashiEntityError(f"code must be type of `str`")
-        return StockDataSingleCode.of(df=self.df[self.df["code"] == code])
-
-    def to_code_iterable(
-        self,
-        until: Optional[int] = None,
-        *,
-        skip_reit: bool = True,
-        row_more_than: Optional[int] = 80,
-        code_list: list = None,
-    ) -> Generator[StockDataSingleCode, None, None]:
-        _count = 0
-        df = self.df.copy()
-
-        if code_list:
-            df = df[df["code"].isin(code_list)]
-        if skip_reit:
-            df = df[~(df["market"] == "東証REIT")]
-
-        for code, df_ in df.groupby("code"):
-            if row_more_than:
-                if len(df_.index) < row_more_than:
-                    continue
-
-            # create sdsc
-            sdsc = StockDataSingleCode.of(df=df_)
-            if sdsc.stop_updating:
-                continue
-            if sdsc.contains_outlier:
-                continue
-
-            # add counter if yield
-            if until:
-                if _count >= until:
-                    return
-            _count += 1
-
-            yield sdsc
-
-    def get_df(self, minimum=True, latest=False, code_list: list = None) -> pd.DataFrame:
-        """
-        returns column-formatted DataFrame.
-
-        Args:
-            minimum:
-            latest:
-            code_list: filters specified code, default None.
-
-        Returns:
-            pd.DataFrame
-        """
-        df = self.df
-
-        if code_list:
-            df = df[df["code"].isin(code_list)]
-        if latest:
-            latest_dt = max(df["dt"])
-            df = df[df["dt"] == latest_dt]
-
-        if minimum:
-            return df[self.REQUIRED_COL]
-        else:
-            return df[self.REQUIRED_COL + self.OPTIONAL_COL]
-
-    @staticmethod
-    def read(use_mp: bool = False, max_workers: int = 2):
-        """
-
-        Args:
-            use_mp: default False.
-            max_workers: default 2.
-
-        Returns:
-            StockDataMultipleCodeReader
-        """
-        from kabutobashi.infrastructure.repository.stock_data_repository import StockDataMultipleCodeReader
-
-        return StockDataMultipleCodeReader(use_mp=use_mp, max_workers=max_workers)
-
-    @staticmethod
-    def crawl(use_mp: bool = False, max_workers: int = 2):
-        """
-
-        Args:
-            use_mp: default False.
-            max_workers: default 2.
-
-        Returns:
-            StockDataMultipleCodeCrawler
-        """
-        from kabutobashi.infrastructure.repository.stock_data_repository import StockDataMultipleCodeCrawler
-
-        return StockDataMultipleCodeCrawler(use_mp=use_mp, max_workers=max_workers)
-
-    def write(self):
-        """
-
-        Returns:
-            StockDataMultipleCodeWriter
-        """
-        from kabutobashi.infrastructure.repository.stock_data_repository import StockDataMultipleCodeWriter
-
-        return StockDataMultipleCodeWriter(multiple_code=self)
+        return self.len_
