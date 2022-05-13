@@ -1,7 +1,1 @@
-from .stock_data_repository import (
-    StockDataMultipleCodeCrawler,
-    StockDataMultipleCodeReader,
-    StockDataMultipleCodeWriter,
-)
-
-reader = StockDataMultipleCodeReader()
+from .stock_recordset_repository import StockRecordsetStorageBasicRepository
