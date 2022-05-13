@@ -1,6 +1,6 @@
 from abc import ABCMeta, abstractmethod
 from dataclasses import dataclass, field
-from typing import Dict, List, NoReturn
+from typing import Dict, List, NoReturn, Optional, Union
 
 import pandas as pd
 
@@ -9,6 +9,7 @@ from kabutobashi.domain.entity import (
     StockDataProcessedBySingleMethod,
     StockDataSingleCode,
     StockDataVisualized,
+    StockRecordset,
 )
 from kabutobashi.domain.errors import KabutobashiEntityError
 from kabutobashi.domain.services.estimate_filter import EstimateFilter
@@ -25,8 +26,19 @@ class StockCodeSingleAggregate:
     estimated_list: List[StockDataEstimatedBySingleFilter] = field(default_factory=list, repr=False)
 
     @staticmethod
-    def of(df: pd.DataFrame) -> "StockCodeSingleAggregate":
-        single_code = StockDataSingleCode.of(df=df)
+    def of(
+        entity: Union[pd.DataFrame, StockDataSingleCode, StockRecordset], *, code: Optional[str] = None
+    ) -> "StockCodeSingleAggregate":
+        if type(entity) is pd.DataFrame:
+            single_code = StockDataSingleCode.of(df=entity)
+        elif type(entity) is StockDataSingleCode:
+            single_code = entity
+        elif type(entity) is StockRecordset:
+            if code is None:
+                raise KabutobashiEntityError("code is required")
+            single_code = entity.to_single_code(code=code)
+        else:
+            raise KabutobashiEntityError("accept pd.DataFrame or StockDataSingleCode")
         return StockCodeSingleAggregate(code=single_code.code, single_code=single_code)
 
     def _to_single_processed(self, method: Method) -> StockDataProcessedBySingleMethod:
