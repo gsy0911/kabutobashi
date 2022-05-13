@@ -1,16 +1,17 @@
 from abc import ABCMeta, abstractmethod
-from dataclasses import asdict, dataclass, field
 from datetime import datetime
-from typing import Generator, List, NoReturn, Optional, Tuple, Union
+from typing import Generator, List, NoReturn, Tuple, Union
 
 import pandas as pd
-from cerberus import Validator
+from pydantic import BaseModel, Field
 
 from kabutobashi.domain.errors import KabutobashiEntityError
 
+REQUIRED_COL = ["code", "open", "close", "high", "low", "unit", "volume", "per", "psr", "pbr", "market", "dt"]
+OPTIONAL_COL = ["name", "industry_type"]
 
-@dataclass(frozen=True)
-class StockRecord:
+
+class StockRecord(BaseModel):
     """
 
     * code: 銘柄コード
@@ -55,33 +56,6 @@ class StockRecord:
     market_capitalization: str
     issued_shares: str
     dt: str
-    _SCHEMA = {
-        "code": {"type": "string"},
-        "market": {"type": "string"},
-        "industry_type": {"type": "string"},
-        "name": {"type": "string"},
-        "open": {"type": "number"},
-        "high": {"type": "number"},
-        "low": {"type": "number"},
-        "close": {"type": "number"},
-        "psr": {"type": "number"},
-        "per": {"type": "number"},
-        "pbr": {"type": "number"},
-        "volume": {"type": "number"},
-        "unit": {"type": "number"},
-        "market_capitalization": {"type": "string"},
-        "issued_shares": {"type": "string"},
-        "dt": {"type": "string"},
-    }
-
-    def __post_init__(self):
-        validator = Validator(self._SCHEMA)
-        if not validator.validate(self.dumps()):
-            raise KabutobashiEntityError(validator.errors)
-
-    @staticmethod
-    def schema() -> list:
-        return list(StockRecord._SCHEMA.keys())
 
     @staticmethod
     def from_page_of(data: dict) -> "StockRecord":
@@ -154,7 +128,7 @@ class StockRecord:
             raise KabutobashiEntityError(f"floatに変換できる値ではありません。{e}")
 
     def dumps(self) -> dict:
-        return asdict(self)
+        return self.dict()
 
     @staticmethod
     def loads(data: dict) -> "StockRecord":
@@ -175,7 +149,7 @@ class StockRecord:
             raise KabutobashiEntityError("日付のカラム[dt, date, crawl_datetime]のいずれかが存在しません")
 
         return StockRecord(
-            code=data["code"],
+            code=str(data["code"]),
             market=data.get("market", ""),
             name=data.get("name", ""),
             industry_type=data.get("industry_type", ""),
@@ -194,11 +168,8 @@ class StockRecord:
         )
 
 
-@dataclass(frozen=True)
-class StockRecordset:
-    recordset: List[StockRecord] = field(repr=False)
-    REQUIRED_COL = ["code", "open", "close", "high", "low", "unit", "volume", "per", "psr", "pbr", "market", "dt"]
-    OPTIONAL_COL = ["name", "industry_type"]
+class StockRecordset(BaseModel):
+    recordset: List[StockRecord] = Field(repr=False)
 
     def __post_init__(self):
         if not self.recordset:
@@ -231,17 +202,17 @@ class StockRecordset:
             df = df[df["dt"] == latest_dt]
 
         if minimum:
-            return df[self.REQUIRED_COL]
+            return df[REQUIRED_COL]
         else:
-            return df[self.REQUIRED_COL + self.OPTIONAL_COL]
+            return df[REQUIRED_COL + OPTIONAL_COL]
 
 
 class IStockRecordsetRepository(metaclass=ABCMeta):
-    def read(self, code: str) -> "StockRecordset":
-        return StockRecordset(recordset=self._stock_recordset_read(code=code))
+    def read(self) -> "StockRecordset":
+        return StockRecordset(recordset=self._stock_recordset_read())
 
     @abstractmethod
-    def _stock_recordset_read(self, code: str) -> List["StockRecord"]:
+    def _stock_recordset_read(self) -> List["StockRecord"]:
         raise NotImplementedError()
 
     def write(self, data: StockRecordset) -> NoReturn:
@@ -252,8 +223,7 @@ class IStockRecordsetRepository(metaclass=ABCMeta):
         raise NotImplementedError()
 
 
-@dataclass(frozen=True)
-class StockDataSingleCode:
+class StockDataSingleCode(BaseModel):
     """
     単一銘柄の複数日の株データを保持するEntity
 
@@ -303,11 +273,11 @@ class StockDataSingleCode:
     code: str
     stop_updating: bool
     contains_outlier: bool
-    _stock_recordset: StockRecordset
-    _len: int
+    stock_recordset: StockRecordset
+    len_: int
 
     def __post_init__(self):
-        self._code_constraint_check(stock_recordset=self._stock_recordset)
+        self._code_constraint_check(stock_recordset=self.stock_recordset)
 
     @staticmethod
     def _code_constraint_check(stock_recordset: StockRecordset):
@@ -326,10 +296,10 @@ class StockDataSingleCode:
         code = recordset.get_code_list()[0]
         return StockDataSingleCode(
             code=code,
-            _stock_recordset=recordset,
+            stock_recordset=recordset,
             stop_updating=StockDataSingleCode._check_recent_update(df=df),
             contains_outlier=any([v.is_outlier() for v in recordset.recordset]),
-            _len=len(recordset.recordset),
+            len_=len(recordset.recordset),
         )
 
     @staticmethod
@@ -372,10 +342,9 @@ class StockDataSingleCode:
             yield idx, df[i:offset], df[offset:end]
 
     def to_df(self, minimum=True, latest=False) -> pd.DataFrame:
-        return self._stock_recordset.to_df(minimum=minimum, latest=latest)
+        return self.stock_recordset.to_df(minimum=minimum, latest=latest)
 
     def __len__(self):
-        return self._len
 
 
 @dataclass(frozen=True)
