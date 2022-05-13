@@ -1,14 +1,69 @@
 from abc import ABCMeta, abstractmethod
 from datetime import datetime
-from typing import Generator, List, NoReturn, Tuple, Union
+from typing import Generator, Set, List, NoReturn, Tuple, Union
 
 import pandas as pd
 from pydantic import BaseModel, Field
 
 from kabutobashi.domain.errors import KabutobashiEntityError
 
-REQUIRED_COL = ["code", "open", "close", "high", "low", "unit", "volume", "per", "psr", "pbr", "market", "dt"]
-OPTIONAL_COL = ["name", "industry_type"]
+REQUIRED_COL = ["code", "open", "close", "high", "low", "volume", "per", "psr", "pbr", "dt"]
+OPTIONAL_COL = ["name", "industry_type", "market", "unit"]
+
+
+def _replace(input_value: str) -> str:
+    return input_value.replace("---", "0").replace("円", "").replace("株", "").replace("倍", "").replace(",", "")
+
+
+def _convert_float(input_value: Union[str, float, int]) -> float:
+    if type(input_value) == float or type(input_value) == int:
+        return float(input_value)
+    try:
+        return float(_replace(input_value=input_value))
+    except ValueError as e:
+        raise KabutobashiEntityError(f"floatに変換できる値ではありません。{e}")
+
+
+def _convert_int(input_value: Union[str, float, int]) -> int:
+    if type(input_value) == float or type(input_value) == int:
+        return int(input_value)
+    try:
+        return int(_replace(input_value=input_value))
+    except ValueError as e:
+        raise KabutobashiEntityError(f"floatに変換できる値ではありません。{e}")
+
+
+class StockBrand(BaseModel):
+    code: str
+    unit: int
+    market: str
+    name: str
+    industry_type: str
+    market_capitalization: str
+    issued_shares: str
+
+    @staticmethod
+    def loads(data: dict) -> "StockBrand":
+        return StockBrand(
+            code=str(data["code"]),
+            unit=_convert_int(data["unit"]),
+            market=data.get("market", ""),
+            name=data.get("name", ""),
+            industry_type=data.get("industry_type", ""),
+            market_capitalization=data.get("market_capitalization", ""),
+            issued_shares=data.get("issued_shares", ""),
+        )
+
+    def is_reit(self) -> bool:
+        return self.market == "東証REIT"
+
+    def __eq__(self, other):
+        if not isinstance(other, StockBrand):
+            return False
+        return self.code == other.code
+
+    def __hash__(self):
+        return hash(self.code)
 
 
 class StockRecord(BaseModel):
@@ -41,9 +96,6 @@ class StockRecord(BaseModel):
 
     # TODO implements id_: str
     code: str
-    market: str
-    name: str
-    industry_type: str
     open: float
     high: float
     low: float
@@ -52,9 +104,6 @@ class StockRecord(BaseModel):
     per: float
     pbr: float
     volume: int
-    unit: int
-    market_capitalization: str
-    issued_shares: str
     dt: str
 
     @staticmethod
@@ -63,69 +112,33 @@ class StockRecord(BaseModel):
         try:
             return StockRecord(
                 code=label_split[0],
-                market=label_split[1],
-                name=data["name"],
-                industry_type=data["industry_type"],
-                open=float(StockRecord._convert(data["open"])),
-                high=float(StockRecord._convert(data["high"])),
-                low=float(StockRecord._convert(data["low"])),
-                close=float(StockRecord._convert(data["close"])),
-                unit=int(StockRecord._convert(data["unit"])),
-                psr=float(StockRecord._convert(data["psr"])),
-                per=float(StockRecord._convert(data["per"])),
-                pbr=float(StockRecord._convert(data["pbr"])),
-                volume=int(StockRecord._convert(data["volume"])),
-                market_capitalization=data["market_capitalization"],
-                issued_shares=data["issued_shares"],
+                open=_replace(data["open"]),
+                high=_replace(data["high"]),
+                low=_replace(data["low"]),
+                close=_replace(data["close"]),
+                unit=_replace(data["unit"]),
+                psr=_replace(data["psr"]),
+                per=_replace(data["per"]),
+                pbr=_replace(data["pbr"]),
+                volume=_replace(data["volume"]),
                 dt=data["date"],
             )
         except Exception:
             return StockRecord(
                 code="",
-                market="",
-                name="",
-                industry_type="",
                 open=0,
                 high=0,
                 low=0,
                 close=0,
-                unit=0,
                 psr=0,
                 per=0,
                 pbr=0,
                 volume=0,
-                market_capitalization="",
-                issued_shares="",
                 dt="",
             )
 
     def is_outlier(self) -> bool:
         return self.open == 0 or self.high == 0 or self.low == 0 or self.close == 0
-
-    def is_reit(self) -> bool:
-        return self.market == "東証REIT"
-
-    @staticmethod
-    def _convert(input_value: str) -> str:
-        return input_value.replace("---", "0").replace("円", "").replace("株", "").replace("倍", "").replace(",", "")
-
-    @staticmethod
-    def _convert_float(input_value: Union[str, float, int]) -> float:
-        if type(input_value) == float or type(input_value) == int:
-            return float(input_value)
-        try:
-            return float(StockRecord._convert(input_value=input_value))
-        except ValueError as e:
-            raise KabutobashiEntityError(f"floatに変換できる値ではありません。{e}")
-
-    @staticmethod
-    def _convert_int(input_value: Union[str, float, int]) -> int:
-        if type(input_value) == float or type(input_value) == int:
-            return int(input_value)
-        try:
-            return int(StockRecord._convert(input_value=input_value))
-        except ValueError as e:
-            raise KabutobashiEntityError(f"floatに変換できる値ではありません。{e}")
 
     def dumps(self) -> dict:
         return self.dict()
@@ -150,25 +163,20 @@ class StockRecord(BaseModel):
 
         return StockRecord(
             code=str(data["code"]),
-            market=data.get("market", ""),
-            name=data.get("name", ""),
-            industry_type=data.get("industry_type", ""),
-            open=StockRecord._convert_float(data["open"]),
-            high=StockRecord._convert_float(data["high"]),
-            low=StockRecord._convert_float(data["low"]),
-            close=StockRecord._convert_float(data["close"]),
-            unit=StockRecord._convert_int(data["unit"]),
-            psr=StockRecord._convert_float(data["psr"]),
-            per=StockRecord._convert_float(data["per"]),
-            pbr=StockRecord._convert_float(data["pbr"]),
+            open=_convert_float(data["open"]),
+            high=_convert_float(data["high"]),
+            low=_convert_float(data["low"]),
+            close=_convert_float(data["close"]),
+            psr=_convert_float(data["psr"]),
+            per=_convert_float(data["per"]),
+            pbr=_convert_float(data["pbr"]),
             volume=data["volume"],
-            market_capitalization=data.get("market_capitalization", ""),
-            issued_shares=data.get("issued_shares", ""),
             dt=dt,
         )
 
 
 class StockRecordset(BaseModel):
+    brand_set: Set[StockBrand] = Field(repr=False)
     recordset: List[StockRecord] = Field(repr=False)
 
     def __post_init__(self):
@@ -178,9 +186,11 @@ class StockRecordset(BaseModel):
     @staticmethod
     def of(df: pd.DataFrame) -> "StockRecordset":
         recordset = []
+        brand_set = set()
         for _, row in df.iterrows():
             recordset.append(StockRecord.loads(dict(row)))
-        return StockRecordset(recordset=recordset)
+            brand_set.add(StockBrand.loads(data=dict(row)))
+        return StockRecordset(brand_set=brand_set, recordset=recordset)
 
     def get_code_list(self) -> List[str]:
         return list(set([v.code for v in self.recordset]))
@@ -209,10 +219,10 @@ class StockRecordset(BaseModel):
 
 class IStockRecordsetRepository(metaclass=ABCMeta):
     def read(self) -> "StockRecordset":
-        return StockRecordset(recordset=self._stock_recordset_read())
+        return self._stock_recordset_read()
 
     @abstractmethod
-    def _stock_recordset_read(self) -> List["StockRecord"]:
+    def _stock_recordset_read(self) -> "StockRecordset":
         raise NotImplementedError()
 
     def write(self, data: StockRecordset) -> NoReturn:

@@ -4,7 +4,7 @@ from typing import Generator, Union, NoReturn, List
 
 import pandas as pd
 
-from kabutobashi.domain.entity import StockRecord, StockRecordset, IStockRecordsetRepository
+from kabutobashi.domain.entity import StockRecordset, IStockRecordsetRepository
 from kabutobashi.infrastructure.crawler import StockInfoPage
 
 __all__ = ["IStockRecordsetStorageRepository", "StockRecordsetStorageBasicRepository", "StockDataMultipleCodeCrawler"]
@@ -20,7 +20,7 @@ class IStockRecordsetStorageRepository(IStockRecordsetRepository):
     def _read_path_generator(self) -> Generator[str, None, None]:
         raise NotImplementedError()
 
-    def _stock_recordset_read(self) -> List["StockRecord"]:
+    def _stock_recordset_read(self) -> StockRecordset:
         df_list = []
         if self.use_mp:
             with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
@@ -31,7 +31,7 @@ class IStockRecordsetStorageRepository(IStockRecordsetRepository):
             df_list = [pd.read_csv(p) for p in self._read_path_generator()]
 
         df = pd.concat(df_list)
-        return [StockRecord.loads(dict(row)) for _, row in df.iterrows()]
+        return StockRecordset.of(df=df)
 
     @abstractmethod
     def _write_path_generator(self) -> Generator[str, None, None]:
