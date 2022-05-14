@@ -38,5 +38,5 @@ class StockIpoPage(Page):
             table_body_dict = {}
             for header, td in zip(table_head_list, tr.find_all("td")):
                 table_body_dict[header] = td.get_text().replace("\n", "")
-            whole_result.append(StockIpo.from_page_of(data=table_body_dict).dumps())
+            whole_result.append(StockIpo.loads(data=table_body_dict).dumps())
         return {"ipo_list": whole_result}

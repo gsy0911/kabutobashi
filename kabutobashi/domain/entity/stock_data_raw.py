@@ -16,6 +16,8 @@ __all__ = ["StockBrand", "StockRecord", "StockRecordset", "StockDataSingleCode",
 
 
 def _replace(input_value: str) -> str:
+    if input_value == "-":
+        return "0"
     return input_value.replace("---", "0").replace("円", "").replace("株", "").replace("倍", "").replace(",", "")
 
 
@@ -45,6 +47,7 @@ class StockBrand(BaseModel):
     """
     StockBrand: entity
     """
+
     code: str = Field(description="銘柄コード")
     unit: int = Field(description="単位")
     market: str = Field(description="市場")
@@ -166,10 +169,43 @@ class StockRecord(BaseModel):
         )
 
 
+class StockIpo(BaseModel):
+    """
+    まだ取り込んでない値など
+
+    '想定(仮条件)': '1,920(1,900-1,920)',
+    '吸収金額': '75.6億',
+    '(騰落率)損益': '(+1.1%)+2,100円00001',
+
+    """
+
+    code: int
+    manager: str = Field(description="主幹")
+    stock_listing_at: str = Field(description="上場日")
+    public_offering: float = Field(description="公募")
+    evaluation: str = Field(description="評価")
+    initial_price: float = Field(description="初値")
+
+    @staticmethod
+    def loads(data: dict) -> "StockIpo":
+        return StockIpo(
+            code=data["code"],
+            manager=data["主幹"],
+            stock_listing_at=data["上場"],
+            public_offering=_convert_float(data["公募"]),
+            evaluation=data["評価"],
+            initial_price=_convert_float(data["初値"]),
+        )
+
+    def dumps(self) -> dict:
+        return self.dict()
+
+
 class StockRecordset(BaseModel):
     """
     StockRecordset: root-entity
     """
+
     brand_set: Set[StockBrand] = Field(repr=False)
     recordset: List[StockRecord] = Field(repr=False)
 
