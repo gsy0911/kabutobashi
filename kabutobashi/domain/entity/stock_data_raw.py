@@ -200,7 +200,7 @@ class StockRecordset(BaseModel):
         return StockRecordset(brand_set=brand_set, recordset=recordset)
 
     def get_code_list(self) -> List[str]:
-        return list(set([v.code for v in self.recordset]))
+        return list([v.code for v in self.brand_set])
 
     def _to_df(self, code: Optional[str]) -> pd.DataFrame:
         df_brand = pd.DataFrame([v.dumps() for v in self.brand_set])
@@ -344,10 +344,15 @@ class StockDataSingleCode(BaseModel):
 
     @staticmethod
     def _code_constraint_check(stock_recordset: StockRecordset):
-        code = stock_recordset.get_code_list()
-        if len(code) > 1:
+        brands = stock_recordset.get_code_list()
+        if len(brands) > 1:
             raise KabutobashiEntityError("multiple code")
-        elif len(code) == 0:
+        elif len(brands) == 0:
+            raise KabutobashiEntityError("no code")
+        code_records = list(set([v.code for v in stock_recordset.recordset]))
+        if len(code_records) > 1:
+            raise KabutobashiEntityError("multiple code")
+        elif len(code_records) == 0:
             raise KabutobashiEntityError("no code")
 
     @staticmethod
