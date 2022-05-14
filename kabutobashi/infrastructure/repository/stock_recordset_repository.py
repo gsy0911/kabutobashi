@@ -1,6 +1,6 @@
 from abc import abstractmethod
 from concurrent.futures import ThreadPoolExecutor
-from typing import Generator, List, NoReturn, Union
+from typing import Generator, List, Union
 
 import pandas as pd
 
@@ -36,7 +36,7 @@ class IStockRecordsetStorageRepository(IStockRecordsetRepository):
     def _write_path_generator(self) -> Generator[str, None, None]:
         raise NotImplementedError()
 
-    def _stock_recordset_write(self, data: StockRecordset) -> NoReturn:
+    def _stock_recordset_write(self, data: StockRecordset):
         df = data.to_df(minimum=False)
         for p in self._write_path_generator():
             df.to_csv(p, index=False)

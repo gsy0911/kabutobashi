@@ -26,7 +26,7 @@ class StockDataVisualized:
     @staticmethod
     def of(processed: List[StockDataProcessedBySingleMethod], size_ratio: int = 2):
         return StockDataVisualized(
-            fig=StockDataVisualized._visualize(processed=processed, size_ratio=size_ratio), size_ratio=size_ratio
+            fig=StockDataVisualized._visualize(processed_list=processed, size_ratio=size_ratio), size_ratio=size_ratio
         )
 
     @staticmethod
@@ -39,12 +39,12 @@ class StockDataVisualized:
         candlestick_ohlc(ax, ohlc, width=0.7, colorup="g", colordown="r")
 
     @staticmethod
-    def _visualize(processed: List[StockDataProcessedBySingleMethod], size_ratio: int):
+    def _visualize(processed_list: List[StockDataProcessedBySingleMethod], size_ratio: int):
         """
         Visualize Stock Data.
 
         Args:
-            processed:
+            processed_list:
             size_ratio: determine the size of the graph, default 2.
 
         Returns:
@@ -52,7 +52,7 @@ class StockDataVisualized:
         """
 
         def _n_rows() -> int:
-            lower_nums = len([p for p in processed if p.visualize_option["position"] == "lower"])
+            lower_nums = len([p for p in processed_list if p.visualize_option["position"] == "lower"])
             return 1 + lower_nums
 
         n_rows = _n_rows()
@@ -70,12 +70,12 @@ class StockDataVisualized:
         fig.autofmt_xdate()
 
         # set candlestick base
-        base_df = processed[0].df[["dt", "open", "close", "high", "low"]]
+        base_df = processed_list[0].df[["dt", "open", "close", "high", "low"]]
         StockDataVisualized._add_ax_candlestick(axs[0], base_df)
 
         ax_idx = 1
         # plots
-        for processed in processed:
+        for processed in processed_list:
             position = processed.visualize_option["position"]
             df = processed.df
             time_series = mdates.date2num(df["dt"])
