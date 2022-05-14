@@ -3,7 +3,9 @@ from dataclasses import dataclass
 
 @dataclass(frozen=True)
 class StockDataEstimatedBySingleFilter:
-    """ """
+    """
+    StockDataEstimatedBySingleFilter: ValueObject
+    """
 
     code: str
     estimated_value: float

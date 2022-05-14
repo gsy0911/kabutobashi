@@ -15,8 +15,8 @@ from .stock_data_processed import StockDataProcessedBySingleMethod
 @dataclass(frozen=True)
 class StockDataVisualized:
     """
-    Holds data processed by multiple-Methods.
-    Also used to visualize.
+    StockDataVisualized: ValueObject
+    Used to visualize.
     """
 
     fig: plt.Figure

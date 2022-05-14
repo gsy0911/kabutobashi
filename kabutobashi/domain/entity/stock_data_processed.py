@@ -10,6 +10,7 @@ from kabutobashi.domain.errors import KabutobashiEntityError
 @dataclass(frozen=True)
 class StockDataProcessedBySingleMethod:
     """
+    StockDataProcessedBySingleMethod: ValueObject
     Holds data processed by singular-Method.
     """
 

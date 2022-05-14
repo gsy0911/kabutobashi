@@ -1,4 +1,5 @@
 from abc import ABCMeta, abstractmethod
+from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Generator, List, NoReturn, Optional, Set, Tuple, Union
 
@@ -9,6 +10,9 @@ from kabutobashi.domain.errors import KabutobashiEntityError
 
 REQUIRED_COL = ["code", "open", "close", "high", "low", "volume", "per", "psr", "pbr", "dt"]
 OPTIONAL_COL = ["name", "industry_type", "market", "unit"]
+
+
+__all__ = ["StockBrand", "StockRecord", "StockRecordset", "StockDataSingleCode", "IStockRecordsetRepository"]
 
 
 def _replace(input_value: str) -> str:
@@ -38,13 +42,16 @@ def _convert_int(input_value: Union[str, float, int]) -> int:
 
 
 class StockBrand(BaseModel):
-    code: str
-    unit: int
-    market: str
-    name: str
-    industry_type: str
-    market_capitalization: str
-    issued_shares: str
+    """
+    StockBrand: entity
+    """
+    code: str = Field(description="銘柄コード")
+    unit: int = Field(description="単位")
+    market: str = Field(description="市場")
+    name: str = Field(description="銘柄名")
+    industry_type: str = Field(description="業種")
+    market_capitalization: str = Field(description="時価総額")
+    issued_shares: str = Field(description="発行済み株式")
 
     def dumps(self) -> dict:
         return self.dict()
@@ -75,43 +82,20 @@ class StockBrand(BaseModel):
 
 class StockRecord(BaseModel):
     """
-
-    * code: 銘柄コード
-    * open: 始値
-    * close: 終値
-    * high: 高値
-    * low: 底値
-    * unit: 単位
-    * volume: 出来高
-    * per: PER
-    * psr: PSR
-    * pbr: PBR
-    * market: 市場
-    * dt: その株価の値の日
-    * name: 名前
-    * industry_type: 業種
-
-    Args:
-        code: 銘柄コード
-        market: 市場
-        industry_type: 業種
-        open: 円
-        high: 円
-        low: 円
-        close: 円
+    StockRecord: entity
     """
 
     # TODO implements id_: str
-    code: str
-    open: float
-    high: float
-    low: float
-    close: float
-    psr: float
-    per: float
-    pbr: float
-    volume: int
-    dt: str
+    code: str = Field(description="銘柄コード")
+    open: float = Field(description="始値")
+    high: float = Field(description="高値")
+    low: float = Field(description="底値")
+    close: float = Field(description="終値")
+    psr: float = Field(description="PSR")
+    per: float = Field(description="PER")
+    pbr: float = Field(description="PBR")
+    volume: int = Field(description="出来高")
+    dt: str = Field(description="日付")
 
     @staticmethod
     def from_page_of(data: dict) -> "StockRecord":
@@ -183,6 +167,9 @@ class StockRecord(BaseModel):
 
 
 class StockRecordset(BaseModel):
+    """
+    StockRecordset: root-entity
+    """
     brand_set: Set[StockBrand] = Field(repr=False)
     recordset: List[StockRecord] = Field(repr=False)
 
@@ -286,30 +273,10 @@ class IStockRecordsetRepository(metaclass=ABCMeta):
         raise NotImplementedError()
 
 
-class StockDataSingleCode(BaseModel):
+@dataclass(frozen=True)
+class StockDataSingleCode:
     """
-    単一銘柄の複数日の株データを保持するEntity
-
-    以下のデータを保持する
-
-    * code: 銘柄コード
-    * open: 始値
-    * close: 終値
-    * high: 高値
-    * low: 底値
-    * unit: 単位
-    * volume: 出来高
-    * per: PER
-    * psr: PSR
-    * pbr: PBR
-    * market: 市場
-    * dt: その株価の値の日
-    * name: 名前
-    * industry_type: 業種
-
-    Args:
-        df: 複数日・単一銘柄を保持するDataFrame
-        code: 銘柄コード
+    StockDataSingleCode: ValueObject
 
     Examples:
         >>> import kabutobashi as kb
@@ -333,11 +300,11 @@ class StockDataSingleCode(BaseModel):
 
     """
 
-    code: str
-    stop_updating: bool
-    contains_outlier: bool
-    stock_recordset: StockRecordset
-    len_: int
+    code: str = field(metadata={"jp": "銘柄コード"})
+    stop_updating: bool = field(metadata={"jp": "更新停止"})
+    contains_outlier: bool = field(metadata={"jp": "例外値を含む"})
+    stock_recordset: StockRecordset = field(metadata={"jp": "株データ"})
+    len_: int = field(metadata={"jp": "データ数"})
 
     def __post_init__(self):
         self._code_constraint_check(stock_recordset=self.stock_recordset)
