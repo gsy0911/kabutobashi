@@ -22,16 +22,13 @@ from kabutobashi.domain.services.method import (
 
 from .domain import errors
 from .domain.aggregates import StockCodeSingleAggregate
-from .domain.entity import (
+from .domain.entity import StockIpo, StockRecord, StockRecordset, Weeks52HighLow
+from .domain.values import (
     StockDataEstimatedBySingleFilter,
     StockDataProcessedBySingleMethod,
+    StockDataSingleCode,
     StockDataVisualized,
-    StockIpo,
-    StockRecord,
-    StockRecordset,
-    Weeks52HighLow,
 )
-from .domain.values import StockDataSingleCode
 from .example_data import example
 
 # classes or functions about crawl web pages

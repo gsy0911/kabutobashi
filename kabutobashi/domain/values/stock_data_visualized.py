@@ -8,8 +8,7 @@ import pandas as pd
 from mplfinance.original_flavor import candlestick_ohlc
 
 from kabutobashi.domain.errors import KabutobashiEntityError
-
-from .stock_data_processed import StockDataProcessedBySingleMethod
+from kabutobashi.domain.values.stock_data_processed import StockDataProcessedBySingleMethod
 
 
 @dataclass(frozen=True)

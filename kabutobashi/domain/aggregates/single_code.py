@@ -4,16 +4,16 @@ from typing import Dict, List, NoReturn, Optional, Union
 
 import pandas as pd
 
-from kabutobashi.domain.entity import (
-    StockDataEstimatedBySingleFilter,
-    StockDataProcessedBySingleMethod,
-    StockDataVisualized,
-    StockRecordset,
-)
+from kabutobashi.domain.entity import StockRecordset
 from kabutobashi.domain.errors import KabutobashiEntityError
 from kabutobashi.domain.services.estimate_filter import EstimateFilter
 from kabutobashi.domain.services.method import Method
-from kabutobashi.domain.values import StockDataSingleCode
+from kabutobashi.domain.values import (
+    StockDataEstimatedBySingleFilter,
+    StockDataProcessedBySingleMethod,
+    StockDataSingleCode,
+    StockDataVisualized,
+)
 
 __all__ = ["StockCodeSingleAggregate", "IStockCodeSingleAggregateRepository"]
 
