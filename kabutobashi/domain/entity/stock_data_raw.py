@@ -294,11 +294,11 @@ class StockRecordset(BaseModel):
         else:
             return df[REQUIRED_COL + OPTIONAL_COL]
 
-    # def to_single_code(self, code: str) -> "StockDataSingleCode":
-    #     if type(code) is not str:
-    #         raise KabutobashiEntityError(f"code must be type of `str`")
-    #     return StockDataSingleCode.of(df=self._to_df(code=code))
-    #
+    def to_single_code(self, code: str) -> "StockRecordset":
+        if type(code) is not str:
+            raise KabutobashiEntityError(f"code must be type of `str`")
+        return StockRecordset.of(df=self._to_df(code=code))
+
     # def to_code_iterable(
     #     self,
     #     until: Optional[int] = None,
