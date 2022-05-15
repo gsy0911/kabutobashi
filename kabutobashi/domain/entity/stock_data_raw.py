@@ -12,7 +12,16 @@ REQUIRED_COL = ["code", "open", "close", "high", "low", "volume", "per", "psr", 
 OPTIONAL_COL = ["name", "industry_type", "market", "unit"]
 
 
-__all__ = ["StockBrand", "StockRecord", "StockRecordset", "StockDataSingleCode", "IStockRecordsetRepository"]
+# TODO stock_models.pyに名前を変更
+__all__ = [
+    "StockBrand",
+    "StockRecord",
+    "StockRecordset",
+    "StockDataSingleCode",
+    "StockIpo",
+    "Weeks52HighLow",
+    "IStockRecordsetRepository",
+]
 
 
 def _replace(input_value: str) -> str:
@@ -195,6 +204,42 @@ class StockIpo(BaseModel):
             public_offering=_convert_float(data["公募"]),
             evaluation=data["評価"],
             initial_price=_convert_float(data["初値"]),
+        )
+
+    def dumps(self) -> dict:
+        return self.dict()
+
+
+class Weeks52HighLow(BaseModel):
+    """
+    Weeks52HighLow: Entity
+
+    52週高値・底値の値を保持するクラス
+    """
+
+    code: int = Field(description="銘柄コード")
+    brand_name: str = Field(description="銘柄名")
+    close: float = Field(description="終値")
+    buy_or_sell: str = Field(description="買い, 強い買い, 売り, 強い売り")
+    volatility_ratio: float = Field(description="価格変動比")
+    volatility_value: float = Field(description="価格変動値")
+    dt: str = Field(description="日付")
+
+    @staticmethod
+    def from_page_of(data: dict) -> "Weeks52HighLow":
+        buy = data["buy"]
+        strong_buy = data["strong_buy"]
+        sell = data["sell"]
+        strong_sell = data["strong_sell"]
+
+        return Weeks52HighLow(
+            code=data["code"],
+            brand_name=data["brand_name"],
+            close=float(data["close"]),
+            buy_or_sell=f"{buy}{strong_buy}{sell}{strong_sell}",
+            volatility_ratio=_convert_float(data["volatility_ratio"]),
+            volatility_value=_convert_float(data["volatility_value"]),
+            dt="",
         )
 
     def dumps(self) -> dict:

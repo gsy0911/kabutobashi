@@ -32,6 +32,6 @@ from .stock_data_raw import (
     StockIpo,
     StockRecord,
     StockRecordset,
+    Weeks52HighLow,
 )
 from .stock_data_visualized import StockDataVisualized
-from .weeks_52_high_low_info import Weeks52HighLow
