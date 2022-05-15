@@ -25,13 +25,13 @@ from .domain.aggregates import StockCodeSingleAggregate
 from .domain.entity import (
     StockDataEstimatedBySingleFilter,
     StockDataProcessedBySingleMethod,
-    StockDataSingleCode,
     StockDataVisualized,
     StockIpo,
     StockRecord,
     StockRecordset,
     Weeks52HighLow,
 )
+from .domain.values import StockDataSingleCode
 from .example_data import example
 
 # classes or functions about crawl web pages

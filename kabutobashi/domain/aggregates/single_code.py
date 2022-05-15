@@ -7,13 +7,13 @@ import pandas as pd
 from kabutobashi.domain.entity import (
     StockDataEstimatedBySingleFilter,
     StockDataProcessedBySingleMethod,
-    StockDataSingleCode,
     StockDataVisualized,
     StockRecordset,
 )
 from kabutobashi.domain.errors import KabutobashiEntityError
 from kabutobashi.domain.services.estimate_filter import EstimateFilter
 from kabutobashi.domain.services.method import Method
+from kabutobashi.domain.values import StockDataSingleCode
 
 __all__ = ["StockCodeSingleAggregate", "IStockCodeSingleAggregateRepository"]
 
@@ -36,7 +36,8 @@ class StockCodeSingleAggregate:
         elif type(entity) is StockRecordset:
             if code is None:
                 raise KabutobashiEntityError("code is required")
-            single_code = entity.to_single_code(code=code)
+            df_ = entity.to_df(code=code)
+            single_code = StockDataSingleCode.of(df=df_)
         else:
             raise KabutobashiEntityError("accept pd.DataFrame or StockDataSingleCode")
         return StockCodeSingleAggregate(code=single_code.code, single_code=single_code)

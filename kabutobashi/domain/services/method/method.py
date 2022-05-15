@@ -58,7 +58,7 @@ class Method(metaclass=ABCMeta):
 
     @staticmethod
     def _validate(df: pd.DataFrame) -> pd.DataFrame:
-        from kabutobashi.domain.entity import StockDataSingleCode
+        from kabutobashi.domain.values import StockDataSingleCode
 
         return StockDataSingleCode.of(df=df).df
 
