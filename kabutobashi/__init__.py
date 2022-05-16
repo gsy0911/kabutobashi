@@ -22,7 +22,7 @@ from kabutobashi.domain.services.method import (
 
 from .domain import errors
 from .domain.aggregates import StockCodeSingleAggregate
-from .domain.entity import StockIpo, StockRecord, StockRecordset, Weeks52HighLow
+from .domain.entity import StockBrand, StockIpo, StockRecord, StockRecordset, Weeks52HighLow
 from .domain.values import (
     StockDataEstimatedBySingleFilter,
     StockDataProcessedBySingleMethod,

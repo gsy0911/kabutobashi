@@ -1,18 +1,30 @@
 import pandas as pd
+import pydantic
 import pytest
 
 import kabutobashi as kb
 from kabutobashi.domain.errors import KabutobashiEntityError
 
 
-class TestStockInfo:
+class TestStockBrand:
     def test_error_init(self):
-        with pytest.raises(KabutobashiEntityError):
+        with pytest.raises(pydantic.ValidationError):
+            _ = kb.StockBrand(
+                code="1234",
+                market="",
+                name="",
+                unit="",
+                market_capitalization="",
+                industry_type="",
+                issued_shares="",
+            )
+
+
+class TestStockRecord:
+    def test_error_init(self):
+        with pytest.raises(pydantic.ValidationError):
             _ = kb.StockRecord(
                 code="1234",
-                market="market",
-                name="",
-                industry_type="industry_type",
                 open="",
                 high="",
                 low="",
@@ -21,16 +33,13 @@ class TestStockInfo:
                 per="",
                 pbr="",
                 volume="",
-                unit="",
-                market_capitalization="",
-                issued_shares="",
                 dt="",
             )
 
 
 class TestStockIpo:
     def test_error_init(self):
-        with pytest.raises(KabutobashiEntityError):
+        with pytest.raises(pydantic.ValidationError):
             _ = kb.StockIpo(
                 code="", market="", manager="", stock_listing_at="", public_offering="", evaluation="", initial_price=""
             )

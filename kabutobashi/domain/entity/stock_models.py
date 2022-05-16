@@ -62,6 +62,26 @@ class StockBrand(BaseModel):
     market_capitalization: str = Field(description="時価総額")
     issued_shares: str = Field(description="発行済み株式")
 
+    def __init__(
+        self,
+        code: str,
+        unit: int,
+        market: str,
+        name: str,
+        industry_type: str,
+        market_capitalization: str,
+        issued_shares: str,
+    ):
+        super().__init__(
+            code=code,
+            unit=unit,
+            market=market,
+            name=name,
+            industry_type=industry_type,
+            market_capitalization=market_capitalization,
+            issued_shares=issued_shares,
+        )
+
     def dumps(self) -> dict:
         return self.dict()
 
@@ -106,21 +126,46 @@ class StockRecord(BaseModel):
     volume: int = Field(description="出来高")
     dt: str = Field(description="日付")
 
+    def __init__(
+        self,
+        code: str,
+        open: float,
+        high: float,
+        low: float,
+        close: float,
+        psr: float,
+        per: float,
+        pbr: float,
+        volume: int,
+        dt: str,
+    ):
+        super().__init__(
+            code=code,
+            open=open,
+            high=high,
+            low=low,
+            close=close,
+            psr=psr,
+            per=per,
+            pbr=pbr,
+            volume=volume,
+            dt=dt,
+        )
+
     @staticmethod
     def from_page_of(data: dict) -> "StockRecord":
         label_split = data["stock_label"].split("  ")
         try:
             return StockRecord(
                 code=label_split[0],
-                open=_replace(data["open"]),
-                high=_replace(data["high"]),
-                low=_replace(data["low"]),
-                close=_replace(data["close"]),
-                unit=_replace(data["unit"]),
-                psr=_replace(data["psr"]),
-                per=_replace(data["per"]),
-                pbr=_replace(data["pbr"]),
-                volume=_replace(data["volume"]),
+                open=_convert_float(data["open"]),
+                high=_convert_float(data["high"]),
+                low=_convert_float(data["low"]),
+                close=_convert_float(data["close"]),
+                psr=_convert_float(data["psr"]),
+                per=_convert_float(data["per"]),
+                pbr=_convert_float(data["pbr"]),
+                volume=_convert_int(data["volume"]),
                 dt=data["date"],
             )
         except Exception:
