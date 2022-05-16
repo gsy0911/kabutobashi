@@ -47,7 +47,7 @@ class TestStockIpo:
 
 class TestWeeks52HihLow:
     def test_error_init(self):
-        with pytest.raises(KabutobashiEntityError):
+        with pytest.raises(pydantic.ValidationError):
             _ = kb.Weeks52HighLow(
                 code="", brand_name="", close="", buy_or_sell="", volatility_ratio="", volatility_value=""
             )
@@ -62,7 +62,13 @@ class TestStockDataSingleCode:
 
         # check None
         with pytest.raises(KabutobashiEntityError):
-            _ = kb.StockDataSingleCode(code="-", _stock_data_list=[], stop_updating=False, contains_outlier=False)
+            _ = kb.StockDataSingleCode(
+                code="-",
+                stock_recordset=kb.StockRecordset.of(df=pd.DataFrame()),
+                stop_updating=False,
+                contains_outlier=False,
+                len_=0
+            )
 
         # check multiple code
         with pytest.raises(KabutobashiEntityError):
@@ -78,8 +84,8 @@ class TestStockDataSingleCode:
         single_code = df[df["code"] == "1375"]
         sdsc = kb.StockDataSingleCode.of(df=single_code)
 
-        required_cols = kb.StockDataSingleCode.REQUIRED_COL
-        optional_cols = kb.StockDataSingleCode.OPTIONAL_COL
+        required_cols = ["code", "open", "close", "high", "low", "volume", "per", "psr", "pbr", "dt"]
+        optional_cols = ["name", "industry_type", "market", "unit"]
 
         # check minimum df
         minimum_df = sdsc.to_df()
@@ -95,24 +101,16 @@ class TestStockDataSingleCode:
         assert len(latest_date_df.index) == 1
 
 
-class TestStockDataMultipleCode:
+class TestStockRecordset:
     def test_code_iterable(self):
-        sdmc = kb.example()
+        records = kb.example()
+        for _ in records.to_code_iterable(until=1):
+            pass
+
+
+class TestStockSingleAggregate:
+    def test_pass(self):
+        records = kb.example()
         methods = kb.methods + [kb.basic, kb.pct_change, kb.volatility]
-        for _ in sdmc.to_code_iterable(until=1):
-            pass
-
-        for _ in sdmc.to_processed(methods=methods, until=1):
-            pass
-
-        for _ in sdmc.to_estimated(methods=methods, estimate_filters=kb.estimate_filters, until=1):
-            pass
-
-
-class TestStockDataAnalyzedByMultipleMethod:
-    def test_visualize(self):
-        sdmc = kb.example()
-        sdsc = sdmc.to_single_code(code="1375")
-        parameterize_methods = kb.methods + [kb.basic, kb.pct_change, kb.volatility]
-        processed = sdsc.to_processed(methods=parameterize_methods)
-        _ = processed.visualize()
+        agg = kb.StockCodeSingleAggregate.of(entity=records, code="1375")
+        _ = agg.with_processed(methods=methods).with_estimated(estimate_filters=kb.estimate_filters)

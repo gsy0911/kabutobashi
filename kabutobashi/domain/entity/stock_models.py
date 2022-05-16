@@ -89,7 +89,7 @@ class StockBrand(BaseModel):
     def loads(data: dict) -> "StockBrand":
         return StockBrand(
             code=str(data["code"]),
-            unit=_convert_int(data["unit"]),
+            unit=_convert_int(data.get("unit", 0)),
             market=data.get("market", ""),
             name=data.get("name", ""),
             industry_type=data.get("industry_type", ""),
