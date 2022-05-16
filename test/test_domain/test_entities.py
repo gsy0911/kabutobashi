@@ -67,7 +67,7 @@ class TestStockDataSingleCode:
                 stock_recordset=kb.StockRecordset.of(df=pd.DataFrame()),
                 stop_updating=False,
                 contains_outlier=False,
-                len_=0
+                len_=0,
             )
 
         # check multiple code

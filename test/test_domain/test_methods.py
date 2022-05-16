@@ -28,7 +28,6 @@ def test_analysis_with_sma(stock_agg):
     assert "sell_signal" in columns
 
 
-
 def test_analysis_with_macd(stock_agg):
     processed = stock_agg.with_processed([kb.macd])
     columns = processed.processed_list[0].df.columns
