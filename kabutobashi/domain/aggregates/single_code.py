@@ -20,6 +20,22 @@ __all__ = ["StockCodeSingleAggregate", "IStockCodeSingleAggregateRepository"]
 
 @dataclass(frozen=True)
 class StockCodeSingleAggregate:
+    """
+    StockCodeSingleAggregate: Aggregate
+
+    Examples:
+        >>> import kabutobashi as kb
+        >>> import pandas as pd
+        >>> data_list = []
+        >>> records = kb.example()
+        >>> methods = kb.methods + [kb.basic, kb.pct_change, kb.volatility]
+        >>> filters = kb.estimate_filters
+        >>>
+        >>> for df in records.to_code_iterable(until=1, row_more_than=80):
+        >>>     agg = kb.StockCodeSingleAggregate.of(entity=df).with_processed(methods).with_estimated(filters)
+        >>>     print(agg.weighted_estimated_value())
+    """
+
     code: str
     single_code: StockDataSingleCode
     processed_list: List[StockDataProcessedBySingleMethod] = field(default_factory=list, repr=False)

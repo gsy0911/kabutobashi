@@ -18,13 +18,13 @@ class StockDataSingleCode:
         >>> import kabutobashi as kb
         >>> import pandas as pd
         >>> data_list = []
-        >>> sdmc = kb.example()
+        >>> records = kb.example()
         >>> parameterize_methods = kb.methods + [kb.basic, kb.pct_change, kb.volatility]
-        >>> for sdsc in sdmc.to_code_iterable(until=1, row_more_than=80):
-        >>>     code = sdsc.code
-        >>>     print(code)
+        >>>
+        >>> for df in records.to_code_iterable(until=1, row_more_than=80):
+        >>>     sdsc = StockDataSingleCode.of(df=df)
         >>>     for idx, df_x, df_y in sdsc.sliding_split():
-        >>>         df_params = kb.StockDataAnalyzedByMultipleMethod.of(df=df_x, methods=parameterize_methods)
+        >>>         df_params = kb.StockDataProcessedBySingleMethod.of(df=df_x, methods=parameterize_methods)
         >>>         # diff:= df_y.last - df_x.last
         >>>         start = list(df_x["close"])[-1]
         >>>         end = list(df_y["close"])[-1]
@@ -33,7 +33,6 @@ class StockDataSingleCode:
         >>>         d.update({"diff": diff})
         >>>         data_list.append(d)
         >>>  data_for_ml = pd.DataFrame(data_list)
-
     """
 
     code: str = field(metadata={"jp": "銘柄コード"})
