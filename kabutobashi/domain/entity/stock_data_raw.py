@@ -1,6 +1,6 @@
 from abc import ABCMeta, abstractmethod
 from datetime import datetime
-from typing import Generator, List, NoReturn, Optional, Set, Tuple, Union
+from typing import Generator, List, NoReturn, Optional, Set, Union
 
 import pandas as pd
 from pydantic import BaseModel, Field
@@ -299,41 +299,34 @@ class StockRecordset(BaseModel):
             raise KabutobashiEntityError(f"code must be type of `str`")
         return StockRecordset.of(df=self._to_df(code=code))
 
-    # def to_code_iterable(
-    #     self,
-    #     until: Optional[int] = None,
-    #     *,
-    #     skip_reit: bool = True,
-    #     row_more_than: Optional[int] = 80,
-    #     code_list: list = None,
-    # ) -> Generator["StockDataSingleCode", None, None]:
-    #     _count = 0
-    #     df = self._to_df(code=None)
-    #
-    #     if code_list:
-    #         df = df[df["code"].isin(code_list)]
-    #     if skip_reit:
-    #         df = df[~(df["market"] == "東証REIT")]
-    #
-    #     for code, df_ in df.groupby("code"):
-    #         if row_more_than:
-    #             if len(df_.index) < row_more_than:
-    #                 continue
-    #
-    #         # create sdsc
-    #         sdsc = StockDataSingleCode.of(df=df_)
-    #         if sdsc.stop_updating:
-    #             continue
-    #         if sdsc.contains_outlier:
-    #             continue
-    #
-    #         # add counter if yield
-    #         if until:
-    #             if _count >= until:
-    #                 return
-    #         _count += 1
-    #
-    #         yield sdsc
+    def to_code_iterable(
+        self,
+        until: Optional[int] = None,
+        *,
+        skip_reit: bool = True,
+        row_more_than: Optional[int] = 80,
+        code_list: list = None,
+    ) -> Generator[pd.DataFrame, None, None]:
+        _count = 0
+        df = self._to_df(code=None)
+
+        if code_list:
+            df = df[df["code"].isin(code_list)]
+        if skip_reit:
+            df = df[~(df["market"] == "東証REIT")]
+
+        for code, df_ in df.groupby("code"):
+            if row_more_than:
+                if len(df_.index) < row_more_than:
+                    continue
+
+            # add counter if yield
+            if until:
+                if _count >= until:
+                    return
+            _count += 1
+
+            yield df_
 
 
 class IStockRecordsetRepository(metaclass=ABCMeta):
