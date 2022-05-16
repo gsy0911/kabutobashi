@@ -54,6 +54,7 @@ class StockBrand(BaseModel):
     StockBrand: entity
     """
 
+    id: int = Field(description="id")
     code: str = Field(description="銘柄コード")
     unit: int = Field(description="単位")
     market: str = Field(description="市場")
@@ -64,6 +65,7 @@ class StockBrand(BaseModel):
 
     def __init__(
         self,
+        id: Optional[int],
         code: str,
         unit: int,
         market: str,
@@ -72,7 +74,10 @@ class StockBrand(BaseModel):
         market_capitalization: str,
         issued_shares: str,
     ):
+        if id is None:
+            id = 0
         super().__init__(
+            id=id,
             code=code,
             unit=unit,
             market=market,
@@ -88,6 +93,7 @@ class StockBrand(BaseModel):
     @staticmethod
     def loads(data: dict) -> "StockBrand":
         return StockBrand(
+            id=data.get("id"),
             code=str(data["code"]),
             unit=_convert_int(data.get("unit", 0)),
             market=data.get("market", ""),
@@ -114,7 +120,7 @@ class StockRecord(BaseModel):
     StockRecord: entity
     """
 
-    # TODO implements id_: str
+    id: int = Field(description="id")
     code: str = Field(description="銘柄コード")
     open: float = Field(description="始値")
     high: float = Field(description="高値")
@@ -128,6 +134,7 @@ class StockRecord(BaseModel):
 
     def __init__(
         self,
+        id: Optional[int],
         code: str,
         open: float,
         high: float,
@@ -139,7 +146,11 @@ class StockRecord(BaseModel):
         volume: int,
         dt: str,
     ):
+
+        if id is None:
+            id = 0
         super().__init__(
+            id=id,
             code=code,
             open=open,
             high=high,
@@ -157,6 +168,7 @@ class StockRecord(BaseModel):
         label_split = data["stock_label"].split("  ")
         try:
             return StockRecord(
+                id=data.get("id"),
                 code=label_split[0],
                 open=_convert_float(data["open"]),
                 high=_convert_float(data["high"]),
@@ -170,6 +182,7 @@ class StockRecord(BaseModel):
             )
         except Exception:
             return StockRecord(
+                id=data.get("id"),
                 code="",
                 open=0,
                 high=0,
@@ -207,6 +220,7 @@ class StockRecord(BaseModel):
             raise KabutobashiEntityError("日付のカラム[dt, date, crawl_datetime]のいずれかが存在しません")
 
         return StockRecord(
+            id=data.get("id"),
             code=str(data["code"]),
             open=_convert_float(data["open"]),
             high=_convert_float(data["high"]),
@@ -230,16 +244,40 @@ class StockIpo(BaseModel):
 
     """
 
-    code: int
+    id: int = Field(description="id")
+    code: str = Field(description="銘柄コード")
     manager: str = Field(description="主幹")
     stock_listing_at: str = Field(description="上場日")
     public_offering: float = Field(description="公募")
     evaluation: str = Field(description="評価")
     initial_price: float = Field(description="初値")
 
+    def __init__(
+        self,
+        id: Optional[int],
+        code: str,
+        manager: str,
+        stock_listing_at: str,
+        public_offering: float,
+        evaluation: str,
+        initial_price: float,
+    ):
+        if id is None:
+            id = 0
+        super().__init__(
+            id=id,
+            code=code,
+            manager=manager,
+            stock_listing_at=stock_listing_at,
+            public_offering=public_offering,
+            evaluation=evaluation,
+            initial_price=initial_price,
+        )
+
     @staticmethod
     def loads(data: dict) -> "StockIpo":
         return StockIpo(
+            id=data.get("id"),
             code=data["code"],
             manager=data["主幹"],
             stock_listing_at=data["上場"],
@@ -259,7 +297,8 @@ class Weeks52HighLow(BaseModel):
     52週高値・底値の値を保持するクラス
     """
 
-    code: int = Field(description="銘柄コード")
+    id: int = Field(description="id")
+    code: str = Field(description="銘柄コード")
     brand_name: str = Field(description="銘柄名")
     close: float = Field(description="終値")
     buy_or_sell: str = Field(description="買い, 強い買い, 売り, 強い売り")

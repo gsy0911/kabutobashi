@@ -10,6 +10,7 @@ class TestStockBrand:
     def test_error_init(self):
         with pytest.raises(pydantic.ValidationError):
             _ = kb.StockBrand(
+                id=None,
                 code="1234",
                 market="",
                 name="",
@@ -24,6 +25,7 @@ class TestStockRecord:
     def test_error_init(self):
         with pytest.raises(pydantic.ValidationError):
             _ = kb.StockRecord(
+                id=None,
                 code="1234",
                 open="",
                 high="",
@@ -41,7 +43,7 @@ class TestStockIpo:
     def test_error_init(self):
         with pytest.raises(pydantic.ValidationError):
             _ = kb.StockIpo(
-                code="", market="", manager="", stock_listing_at="", public_offering="", evaluation="", initial_price=""
+                id=None, code="", manager="", stock_listing_at="", public_offering="", evaluation="", initial_price=""
             )
 
 
