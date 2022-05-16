@@ -23,4 +23,4 @@ and when estimating stock-code which is to rise in the next day or so on.
   - StockDataEstimatedBySingleFilter
   - StockDataEstimatedByMultipleFilter
 """
-from .stock_data_raw import IStockRecordsetRepository, StockBrand, StockIpo, StockRecord, StockRecordset, Weeks52HighLow
+from .stock_models import IStockRecordsetRepository, StockBrand, StockIpo, StockRecord, StockRecordset, Weeks52HighLow

@@ -11,7 +11,6 @@ REQUIRED_COL = ["code", "open", "close", "high", "low", "volume", "per", "psr", 
 OPTIONAL_COL = ["name", "industry_type", "market", "unit"]
 
 
-# TODO stock_models.pyに名前を変更
 __all__ = [
     "StockBrand",
     "StockRecord",
