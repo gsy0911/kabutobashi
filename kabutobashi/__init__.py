@@ -1,8 +1,9 @@
 # import seaborn as sns
 
-# methods to analysis
 # import errors
 from kabutobashi.domain.services import EfFundamental, EfVolume, EstimateFilter
+
+# methods to analysis
 from kabutobashi.domain.services.method import (
     ADX,
     MACD,

@@ -13,8 +13,9 @@ def example() -> StockRecordset:
 
     Examples:
         >>> import kabutobashi as kb
-        >>> sdmc = kb.example()
-        >>> sdmc.to_single_code(1375).to_processed([kb.sma, kb.macd])
+        >>> records = kb.example()
+        >>> agg = kb.StockCodeSingleAggregate.of(entity=records, code="1375")
+        >>> processed = agg.with_processed(kb.methods)
     """
     file_name = "example.csv.gz"
     return StockRecordsetStorageBasicRepository(f"{DATA_PATH}/{file_name}").read()
