@@ -17,7 +17,7 @@ Entity
 Method
 ------
 
-.. automodule:: kabutobashi.domain.method
+.. automodule:: kabutobashi.domain.services.method
    :members:
 
 

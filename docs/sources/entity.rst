@@ -12,16 +12,18 @@ crawling
 basement
 ========
 
-.. autoclass:: kabutobashi.StockDataSingleDay
+.. autoclass:: kabutobashi.StockBrand
    :members:
 
+.. autoclass:: kabutobashi.StockRecord
+   :members:
+
+.. autoclass:: kabutobashi.StockRecordset
+   :members:
 
 .. autoclass:: kabutobashi.StockDataSingleCode
    :members:
 
-
-.. autoclass:: kabutobashi.StockDataMultipleCode
-   :members:
 
 processed
 =========
@@ -30,17 +32,9 @@ processed
    :members:
 
 
-.. autoclass:: kabutobashi.StockDataProcessedByMultipleMethod
-   :members:
-
-
 estimated
 =========
 
 .. autoclass:: kabutobashi.StockDataEstimatedBySingleFilter
    :members:
-
-.. autoclass:: kabutobashi.StockDataEstimatedByMultipleFilter
-   :members:
-
 
