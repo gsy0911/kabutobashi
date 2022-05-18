@@ -7,7 +7,7 @@ import pandas as pd
 from kabutobashi.domain.entity import IStockRecordsetRepository, StockRecordset
 from kabutobashi.infrastructure.crawler import StockInfoPage
 
-__all__ = ["IStockRecordsetStorageRepository", "StockRecordsetStorageBasicRepository", "StockDataMultipleCodeCrawler"]
+__all__ = ["IStockRecordsetStorageRepository", "StockRecordsetStorageBasicRepository", "StockRecordsetCrawler"]
 
 
 class IStockRecordsetStorageRepository(IStockRecordsetRepository):
@@ -66,7 +66,7 @@ class StockRecordsetStorageBasicRepository(IStockRecordsetStorageRepository):
             raise ValueError()
 
 
-class StockDataMultipleCodeCrawler:
+class StockRecordsetCrawler:
     def __init__(self, use_mp: bool = False, max_workers: int = 2):
         self.use_mp = use_mp
         self.max_workers = max_workers
