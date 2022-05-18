@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from bs4 import BeautifulSoup
 
 from kabutobashi.domain.entity import Weeks52HighLow
-from kabutobashi.errors import KabutobashiPageError
+from kabutobashi.domain.errors import KabutobashiPageError
 
 from .page import Page, PageDecoder
 

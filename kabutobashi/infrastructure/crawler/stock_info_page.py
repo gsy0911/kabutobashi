@@ -1,13 +1,16 @@
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from typing import List, Union
+from logging import getLogger
 
 from bs4 import BeautifulSoup
 
-from kabutobashi.domain.entity import StockDataSingleDay
-from kabutobashi.errors import KabutobashiPageError
+from kabutobashi.domain.entity import StockRecord
+from kabutobashi.domain.errors import KabutobashiPageError
 
 from .page import Page, PageDecoder
+
+logger = getLogger(__name__)
 
 
 @dataclass(frozen=True)
@@ -66,13 +69,19 @@ class StockInfoPage(Page):
                 "issued_shares": info.get("発行済株数", "---"),
             }
         )
-        return StockDataSingleDay.from_page_of(data=result).dumps()
+        return StockRecord.from_page_of(data=result).dumps()
 
     @staticmethod
     def crawl_single(code: Union[int, str]) -> dict:
         try:
             return StockInfoPage(code=code).get()
         except KabutobashiPageError:
+            return {}
+        except AttributeError:
+            logger.exception(f"error occurred at: {code}")
+            return {}
+        except Exception:
+            logger.exception(f"error occurred at: {code}")
             return {}
 
     @staticmethod

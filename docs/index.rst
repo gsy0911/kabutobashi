@@ -62,17 +62,35 @@ Concept
 .. mermaid::
 
    graph TD;
-     web[[Web]] --> | crawl | sdmc
-     repo[(Storage)] --- | read/write | sdmc
-     sdmc[StockDataMultipleCode] --> | code | sdsc
-     sdsc[StockDataSingleCode] -.-> | Method | ps
-     ps[Processed-Single] -.- | multiple | pm
-     sdsc --> | Methods | pm
-     pm[Processed-Multiple] -.-> | Filters | es
-     es[Estimated-Single] -.- | multiple | em[Estimated-Multiple]
-     pm --> | Filters | em
-     sdmc ==> | Methods | pm
-     sdmc ==> | Methods,Filters | em
+     subgraph Aggregates
+       aggregate[StockCodeSingleAggregate]
+       aggregate --- single
+       aggregate --- |Method| processed
+       aggregate --- |Filter| filtered
+
+       subgraph ValueObject
+         single[StockDataSingleCode]
+         processed[StockDataProcessed]
+         filtered[StockDataFiltered]
+       end
+     end
+
+     subgraph Entities
+       recordset[StockRecordset]
+       brand[StockBrand]
+       record[StockRecord]
+
+       recordset --> brand
+       recordset --> record
+       recordset ---> aggregate
+     end
+
+     subgraph Repositories
+       web[[Web]] --- | crawl | recordset
+       repositories[(Storage/Database)] --- | read/write | recordset
+
+       repositories --- | read/write | aggregate
+     end
 
 
 Usage
