@@ -1,5 +1,25 @@
 # Release Note
 
+
+## 0.4.0
+
+- add DDD and CleanArchitecture ([#103](https://github.com/gsy0911/kabutobashi/issues/103))
+
+## 0.3.4
+
+- modify Error ([#98](https://github.com/gsy0911/kabutobashi/issues/98))
+
+## 0.3.3
+
+- modify Error ([#98](https://github.com/gsy0911/kabutobashi/issues/98))
+
+## 0.3.2
+
+- modify KeyError ([#98](https://github.com/gsy0911/kabutobashi/issues/98))
+- refactor: `code` name ([#96](https://github.com/gsy0911/kabutobashi/issues/96))
+- update document ([#95](https://github.com/gsy0911/kabutobashi/issues/95))
+- parallel estimated ([#93](https://github.com/gsy0911/kabutobashi/issues/93))
+
 ## 0.3.1
 
 - add `crawl()` in `StockDataMultipleCode` ([#89](https://github.com/gsy0911/kabutobashi/issues/89))
