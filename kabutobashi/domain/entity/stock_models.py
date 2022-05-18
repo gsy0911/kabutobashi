@@ -343,6 +343,7 @@ class StockRecordset(BaseModel):
     def of(df: pd.DataFrame) -> "StockRecordset":
         recordset = []
         brand_set = set()
+        df = df.dropna(subset=['code'])
         for _, row in df.iterrows():
             recordset.append(StockRecord.loads(dict(row)))
             brand_set.add(StockBrand.loads(data=dict(row)))

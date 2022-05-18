@@ -1,6 +1,7 @@
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from typing import List, Union
+from logging import getLogger
 
 from bs4 import BeautifulSoup
 
@@ -8,6 +9,8 @@ from kabutobashi.domain.entity import StockRecord
 from kabutobashi.domain.errors import KabutobashiPageError
 
 from .page import Page, PageDecoder
+
+logger = getLogger(__name__)
 
 
 @dataclass(frozen=True)
@@ -73,6 +76,12 @@ class StockInfoPage(Page):
         try:
             return StockInfoPage(code=code).get()
         except KabutobashiPageError:
+            return {}
+        except AttributeError:
+            logger.exception(f"error occurred at: {code}")
+            return {}
+        except Exception:
+            logger.exception(f"error occurred at: {code}")
             return {}
 
     @staticmethod
