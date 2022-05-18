@@ -45,8 +45,6 @@ graph TD;
     
     repositories --- | read/write | aggregate
   end
-  
-  
 ```
 
 
