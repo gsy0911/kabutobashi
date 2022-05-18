@@ -1,17 +1,32 @@
 import pandas as pd
+import pydantic
 import pytest
 
 import kabutobashi as kb
+from kabutobashi.domain.errors import KabutobashiEntityError
 
 
-class TestStockInfo:
+class TestStockBrand:
     def test_error_init(self):
-        with pytest.raises(kb.errors.KabutobashiEntityError):
-            _ = kb.StockDataSingleDay(
+        with pytest.raises(pydantic.ValidationError):
+            _ = kb.StockBrand(
+                id=None,
                 code="1234",
-                market="market",
+                market="",
                 name="",
-                industry_type="industry_type",
+                unit="",
+                market_capitalization="",
+                industry_type="",
+                issued_shares="",
+            )
+
+
+class TestStockRecord:
+    def test_error_init(self):
+        with pytest.raises(pydantic.ValidationError):
+            _ = kb.StockRecord(
+                id=None,
+                code="1234",
                 open="",
                 high="",
                 low="",
@@ -20,24 +35,21 @@ class TestStockInfo:
                 per="",
                 pbr="",
                 volume="",
-                unit="",
-                market_capitalization="",
-                issued_shares="",
                 dt="",
             )
 
 
 class TestStockIpo:
     def test_error_init(self):
-        with pytest.raises(kb.errors.KabutobashiEntityError):
+        with pytest.raises(pydantic.ValidationError):
             _ = kb.StockIpo(
-                code="", market="", manager="", stock_listing_at="", public_offering="", evaluation="", initial_price=""
+                id=None, code="", manager="", stock_listing_at="", public_offering="", evaluation="", initial_price=""
             )
 
 
 class TestWeeks52HihLow:
     def test_error_init(self):
-        with pytest.raises(kb.errors.KabutobashiEntityError):
+        with pytest.raises(pydantic.ValidationError):
             _ = kb.Weeks52HighLow(
                 code="", brand_name="", close="", buy_or_sell="", volatility_ratio="", volatility_value=""
             )
@@ -51,16 +63,22 @@ class TestStockDataSingleCode:
         _ = kb.StockDataSingleCode.of(df=single_code)
 
         # check None
-        with pytest.raises(kb.errors.KabutobashiEntityError):
-            _ = kb.StockDataSingleCode(code="-", df=None, stop_updating=False, contains_outlier=False)
+        with pytest.raises(KabutobashiEntityError):
+            _ = kb.StockDataSingleCode(
+                code="-",
+                stock_recordset=kb.StockRecordset.of(df=pd.DataFrame()),
+                stop_updating=False,
+                contains_outlier=False,
+                len_=0,
+            )
 
         # check multiple code
-        with pytest.raises(kb.errors.KabutobashiEntityError):
-            _ = kb.StockDataSingleCode(code="-", df=df, stop_updating=False, contains_outlier=False)
+        with pytest.raises(KabutobashiEntityError):
+            _ = kb.StockDataSingleCode.of(df=df)
 
         # check invalid column
-        with pytest.raises(kb.errors.KabutobashiEntityError):
-            _ = kb.StockDataSingleCode(code="-", df=single_code[["close"]], stop_updating=False, contains_outlier=False)
+        with pytest.raises(KabutobashiEntityError):
+            _ = kb.StockDataSingleCode.of(df=single_code[["close"]])
 
     def test_get_df(self, data_path):
         df = pd.read_csv(f"{data_path}/example.csv.gz")
@@ -68,41 +86,33 @@ class TestStockDataSingleCode:
         single_code = df[df["code"] == "1375"]
         sdsc = kb.StockDataSingleCode.of(df=single_code)
 
-        required_cols = kb.StockDataSingleCode.REQUIRED_COL
-        optional_cols = kb.StockDataSingleCode.OPTIONAL_COL
+        required_cols = ["code", "open", "close", "high", "low", "volume", "per", "psr", "pbr", "dt"]
+        optional_cols = ["name", "industry_type", "market", "unit"]
 
         # check minimum df
-        minimum_df = sdsc.get_df()
+        minimum_df = sdsc.to_df()
         assert all([(c in minimum_df.columns) for c in required_cols])
         assert all([(c not in minimum_df.columns) for c in optional_cols])
 
         # check full df
-        full_df = sdsc.get_df(minimum=False)
+        full_df = sdsc.to_df(minimum=False)
         assert all([(c in full_df.columns) for c in required_cols])
         assert all([(c in full_df.columns) for c in optional_cols])
 
-        latest_date_df = sdsc.get_df(latest=True)
+        latest_date_df = sdsc.to_df(latest=True)
         assert len(latest_date_df.index) == 1
 
 
-class TestStockDataMultipleCode:
+class TestStockRecordset:
     def test_code_iterable(self):
-        sdmc = kb.example()
+        records = kb.example()
+        for _ in records.to_code_iterable(until=1):
+            pass
+
+
+class TestStockSingleAggregate:
+    def test_pass(self):
+        records = kb.example()
         methods = kb.methods + [kb.basic, kb.pct_change, kb.volatility]
-        for _ in sdmc.to_code_iterable(until=1):
-            pass
-
-        for _ in sdmc.to_processed(methods=methods, until=1):
-            pass
-
-        for _ in sdmc.to_estimated(methods=methods, estimate_filters=kb.estimate_filters, until=1):
-            pass
-
-
-class TestStockDataAnalyzedByMultipleMethod:
-    def test_visualize(self):
-        sdmc = kb.example()
-        sdsc = sdmc.to_single_code(code="1375")
-        parameterize_methods = kb.methods + [kb.basic, kb.pct_change, kb.volatility]
-        processed = sdsc.to_processed(methods=parameterize_methods)
-        _ = processed.visualize()
+        agg = kb.StockCodeSingleAggregate.of(entity=records, code="1375")
+        _ = agg.with_processed(methods=methods).with_estimated(estimate_filters=kb.estimate_filters)

@@ -4,6 +4,7 @@
 [![codecov](https://codecov.io/gh/gsy0911/kabutobashi/branch/master/graph/badge.svg)](https://codecov.io/gh/gsy0911/kabutobashi)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/)
+[![Checked with mypy](http://www.mypy-lang.org/static/mypy_badge.svg)](http://mypy-lang.org/)
 
 [![PythonVersion](https://img.shields.io/pypi/pyversions/kabutobashi.svg)](https://pypi.org/project/kabutobashi/)
 [![PiPY](https://img.shields.io/pypi/v/kabutobashi.svg)](https://pypi.org/project/kabutobashi/)
@@ -15,43 +16,49 @@ class-relationship.
 
 ```mermaid
 graph TD;
-  web[[Web]] --> | crawl | sdmc
-  repo[(Storage)] --- | read/write | sdmc
-  sdmc[StockDataMultipleCode] --> | code | sdsc
-  sdsc[StockDataSingleCode] -.-> | Method | ps
-  ps[Processed-Single] -.- | multiple | pm
-  sdsc --> | Methods | pm
-  pm[Processed-Multiple] -.-> | Filters | es
-  es[Estimated-Single] -.- | multiple | em[Estimated-Multiple]
-  pm --> | Filters | em
-  sdmc ==> | Methods | pm
-  sdmc ==> | Methods,Filters | em
+  subgraph Aggregates
+    aggregate[StockCodeSingleAggregate]
+    aggregate --- single
+    aggregate --- |Method| processed
+    aggregate --- |Filter| filtered
+     
+    subgraph ValueObject
+      single[StockDataSingleCode]
+      processed[StockDataProcessed]
+      filtered[StockDataFiltered]
+    end
+  end
+  
+  subgraph Entities
+    recordset[StockRecordset]
+    brand[StockBrand]
+    record[StockRecord]
+    
+    recordset --> brand
+    recordset --> record
+    recordset ---> aggregate
+  end
+
+  subgraph Repositories
+    web[[Web]] --- | crawl | recordset
+    repositories[(Storage/Database)] --- | read/write | recordset
+    
+    repositories --- | read/write | aggregate
+  end
 ```
 
-- StockDataMultipleCode 
-  - contains multiple code & multiple date
-- StockDataSingleCode
-  - contains single code & multiple date
-- Processed (Single)
-  - is from `StockDataSingleCode` using single `Method`
-- Processed (Multiple)
-  - is from `StockDataSingleCode` using multiple `Method`
-- Estimated (Single)
-  - is from `Processed (Multiple)` using single `EstimateFilter`
-- Estimated (Multiple)
-  - is from `Processed (Multiple)` using multiple `EstimateFilter`
 
 ## usage
 
 ```python
 import kabutobashi as kb
 
-file_path_list = [...]
-sdmc = kb.reader.csv(file_path_list)
-for sdsc in sdmc.to_code_iterable():
-    processed = sdsc.to_processed(methods=kb.methods)
-    print(processed.get_impact())
-
+records = kb.example()
+methods = kb.methods + [kb.basic, kb.pct_change, kb.volatility]
+filters = kb.estimate_filters
+for df in records.to_code_iterable():
+    agg = kb.StockCodeSingleAggregate.of(entity=df).with_processed(methods).with_estimated(filters)
+    print(agg)
 
 # n日前までの営業日の日付リストを取得する関数
 target_date = "2020-01-01"

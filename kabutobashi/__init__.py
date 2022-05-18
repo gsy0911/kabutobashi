@@ -1,10 +1,10 @@
 # import seaborn as sns
 
-# methods to analysis
 # import errors
-from kabutobashi import errors
-from kabutobashi.domain.estimate_filter import EfFundamental, EfVolume, EstimateFilter
-from kabutobashi.domain.method import (
+from kabutobashi.domain.services import EfFundamental, EfVolume, EstimateFilter
+
+# methods to analysis
+from kabutobashi.domain.services.method import (
     ADX,
     MACD,
     SMA,
@@ -21,28 +21,27 @@ from kabutobashi.domain.method import (
     Volatility,
 )
 
-from .domain.entity import (
-    StockDataEstimatedByMultipleFilter,
+from .domain import errors
+from .domain.aggregates import StockCodeSingleAggregate
+from .domain.entity import StockBrand, StockIpo, StockRecord, StockRecordset, Weeks52HighLow
+from .domain.values import (
     StockDataEstimatedBySingleFilter,
-    StockDataMultipleCode,
-    StockDataProcessedByMultipleMethod,
     StockDataProcessedBySingleMethod,
     StockDataSingleCode,
-    StockDataSingleDay,
-    StockIpo,
-    Weeks52HighLow,
+    StockDataVisualized,
 )
+from .example_data import example
 
 # classes or functions about crawl web pages
-from .domain.page import (  # ある年にIPOした銘柄の情報を取得する; 単一の株価の詳細情報を取得する; 52週高値底値の値を取得
+from .infrastructure.crawler import (  # ある年にIPOした銘柄の情報を取得する; 単一の株価の詳細情報を取得する; 52週高値底値の値を取得
     StockInfoPage,
     StockIpoPage,
     Weeks52HighLowPage,
 )
-from .example_data import example
-
-# read StockDataMultipleCode
-from .repository import reader
+from .infrastructure.repository import (
+    StockRecordsetStorageBasicRepository,
+    StockRecordsetCrawler
+)
 
 # n営業日前までの日付のリストを返す関数; 銘柄コードでイテレーションする関数; window幅でデータを取得しつつデータを返す関数; 株価の動きを様々な統計量で表現
 from .utilities import get_past_n_days
@@ -64,7 +63,7 @@ volatility = Volatility()
 pct_change = PctChange()
 industry_cat = IndustryCategories()
 
-methods = [sma, macd, stochastics, adx, bollinger_bands, momentum, psycho_logical, fitting]
+methods = [sma, macd, stochastics, adx, bollinger_bands, momentum, psycho_logical, fitting, basic]
 
 # estimate filters
 ef_fundamental = EfFundamental()
@@ -73,7 +72,7 @@ ef_volume = EfVolume()
 estimate_filters = [ef_fundamental, ef_volume]
 
 # comparable tuple
-VERSION = (0, 3, 4)
+VERSION = (0, 4, 0)
 # generate __version__ via VERSION tuple
 __version__ = ".".join(map(str, VERSION))
 

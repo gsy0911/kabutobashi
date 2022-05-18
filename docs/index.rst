@@ -18,6 +18,15 @@ code status
     :target: https://kabutobashi.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status
 
+.. image:: https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336
+    :target: https://pycqa.github.io/isort/
+    :alt: Imports: isort
+
+.. image:: http://www.mypy-lang.org/static/mypy_badge.svg
+    :target: http://mypy-lang.org/
+    :alt: Checked with mypy
+
+
 package status
 
 .. image:: https://img.shields.io/pypi/pyversions/kabutobashi.svg
@@ -53,17 +62,35 @@ Concept
 .. mermaid::
 
    graph TD;
-     web[[Web]] --> | crawl | sdmc
-     repo[(Storage)] --- | read/write | sdmc
-     sdmc[StockDataMultipleCode] --> | code | sdsc
-     sdsc[StockDataSingleCode] -.-> | Method | ps
-     ps[Processed-Single] -.- | multiple | pm
-     sdsc --> | Methods | pm
-     pm[Processed-Multiple] -.-> | Filters | es
-     es[Estimated-Single] -.- | multiple | em[Estimated-Multiple]
-     pm --> | Filters | em
-     sdmc ==> | Methods | pm
-     sdmc ==> | Methods,Filters | em
+     subgraph Aggregates
+       aggregate[StockCodeSingleAggregate]
+       aggregate --- single
+       aggregate --- |Method| processed
+       aggregate --- |Filter| filtered
+
+       subgraph ValueObject
+         single[StockDataSingleCode]
+         processed[StockDataProcessed]
+         filtered[StockDataFiltered]
+       end
+     end
+
+     subgraph Entities
+       recordset[StockRecordset]
+       brand[StockBrand]
+       record[StockRecord]
+
+       recordset --> brand
+       recordset --> record
+       recordset ---> aggregate
+     end
+
+     subgraph Repositories
+       web[[Web]] --- | crawl | recordset
+       repositories[(Storage/Database)] --- | read/write | recordset
+
+       repositories --- | read/write | aggregate
+     end
 
 
 Usage
