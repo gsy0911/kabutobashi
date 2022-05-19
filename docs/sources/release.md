@@ -1,5 +1,8 @@
 # Release Note
 
+## 0.4.1
+
+- modify errors ([#105](https://github.com/gsy0911/kabutobashi/issues/105))
 
 ## 0.4.0
 
