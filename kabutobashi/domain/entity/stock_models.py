@@ -229,7 +229,7 @@ class StockRecord(BaseModel):
             psr=_convert_float(data["psr"]),
             per=_convert_float(data["per"]),
             pbr=_convert_float(data["pbr"]),
-            volume=data["volume"],
+            volume=_convert_int(data["volume"]),
             dt=dt,
         )
 
