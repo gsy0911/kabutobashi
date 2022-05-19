@@ -28,25 +28,32 @@ def _replace(input_value: str) -> str:
 
 
 def _convert_float(input_value: Union[str, float, int]) -> float:
-    if type(input_value) is float or type(input_value) is int:
+    if type(input_value) is float:
+        return input_value
+    elif type(input_value) is int:
         return float(input_value)
     elif type(input_value) is str:
         try:
             return float(_replace(input_value=input_value))
         except ValueError as e:
-            raise KabutobashiEntityError(f"floatに変換できる値ではありません。{e}")
-    raise KabutobashiEntityError(f"floatに変換できる値ではありません。")
+            raise KabutobashiEntityError(f"cannot convert {input_value} to float: {e}")
+    raise KabutobashiEntityError(f"cannot convert {input_value} to float")
 
 
 def _convert_int(input_value: Union[str, float, int]) -> int:
-    if type(input_value) == float or type(input_value) == int:
-        return int(input_value)
+    if type(input_value) == int:
+        return input_value
+    elif type(input_value) == float:
+        try:
+            return int(input_value)
+        except ValueError:
+            return 0
     elif type(input_value) is str:
         try:
             return int(_replace(input_value=input_value))
         except ValueError as e:
-            raise KabutobashiEntityError(f"floatに変換できる値ではありません。{e}")
-    raise KabutobashiEntityError(f"floatに変換できる値ではありません。")
+            raise KabutobashiEntityError(f"cannot convert {input_value} to integer: {e}")
+    raise KabutobashiEntityError(f"cannot convert {input_value} to int")
 
 
 class StockBrand(BaseModel):
