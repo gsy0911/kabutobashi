@@ -112,6 +112,9 @@ class StockBrand(BaseModel):
     def __hash__(self):
         return hash(self.code)
 
+    class Config:
+        orm_mode = True
+
 
 class StockRecord(BaseModel):
     """
@@ -231,6 +234,9 @@ class StockRecord(BaseModel):
             dt=dt,
         )
 
+    class Config:
+        orm_mode = True
+
 
 class StockIpo(BaseModel):
     """
@@ -287,6 +293,9 @@ class StockIpo(BaseModel):
     def dumps(self) -> dict:
         return self.dict()
 
+    class Config:
+        orm_mode = True
+
 
 class Weeks52HighLow(BaseModel):
     """
@@ -323,3 +332,6 @@ class Weeks52HighLow(BaseModel):
 
     def dumps(self) -> dict:
         return self.dict()
+
+    class Config:
+        orm_mode = True
