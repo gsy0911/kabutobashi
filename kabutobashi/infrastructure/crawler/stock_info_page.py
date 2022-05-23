@@ -1,7 +1,7 @@
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
-from typing import List, Union
 from logging import getLogger
+from typing import List, Union
 
 from bs4 import BeautifulSoup
 

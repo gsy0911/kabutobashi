@@ -4,7 +4,7 @@ from typing import Generator, List, Union
 
 import pandas as pd
 
-from kabutobashi.domain.entity import IStockRecordsetRepository, StockRecordset
+from kabutobashi.domain.values import IStockRecordsetRepository, StockRecordset
 from kabutobashi.infrastructure.crawler import StockInfoPage
 
 __all__ = ["IStockRecordsetStorageRepository", "StockRecordsetStorageBasicRepository", "StockRecordsetCrawler"]

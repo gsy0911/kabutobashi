@@ -1,6 +1,6 @@
 import os
 
-from kabutobashi.domain.entity import StockRecordset
+from kabutobashi.domain.values import StockRecordset
 from kabutobashi.infrastructure.repository import StockRecordsetStorageBasicRepository
 
 PARENT_PATH = os.path.abspath(os.path.dirname(__file__))
