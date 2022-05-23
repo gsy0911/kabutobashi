@@ -1,6 +1,6 @@
 from abc import ABCMeta, abstractmethod
-from typing import Generator, List, NoReturn, Optional, Set
 from dataclasses import dataclass, field
+from typing import Generator, List, NoReturn, Optional, Set
 
 import pandas as pd
 
