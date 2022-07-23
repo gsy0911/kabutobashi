@@ -4,8 +4,8 @@ from typing import Generator, List, Union
 
 import pandas as pd
 
-from kabutobashi.domain.entity import IStockRecordsetRepository, StockRecordset
-from kabutobashi.infrastructure.crawler import StockInfoPage
+from kabutobashi.domain.values import IStockRecordsetRepository, StockRecordset
+from kabutobashi.infrastructure.crawler import crawl_multiple
 
 __all__ = ["IStockRecordsetStorageRepository", "StockRecordsetStorageBasicRepository", "StockRecordsetCrawler"]
 
@@ -73,9 +73,8 @@ class StockRecordsetCrawler:
 
     def get(self, code_list: list, dt: str) -> StockRecordset:
         # 日次の株データ取得
-        stock_data: List[dict] = StockInfoPage.crawl_multiple(code_list=code_list, max_workers=self.max_workers)
+        stock_data: List[dict] = crawl_multiple(code_list=code_list, max_workers=self.max_workers, dt=dt)
 
         # データを整形してStockDataとして保存
         df = pd.DataFrame(stock_data)
-        df["dt"] = dt
         return StockRecordset.of(df=df)

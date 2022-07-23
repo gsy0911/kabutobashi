@@ -3,8 +3,9 @@ from typing import Generator, Tuple
 
 import pandas as pd
 
-from kabutobashi.domain.entity import StockRecordset
 from kabutobashi.domain.errors import KabutobashiEntityError
+
+from .stock_recordset import StockRecordset
 
 __all__ = ["StockDataSingleCode"]
 
