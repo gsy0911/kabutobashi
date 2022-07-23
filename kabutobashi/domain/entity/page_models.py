@@ -1,4 +1,3 @@
-from dataclasses import dataclass
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
@@ -17,6 +16,7 @@ class StockPageHtml:
     """
     id: code & dt
     """
+
     code: str
     dt: str
     html: str
@@ -26,11 +26,7 @@ class StockPageHtml:
         assert self.page_type in ["info", "ipo"]
 
     def to_dict(self) -> dict:
-        return {
-            "code": self.code,
-            "dt": self.dt,
-            "html": self.html
-        }
+        return {"code": self.code, "dt": self.dt, "html": self.html}
 
     @staticmethod
     def from_url(url: str, code: str, dt: str, page_type: str) -> "StockPageHtml":
@@ -46,12 +42,7 @@ class StockPageHtml:
 
         # 日本語に対応
         r.encoding = r.apparent_encoding
-        return StockPageHtml(
-            code=code,
-            dt=dt,
-            html=r.text,
-            page_type=page_type
-        )
+        return StockPageHtml(code=code, dt=dt, html=r.text, page_type=page_type)
 
     def get_as_soup(self) -> BeautifulSoup:
         return BeautifulSoup(self.html, features="lxml")

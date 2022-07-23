@@ -1,11 +1,12 @@
-from logging import getLogger
-from kabutobashi.domain.entity import StockPageHtml
 from dataclasses import dataclass
 from functools import reduce
+from logging import getLogger
 from typing import List, Optional, Union
 
 import requests  # type: ignore
 from bs4 import BeautifulSoup
+
+from kabutobashi.domain.entity import StockPageHtml
 
 logger = getLogger(__name__)
 
@@ -53,13 +54,12 @@ class StockInfoHtmlDecoder:
     """
 
     Examples:
-        >>> from kabutobashi import StockInfoPage
+        >>> from kabutobashi import StockPageHtml
         >>> # get single page
-        >>> sip = StockInfoPage(code="0001")
-        >>> result = sip.get()
-        >>> # get multiple page with multiprocessing
-        >>> results = StockInfoPage.crawl_multiple(code_list=["0001", "0002", ...], max_workers=4)
+        >>> sph = StockPageHtml(url="https://minkabu.jp/stock/0001", code="0001", dt="2022-07-22", page_type="info")
+        >>> result = StockInfoHtmlDecoder(page_html=sph).decode()
     """
+
     page_html: StockPageHtml
 
     def decode(self) -> dict:
@@ -75,7 +75,7 @@ class StockInfoHtmlDecoder:
                 "stock_label": PageDecoder(tag1="div", class1="stock_label").decode(bs=stock_board),
                 "name": PageDecoder(tag1="p", class1="md_stockBoard_stockName").decode(bs=stock_board),
                 "close": PageDecoder(tag1="div", class1="stock_price").decode(bs=stock_board),
-                "date": PageDecoder(tag1="h2", class1="stock_label fsl").decode(bs=stock_board),
+                # "date": PageDecoder(tag1="h2", class1="stock_label fsl").decode(bs=stock_board),
             }
         )
 
@@ -86,6 +86,8 @@ class StockInfoHtmlDecoder:
             info[li.find("th").get_text()] = li.find("td").get_text()
         result.update(
             {
+                "dt": self.page_html.dt,
+                "code": self.page_html.code,
                 "industry_type": PageDecoder(tag1="div", class1="ly_content_wrapper size_ss").decode(bs=stock_detail),
                 "open": info.get("始値", "0"),
                 "high": info.get("高値", "0"),
