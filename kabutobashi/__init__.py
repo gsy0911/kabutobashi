@@ -35,9 +35,10 @@ from .example_data import example
 
 # classes or functions about crawl web pages
 from .infrastructure.crawler import (  # ある年にIPOした銘柄の情報を取得する; 単一の株価の詳細情報を取得する; 52週高値底値の値を取得
-    StockInfoPage,
     StockIpoPage,
     Weeks52HighLowPage,
+    crawl_single,
+    crawl_multiple
 )
 from .infrastructure.repository import StockRecordsetCrawler, StockRecordsetStorageBasicRepository
 

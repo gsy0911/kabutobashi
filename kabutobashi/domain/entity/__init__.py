@@ -24,3 +24,4 @@ and when estimating stock-code which is to rise in the next day or so on.
   - StockDataEstimatedByMultipleFilter
 """
 from .stock_models import OPTIONAL_COL, REQUIRED_COL, StockBrand, StockIpo, StockRecord, Weeks52HighLow
+from .page_models import StockPageHtml

@@ -1,20 +1,55 @@
-from concurrent.futures import ThreadPoolExecutor
-from dataclasses import dataclass
 from logging import getLogger
-from typing import List, Union
+from kabutobashi.domain.entity import StockPageHtml
+from dataclasses import dataclass
+from functools import reduce
+from typing import List, Optional, Union
 
+import requests  # type: ignore
 from bs4 import BeautifulSoup
-
-from kabutobashi.domain.entity import StockRecord
-from kabutobashi.domain.errors import KabutobashiPageError
-
-from .page import Page, PageDecoder
 
 logger = getLogger(__name__)
 
 
 @dataclass(frozen=True)
-class StockInfoPage(Page):
+class PageDecoder:
+    tag1: Optional[str] = None
+    class1: Optional[str] = None
+    id1: Optional[str] = None
+    default: str = ""
+
+    def _decode(self, value):
+        class1 = {"class": self.class1}
+
+        set_value = None
+        # tag1から取得
+        if self.tag1 is not None:
+            if class1["class"] is not None:
+                set_value = value.find(self.tag1, self.class1)
+            else:
+                set_value = value.find(self.tag1)
+
+        if set_value is None:
+            return self.default
+
+        # 文字列を置換して保持
+        return self.replace(set_value.get_text())
+
+    def decode(self, bs: BeautifulSoup) -> Union[str, List[str]]:
+        return self._decode(value=bs)
+
+    @staticmethod
+    def replace(input_text: str) -> str:
+        target_list = [" ", "\t", "\n", "\r", "円"]
+
+        def remove_of(_input: str, target: str):
+            return _input.replace(target, "")
+
+        result = reduce(remove_of, target_list, input_text)
+        return result.replace("\xa0", " ")
+
+
+@dataclass(frozen=True)
+class StockInfoHtmlDecoder:
     """
 
     Examples:
@@ -25,18 +60,13 @@ class StockInfoPage(Page):
         >>> # get multiple page with multiprocessing
         >>> results = StockInfoPage.crawl_multiple(code_list=["0001", "0002", ...], max_workers=4)
     """
+    page_html: StockPageHtml
 
-    code: Union[int, str]
-    base_url: str = "https://minkabu.jp/stock/{code}"
-
-    def url(self) -> str:
-        return self.base_url.format(code=self.code)
-
-    def _get(self) -> dict:
-        soup = BeautifulSoup(self.get_url_text(url=self.url()), features="lxml")
+    def decode(self) -> dict:
+        soup = self.page_html.get_as_soup()
         result = {}
 
-        stock_board_tag = "ly_col ly_colsize_7 md_box ly_row ly_gutters"
+        stock_board_tag = "md_stockBoard"
 
         # ページ上部の情報を取得
         stock_board = soup.find("div", {"class": stock_board_tag})
@@ -50,10 +80,10 @@ class StockInfoPage(Page):
         )
 
         # ページ中央の情報を取得
-        stock_detail = soup.find("div", {"class": "stock-detail"})
+        stock_detail = soup.find("div", {"id": "main"})
         info = {}
-        for li in stock_detail.find_all("li", {"class": "ly_vamd"}):
-            info[li.find("dt").get_text()] = li.find("dd").get_text()
+        for li in stock_detail.find_all("tr", {"class": "ly_vamd"}):
+            info[li.find("th").get_text()] = li.find("td").get_text()
         result.update(
             {
                 "industry_type": PageDecoder(tag1="div", class1="ly_content_wrapper size_ss").decode(bs=stock_detail),
@@ -69,26 +99,4 @@ class StockInfoPage(Page):
                 "issued_shares": info.get("発行済株数", "---"),
             }
         )
-        return StockRecord.from_page_of(data=result).dumps()
-
-    @staticmethod
-    def crawl_single(code: Union[int, str]) -> dict:
-        try:
-            return StockInfoPage(code=code).get()
-        except KabutobashiPageError:
-            return {}
-        except AttributeError:
-            logger.exception(f"error occurred at: {code}")
-            return {}
-        except Exception:
-            logger.exception(f"error occurred at: {code}")
-            return {}
-
-    @staticmethod
-    def crawl_multiple(code_list: List[Union[int, str]], max_workers: int = 2) -> List[dict]:
-        response_list = []
-        with ThreadPoolExecutor(max_workers=max_workers) as executor:
-            map_gen = executor.map(StockInfoPage.crawl_single, code_list)
-            for response in map_gen:
-                response_list.append(response)
-        return response_list
+        return result
