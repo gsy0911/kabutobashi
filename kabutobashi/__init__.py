@@ -29,7 +29,8 @@ from .domain.values import (
     StockDataProcessedBySingleMethod,
     StockDataSingleCode,
     StockDataVisualized,
-    StockPageHtml,
+    StockInfoHtmlPage,
+    StockIpoHtmlPage,
     StockRecordset,
 )
 from .example_data import example
