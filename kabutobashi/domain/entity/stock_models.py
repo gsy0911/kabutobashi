@@ -307,27 +307,21 @@ class Weeks52HighLow(BaseModel):
     id: int = Field(description="id")
     code: str = Field(description="銘柄コード")
     brand_name: str = Field(description="銘柄名")
-    close: float = Field(description="終値")
+    # close: float = Field(description="終値")
     buy_or_sell: str = Field(description="買い, 強い買い, 売り, 強い売り")
-    volatility_ratio: float = Field(description="価格変動比")
-    volatility_value: float = Field(description="価格変動値")
+    # volatility_ratio: float = Field(description="価格変動比")
+    # volatility_value: float = Field(description="価格変動値")
     dt: str = Field(description="日付")
 
     @staticmethod
     def from_page_of(data: dict) -> "Weeks52HighLow":
-        buy = data["buy"]
-        strong_buy = data["strong_buy"]
-        sell = data["sell"]
-        strong_sell = data["strong_sell"]
 
         return Weeks52HighLow(
+            id=0,
             code=data["code"],
             brand_name=data["brand_name"],
-            close=float(data["close"]),
-            buy_or_sell=f"{buy}{strong_buy}{sell}{strong_sell}",
-            volatility_ratio=_convert_float(data["volatility_ratio"]),
-            volatility_value=_convert_float(data["volatility_value"]),
-            dt="",
+            buy_or_sell=data["buy_or_sell"],
+            dt=data["dt"]
         )
 
     def dumps(self) -> dict:

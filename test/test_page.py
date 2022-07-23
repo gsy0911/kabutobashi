@@ -10,13 +10,14 @@ def test_crawl_page_detail():
 
 
 def test_crawl_ipo_list():
-    result = kb.StockIpoPage(year=2019).get()
+    html_page = kb.StockIpoHtmlPage.of(year="2019")
+    result = kb.StockIpoHtmlDecoder(html_page=html_page).decode()
     assert result is not None
     assert type(result) is dict
 
 
-@pytest.mark.skip(reason="page changed")
 def test_crawl_week_52_high_low_list():
-    result = kb.Weeks52HighLowPage(data_type="high").get()
+    html_page = kb.StockWeeks52HighLowHtmlPage.of(data_type="newly_low", dt="2022-07-23")
+    result = kb.Weeks52HighLowHtmlDecoder(html_page=html_page).decode()
     assert result is not None
     assert type(result) is dict

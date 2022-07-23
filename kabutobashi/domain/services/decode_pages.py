@@ -6,7 +6,8 @@ from typing import List, Optional, Union
 import requests  # type: ignore
 from bs4 import BeautifulSoup
 
-from kabutobashi.domain.values import StockPageHtml
+from kabutobashi.domain.values import StockInfoHtmlPage, StockIpoHtmlPage, StockWeeks52HighLowHtmlPage
+from kabutobashi.domain.entity import StockIpo, Weeks52HighLow
 
 logger = getLogger(__name__)
 
@@ -54,16 +55,16 @@ class StockInfoHtmlDecoder:
     """
 
     Examples:
-        >>> from kabutobashi import StockPageHtml
+        >>> from kabutobashi import StockInfoHtmlPage
         >>> # get single page
-        >>> sph = StockPageHtml(url="https://minkabu.jp/stock/0001", code="0001", dt="2022-07-22", page_type="info")
-        >>> result = StockInfoHtmlDecoder(page_html=sph).decode()
+        >>> page_html = StockInfoHtmlPage.of(code="0001", dt="2022-07-22")
+        >>> result = StockInfoHtmlDecoder(page_html=page_html).decode()
     """
 
-    page_html: StockPageHtml
+    html_page: StockInfoHtmlPage
 
     def decode(self) -> dict:
-        soup = self.page_html.get_as_soup()
+        soup = self.html_page.get_as_soup()
         result = {}
 
         stock_board_tag = "md_stockBoard"
@@ -86,8 +87,8 @@ class StockInfoHtmlDecoder:
             info[li.find("th").get_text()] = li.find("td").get_text()
         result.update(
             {
-                "dt": self.page_html.dt,
-                "code": self.page_html.code,
+                "dt": self.html_page.dt,
+                "code": self.html_page.code,
                 "industry_type": PageDecoder(tag1="div", class1="ly_content_wrapper size_ss").decode(bs=stock_detail),
                 "open": info.get("始値", "0"),
                 "high": info.get("高値", "0"),
@@ -102,3 +103,55 @@ class StockInfoHtmlDecoder:
             }
         )
         return result
+
+
+@dataclass(frozen=True)
+class StockIpoHtmlDecoder:
+
+    html_page: StockIpoHtmlPage
+
+    def decode(self) -> dict:
+        soup = self.html_page.get_as_soup()
+        table_content = soup.find("div", {"class": "tablewrap"})
+        table_thead = table_content.find("thead")
+        # headの取得
+        table_head_list = []
+        for th in table_thead.find_all("th"):
+            table_head_list.append(th.get_text())
+
+        # bodyの取得
+        table_tbody = table_content.find("tbody")
+        whole_result = []
+        for idx, tr in enumerate(table_tbody.find_all("tr")):
+            table_body_dict = {}
+            for header, td in zip(table_head_list, tr.find_all("td")):
+                table_body_dict[header] = td.get_text().replace("\n", "")
+            whole_result.append(StockIpo.loads(data=table_body_dict).dumps())
+        return {"ipo_list": whole_result}
+
+
+@dataclass(frozen=True)
+class Weeks52HighLowHtmlDecoder:
+    html_page: StockWeeks52HighLowHtmlPage
+
+    def decode(self) -> dict:
+        soup = self.html_page.get_as_soup()
+
+        content = soup.find("body").find("tbody")
+        table = content.find_all("tr")
+        whole_result = []
+        for t in table:
+            buy_or_sell = ""
+
+            for td in t.find_all("td"):
+                if td.text in ["買い", "強い買い", "売り", "強い売り"]:
+                    buy_or_sell = td.text
+            data = {
+                "code": PageDecoder(tag1="a").decode(bs=t),
+                "brand_name": PageDecoder(tag1="span").decode(bs=t),
+                "buy_or_sell": buy_or_sell,
+                "dt": self.html_page.dt
+            }
+            whole_result.append(Weeks52HighLow.from_page_of(data=data).dumps())
+
+        return {"weeks_52_high_low": whole_result}
