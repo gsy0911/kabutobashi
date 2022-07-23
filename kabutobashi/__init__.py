@@ -31,14 +31,14 @@ from .domain.values import (
     StockDataVisualized,
     StockInfoHtmlPage,
     StockIpoHtmlPage,
+    StockWeeks52HighLowHtmlPage,
     StockRecordset,
 )
+from .domain.services import StockIpoHtmlDecoder, Weeks52HighLowHtmlDecoder
 from .example_data import example
 
 # classes or functions about crawl web pages
 from .infrastructure.crawler import (  # ある年にIPOした銘柄の情報を取得する; 単一の株価の詳細情報を取得する; 52週高値底値の値を取得
-    StockIpoPage,
-    Weeks52HighLowPage,
     crawl_multiple,
     crawl_single,
 )
