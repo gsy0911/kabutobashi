@@ -72,7 +72,7 @@ ef_volume = EfVolume()
 estimate_filters = [ef_fundamental, ef_volume]
 
 # comparable tuple
-VERSION = (0, 4, 1)
+VERSION = (0, 4, 2)
 # generate __version__ via VERSION tuple
 __version__ = ".".join(map(str, VERSION))
 

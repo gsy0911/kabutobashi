@@ -1,5 +1,9 @@
 # Release Note
 
+## 0.4.2
+
+- modify errors and partially DDD ([#106](https://github.com/gsy0911/kabutobashi/issues/106))
+
 ## 0.4.1
 
 - modify errors ([#105](https://github.com/gsy0911/kabutobashi/issues/105))
