@@ -23,12 +23,13 @@ from kabutobashi.domain.services.method import (
 
 from .domain import errors
 from .domain.aggregates import StockCodeSingleAggregate
-from .domain.entity import StockBrand, StockIpo, StockPageHtml, StockRecord, Weeks52HighLow
+from .domain.entity import OPTIONAL_COL, REQUIRED_COL, StockBrand, StockIpo, StockRecord, Weeks52HighLow
 from .domain.values import (
     StockDataEstimatedBySingleFilter,
     StockDataProcessedBySingleMethod,
     StockDataSingleCode,
     StockDataVisualized,
+    StockPageHtml,
     StockRecordset,
 )
 from .example_data import example

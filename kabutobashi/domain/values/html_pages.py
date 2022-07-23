@@ -1,14 +1,11 @@
-from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from datetime import datetime, timedelta, timezone
-from functools import reduce
-from typing import List, Optional, Union
 
 import requests  # type: ignore
 from bs4 import BeautifulSoup
 
 from kabutobashi.domain.errors import KabutobashiPageError
-from kabutobashi.domain.values.user_agent import UserAgent
+
+from .user_agent import UserAgent
 
 
 @dataclass(frozen=True)

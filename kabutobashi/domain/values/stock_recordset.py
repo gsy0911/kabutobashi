@@ -23,6 +23,8 @@ class StockRecordset:
 
     @staticmethod
     def of(df: pd.DataFrame) -> "StockRecordset":
+        if "code" not in df.columns:
+            raise KabutobashiEntityError
         recordset = []
         brand_set = set()
         df = df.dropna(subset=["code"])

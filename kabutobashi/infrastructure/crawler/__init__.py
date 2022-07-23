@@ -3,9 +3,9 @@ from concurrent.futures import ThreadPoolExecutor
 from logging import getLogger
 from typing import List, Union
 
-from kabutobashi.domain.entity import StockPageHtml
 from kabutobashi.domain.errors import KabutobashiPageError
 from kabutobashi.domain.services import StockInfoHtmlDecoder
+from kabutobashi.domain.values import StockPageHtml
 
 from .stock_ipo_page import StockIpoPage
 from .weeks_52_high_low_page import Weeks52HighLowPage

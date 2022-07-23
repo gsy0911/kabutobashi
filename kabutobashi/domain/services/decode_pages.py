@@ -6,7 +6,7 @@ from typing import List, Optional, Union
 import requests  # type: ignore
 from bs4 import BeautifulSoup
 
-from kabutobashi.domain.entity import StockPageHtml
+from kabutobashi.domain.values import StockPageHtml
 
 logger = getLogger(__name__)
 
