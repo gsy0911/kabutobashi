@@ -1,4 +1,4 @@
-from abc import ABCMeta, abstractmethod
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from functools import reduce
@@ -8,8 +8,7 @@ import requests  # type: ignore
 from bs4 import BeautifulSoup
 
 from kabutobashi.domain.errors import KabutobashiPageError
-
-from .user_agent import UserAgent
+from kabutobashi.domain.values.user_agent import UserAgent
 
 
 @dataclass(frozen=True)
@@ -51,7 +50,7 @@ class PageDecoder:
 
 
 @dataclass(frozen=True)  # type: ignore
-class Page(metaclass=ABCMeta):
+class Page(ABC):
     @abstractmethod
     def url(self) -> str:
         raise NotImplementedError()
