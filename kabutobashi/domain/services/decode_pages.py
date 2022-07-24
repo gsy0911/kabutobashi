@@ -3,11 +3,18 @@ from functools import reduce
 from logging import getLogger
 from typing import List, Optional, Union
 
+import pandas as pd
 import requests  # type: ignore
 from bs4 import BeautifulSoup
 
-from kabutobashi.domain.values import StockInfoHtmlPage, StockIpoHtmlPage, StockWeeks52HighLowHtmlPage
 from kabutobashi.domain.entity import StockIpo, Weeks52HighLow
+from kabutobashi.domain.values import (
+    StockInfoHtmlPage,
+    StockInfoMultipleDaysMainHtmlPage,
+    StockInfoMultipleDaysSubHtmlPage,
+    StockIpoHtmlPage,
+    StockWeeks52HighLowHtmlPage,
+)
 
 logger = getLogger(__name__)
 
@@ -88,7 +95,7 @@ class StockInfoHtmlDecoder:
         result.update(
             {
                 "dt": self.html_page.dt,
-                "code": self.html_page.code,
+                "code": str(self.html_page.code),
                 "industry_type": PageDecoder(tag1="div", class1="ly_content_wrapper size_ss").decode(bs=stock_detail),
                 "open": info.get("始値", "0"),
                 "high": info.get("高値", "0"),
@@ -150,8 +157,62 @@ class Weeks52HighLowHtmlDecoder:
                 "code": PageDecoder(tag1="a").decode(bs=t),
                 "brand_name": PageDecoder(tag1="span").decode(bs=t),
                 "buy_or_sell": buy_or_sell,
-                "dt": self.html_page.dt
+                "dt": self.html_page.dt,
             }
             whole_result.append(Weeks52HighLow.from_page_of(data=data).dumps())
 
         return {"weeks_52_high_low": whole_result}
+
+
+@dataclass(frozen=True)
+class StockInfoMultipleDaysHtmlDecoder:
+    """
+
+    Examples:
+        >>> import kabutobashi as kb
+        >>> main_html_page = kb.StockInfoMultipleDaysMainHtmlPage.of(1375)
+        >>> sub_html_page = kb.StockInfoMultipleDaysSubHtmlPage.of(1375)
+        >>> data = kb.StockInfoMultipleDaysHtmlDecoder(main_html_page, sub_html_page).decode()
+        >>> df = pd.DataFrame(data)
+        >>> records = kb.StockRecordset.of(df)
+    """
+
+    main_html_page: StockInfoMultipleDaysMainHtmlPage
+    sub_html_page: StockInfoMultipleDaysSubHtmlPage
+
+    def decode(self) -> dict:
+        result_1 = []
+        result_2 = []
+        main_soup = self.main_html_page.get_as_soup()
+        sub_soup = self.sub_html_page.get_as_soup()
+        stock_recordset_tag = "md_card md_box"
+
+        # ページの情報を取得
+        stock_recordset = main_soup.find("div", {"class": stock_recordset_tag})
+        # code,market,name,industry_type,open,high,low,close,psr,per,pbr,volume,unit,market_capitalization,issued_shares,dt,crawl_datetime
+        mapping = {0: "dt", 1: "open", 2: "high", 3: "low", 4: "close", 5: "調整後終値", 6: "volume"}
+        for tr in stock_recordset.find_all("tr"):
+            tmp = {}
+            for idx, td in enumerate(tr.find_all("td")):
+                tmp.update({mapping[idx]: td.get_text()})
+            result_1.append(tmp)
+
+        # そのほかの情報
+        # soup = BeautifulSoup(get_url_text(url=valuation_url.format(code=code)), features="lxml")
+        stock_board = sub_soup.find("div", {"class": "md_card md_box mzp"})
+        mapping2 = {0: "dt", 1: "psr", 2: "per", 3: "pbr", 4: "配当利回り(%)", 5: "close", 6: "調整後終値", 7: "volume"}
+        for tr in stock_board.find_all("tr"):
+            tmp = {}
+            for idx, td in enumerate(tr.find_all("td")):
+                tmp.update({mapping2[idx]: td.get_text()})
+            result_2.append(tmp)
+
+        df1 = pd.DataFrame(result_1).dropna()
+        df2 = pd.DataFrame(result_2).dropna()
+
+        df1 = df1[["dt", "open", "high", "low", "close"]]
+        df2 = df2[["dt", "psr", "per", "pbr", "volume"]]
+
+        df = pd.merge(df1, df2, on="dt")
+        df["code"] = self.main_html_page.code
+        return df.to_dict(orient="records")

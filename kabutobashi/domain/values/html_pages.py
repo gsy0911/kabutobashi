@@ -1,4 +1,6 @@
 from dataclasses import dataclass, field
+from typing import Union
+
 import requests  # type: ignore
 from bs4 import BeautifulSoup
 
@@ -18,7 +20,7 @@ class HtmlPage:
     url: str
 
     def __post_init__(self):
-        assert self.page_type in ["info", "ipo", "weeks_52_high_low"]
+        assert self.page_type in ["info", "info_multiple", "ipo", "weeks_52_high_low"]
 
     @staticmethod
     def from_url(url: str, page_type: str) -> "HtmlPage":
@@ -42,11 +44,11 @@ class HtmlPage:
 
 @dataclass(frozen=True)
 class StockInfoHtmlPage(HtmlPage):
-    code: str
+    code: Union[int, str]
     dt: str
 
     @staticmethod
-    def of(code: str, dt: str) -> "StockInfoHtmlPage":
+    def of(code: Union[int, str], dt: str) -> "StockInfoHtmlPage":
         url = f"https://minkabu.jp/stock/{code}"
         page_type = "info"
         html_page = HtmlPage.from_url(url=url, page_type=page_type)
@@ -97,3 +99,27 @@ class StockWeeks52HighLowHtmlPage(HtmlPage):
         return StockWeeks52HighLowHtmlPage(
             page_type=page_type, data_type=data_type, html=html_page.html, url=url, dt=dt
         )
+
+
+@dataclass(frozen=True)
+class StockInfoMultipleDaysMainHtmlPage(HtmlPage):
+    code: Union[int, str]
+
+    @staticmethod
+    def of(code: Union[int, str]) -> "StockInfoMultipleDaysMainHtmlPage":
+        url = f"https://minkabu.jp/stock/{code}/daily_bar"
+        page_type = "info_multiple"
+        html_page = HtmlPage.from_url(url=url, page_type=page_type)
+        return StockInfoMultipleDaysMainHtmlPage(page_type=page_type, code=code, html=html_page.html, url=url)
+
+
+@dataclass(frozen=True)
+class StockInfoMultipleDaysSubHtmlPage(HtmlPage):
+    code: Union[int, str]
+
+    @staticmethod
+    def of(code: Union[int, str]) -> "StockInfoMultipleDaysSubHtmlPage":
+        url = f"https://minkabu.jp/stock/{code}/daily_valuation"
+        page_type = "info_multiple"
+        html_page = HtmlPage.from_url(url=url, page_type=page_type)
+        return StockInfoMultipleDaysSubHtmlPage(page_type=page_type, code=code, html=html_page.html, url=url)
