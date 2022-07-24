@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+
 import requests  # type: ignore
 from bs4 import BeautifulSoup
 
