@@ -1,5 +1,10 @@
 # Release Note
 
+## 0.4.4
+
+- error: code is float-string, like "1000.0" ([#112](https://github.com/gsy0911/kabutobashi/issues/112))
+- crawl previous stock info ([#104](https://github.com/gsy0911/kabutobashi/issues/104))
+
 ## 0.4.3
 
 - modify errors and partially DDD ([#111](https://github.com/gsy0911/kabutobashi/issues/111))
