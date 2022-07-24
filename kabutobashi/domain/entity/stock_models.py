@@ -74,6 +74,9 @@ class StockBrand(BaseModel):
     ):
         if id is None:
             id = 0
+        # code may "100.0"
+        code = code.split(".")[0]
+
         super().__init__(
             id=id,
             code=code,
@@ -90,9 +93,12 @@ class StockBrand(BaseModel):
 
     @staticmethod
     def loads(data: dict) -> "StockBrand":
+        # code may "100.0"
+        code = str(data["code"]).split(".")[0]
+
         return StockBrand(
             id=data.get("id"),
-            code=str(data["code"]),
+            code=code,
             unit=_convert_int(data.get("unit", 0)),
             market=data.get("market", ""),
             name=data.get("name", ""),
@@ -220,9 +226,11 @@ class StockRecord(BaseModel):
         else:
             raise KabutobashiEntityError("日付のカラム[dt, date, crawl_datetime]のいずれかが存在しません")
 
+        # code may "100.0"
+        code = str(data["code"]).split(".")[0]
         return StockRecord(
             id=data.get("id"),
-            code=str(data["code"]),
+            code=code,
             open=_convert_float(data["open"]),
             high=_convert_float(data["high"]),
             low=_convert_float(data["low"]),
@@ -317,11 +325,7 @@ class Weeks52HighLow(BaseModel):
     def from_page_of(data: dict) -> "Weeks52HighLow":
 
         return Weeks52HighLow(
-            id=0,
-            code=data["code"],
-            brand_name=data["brand_name"],
-            buy_or_sell=data["buy_or_sell"],
-            dt=data["dt"]
+            id=0, code=data["code"], brand_name=data["brand_name"], buy_or_sell=data["buy_or_sell"], dt=data["dt"]
         )
 
     def dumps(self) -> dict:
