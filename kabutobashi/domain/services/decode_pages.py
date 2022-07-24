@@ -88,7 +88,7 @@ class StockInfoHtmlDecoder:
         result.update(
             {
                 "dt": self.html_page.dt,
-                "code": self.html_page.code,
+                "code": str(self.html_page.code),
                 "industry_type": PageDecoder(tag1="div", class1="ly_content_wrapper size_ss").decode(bs=stock_detail),
                 "open": info.get("始値", "0"),
                 "high": info.get("高値", "0"),

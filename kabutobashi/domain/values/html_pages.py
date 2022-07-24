@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+from typing import Union
 
 import requests  # type: ignore
 from bs4 import BeautifulSoup
@@ -43,11 +44,11 @@ class HtmlPage:
 
 @dataclass(frozen=True)
 class StockInfoHtmlPage(HtmlPage):
-    code: str
+    code: Union[int, str]
     dt: str
 
     @staticmethod
-    def of(code: str, dt: str) -> "StockInfoHtmlPage":
+    def of(code: Union[int, str], dt: str) -> "StockInfoHtmlPage":
         url = f"https://minkabu.jp/stock/{code}"
         page_type = "info"
         html_page = HtmlPage.from_url(url=url, page_type=page_type)
