@@ -6,8 +6,8 @@ from typing import List, Optional, Union
 import requests  # type: ignore
 from bs4 import BeautifulSoup
 
-from kabutobashi.domain.values import StockInfoHtmlPage, StockIpoHtmlPage, StockWeeks52HighLowHtmlPage
 from kabutobashi.domain.entity import StockIpo, Weeks52HighLow
+from kabutobashi.domain.values import StockInfoHtmlPage, StockIpoHtmlPage, StockWeeks52HighLowHtmlPage
 
 logger = getLogger(__name__)
 
@@ -88,7 +88,7 @@ class StockInfoHtmlDecoder:
         result.update(
             {
                 "dt": self.html_page.dt,
-                "code": self.html_page.code,
+                "code": str(self.html_page.code),
                 "industry_type": PageDecoder(tag1="div", class1="ly_content_wrapper size_ss").decode(bs=stock_detail),
                 "open": info.get("始値", "0"),
                 "high": info.get("高値", "0"),
@@ -150,7 +150,7 @@ class Weeks52HighLowHtmlDecoder:
                 "code": PageDecoder(tag1="a").decode(bs=t),
                 "brand_name": PageDecoder(tag1="span").decode(bs=t),
                 "buy_or_sell": buy_or_sell,
-                "dt": self.html_page.dt
+                "dt": self.html_page.dt,
             }
             whole_result.append(Weeks52HighLow.from_page_of(data=data).dumps())
 
