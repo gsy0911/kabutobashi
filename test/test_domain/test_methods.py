@@ -26,6 +26,8 @@ def test_analysis_with_sma(stock_agg):
     assert "sma_long" in columns
     assert "buy_signal" in columns
     assert "sell_signal" in columns
+    # method name
+    assert processed.processed_list[0].applied_method_name == "sma"
 
 
 def test_analysis_with_macd(stock_agg):
@@ -38,6 +40,8 @@ def test_analysis_with_macd(stock_agg):
     assert "histogram" in columns
     assert "buy_signal" in columns
     assert "sell_signal" in columns
+    # method name
+    assert processed.processed_list[0].applied_method_name == "macd"
 
 
 def test_analysis_with_stochastics(stock_agg):
@@ -48,6 +52,8 @@ def test_analysis_with_stochastics(stock_agg):
     assert "SD" in columns
     assert "buy_signal" in columns
     assert "sell_signal" in columns
+    # method name
+    assert processed.processed_list[0].applied_method_name == "stochastics"
 
 
 def test_analysis_with_adx(stock_agg):
@@ -60,6 +66,8 @@ def test_analysis_with_adx(stock_agg):
     assert "ADXR" in columns
     assert "buy_signal" in columns
     assert "sell_signal" in columns
+    # method name
+    assert processed.processed_list[0].applied_method_name == "adx"
 
 
 @pytest.mark.skip(reason="buy_signal and sell_signal is not implemented")
@@ -71,6 +79,8 @@ def test_analysis_with_ichimoku(stock_agg):
     assert "proceding_span_1" in columns
     assert "proceding_span_2" in columns
     assert "delayed_span" in columns
+    # method name
+    assert processed.processed_list[0].applied_method_name == "ichimoku"
 
 
 def test_analysis_with_momentum(stock_agg):
@@ -80,6 +90,8 @@ def test_analysis_with_momentum(stock_agg):
     assert "sma_momentum" in columns
     assert "buy_signal" in columns
     assert "sell_signal" in columns
+    # method name
+    assert processed.processed_list[0].applied_method_name == "momentum"
 
 
 def test_analysis_with_psycho_logical(stock_agg):
@@ -90,6 +102,8 @@ def test_analysis_with_psycho_logical(stock_agg):
     assert "sold_too_much" in columns
     assert "buy_signal" in columns
     assert "sell_signal" in columns
+    # method name
+    assert processed.processed_list[0].applied_method_name == "psycho_logical"
 
 
 def test_analysis_with_bollinger_bands(stock_agg):
@@ -101,6 +115,8 @@ def test_analysis_with_bollinger_bands(stock_agg):
     assert "over_lower_continuity" in columns
     assert "buy_signal" in columns
     assert "sell_signal" in columns
+    # method name
+    assert processed.processed_list[0].applied_method_name == "bollinger_bands"
 
 
 def test_analysis_with_fitting(stock_agg):
@@ -109,6 +125,8 @@ def test_analysis_with_fitting(stock_agg):
     assert "linear_fitting" in columns
     assert "square_fitting" in columns
     assert "cube_fitting" in columns
+    # method name
+    assert processed.processed_list[0].applied_method_name == "fitting"
 
 
 def test_analysis_with_basic(stock_agg):
@@ -116,6 +134,20 @@ def test_analysis_with_basic(stock_agg):
     columns = processed.processed_list[0].df.columns
     assert "buy_signal" in columns
     assert "sell_signal" in columns
+    # method name
+    assert processed.processed_list[0].applied_method_name == "basic"
+
+
+def test_analysis_with_pct_change(stock_agg):
+    processed = stock_agg.with_processed([kb.pct_change])
+    # method name
+    assert processed.processed_list[0].applied_method_name == "pct_change"
+
+
+def test_analysis_with_volatility(stock_agg):
+    processed = stock_agg.with_processed([kb.volatility])
+    # method name
+    assert processed.processed_list[0].applied_method_name == "volatility"
 
 
 def test_get_impact_with(stock_agg):

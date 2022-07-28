@@ -11,7 +11,7 @@ class Volatility(Method):
     変動幅を計算する
     """
 
-    method_name: str = "basic"
+    method_name: str = "volatility"
     method_type: MethodType = MethodType.PARAMETERIZE
 
     def _method(self, df: pd.DataFrame) -> pd.DataFrame:
