@@ -11,7 +11,7 @@ class PctChange(Method):
     変化率を計算する
     """
 
-    method_name: str = "basic"
+    method_name: str = "pct_change"
     method_type: MethodType = MethodType.PARAMETERIZE
 
     def _method(self, df: pd.DataFrame) -> pd.DataFrame:
