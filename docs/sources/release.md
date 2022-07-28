@@ -1,5 +1,10 @@
 # Release Note
 
+## 0.4.5
+
+- modify method name ([#114](https://github.com/gsy0911/kabutobashi/issues/114))
+- add is_delisting ([#113](https://github.com/gsy0911/kabutobashi/issues/113))
+
 ## 0.4.4
 
 - error: code is float-string, like "1000.0" ([#112](https://github.com/gsy0911/kabutobashi/issues/112))
