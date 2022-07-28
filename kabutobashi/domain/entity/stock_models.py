@@ -6,7 +6,7 @@ from pydantic import BaseModel, Field
 from kabutobashi.domain.errors import KabutobashiEntityError
 
 REQUIRED_COL = ["code", "open", "close", "high", "low", "volume", "per", "psr", "pbr", "dt"]
-OPTIONAL_COL = ["name", "industry_type", "market", "unit"]
+OPTIONAL_COL = ["name", "industry_type", "market", "unit", "is_delisting"]
 
 
 __all__ = ["StockBrand", "StockRecord", "StockIpo", "Weeks52HighLow", "REQUIRED_COL", "OPTIONAL_COL"]
@@ -137,6 +137,7 @@ class StockRecord(BaseModel):
     per: float = Field(description="PER")
     pbr: float = Field(description="PBR")
     volume: int = Field(description="出来高")
+    is_delisting: bool = Field(description="上場廃止")
     dt: str = Field(description="日付")
 
     def __init__(
@@ -151,6 +152,7 @@ class StockRecord(BaseModel):
         per: float,
         pbr: float,
         volume: int,
+        is_delisting: bool,
         dt: str,
     ):
 
@@ -167,6 +169,7 @@ class StockRecord(BaseModel):
             per=per,
             pbr=pbr,
             volume=volume,
+            is_delisting=is_delisting,
             dt=dt,
         )
 
@@ -185,6 +188,7 @@ class StockRecord(BaseModel):
                 per=_convert_float(data["per"]),
                 pbr=_convert_float(data["pbr"]),
                 volume=_convert_int(data["volume"]),
+                is_delisting=data.get("is_delisting", False),
                 dt=data["date"],
             )
         except Exception:
@@ -199,6 +203,7 @@ class StockRecord(BaseModel):
                 per=0,
                 pbr=0,
                 volume=0,
+                is_delisting=False,
                 dt="",
             )
 
@@ -239,6 +244,7 @@ class StockRecord(BaseModel):
             per=_convert_float(data["per"]),
             pbr=_convert_float(data["pbr"]),
             volume=_convert_int(data["volume"]),
+            is_delisting=data.get("is_delisting", False),
             dt=dt,
         )
 

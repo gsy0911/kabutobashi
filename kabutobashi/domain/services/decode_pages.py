@@ -107,8 +107,16 @@ class StockInfoHtmlDecoder:
                 "volume": info.get("出来高", "0"),
                 "market_capitalization": info.get("時価総額", "---"),
                 "issued_shares": info.get("発行済株数", "---"),
+                "is_delisting": False,
             }
         )
+
+        # 上場廃止の確認
+        open_value = result["open"]
+        high_value = result["high"]
+        low_value = result["low"]
+        if open_value == "---" and high_value == "---" and low_value == "---":
+            result.update({"is_delisting": True})
         return result
 
 
