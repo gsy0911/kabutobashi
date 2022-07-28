@@ -36,6 +36,7 @@ class TestStockRecord:
                 pbr="",
                 volume="",
                 dt="",
+                is_delisting=False
             )
 
 

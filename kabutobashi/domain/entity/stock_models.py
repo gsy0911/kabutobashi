@@ -188,7 +188,7 @@ class StockRecord(BaseModel):
                 per=_convert_float(data["per"]),
                 pbr=_convert_float(data["pbr"]),
                 volume=_convert_int(data["volume"]),
-                is_delisting=data["is_delisting"],
+                is_delisting=data.get("is_delisting", False),
                 dt=data["date"],
             )
         except Exception:
@@ -244,7 +244,7 @@ class StockRecord(BaseModel):
             per=_convert_float(data["per"]),
             pbr=_convert_float(data["pbr"]),
             volume=_convert_int(data["volume"]),
-            is_delisting=data["is_delisting"],
+            is_delisting=data.get("is_delisting", False),
             dt=dt,
         )
 
