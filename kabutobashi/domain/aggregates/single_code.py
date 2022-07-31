@@ -9,7 +9,7 @@ from kabutobashi.domain.services.estimate_filter import EstimateFilter
 from kabutobashi.domain.services.method import Method
 from kabutobashi.domain.values import (
     StockDataEstimatedBySingleFilter,
-    StockDataProcessedBySingleMethod,
+    StockDataProcessed,
     StockDataVisualized,
     StockRecordset,
 )
@@ -37,7 +37,7 @@ class StockCodeSingleAggregate:
 
     code: str
     single_recordset: StockRecordset
-    processed_list: List[StockDataProcessedBySingleMethod] = field(default_factory=list, repr=False)
+    processed_list: List[StockDataProcessed] = field(default_factory=list, repr=False)
     estimated_list: List[StockDataEstimatedBySingleFilter] = field(default_factory=list, repr=False)
 
     @staticmethod
@@ -55,39 +55,17 @@ class StockCodeSingleAggregate:
         code = single_recordset.get_single_code_recordset_status().code
         return StockCodeSingleAggregate(code=code, single_recordset=single_recordset)
 
-    def _to_single_processed(self, method: Method) -> StockDataProcessedBySingleMethod:
-        df = self.single_recordset.to_df()
-        # 日時
-        start_at = list(df["dt"])[0]
-        end_at = list(df["dt"])[-1]
-
-        # 必要なパラメータの作成
-        columns = ["dt", "open", "close", "high", "low", "buy_signal", "sell_signal"] + method.processed_columns()
-        df_p = df.pipe(method.method).pipe(method.signal).loc[:, columns]
-        params = method.parameterize(df_x=df, df_p=df_p)
-
-        return StockDataProcessedBySingleMethod(
-            code=self.code,
-            start_at=start_at,
-            end_at=end_at,
-            applied_method_name=method.method_name,
-            df=df_p,
-            df_required_columns=columns,
-            parameters=params,
-            color_mapping=method.color_mapping(),
-            visualize_option=method.visualize_option(),
-        )
-
     def with_processed(self, methods: List[Method]) -> "StockCodeSingleAggregate":
         # check all methods
         for method in methods:
             if not isinstance(method, Method):
                 raise KabutobashiEntityError()
 
+        df = self.single_recordset.to_df()
         return StockCodeSingleAggregate(
             code=self.code,
             single_recordset=self.single_recordset,
-            processed_list=[self._to_single_processed(m) for m in methods],
+            processed_list=[m.process_method.process(df=df) for m in methods],
         )
 
     def _to_single_estimated(self, estimate_filter: EstimateFilter) -> StockDataEstimatedBySingleFilter:
@@ -154,7 +132,7 @@ class IStockCodeSingleAggregateRepository(ABC):
         raise NotImplementedError()
 
     @abstractmethod
-    def _stock_processed_read(self, code: str) -> List["StockDataProcessedBySingleMethod"]:
+    def _stock_processed_read(self, code: str) -> List["StockDataProcessed"]:
         raise NotImplementedError()
 
     @abstractmethod
@@ -171,7 +149,7 @@ class IStockCodeSingleAggregateRepository(ABC):
         raise NotImplementedError()
 
     @abstractmethod
-    def _stock_processed_write(self, data: List[StockDataProcessedBySingleMethod]) -> NoReturn:
+    def _stock_processed_write(self, data: List[StockDataProcessed]) -> NoReturn:
         raise NotImplementedError()
 
     @abstractmethod
