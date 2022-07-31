@@ -1,4 +1,3 @@
-import pandas as pd
 import pydantic
 import pytest
 
@@ -56,59 +55,44 @@ class TestWeeks52HihLow:
             )
 
 
-class TestStockDataSingleCode:
-    def test_of(self, data_path):
-        df = pd.read_csv(f"{data_path}/example.csv.gz")
-        df["code"] = df["code"].astype(str)
-        single_code = df[df["code"] == "1375"]
-        _ = kb.StockDataSingleCode.of(df=single_code)
-
-        # check None
-        with pytest.raises(KabutobashiEntityError):
-            _ = kb.StockDataSingleCode(
-                code="-",
-                stock_recordset=kb.StockRecordset.of(df=pd.DataFrame()),
-                stop_updating=False,
-                contains_outlier=False,
-                len_=0,
-            )
-
-        # check multiple code
-        with pytest.raises(KabutobashiEntityError):
-            _ = kb.StockDataSingleCode.of(df=df)
-
-        # check invalid column
-        with pytest.raises(KabutobashiEntityError):
-            _ = kb.StockDataSingleCode.of(df=single_code[["close"]])
-
-    def test_get_df(self, data_path):
-        df = pd.read_csv(f"{data_path}/example.csv.gz")
-        df["code"] = df["code"].astype(str)
-        single_code = df[df["code"] == "1375"]
-        sdsc = kb.StockDataSingleCode.of(df=single_code)
-
-        required_cols = ["code", "open", "close", "high", "low", "volume", "per", "psr", "pbr", "dt"]
-        optional_cols = ["name", "industry_type", "market", "unit"]
-
-        # check minimum df
-        minimum_df = sdsc.to_df()
-        assert all([(c in minimum_df.columns) for c in required_cols])
-        assert all([(c not in minimum_df.columns) for c in optional_cols])
-
-        # check full df
-        full_df = sdsc.to_df(minimum=False)
-        assert all([(c in full_df.columns) for c in required_cols])
-        assert all([(c in full_df.columns) for c in optional_cols])
-
-        latest_date_df = sdsc.to_df(latest=True)
-        assert len(latest_date_df.index) == 1
-
-
 class TestStockRecordset:
     def test_code_iterable(self):
         records = kb.example()
         for _ in records.to_code_iterable(until=1):
             pass
+
+    def test_multiple_code_error(self):
+        records = kb.example()
+        with pytest.raises(KabutobashiEntityError):
+            _ = records.get_single_code_recordset_status()
+
+    def test_invalid_column_error(self):
+        records = kb.example()
+        # check invalid column
+        with pytest.raises(KabutobashiEntityError):
+            _ = kb.StockRecordset.of(df=records.to_df()[["close"]])
+
+    def test_get_df(self, data_path):
+        records = kb.example().to_single_code(code="1375")
+
+        required_cols = ["code", "open", "close", "high", "low", "volume", "per", "psr", "pbr", "dt"]
+        optional_cols = ["name", "industry_type", "market", "unit"]
+
+        # check minimum df
+        minimum_df = records.to_df()
+        assert all([(c in minimum_df.columns) for c in required_cols])
+        assert all([(c not in minimum_df.columns) for c in optional_cols])
+
+        # check full df
+        full_df = records.to_df(minimum=False)
+        assert all([(c in full_df.columns) for c in required_cols])
+        assert all([(c in full_df.columns) for c in optional_cols])
+
+        latest_date_df = records.to_df(latest=True)
+        assert len(latest_date_df.index) == 1
+
+        status = records.get_single_code_recordset_status()
+        assert status.code == "1375"
 
 
 class TestStockSingleAggregate:
