@@ -50,10 +50,10 @@ class StockRecordset:
             直近の更新が止まっているかどうか
             """
             return (
-                    (len(_df["open"].tail(10).unique()) == 1)
-                    or (len(_df["high"].tail(10).unique()) == 1)
-                    or (len(_df["low"].tail(10).unique()) == 1)
-                    or (len(_df["close"].tail(10).unique()) == 1)
+                (len(_df["open"].tail(10).unique()) == 1)
+                or (len(_df["high"].tail(10).unique()) == 1)
+                or (len(_df["low"].tail(10).unique()) == 1)
+                or (len(_df["close"].tail(10).unique()) == 1)
             )
 
         if self.code_num > 1:

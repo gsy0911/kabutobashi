@@ -58,9 +58,9 @@ class Method(metaclass=ABCMeta):
 
     @staticmethod
     def _validate(df: pd.DataFrame) -> pd.DataFrame:
-        from kabutobashi.domain.values import StockDataSingleCode
+        from kabutobashi.domain.values import StockRecordset
 
-        return StockDataSingleCode.of(df=df).df
+        return StockRecordset.of(df=df).to_df()
 
     def method(self, df: pd.DataFrame) -> pd.DataFrame:
         """

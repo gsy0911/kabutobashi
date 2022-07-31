@@ -41,9 +41,7 @@ class StockCodeSingleAggregate:
     estimated_list: List[StockDataEstimatedBySingleFilter] = field(default_factory=list, repr=False)
 
     @staticmethod
-    def of(
-        entity: Union[pd.DataFrame, StockRecordset], *, code: Optional[str] = None
-    ) -> "StockCodeSingleAggregate":
+    def of(entity: Union[pd.DataFrame, StockRecordset], *, code: Optional[str] = None) -> "StockCodeSingleAggregate":
         if type(entity) is pd.DataFrame:
             single_recordset = StockRecordset.of(df=entity)
         elif type(entity) is StockRecordset:
@@ -89,7 +87,7 @@ class StockCodeSingleAggregate:
         return StockCodeSingleAggregate(
             code=self.code,
             single_recordset=self.single_recordset,
-            processed_list=[self._to_single_processed(m) for m in methods]
+            processed_list=[self._to_single_processed(m) for m in methods],
         )
 
     def _to_single_estimated(self, estimate_filter: EstimateFilter) -> StockDataEstimatedBySingleFilter:
