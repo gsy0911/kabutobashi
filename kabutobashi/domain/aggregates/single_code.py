@@ -1,4 +1,4 @@
-from abc import ABCMeta, abstractmethod
+from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from typing import Dict, List, NoReturn, Optional, Union
 
@@ -140,7 +140,7 @@ class StockCodeSingleAggregate:
         return StockDataVisualized.of(processed=self.processed_list, size_ratio=size_ratio)
 
 
-class IStockCodeSingleAggregateRepository(metaclass=ABCMeta):
+class IStockCodeSingleAggregateRepository(ABC):
     def read(self, code: str) -> "StockCodeSingleAggregate":
         return StockCodeSingleAggregate(
             code=code,

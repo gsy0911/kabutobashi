@@ -1,4 +1,4 @@
-from abc import ABCMeta, abstractmethod
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from enum import Enum, auto
 
@@ -11,7 +11,7 @@ class MethodType(Enum):
 
 
 @dataclass(frozen=True)  # type: ignore
-class Method(metaclass=ABCMeta):
+class Method(ABC):
     """
     株のテクニカル分析に関するメソッドを提供するクラス
 
