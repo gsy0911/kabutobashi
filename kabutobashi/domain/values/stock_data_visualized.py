@@ -1,4 +1,4 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import List
 
 import matplotlib.dates as mdates
@@ -20,7 +20,6 @@ class StockDataVisualized:
 
     fig: plt.Figure
     size_ratio: int
-    processed: List[StockDataProcessedBySingleMethod] = field(default_factory=list)
 
     @staticmethod
     def of(processed: List[StockDataProcessedBySingleMethod], size_ratio: int = 2):

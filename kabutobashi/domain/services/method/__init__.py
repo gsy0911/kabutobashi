@@ -18,17 +18,17 @@ Method modules provide technical analysis for stock chart.
   - Basic: only used `parameterize`
 
 """
-from .adx import ADX, AdxProcess
-from .basic import Basic, BasicProcess
-from .bollinger_bands import BollingerBands, BollingerBandsProcess
-from .fitting import Fitting, FittingProcess
-from .ichimoku import Ichimoku, IchimokuProcess
-from .industry_cat import IndustryCategories, IndustryCategoriesProcess
-from .macd import MACD, MacdProcess
+from .adx import adx
+from .basic import basic
+from .bollinger_bands import bollinger_bands
+from .fitting import fitting
+from .ichimoku import ichimoku
+from .industry_cat import industry_categories
+from .macd import macd
 from .method import Method, ProcessMethod
-from .momentum import Momentum, MomentumProcess
-from .pct_change import PctChange, PctChangeProcess
-from .psycho_logical import PsychoLogical, PsychoLogicalProcess
-from .sma import SMA, SmaProcess
-from .stochastics import Stochastics, StochasticsProcess
-from .volatility import Volatility, VolatilityProcess
+from .momentum import momentum
+from .pct_change import pct_change
+from .psycho_logical import psycho_logical
+from .sma import sma
+from .stochastics import stochastics
+from .volatility import volatility
