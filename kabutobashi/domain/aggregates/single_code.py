@@ -10,7 +10,6 @@ from kabutobashi.domain.services.method import Method
 from kabutobashi.domain.values import (
     StockDataEstimatedBySingleFilter,
     StockDataProcessedBySingleMethod,
-    StockDataSingleCode,
     StockDataVisualized,
     StockRecordset,
 )
@@ -37,29 +36,29 @@ class StockCodeSingleAggregate:
     """
 
     code: str
-    single_code: StockDataSingleCode
+    single_recordset: StockRecordset
     processed_list: List[StockDataProcessedBySingleMethod] = field(default_factory=list, repr=False)
     estimated_list: List[StockDataEstimatedBySingleFilter] = field(default_factory=list, repr=False)
 
     @staticmethod
     def of(
-        entity: Union[pd.DataFrame, StockDataSingleCode, StockRecordset], *, code: Optional[str] = None
+        entity: Union[pd.DataFrame, StockRecordset], *, code: Optional[str] = None
     ) -> "StockCodeSingleAggregate":
         if type(entity) is pd.DataFrame:
-            single_code = StockDataSingleCode.of(df=entity)
-        elif type(entity) is StockDataSingleCode:
-            single_code = entity
+            single_recordset = StockRecordset.of(df=entity)
         elif type(entity) is StockRecordset:
             if code is None:
                 raise KabutobashiEntityError("code is required")
             df_ = entity.to_df(code=code)
-            single_code = StockDataSingleCode.of(df=df_)
+            single_recordset = StockRecordset.of(df=df_)
         else:
             raise KabutobashiEntityError("accept pd.DataFrame or StockDataSingleCode")
-        return StockCodeSingleAggregate(code=single_code.code, single_code=single_code)
+
+        code = single_recordset.get_single_code_recordset_status().code
+        return StockCodeSingleAggregate(code=code, single_recordset=single_recordset)
 
     def _to_single_processed(self, method: Method) -> StockDataProcessedBySingleMethod:
-        df = self.single_code.to_df()
+        df = self.single_recordset.to_df()
         # 日時
         start_at = list(df["dt"])[0]
         end_at = list(df["dt"])[-1]
@@ -88,7 +87,9 @@ class StockCodeSingleAggregate:
                 raise KabutobashiEntityError()
 
         return StockCodeSingleAggregate(
-            code=self.code, single_code=self.single_code, processed_list=[self._to_single_processed(m) for m in methods]
+            code=self.code,
+            single_recordset=self.single_recordset,
+            processed_list=[self._to_single_processed(m) for m in methods]
         )
 
     def _to_single_estimated(self, estimate_filter: EstimateFilter) -> StockDataEstimatedBySingleFilter:
@@ -121,7 +122,7 @@ class StockCodeSingleAggregate:
         """
         return StockCodeSingleAggregate(
             code=self.code,
-            single_code=self.single_code,
+            single_recordset=self.single_recordset,
             processed_list=self.processed_list,
             estimated_list=[self._to_single_estimated(estimate_filter=ef) for ef in estimate_filters],
         )
@@ -145,13 +146,13 @@ class IStockCodeSingleAggregateRepository(metaclass=ABCMeta):
     def read(self, code: str) -> "StockCodeSingleAggregate":
         return StockCodeSingleAggregate(
             code=code,
-            single_code=self._stock_data_read(code=code),
+            single_recordset=self._stock_data_read(code=code),
             processed_list=self._stock_processed_read(code=code),
             estimated_list=self._stock_estimated_read(code=code),
         )
 
     @abstractmethod
-    def _stock_data_read(self, code: str) -> "StockDataSingleCode":
+    def _stock_data_read(self, code: str) -> "StockRecordset":
         raise NotImplementedError()
 
     @abstractmethod
@@ -163,12 +164,12 @@ class IStockCodeSingleAggregateRepository(metaclass=ABCMeta):
         raise NotImplementedError()
 
     def write(self, data: StockCodeSingleAggregate) -> NoReturn:
-        self._stock_data_write(data=data.single_code)
+        self._stock_data_write(data=data.single_recordset)
         self._stock_processed_write(data=data.processed_list)
         self._stock_estimated_write(data=data.estimated_list)
 
     @abstractmethod
-    def _stock_data_write(self, data: StockDataSingleCode) -> NoReturn:
+    def _stock_data_write(self, data: StockRecordset) -> NoReturn:
         raise NotImplementedError()
 
     @abstractmethod

@@ -10,7 +10,7 @@ def stock_agg() -> kb.StockCodeSingleAggregate:
 
 
 def test_example_data(stock_agg):
-    columns = stock_agg.single_code.to_df().columns
+    columns = stock_agg.single_recordset.to_df().columns
     assert "dt" in columns
     assert "open" in columns
     assert "close" in columns

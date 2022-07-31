@@ -28,7 +28,6 @@ from .domain.services import StockInfoMultipleDaysHtmlDecoder, StockIpoHtmlDecod
 from .domain.values import (
     StockDataEstimatedBySingleFilter,
     StockDataProcessedBySingleMethod,
-    StockDataSingleCode,
     StockDataVisualized,
     StockInfoHtmlPage,
     StockInfoMultipleDaysMainHtmlPage,
