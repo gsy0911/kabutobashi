@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 import pandas as pd
 
-from .method import Method, MethodType, ProcessMethod, VisualizeMethod
+from .method import Method, MethodType, ProcessMethod
 
 
 @dataclass(frozen=True)

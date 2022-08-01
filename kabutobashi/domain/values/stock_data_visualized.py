@@ -8,7 +8,7 @@ import pandas as pd
 from mplfinance.original_flavor import candlestick_ohlc
 
 from kabutobashi.domain.errors import KabutobashiEntityError
-from kabutobashi.domain.values.stock_data_processed import StockDataProcessedBySingleMethod
+from kabutobashi.domain.values.stock_data_processed import StockDataProcessed
 
 
 @dataclass(frozen=True)
@@ -22,7 +22,7 @@ class StockDataVisualized:
     size_ratio: int
 
     @staticmethod
-    def of(processed: List[StockDataProcessedBySingleMethod], size_ratio: int = 2):
+    def of(processed: List[StockDataProcessed], size_ratio: int = 2):
         return StockDataVisualized(
             fig=StockDataVisualized._visualize(processed_list=processed, size_ratio=size_ratio), size_ratio=size_ratio
         )
@@ -37,7 +37,7 @@ class StockDataVisualized:
         candlestick_ohlc(ax, ohlc, width=0.7, colorup="g", colordown="r")
 
     @staticmethod
-    def _visualize(processed_list: List[StockDataProcessedBySingleMethod], size_ratio: int):
+    def _visualize(processed_list: List[StockDataProcessed], size_ratio: int):
         """
         Visualize Stock Data.
 

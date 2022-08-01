@@ -65,7 +65,7 @@ class ProcessMethod(ABC):
         params = self.parameterize(df_x=applied_df, df_p=signal_df)
         return StockDataProcessed(
             code=code_list[0],
-            df=applied_df,
+            df=signal_df,
             start_at=start_at,
             end_at=end_at,
             df_required_columns=required_columns,

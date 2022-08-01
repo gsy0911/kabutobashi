@@ -4,7 +4,7 @@ import pandas as pd
 
 from kabutobashi.domain.errors import KabutobashiMethodError
 
-from .method import Method, MethodType, ProcessMethod, VisualizeMethod
+from .method import Method, MethodType, ProcessMethod
 
 
 @dataclass(frozen=True)
