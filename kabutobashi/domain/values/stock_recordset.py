@@ -1,11 +1,14 @@
 from abc import ABCMeta, abstractmethod
 from dataclasses import dataclass, field
 from typing import Generator, List, NoReturn, Optional, Set, Tuple
-
+from logging import getLogger, INFO
 import pandas as pd
 
 from kabutobashi.domain.entity import OPTIONAL_COL, REQUIRED_COL, StockBrand, StockRecord
 from kabutobashi.domain.errors import KabutobashiEntityError
+
+logger = getLogger(__name__)
+logger.setLevel(INFO)
 
 
 @dataclass(frozen=True)
@@ -38,8 +41,11 @@ class StockRecordset:
         brand_set = set()
         df = df.dropna(subset=["code"])
         for _, row in df.iterrows():
-            recordset.append(StockRecord.loads(dict(row)))
-            brand_set.add(StockBrand.loads(data=dict(row)))
+            try:
+                recordset.append(StockRecord.loads(dict(row)))
+                brand_set.add(StockBrand.loads(data=dict(row)))
+            except KabutobashiEntityError:
+                logger.warning(f"error occurred at: {row}")
         return StockRecordset(
             brand_set=brand_set, recordset=recordset, code_num=len(brand_set), recordset_length=len(recordset)
         )
