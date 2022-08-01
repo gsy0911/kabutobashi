@@ -14,7 +14,7 @@ class IndustryCategoriesProcess(ProcessMethod):
     parameterizeのみに利用される。
     """
 
-    method_name: str = "basic"
+    method_name: str = "industry_categories"
     method_type: MethodType = MethodType.PARAMETERIZE
     INDUSTRY_TYPE_MAPPING = {
         "水産・農林業": "industry_fisheries_agriculture",

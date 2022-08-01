@@ -144,6 +144,13 @@ def test_analysis_with_pct_change(stock_agg):
     assert processed.processed_list[0].applied_method_name == "pct_change"
 
 
+@pytest.mark.skip(reason="industry_categories is not prepared")
+def test_analysis_with_industry_categories(stock_agg):
+    processed = stock_agg.with_processed([kb.industry_categories])
+    # method name
+    assert processed.processed_list[0].applied_method_name == "industry_categories"
+
+
 def test_analysis_with_volatility(stock_agg):
     processed = stock_agg.with_processed([kb.volatility])
     # method name
