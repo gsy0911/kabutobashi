@@ -2,11 +2,11 @@ from dataclasses import dataclass
 
 import pandas as pd
 
-from .method import Method, MethodType
+from .method import Method, MethodType, ProcessMethod, VisualizeMethod
 
 
 @dataclass(frozen=True)
-class PsychoLogical(Method):
+class PsychoLogicalProcess(ProcessMethod):
     """
     See Also:
         https://www.sevendata.co.jp/shihyou/technical/psycho.html
@@ -18,7 +18,7 @@ class PsychoLogical(Method):
     method_name: str = "psycho_logical"
     method_type: MethodType = MethodType.TECHNICAL_ANALYSIS
 
-    def _method(self, df: pd.DataFrame) -> pd.DataFrame:
+    def _apply(self, df: pd.DataFrame) -> pd.DataFrame:
         df_ = df.copy()
         df_["shift_close"] = df_["close"].shift(1)
         df_ = df_.fillna(0)
@@ -38,6 +38,20 @@ class PsychoLogical(Method):
         df["sell_signal"] = df["bought_too_much"]
         return df
 
+    def _processed_columns(self) -> list:
+        return ["psycho_line", "bought_too_much", "sold_too_much"]
+
+    def _parameterize(self, df_x: pd.DataFrame, df_p: pd.DataFrame) -> dict:
+        return {"psycho_line": df_p["psycho_line"].tail(3).mean()}
+
+
+@dataclass(frozen=True)
+class PsychoLogicalVisualize(VisualizeMethod):
+    """
+    See Also:
+        https://www.sevendata.co.jp/shihyou/technical/psycho.html
+    """
+
     def _color_mapping(self) -> list:
         return [
             {"df_key": "psycho_line", "color": "", "label": "psycho_line"},
@@ -46,8 +60,5 @@ class PsychoLogical(Method):
     def _visualize_option(self) -> dict:
         return {"position": "lower"}
 
-    def _processed_columns(self) -> list:
-        return ["psycho_line", "bought_too_much", "sold_too_much"]
 
-    def _parameterize(self, df_x: pd.DataFrame, df_p: pd.DataFrame) -> dict:
-        return {"psycho_line": df_p["psycho_line"].tail(3).mean()}
+psycho_logical = Method.of(process_method=PsychoLogicalProcess(), visualize_method=PsychoLogicalVisualize())

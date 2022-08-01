@@ -1,9 +1,9 @@
-from abc import ABCMeta, abstractmethod
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
 
 @dataclass(frozen=True)  # type: ignore
-class EstimateFilter(metaclass=ABCMeta):
+class EstimateFilter(ABC):
     estimate_filter_name: str
 
     def estimate(self, data: dict) -> float:

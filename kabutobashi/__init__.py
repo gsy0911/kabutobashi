@@ -5,20 +5,20 @@ from kabutobashi.domain.services import EfFundamental, EfVolume, EstimateFilter
 
 # methods to analysis
 from kabutobashi.domain.services.method import (
-    ADX,
-    MACD,
-    SMA,
-    Basic,
-    BollingerBands,
-    Fitting,
-    Ichimoku,
-    IndustryCategories,
     Method,
-    Momentum,
-    PctChange,
-    PsychoLogical,
-    Stochastics,
-    Volatility,
+    adx,
+    basic,
+    bollinger_bands,
+    fitting,
+    ichimoku,
+    industry_categories,
+    macd,
+    momentum,
+    pct_change,
+    psycho_logical,
+    sma,
+    stochastics,
+    volatility,
 )
 
 from .domain import errors
@@ -27,7 +27,6 @@ from .domain.entity import OPTIONAL_COL, REQUIRED_COL, StockBrand, StockIpo, Sto
 from .domain.services import StockInfoMultipleDaysHtmlDecoder, StockIpoHtmlDecoder, Weeks52HighLowHtmlDecoder
 from .domain.values import (
     StockDataEstimatedBySingleFilter,
-    StockDataProcessedBySingleMethod,
     StockDataVisualized,
     StockInfoHtmlPage,
     StockInfoMultipleDaysMainHtmlPage,
@@ -46,21 +45,6 @@ from .infrastructure.repository import StockRecordsetCrawler, StockRecordsetStor
 from .utilities import get_past_n_days
 
 # sns.set()
-
-# create and initialize instance
-sma = SMA(short_term=5, medium_term=21, long_term=70)
-macd = MACD(short_term=12, long_term=26, macd_span=9)
-stochastics = Stochastics()
-adx = ADX()
-bollinger_bands = BollingerBands()
-ichimoku = Ichimoku()
-momentum = Momentum()
-psycho_logical = PsychoLogical()
-fitting = Fitting()
-basic = Basic()
-volatility = Volatility()
-pct_change = PctChange()
-industry_cat = IndustryCategories()
 
 methods = [sma, macd, stochastics, adx, bollinger_bands, momentum, psycho_logical, fitting, basic]
 

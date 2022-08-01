@@ -2,11 +2,11 @@ from dataclasses import dataclass
 
 import pandas as pd
 
-from .method import Method, MethodType
+from .method import Method, MethodType, ProcessMethod, VisualizeMethod
 
 
 @dataclass(frozen=True)
-class Momentum(Method):
+class MomentumProcess(ProcessMethod):
     """
     See Also:
         https://www.sevendata.co.jp/shihyou/technical/momentum.html
@@ -16,7 +16,7 @@ class Momentum(Method):
     method_name: str = "momentum"
     method_type: MethodType = MethodType.TECHNICAL_ANALYSIS
 
-    def _method(self, df: pd.DataFrame) -> pd.DataFrame:
+    def _apply(self, df: pd.DataFrame) -> pd.DataFrame:
         df = df.assign(
             momentum=df["close"].shift(10),
         ).fillna(0)
@@ -28,6 +28,20 @@ class Momentum(Method):
         df = df.rename(columns={"to_plus": "buy_signal", "to_minus": "sell_signal"})
         return df
 
+    def _processed_columns(self) -> list:
+        return ["momentum", "sma_momentum"]
+
+    def _parameterize(self, df_x: pd.DataFrame, df_p: pd.DataFrame) -> dict:
+        return {}
+
+
+@dataclass(frozen=True)
+class MomentumVisualize(VisualizeMethod):
+    """
+    See Also:
+        https://www.sevendata.co.jp/shihyou/technical/momentum.html
+    """
+
     def _color_mapping(self) -> list:
         return [
             {"df_key": "momentum", "color": "", "label": "momentum"},
@@ -37,8 +51,5 @@ class Momentum(Method):
     def _visualize_option(self) -> dict:
         return {"position": "lower"}
 
-    def _processed_columns(self) -> list:
-        return ["momentum", "sma_momentum"]
 
-    def _parameterize(self, df_x: pd.DataFrame, df_p: pd.DataFrame) -> dict:
-        return {}
+momentum = Method.of(process_method=MomentumProcess(), visualize_method=MomentumVisualize())

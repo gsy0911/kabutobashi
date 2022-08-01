@@ -1,4 +1,4 @@
-from abc import ABCMeta, abstractmethod
+from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from typing import Generator, List, NoReturn, Optional, Set, Tuple
 from logging import getLogger, INFO
@@ -166,7 +166,7 @@ class StockRecordset:
             yield df_
 
 
-class IStockRecordsetRepository(metaclass=ABCMeta):
+class IStockRecordsetRepository(ABC):
     def read(self) -> "StockRecordset":
         return self._stock_recordset_read()
 

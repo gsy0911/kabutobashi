@@ -103,3 +103,11 @@ class TestStockSingleAggregate:
         estimated = agg.with_processed(methods=methods).with_estimated(estimate_filters=kb.estimate_filters)
         value = estimated.weighted_estimated_value({"fundamental": 1.0, "volume": 1.0})
         assert value != 0
+
+        # check visualize single column
+        data_visualized = agg.visualize(kb.sma)
+        assert data_visualized.fig
+
+        # check visualize multiple columns
+        data_visualized = agg.visualize(kb.macd)
+        assert data_visualized.fig

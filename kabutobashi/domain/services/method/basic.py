@@ -2,11 +2,11 @@ from dataclasses import dataclass
 
 import pandas as pd
 
-from .method import Method, MethodType
+from .method import Method, MethodType, ProcessMethod
 
 
 @dataclass(frozen=True)
-class Basic(Method):
+class BasicProcess(ProcessMethod):
     """
     株のvolumeやPBR, PSR, PERなどの値を返す。
     parameterizeのみに利用される。
@@ -15,7 +15,7 @@ class Basic(Method):
     method_name: str = "basic"
     method_type: MethodType = MethodType.PARAMETERIZE
 
-    def _method(self, df: pd.DataFrame) -> pd.DataFrame:
+    def _apply(self, df: pd.DataFrame) -> pd.DataFrame:
         return df
 
     def _signal(self, df: pd.DataFrame) -> pd.DataFrame:
@@ -25,12 +25,6 @@ class Basic(Method):
         df_ = df_.join(self._cross(df_["diff"]))
         df_ = df_.rename(columns={"to_plus": "buy_signal", "to_minus": "sell_signal"})
         return df_
-
-    def _color_mapping(self) -> list:
-        return []
-
-    def _visualize_option(self) -> dict:
-        return {"position": "-"}
 
     def _processed_columns(self) -> list:
         return []
@@ -53,3 +47,6 @@ class Basic(Method):
         except ValueError:
             volume = 0
         return {"pbr": pbr, "psr": psr, "per": per, "volume": volume}
+
+
+basic = Method.of(process_method=BasicProcess(), visualize_method=None)

@@ -4,11 +4,11 @@ import numpy as np
 import pandas as pd
 from scipy.optimize import curve_fit
 
-from .method import Method, MethodType
+from .method import Method, MethodType, ProcessMethod, VisualizeMethod
 
 
 @dataclass(frozen=True)
-class Fitting(Method):
+class FittingProcess(ProcessMethod):
     """
     1次、2次、3次の関数でfittingした値を返す
     """
@@ -28,7 +28,7 @@ class Fitting(Method):
     def _cube_fit(x, a, b, c, d):
         return a * x * x * x + b * x * x + c * x + d
 
-    def _method(self, df: pd.DataFrame) -> pd.DataFrame:
+    def _apply(self, df: pd.DataFrame) -> pd.DataFrame:
         array_y = df["close"]
         array_x = np.array(range(0, len(array_y)))
 
@@ -48,16 +48,6 @@ class Fitting(Method):
         df_ = df_.join(self._cross(df_["diff"]))
         df_ = df_.rename(columns={"to_plus": "buy_signal", "to_minus": "sell_signal"})
         return df_
-
-    def _color_mapping(self) -> list:
-        return [
-            {"df_key": "linear_fitting", "color": "#dc143c", "label": "linear"},
-            {"df_key": "square_fitting", "color": "#ffa500", "label": "square"},
-            {"df_key": "cube_fitting", "color": "#1e90ff", "label": "cube"},
-        ]
-
-    def _visualize_option(self) -> dict:
-        return {"position": "in"}
 
     def _processed_columns(self) -> list:
         return ["linear_fitting", "square_fitting", "cube_fitting"]
@@ -81,3 +71,23 @@ class Fitting(Method):
             "cube_x_1": cube_param[2],
             "cube_x_0": cube_param[3],
         }
+
+
+@dataclass(frozen=True)
+class FittingVisualize(VisualizeMethod):
+    """
+    1次、2次、3次の関数でfittingした値を返す
+    """
+
+    def _color_mapping(self) -> list:
+        return [
+            {"df_key": "linear_fitting", "color": "#dc143c", "label": "linear"},
+            {"df_key": "square_fitting", "color": "#ffa500", "label": "square"},
+            {"df_key": "cube_fitting", "color": "#1e90ff", "label": "cube"},
+        ]
+
+    def _visualize_option(self) -> dict:
+        return {"position": "in"}
+
+
+fitting = Method.of(process_method=FittingProcess(), visualize_method=FittingVisualize())

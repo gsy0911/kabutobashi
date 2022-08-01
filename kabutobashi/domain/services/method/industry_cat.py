@@ -4,17 +4,17 @@ import pandas as pd
 
 from kabutobashi.domain.errors import KabutobashiMethodError
 
-from .method import Method, MethodType
+from .method import Method, MethodType, ProcessMethod
 
 
 @dataclass(frozen=True)
-class IndustryCategories(Method):
+class IndustryCategoriesProcess(ProcessMethod):
     """
     株のvolumeやPBR, PSR, PERなどの値を返す。
     parameterizeのみに利用される。
     """
 
-    method_name: str = "basic"
+    method_name: str = "industry_categories"
     method_type: MethodType = MethodType.PARAMETERIZE
     INDUSTRY_TYPE_MAPPING = {
         "水産・農林業": "industry_fisheries_agriculture",
@@ -52,7 +52,7 @@ class IndustryCategories(Method):
         "サービス業": "industry_service",
     }
 
-    def _method(self, df: pd.DataFrame) -> pd.DataFrame:
+    def _apply(self, df: pd.DataFrame) -> pd.DataFrame:
         return df
 
     def _signal(self, df: pd.DataFrame) -> pd.DataFrame:
@@ -62,12 +62,6 @@ class IndustryCategories(Method):
         df_ = df_.join(self._cross(df_["diff"]))
         df_ = df_.rename(columns={"to_plus": "buy_signal", "to_minus": "sell_signal"})
         return df_
-
-    def _color_mapping(self) -> list:
-        return []
-
-    def _visualize_option(self) -> dict:
-        return {"position": "-"}
 
     def _processed_columns(self) -> list:
         return []
@@ -81,3 +75,6 @@ class IndustryCategories(Method):
         if key in self.INDUSTRY_TYPE_MAPPING.keys():
             params.update({self.INDUSTRY_TYPE_MAPPING[key]: 1})
         return params
+
+
+industry_categories = Method.of(process_method=IndustryCategoriesProcess(), visualize_method=None)
