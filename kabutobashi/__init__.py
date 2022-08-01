@@ -27,7 +27,6 @@ from .domain.entity import OPTIONAL_COL, REQUIRED_COL, StockBrand, StockIpo, Sto
 from .domain.services import StockInfoMultipleDaysHtmlDecoder, StockIpoHtmlDecoder, Weeks52HighLowHtmlDecoder
 from .domain.values import (
     StockDataEstimatedBySingleFilter,
-    StockDataProcessedBySingleMethod,
     StockDataVisualized,
     StockInfoHtmlPage,
     StockInfoMultipleDaysMainHtmlPage,

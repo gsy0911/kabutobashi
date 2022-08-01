@@ -112,10 +112,13 @@ class StockCodeSingleAggregate:
         estimate_filter_names = sorted([e.estimate_filter_name for e in self.estimated_list])
         return "_".join(estimate_filter_names)
 
-    def visualize(self, size_ratio: int = 2) -> StockDataVisualized:
-        if not self.processed_list:
-            raise KabutobashiEntityError("call with_processed() before.")
-        return StockDataVisualized.of(processed=self.processed_list, size_ratio=size_ratio)
+    def visualize(self, method: Method, size_ratio: int = 2) -> StockDataVisualized:
+        df = self.single_recordset.to_df()
+        processed_df = method.process_method.process(df=df)
+        if method.visualize_method:
+            return method.visualize_method.visualize(size_ratio=size_ratio, df=processed_df.df)
+        else:
+            raise KabutobashiEntityError(f"method {method.process_method.method_name} has no visualize method")
 
 
 class IStockCodeSingleAggregateRepository(ABC):

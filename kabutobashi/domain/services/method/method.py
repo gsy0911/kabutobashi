@@ -3,10 +3,14 @@ from dataclasses import dataclass
 from enum import Enum, auto
 from typing import Optional
 
+import matplotlib.dates as mdates
+import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
+from mplfinance.original_flavor import candlestick_ohlc
 
 from kabutobashi.domain.errors import KabutobashiEntityError
-from kabutobashi.domain.values import StockDataProcessed
+from kabutobashi.domain.values import StockDataProcessed, StockDataVisualized
 
 __all__ = ["ProcessMethod", "VisualizeMethod", "Method", "MethodType"]
 
@@ -191,6 +195,92 @@ class VisualizeMethod(ABC):
     @abstractmethod
     def _visualize_option(self) -> dict:
         raise NotImplementedError("please implement your code")
+
+    @staticmethod
+    def _add_ax_candlestick(ax, _df: pd.DataFrame):
+        # datetime -> float
+        time_series = mdates.date2num(_df["dt"])
+        data = _df[["open", "high", "low", "close"]].values.T
+        # data
+        ohlc = np.vstack((time_series, data)).T
+        candlestick_ohlc(ax, ohlc, width=0.7, colorup="g", colordown="r")
+
+    def visualize(self, size_ratio: int, df: pd.DataFrame) -> StockDataVisualized:
+        return StockDataVisualized(size_ratio=size_ratio, fig=self._visualize(size_ratio=size_ratio, df=df))
+
+    def _visualize(self, size_ratio: int, df: pd.DataFrame):
+        """
+        Visualize Stock Data.
+
+        Args:
+            size_ratio: determine the size of the graph, default 2.
+
+        Returns:
+            Figure
+        """
+
+        def _n_rows() -> int:
+            lower_nums = 1 if self.visualize_option()["position"] == "lower" else 0
+            return 1 + lower_nums
+
+        n_rows = _n_rows()
+
+        def _gridspec_kw() -> dict:
+            if n_rows == 1:
+                return {"height_ratios": [3]}
+            return {"height_ratios": [3] + [1] * (n_rows - 1)}
+
+        gridspec_kw = _gridspec_kw()
+        fig, axs = plt.subplots(
+            nrows=n_rows, ncols=1, figsize=(6 * size_ratio, 5 * size_ratio), gridspec_kw=gridspec_kw
+        )
+        # auto-formatting x-axis
+        fig.autofmt_xdate()
+
+        # set candlestick base
+        base_df = df[["dt", "open", "close", "high", "low"]]
+        if n_rows == 1:
+            base_axs = axs
+        else:
+            base_axs = axs[0]
+        self._add_ax_candlestick(base_axs, base_df)
+
+        ax_idx = 1
+        # plots
+        position = self.visualize_option()["position"]
+        time_series = mdates.date2num(base_df["dt"])
+        mapping = self.color_mapping()
+        if position == "in":
+            for m in mapping:
+                df_key = m["df_key"]
+                color = m["color"]
+                label = m["label"]
+                base_axs.plot(time_series, df[df_key], label=label)
+            # display labels
+            base_axs.legend(loc="best")
+        elif position == "lower":
+            for m in mapping:
+                df_key = m["df_key"]
+                color = m["color"]
+                label = m["label"]
+                plot = m.get("plot", "plot")
+                if plot == "plot":
+                    # type FloatingArray is no accepted ...
+                    # so `df[df_key].astype(float)`
+                    axs[ax_idx].plot(time_series, df[df_key].astype(float), label=label)
+                elif plot == "bar":
+                    axs[ax_idx].bar(time_series, df[df_key], label=label)
+            # display labels
+            axs[ax_idx].legend(loc="best")
+            # lower
+            ax_idx += 1
+        elif position == "-":
+            # technical_analysis以外のmethodが入っている場合
+            pass
+        else:
+            raise KabutobashiEntityError()
+
+        return fig
 
 
 @dataclass(frozen=True)  # type: ignore
