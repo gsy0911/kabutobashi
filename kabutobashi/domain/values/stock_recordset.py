@@ -1,7 +1,8 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
+from logging import INFO, getLogger
 from typing import Generator, List, NoReturn, Optional, Set, Tuple
-from logging import getLogger, INFO
+
 import pandas as pd
 
 from kabutobashi.domain.entity import OPTIONAL_COL, REQUIRED_COL, StockBrand, StockRecord
