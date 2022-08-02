@@ -4,7 +4,7 @@ import kabutobashi as kb
 
 
 def test_crawl_page_detail():
-    result = kb.crawl_single(code=4395, dt="2022-07-23")
+    result = kb.StockRecordsetCrawler.crawl_single(code=4395, dt="2022-07-23")
     assert result is not None
     assert type(result) is dict
 
