@@ -8,6 +8,10 @@ def test_crawl_page_detail():
     assert result is not None
     assert type(result) is dict
 
+    result = kb.StockRecordsetCrawler(code_list=[4395], dt="2022-07-23").read()
+    assert result is not None
+    assert type(result) is kb.StockRecordset
+
 
 def test_crawl_ipo_list():
     html_page = kb.StockIpoHtmlPage.of(year="2019")

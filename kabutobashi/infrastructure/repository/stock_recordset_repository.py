@@ -58,18 +58,21 @@ class StockRecordsetStorageBasicRepository(IStockRecordsetRepository):
             df.to_csv(p, index=False)
 
 
-class StockRecordsetCrawler:
-    def __init__(self, use_mp: bool = False, max_workers: int = 2):
+class StockRecordsetCrawler(IStockRecordsetRepository):
+    def __init__(self, code_list: list, dt: str, use_mp: bool = False, max_workers: int = 2):
+        self.code_list = code_list
+        self.dt = dt
         self.use_mp = use_mp
         self.max_workers = max_workers
 
-    def get(self, code_list: list, dt: str) -> StockRecordset:
+    def _stock_recordset_read(self) -> StockRecordset:
+
         # 日次の株データ取得
         stock_data: List[dict] = []
         if self.use_mp:
-            stock_data.extend(self.crawl_multiple(code_list=code_list, max_workers=self.max_workers, dt=dt))
+            stock_data.extend(self.crawl_multiple(code_list=self.code_list, max_workers=self.max_workers, dt=self.dt))
         else:
-            stock_data.extend([self.crawl_single(code=code, dt=dt) for code in code_list])
+            stock_data.extend([self.crawl_single(code=code, dt=self.dt) for code in self.code_list])
 
         # データを整形してStockDataとして保存
         df = pd.DataFrame(stock_data)
@@ -99,3 +102,6 @@ class StockRecordsetCrawler:
             for response in map_gen:
                 response_list.append(response)
         return response_list
+
+    def _stock_recordset_write(self, data: StockRecordset):
+        raise NotImplementedError()
