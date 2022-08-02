@@ -36,9 +36,6 @@ from .domain.values import (
     StockWeeks52HighLowHtmlPage,
 )
 from .example_data import example
-
-# classes or functions about crawl web pages
-from .infrastructure.crawler import crawl_multiple, crawl_single  # ある年にIPOした銘柄の情報を取得する; 単一の株価の詳細情報を取得する; 52週高値底値の値を取得
 from .infrastructure.repository import StockRecordsetCrawler, StockRecordsetStorageBasicRepository
 
 # n営業日前までの日付のリストを返す関数; 銘柄コードでイテレーションする関数; window幅でデータを取得しつつデータを返す関数; 株価の動きを様々な統計量で表現
