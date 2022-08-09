@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 
 @dataclass(frozen=True)  # type: ignore
-class EstimateFilter(ABC):
+class StockAnalysis(ABC):
     estimate_filter_name: str
 
     def estimate(self, data: dict) -> float:
@@ -20,7 +20,7 @@ class EstimateFilter(ABC):
 
 
 @dataclass(frozen=True)
-class EfFundamental(EstimateFilter):
+class SaFundamental(StockAnalysis):
     estimate_filter_name: str = "fundamental"
 
     def _validate(self, data: dict):
@@ -49,7 +49,7 @@ class EfFundamental(EstimateFilter):
 
 
 @dataclass(frozen=True)
-class EfVolume(EstimateFilter):
+class SaVolume(StockAnalysis):
     volume_threshold: int = 30_000
     estimate_filter_name: str = "volume"
 

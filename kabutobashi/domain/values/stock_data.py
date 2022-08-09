@@ -77,7 +77,7 @@ class StockDataVisualized:
 
 
 @dataclass(frozen=True)
-class StockDataEstimatedBySingleFilter:
+class StockDataEstimated:
     """
     StockDataEstimatedBySingleFilter: ValueObject
     """

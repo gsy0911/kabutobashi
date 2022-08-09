@@ -1,7 +1,7 @@
 # import seaborn as sns
 
 # import errors
-from kabutobashi.domain.services import EfFundamental, EfVolume, EstimateFilter
+from kabutobashi.domain.services import SaFundamental, SaVolume, StockAnalysis
 
 # methods to analysis
 from kabutobashi.domain.services.method import (
@@ -26,7 +26,7 @@ from .domain.aggregates import StockCodeSingleAggregate
 from .domain.entity import OPTIONAL_COL, REQUIRED_COL, StockBrand, StockIpo, StockRecord, Weeks52HighLow
 from .domain.services import StockInfoMultipleDaysHtmlDecoder, StockIpoHtmlDecoder, Weeks52HighLowHtmlDecoder
 from .domain.values import (
-    StockDataEstimatedBySingleFilter,
+    StockDataEstimated,
     StockDataVisualized,
     StockInfoHtmlPage,
     StockInfoMultipleDaysMainHtmlPage,
@@ -46,10 +46,10 @@ from .utilities import get_past_n_days
 methods = [sma, macd, stochastics, adx, bollinger_bands, momentum, psycho_logical, fitting, basic]
 
 # estimate filters
-ef_fundamental = EfFundamental()
-ef_volume = EfVolume()
+sa_fundamental = SaFundamental()
+sa_volume = SaVolume()
 
-estimate_filters = [ef_fundamental, ef_volume]
+stock_analysis = [sa_fundamental, sa_volume]
 
 # comparable tuple
 VERSION = (0, 4, 5)
