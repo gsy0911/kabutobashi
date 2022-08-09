@@ -5,37 +5,37 @@ methods
    :members:
    :undoc-members:
 
-.. autoclass:: kabutobashi.ADX
+.. autoclass:: kabutobashi.domain.services.method.AdxProcess
    :members:
 
 
-.. autoclass:: kabutobashi.BollingerBands
+.. autoclass:: kabutobashi.domain.services.method.BollingerBandsProcess
    :members:
 
 
-.. autoclass:: kabutobashi.Ichimoku
+.. autoclass:: kabutobashi.domain.services.method.IchimokuProcess
    :members:
 
 
-.. autoclass:: kabutobashi.MACD
+.. autoclass:: kabutobashi.domain.services.method.MacdProcess
    :members:
 
 
-.. autoclass:: kabutobashi.Momentum
+.. autoclass:: kabutobashi.domain.services.method.MomentumProcess
    :members:
 
 
-.. autoclass:: kabutobashi.PsychoLogical
+.. autoclass:: kabutobashi.domain.services.method.PsychoLogicalProcess
    :members:
 
 
-.. autoclass:: kabutobashi.SMA
+.. autoclass:: kabutobashi.domain.services.method.SmaProcess
    :members:
 
 
-.. autoclass:: kabutobashi.Stochastics
+.. autoclass:: kabutobashi.domain.services.method.StochasticsProcess
    :members:
 
 
-.. autoclass:: kabutobashi.IndustryCategories
+.. autoclass:: kabutobashi.domain.services.method.IndustryCategoriesProcess
    :members:

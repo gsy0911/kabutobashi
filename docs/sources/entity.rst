@@ -21,20 +21,17 @@ basement
 .. autoclass:: kabutobashi.StockRecordset
    :members:
 
-.. autoclass:: kabutobashi.StockDataSingleCode
-   :members:
-
 
 processed
 =========
 
-.. autoclass:: kabutobashi.StockDataProcessedBySingleMethod
+.. autoclass:: kabutobashi.StockDataProcessed
    :members:
 
 
 estimated
 =========
 
-.. autoclass:: kabutobashi.StockDataEstimatedBySingleFilter
+.. autoclass:: kabutobashi.StockDataEstimated
    :members:
 
