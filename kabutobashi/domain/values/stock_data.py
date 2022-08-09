@@ -4,6 +4,8 @@ from typing import Any, Dict, List
 import matplotlib.pyplot as plt
 import pandas as pd
 
+from kabutobashi.domain.errors import KabutobashiEntityError
+
 
 @dataclass(frozen=True)
 class StockDataProcessed:
@@ -19,6 +21,11 @@ class StockDataProcessed:
     df: pd.DataFrame = field(repr=False)
     df_required_columns: List[str] = field(repr=False)
     parameters: Dict[str, Any]
+
+    def __post_init__(self):
+        df_columns = self.df.columns
+        if not all([c in df_columns for c in self.df_required_columns]):
+            raise KabutobashiEntityError()
 
     def get_impact(self, influence: int = 2, tail: int = 5) -> Dict[str, float]:
         """
@@ -63,6 +70,10 @@ class StockDataVisualized:
 
     fig: plt.Figure
     size_ratio: int
+
+    def __post_init__(self):
+        if type(self.fig) is not plt.Figure:
+            raise KabutobashiEntityError()
 
 
 @dataclass(frozen=True)
