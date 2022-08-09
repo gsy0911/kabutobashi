@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 from typing import Any, Dict, List
 
+import matplotlib.pyplot as plt
 import pandas as pd
 
 
@@ -51,3 +52,29 @@ class StockDataProcessed:
         buy_impact_index = df["buy_impact"].iloc[-tail:].sum()
         sell_impact_index = df["sell_impact"].iloc[-tail:].sum()
         return round(buy_impact_index - sell_impact_index, 5)
+
+
+@dataclass(frozen=True)
+class StockDataVisualized:
+    """
+    StockDataVisualized: ValueObject
+    Used to visualize.
+    """
+
+    fig: plt.Figure
+    size_ratio: int
+
+
+@dataclass(frozen=True)
+class StockDataEstimatedBySingleFilter:
+    """
+    StockDataEstimatedBySingleFilter: ValueObject
+    """
+
+    code: str
+    estimated_value: float
+    estimate_filter_name: str
+
+    def weighted_estimated_value(self, weights: dict) -> float:
+        weight = weights.get(self.estimate_filter_name, 1)
+        return weight * self.estimated_value
