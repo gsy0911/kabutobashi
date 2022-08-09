@@ -96,22 +96,6 @@ Concept
 Usage
 =====
 
-
-Analysis
---------
-
-.. code-block:: python
-
-    import kabutobashi as kb
-
-    file_path_list = [...]
-    sdmc = kb.reader.csv(file_path_list)
-    for sdsc in sdmc.to_code_iterable():
-        processed = sdsc.to_processed(methods=kb.methods)
-        print(processed.get_impact())
-
-
-
 Crawling
 --------
 
@@ -122,8 +106,23 @@ Get Japanese-Stock-Market info.
     import kabutobashi as kb
     code_list = [...]
     dt = "%Y-%m-%d"
-    sdmc = kb.StockDataMultipleData.crawl().get(code_list=code_list, dt=dt)
+    recordset = kb.StockRecordsetCrawler(code_list=code_list, dt=dt).read()
     
+
+Analysis
+--------
+
+.. code-block:: python
+
+    import kabutobashi as kb
+
+    file_path_list = [...]
+    recordset = kb.StockRecordsetStorageBasicRepository(path_candidate=file_path_list).read()
+    for recordset in recordset.to_code_iterable():
+        processed = recordset.to_processed(methods=kb.methods)
+        print(processed.get_impact())
+
+
 
 Visualize
 ---------
@@ -134,8 +133,8 @@ You can use, but Not Completed Yet.
 .. code-block:: python
 
     import kabutobashi as kb
-    sdmc = kb.example()
-    sdp = sdmc.to_single_code(1375).to_processed([kb.sma, kb.macd])
+    recordset = kb.example()
+    sdp = recordset.to_single_code(code=1375).to_processed([kb.sma, kb.macd])
     sdp.visualize()
 
 
