@@ -5,7 +5,7 @@ from typing import Dict, List, NoReturn, Optional, Union
 import pandas as pd
 
 from kabutobashi.domain.errors import KabutobashiEntityError
-from kabutobashi.domain.services.estimate_filter import EstimateFilter
+from kabutobashi.domain.services.analyze import StockAnalysis
 from kabutobashi.domain.services.method import Method
 from kabutobashi.domain.values import StockDataEstimated, StockDataProcessed, StockDataVisualized, StockRecordset
 
@@ -23,10 +23,10 @@ class StockCodeSingleAggregate:
         >>> data_list = []
         >>> records = kb.example()
         >>> methods = kb.methods + [kb.basic, kb.pct_change, kb.volatility]
-        >>> filters = kb.estimate_filters
+        >>> stock_analysis = kb.stock_analysis
         >>>
         >>> for df in records.to_code_iterable(until=1, row_more_than=80):
-        >>>     agg = kb.StockCodeSingleAggregate.of(entity=df).with_processed(methods).with_estimated(filters)
+        >>>     agg = kb.StockCodeSingleAggregate.of(entity=df).with_processed(methods).with_estimated(stock_analysis)
         >>>     print(agg.weighted_estimated_value())
     """
 
@@ -63,7 +63,7 @@ class StockCodeSingleAggregate:
             processed_list=[m.process_method.process(df=df) for m in methods],
         )
 
-    def _to_single_estimated(self, estimate_filter: EstimateFilter) -> StockDataEstimated:
+    def _to_single_estimated(self, stock_analysis: StockAnalysis) -> StockDataEstimated:
         def get_impacts(influence: int = 2, tail: int = 5) -> Dict[str, float]:
             data_ = {}
             for a in self.processed_list:
@@ -81,11 +81,11 @@ class StockCodeSingleAggregate:
         data.update(get_parameters())
         return StockDataEstimated(
             code=self.code,
-            estimate_filter_name=estimate_filter.estimate_filter_name,
-            estimated_value=estimate_filter.estimate(data=data),
+            estimate_filter_name=stock_analysis.estimate_filter_name,
+            estimated_value=stock_analysis.estimate(data=data),
         )
 
-    def with_estimated(self, estimate_filters: List[EstimateFilter]) -> "StockCodeSingleAggregate":
+    def with_estimated(self, stock_analysis: List[StockAnalysis]) -> "StockCodeSingleAggregate":
         """
 
         Returns:
@@ -95,7 +95,7 @@ class StockCodeSingleAggregate:
             code=self.code,
             single_recordset=self.single_recordset,
             processed_list=self.processed_list,
-            estimated_list=[self._to_single_estimated(estimate_filter=ef) for ef in estimate_filters],
+            estimated_list=[self._to_single_estimated(stock_analysis=sa) for sa in stock_analysis],
         )
 
     def weighted_estimated_value(self, weights: dict = None) -> float:

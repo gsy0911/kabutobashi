@@ -101,7 +101,7 @@ class TestStockSingleAggregate:
     def test_pass(self, example_records: kb.StockRecordset):
         methods = kb.methods + [kb.basic, kb.pct_change, kb.volatility]
         agg = kb.StockCodeSingleAggregate.of(entity=example_records, code="1375")
-        estimated = agg.with_processed(methods=methods).with_estimated(estimate_filters=kb.estimate_filters)
+        estimated = agg.with_processed(methods=methods).with_estimated(stock_analysis=kb.stock_analysis)
         value = estimated.weighted_estimated_value({"fundamental": 1.0, "volume": 1.0})
         assert value != 0
 

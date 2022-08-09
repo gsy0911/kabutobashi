@@ -1,3 +1,4 @@
+from .analyze import SaFundamental, SaVolume, StockAnalysis
 from .decode_pages import (
     PageDecoder,
     StockInfoHtmlDecoder,
@@ -5,4 +6,3 @@ from .decode_pages import (
     StockIpoHtmlDecoder,
     Weeks52HighLowHtmlDecoder,
 )
-from .estimate_filter import EfFundamental, EfVolume, EstimateFilter
