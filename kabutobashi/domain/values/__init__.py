@@ -5,7 +5,5 @@ from .html_pages import (
     StockIpoHtmlPage,
     StockWeeks52HighLowHtmlPage,
 )
-from .stock_data_estimated import StockDataEstimatedBySingleFilter
-from .stock_data_processed import StockDataProcessed
-from .stock_data_visualized import StockDataVisualized
+from .stock_data import StockDataEstimatedBySingleFilter, StockDataProcessed, StockDataVisualized
 from .stock_recordset import IStockRecordsetRepository, StockRecordset
