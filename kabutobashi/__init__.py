@@ -26,7 +26,7 @@ from .domain.aggregates import StockCodeSingleAggregate
 from .domain.entity import OPTIONAL_COL, REQUIRED_COL, StockBrand, StockIpo, StockRecord, Weeks52HighLow
 from .domain.services import StockInfoMultipleDaysHtmlDecoder, StockIpoHtmlDecoder, Weeks52HighLowHtmlDecoder
 from .domain.values import (
-    StockDataEstimatedBySingleFilter,
+    StockDataEstimated,
     StockDataVisualized,
     StockInfoHtmlPage,
     StockInfoMultipleDaysMainHtmlPage,

@@ -7,12 +7,7 @@ import pandas as pd
 from kabutobashi.domain.errors import KabutobashiEntityError
 from kabutobashi.domain.services.estimate_filter import EstimateFilter
 from kabutobashi.domain.services.method import Method
-from kabutobashi.domain.values import (
-    StockDataEstimatedBySingleFilter,
-    StockDataProcessed,
-    StockDataVisualized,
-    StockRecordset,
-)
+from kabutobashi.domain.values import StockDataEstimated, StockDataProcessed, StockDataVisualized, StockRecordset
 
 __all__ = ["StockCodeSingleAggregate", "IStockCodeSingleAggregateRepository"]
 
@@ -38,7 +33,7 @@ class StockCodeSingleAggregate:
     code: str
     single_recordset: StockRecordset
     processed_list: List[StockDataProcessed] = field(default_factory=list, repr=False)
-    estimated_list: List[StockDataEstimatedBySingleFilter] = field(default_factory=list, repr=False)
+    estimated_list: List[StockDataEstimated] = field(default_factory=list, repr=False)
 
     @staticmethod
     def of(entity: Union[pd.DataFrame, StockRecordset], *, code: Optional[str] = None) -> "StockCodeSingleAggregate":
@@ -68,7 +63,7 @@ class StockCodeSingleAggregate:
             processed_list=[m.process_method.process(df=df) for m in methods],
         )
 
-    def _to_single_estimated(self, estimate_filter: EstimateFilter) -> StockDataEstimatedBySingleFilter:
+    def _to_single_estimated(self, estimate_filter: EstimateFilter) -> StockDataEstimated:
         def get_impacts(influence: int = 2, tail: int = 5) -> Dict[str, float]:
             data_ = {}
             for a in self.processed_list:
@@ -84,7 +79,7 @@ class StockCodeSingleAggregate:
         data = {}
         data.update(get_impacts())
         data.update(get_parameters())
-        return StockDataEstimatedBySingleFilter(
+        return StockDataEstimated(
             code=self.code,
             estimate_filter_name=estimate_filter.estimate_filter_name,
             estimated_value=estimate_filter.estimate(data=data),
@@ -139,7 +134,7 @@ class IStockCodeSingleAggregateRepository(ABC):
         raise NotImplementedError()
 
     @abstractmethod
-    def _stock_estimated_read(self, code: str) -> List["StockDataEstimatedBySingleFilter"]:
+    def _stock_estimated_read(self, code: str) -> List["StockDataEstimated"]:
         raise NotImplementedError()
 
     def write(self, data: StockCodeSingleAggregate) -> NoReturn:
@@ -156,5 +151,5 @@ class IStockCodeSingleAggregateRepository(ABC):
         raise NotImplementedError()
 
     @abstractmethod
-    def _stock_estimated_write(self, data: List[StockDataEstimatedBySingleFilter]) -> NoReturn:
+    def _stock_estimated_write(self, data: List[StockDataEstimated]) -> NoReturn:
         raise NotImplementedError()
