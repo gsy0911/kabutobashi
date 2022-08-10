@@ -2,11 +2,11 @@ from dataclasses import dataclass
 
 import pandas as pd
 
-from .method import Method, MethodType
+from .method import Method, MethodType, ProcessMethod, VisualizeMethod
 
 
 @dataclass(frozen=True)
-class MACD(Method):
+class MacdProcess(ProcessMethod):
     """
     macdを基準として今後上昇するかどうかをスコアで返す。
     値が大きければその傾向が高いことを表している。
@@ -19,7 +19,7 @@ class MACD(Method):
     method_name: str = "macd"
     method_type: MethodType = MethodType.TECHNICAL_ANALYSIS
 
-    def _method(self, df: pd.DataFrame) -> pd.DataFrame:
+    def _apply(self, df: pd.DataFrame) -> pd.DataFrame:
         # histogramが図として表現されるMACDの値
         df = df.assign(
             # MACDの計算
@@ -38,6 +38,21 @@ class MACD(Method):
         df = df.rename(columns={"to_plus": "buy_signal", "to_minus": "sell_signal"})
         return df
 
+    def _processed_columns(self) -> list:
+        return ["ema_short", "ema_long", "signal", "macd", "histogram"]
+
+    def _parameterize(self, df_x: pd.DataFrame, df_p: pd.DataFrame) -> dict:
+        return {"signal": df_p["signal"].tail(3).mean(), "histogram": df_p["histogram"].tail(3).mean()}
+
+
+@dataclass(frozen=True)
+class MacdVisualize(VisualizeMethod):
+    """
+    macdを基準として今後上昇するかどうかをスコアで返す。
+    値が大きければその傾向が高いことを表している。
+    最小値は0で、最大値は無限大である。
+    """
+
     def _color_mapping(self) -> list:
         return [
             {"df_key": "macd", "color": "", "label": "macd", "plot": "plot"},
@@ -48,8 +63,5 @@ class MACD(Method):
     def _visualize_option(self) -> dict:
         return {"position": "lower"}
 
-    def _processed_columns(self) -> list:
-        return ["ema_short", "ema_long", "signal", "macd", "histogram"]
 
-    def _parameterize(self, df_x: pd.DataFrame, df_p: pd.DataFrame) -> dict:
-        return {"signal": df_p["signal"].tail(3).mean(), "histogram": df_p["histogram"].tail(3).mean()}
+macd = Method.of(process_method=MacdProcess(), visualize_method=MacdVisualize())

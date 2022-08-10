@@ -1,9 +1,13 @@
-import pandas as pd
 import pydantic
 import pytest
 
 import kabutobashi as kb
 from kabutobashi.domain.errors import KabutobashiEntityError
+
+
+@pytest.fixture(scope="module", autouse=True)
+def example_records() -> kb.StockRecordset:
+    yield kb.example()
 
 
 class TestStockBrand:
@@ -36,7 +40,7 @@ class TestStockRecord:
                 pbr="",
                 volume="",
                 dt="",
-                is_delisting=False
+                is_delisting=False,
             )
 
 
@@ -56,66 +60,55 @@ class TestWeeks52HihLow:
             )
 
 
-class TestStockDataSingleCode:
-    def test_of(self, data_path):
-        df = pd.read_csv(f"{data_path}/example.csv.gz")
-        df["code"] = df["code"].astype(str)
-        single_code = df[df["code"] == "1375"]
-        _ = kb.StockDataSingleCode.of(df=single_code)
+class TestStockRecordset:
+    def test_code_iterable(self, example_records: kb.StockRecordset):
+        for _ in example_records.to_code_iterable(until=1):
+            pass
 
-        # check None
+    def test_multiple_code_error(self, example_records: kb.StockRecordset):
         with pytest.raises(KabutobashiEntityError):
-            _ = kb.StockDataSingleCode(
-                code="-",
-                stock_recordset=kb.StockRecordset.of(df=pd.DataFrame()),
-                stop_updating=False,
-                contains_outlier=False,
-                len_=0,
-            )
+            _ = example_records.get_single_code_recordset_status()
 
-        # check multiple code
-        with pytest.raises(KabutobashiEntityError):
-            _ = kb.StockDataSingleCode.of(df=df)
-
+    def test_invalid_column_error(self, example_records: kb.StockRecordset):
         # check invalid column
         with pytest.raises(KabutobashiEntityError):
-            _ = kb.StockDataSingleCode.of(df=single_code[["close"]])
+            _ = kb.StockRecordset.of(df=example_records.to_df()[["close"]])
 
-    def test_get_df(self, data_path):
-        df = pd.read_csv(f"{data_path}/example.csv.gz")
-        df["code"] = df["code"].astype(str)
-        single_code = df[df["code"] == "1375"]
-        sdsc = kb.StockDataSingleCode.of(df=single_code)
+    def test_get_df(self, example_records: kb.StockRecordset):
+        records = example_records.to_single_code(code="1375")
 
         required_cols = ["code", "open", "close", "high", "low", "volume", "per", "psr", "pbr", "dt"]
         optional_cols = ["name", "industry_type", "market", "unit"]
 
         # check minimum df
-        minimum_df = sdsc.to_df()
+        minimum_df = records.to_df()
         assert all([(c in minimum_df.columns) for c in required_cols])
         assert all([(c not in minimum_df.columns) for c in optional_cols])
 
         # check full df
-        full_df = sdsc.to_df(minimum=False)
+        full_df = records.to_df(minimum=False)
         assert all([(c in full_df.columns) for c in required_cols])
         assert all([(c in full_df.columns) for c in optional_cols])
 
-        latest_date_df = sdsc.to_df(latest=True)
+        latest_date_df = records.to_df(latest=True)
         assert len(latest_date_df.index) == 1
 
-
-class TestStockRecordset:
-    def test_code_iterable(self):
-        records = kb.example()
-        for _ in records.to_code_iterable(until=1):
-            pass
+        status = records.get_single_code_recordset_status()
+        assert status.code == "1375"
 
 
 class TestStockSingleAggregate:
-    def test_pass(self):
-        records = kb.example()
+    def test_pass(self, example_records: kb.StockRecordset):
         methods = kb.methods + [kb.basic, kb.pct_change, kb.volatility]
-        agg = kb.StockCodeSingleAggregate.of(entity=records, code="1375")
-        estimated = agg.with_processed(methods=methods).with_estimated(estimate_filters=kb.estimate_filters)
+        agg = kb.StockCodeSingleAggregate.of(entity=example_records, code="1375")
+        estimated = agg.with_processed(methods=methods).with_estimated(stock_analysis=kb.stock_analysis)
         value = estimated.weighted_estimated_value({"fundamental": 1.0, "volume": 1.0})
         assert value != 0
+
+        # check visualize single column
+        data_visualized = agg.visualize(kb.sma)
+        assert data_visualized.fig
+
+        # check visualize multiple columns
+        data_visualized = agg.visualize(kb.macd)
+        assert data_visualized.fig

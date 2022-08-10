@@ -3,11 +3,11 @@ from dataclasses import dataclass
 
 import pandas as pd
 
-from .method import Method, MethodType
+from .method import Method, MethodType, ProcessMethod, VisualizeMethod
 
 
 @dataclass(frozen=True)
-class Stochastics(Method):
+class StochasticsProcess(ProcessMethod):
     """
     買いのシグナルを計算で求める
 
@@ -22,11 +22,11 @@ class Stochastics(Method):
     method_name: str = "stochastics"
     method_type: MethodType = MethodType.TECHNICAL_ANALYSIS
 
-    def _method(self, df: pd.DataFrame) -> pd.DataFrame:
+    def _apply(self, df: pd.DataFrame) -> pd.DataFrame:
         df_ = df.copy()
-        df_["K"] = Stochastics._fast_stochastic_k(df_["close"], df_["low"], df_["high"], 9)
-        df_["D"] = Stochastics._fast_stochastic_d(df_["K"])
-        df_["SD"] = Stochastics._slow_stochastic_d(df_["D"])
+        df_["K"] = self._fast_stochastic_k(df_["close"], df_["low"], df_["high"], 9)
+        df_["D"] = self._fast_stochastic_d(df_["K"])
+        df_["SD"] = self._slow_stochastic_d(df_["D"])
         return df_
 
     def _signal(self, df: pd.DataFrame) -> pd.DataFrame:
@@ -63,7 +63,7 @@ class Stochastics(Method):
 
     @staticmethod
     def _buy_signal_index_internal(x: pd.Series) -> float:
-        return Stochastics._buy_signal_index(x["K"], x["D"], x["SD"], x["shift_K"], x["shift_D"], x["shift_SD"])
+        return StochasticsProcess._buy_signal_index(x["K"], x["D"], x["SD"], x["shift_K"], x["shift_D"], x["shift_SD"])
 
     @staticmethod
     def _buy_signal_index(current_k, current_d, current_sd, prev_k, prev_d, prev_sd) -> float:
@@ -85,7 +85,7 @@ class Stochastics(Method):
 
     @staticmethod
     def _sell_signal_index_internal(x: pd.Series) -> float:
-        return Stochastics._sell_signal_index(x["K"], x["D"], x["SD"], x["shift_K"], x["shift_D"], x["shift_SD"])
+        return StochasticsProcess._sell_signal_index(x["K"], x["D"], x["SD"], x["shift_K"], x["shift_D"], x["shift_SD"])
 
     @staticmethod
     def _sell_signal_index(current_k, current_d, current_sd, prev_k, prev_d, prev_sd) -> float:
@@ -106,6 +106,30 @@ class Stochastics(Method):
             math.pow(current_k - 20, 2) / 100 + math.pow(current_d - 20, 2) / 100 + math.pow(current_sd - 20, 2) / 100
         )
 
+    def _processed_columns(self) -> list:
+        return ["K", "D", "SD"]
+
+    def _parameterize(self, df_x: pd.DataFrame, df_p: pd.DataFrame) -> dict:
+        return {
+            "stochastics_k": df_p["K"].tail(3).mean(),
+            "stochastics_d": df_p["D"].tail(3).mean(),
+            "stochastics_sd": df_p["SD"].tail(3).mean(),
+        }
+
+
+@dataclass(frozen=True)
+class StochasticsVisualize(VisualizeMethod):
+    """
+    買いのシグナルを計算で求める
+
+    * %K・%D共に20％以下の時に、%Kが%Dを下から上抜いた時
+    * %D・スロー%D共に20％以下の時に、%Dがスロー%Dを下から上抜いた時
+
+    See Also:
+        * https://www.moneypartners.co.jp/support/tech/sct.html
+
+    """
+
     def _color_mapping(self) -> list:
         return [
             {"df_key": "K", "color": "#dc143c", "label": "%K"},
@@ -116,12 +140,5 @@ class Stochastics(Method):
     def _visualize_option(self) -> dict:
         return {"position": "lower"}
 
-    def _processed_columns(self) -> list:
-        return ["K", "D", "SD"]
 
-    def _parameterize(self, df_x: pd.DataFrame, df_p: pd.DataFrame) -> dict:
-        return {
-            "stochastics_k": df_p["K"].tail(3).mean(),
-            "stochastics_d": df_p["D"].tail(3).mean(),
-            "stochastics_sd": df_p["SD"].tail(3).mean(),
-        }
+stochastics = Method.of(process_method=StochasticsProcess(), visualize_method=StochasticsVisualize())

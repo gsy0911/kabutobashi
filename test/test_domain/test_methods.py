@@ -10,7 +10,7 @@ def stock_agg() -> kb.StockCodeSingleAggregate:
 
 
 def test_example_data(stock_agg):
-    columns = stock_agg.single_code.to_df().columns
+    columns = stock_agg.single_recordset.to_df().columns
     assert "dt" in columns
     assert "open" in columns
     assert "close" in columns
@@ -142,6 +142,13 @@ def test_analysis_with_pct_change(stock_agg):
     processed = stock_agg.with_processed([kb.pct_change])
     # method name
     assert processed.processed_list[0].applied_method_name == "pct_change"
+
+
+@pytest.mark.skip(reason="industry_categories is not prepared")
+def test_analysis_with_industry_categories(stock_agg):
+    processed = stock_agg.with_processed([kb.industry_categories])
+    # method name
+    assert processed.processed_list[0].applied_method_name == "industry_categories"
 
 
 def test_analysis_with_volatility(stock_agg):

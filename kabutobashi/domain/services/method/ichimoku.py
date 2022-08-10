@@ -2,11 +2,11 @@ from dataclasses import dataclass
 
 import pandas as pd
 
-from .method import Method, MethodType
+from .method import Method, MethodType, ProcessMethod, VisualizeMethod
 
 
 @dataclass(frozen=True)
-class Ichimoku(Method):
+class IchimokuProcess(ProcessMethod):
     """
 
     See Also:
@@ -19,7 +19,7 @@ class Ichimoku(Method):
     method_name: str = "ichimoku"
     method_type: MethodType = MethodType.TECHNICAL_ANALYSIS
 
-    def _method(self, df: pd.DataFrame) -> pd.DataFrame:
+    def _apply(self, df: pd.DataFrame) -> pd.DataFrame:
         df = df.assign(
             # 短期の線
             short_max=lambda x: x["close"].rolling(self.short_term).max(),
@@ -52,6 +52,21 @@ class Ichimoku(Method):
     def _signal(self, df: pd.DataFrame) -> pd.DataFrame:
         return df
 
+    def _processed_columns(self) -> list:
+        return ["line_change", "line_base", "proceeding_span_1", "proceeding_span_2", "delayed_span"]
+
+    def _parameterize(self, df_x: pd.DataFrame, df_p: pd.DataFrame) -> dict:
+        return {}
+
+
+@dataclass(frozen=True)
+class IchimokuVisualize(VisualizeMethod):
+    """
+
+    See Also:
+        https://kabu.com/investment/guide/technical/04.html
+    """
+
     def _color_mapping(self) -> list:
         return [
             {"df_key": "", "color": "", "label": ""},
@@ -60,8 +75,5 @@ class Ichimoku(Method):
     def _visualize_option(self) -> dict:
         return {"position": "in"}
 
-    def _processed_columns(self) -> list:
-        return ["line_change", "line_base", "proceeding_span_1", "proceeding_span_2", "delayed_span"]
 
-    def _parameterize(self, df_x: pd.DataFrame, df_p: pd.DataFrame) -> dict:
-        return {}
+ichimoku = Method.of(process_method=IchimokuProcess(), visualize_method=IchimokuVisualize())

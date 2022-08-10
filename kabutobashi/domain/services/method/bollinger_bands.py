@@ -2,11 +2,11 @@ from dataclasses import dataclass
 
 import pandas as pd
 
-from .method import Method, MethodType
+from .method import Method, MethodType, ProcessMethod, VisualizeMethod
 
 
 @dataclass(frozen=True)
-class BollingerBands(Method):
+class BollingerBandsProcess(ProcessMethod):
     """
     株価の勢いの変化や反転の目安、方向を見る ``BollingerBands`` を計算するクラス。
 
@@ -19,7 +19,7 @@ class BollingerBands(Method):
     method_name: str = "bollinger_bands"
     method_type: MethodType = MethodType.TECHNICAL_ANALYSIS
 
-    def _method(self, df: pd.DataFrame) -> pd.DataFrame:
+    def _apply(self, df: pd.DataFrame) -> pd.DataFrame:
         df = df.assign(mean=df["close"].rolling(self.band_term).mean(), std=df["close"].rolling(self.band_term).std())
         df = df.assign(
             upper_1_sigma=df.apply(lambda x: x["mean"] + x["std"] * 1, axis=1),
@@ -43,19 +43,6 @@ class BollingerBands(Method):
         df["sell_signal"] = df["over_lower"].apply(lambda x: 1 if x > 0 else 0)
         return df
 
-    def _color_mapping(self) -> list:
-        return [
-            {"df_key": "upper_1_sigma", "color": "#dc143c", "label": "+1s"},
-            {"df_key": "lower_1_sigma", "color": "#dc143c", "label": "-1s"},
-            {"df_key": "upper_2_sigma", "color": "#ffa500", "label": "+2s"},
-            {"df_key": "lower_2_sigma", "color": "#ffa500", "label": "-2s"},
-            {"df_key": "upper_3_sigma", "color": "#1e90ff", "label": "+3s"},
-            {"df_key": "lower_3_sigma", "color": "#1e90ff", "label": "-3s"},
-        ]
-
-    def _visualize_option(self) -> dict:
-        return {"position": "in"}
-
     def _processed_columns(self) -> list:
         return [
             "upper_1_sigma",
@@ -75,3 +62,29 @@ class BollingerBands(Method):
             "upper_2_sigma": df_p["upper_2_sigma"].tail(3).mean(),
             "lower_2_sigma": df_p["lower_2_sigma"].tail(3).mean(),
         }
+
+
+@dataclass(frozen=True)
+class BollingerBandsVisualize(VisualizeMethod):
+    """
+    株価の勢いの変化や反転の目安、方向を見る ``BollingerBands`` を計算するクラス。
+
+    See Also:
+        * https://www.sevendata.co.jp/shihyou/technical/bori.html
+    """
+
+    def _color_mapping(self) -> list:
+        return [
+            {"df_key": "upper_1_sigma", "color": "#dc143c", "label": "+1s"},
+            {"df_key": "lower_1_sigma", "color": "#dc143c", "label": "-1s"},
+            {"df_key": "upper_2_sigma", "color": "#ffa500", "label": "+2s"},
+            {"df_key": "lower_2_sigma", "color": "#ffa500", "label": "-2s"},
+            {"df_key": "upper_3_sigma", "color": "#1e90ff", "label": "+3s"},
+            {"df_key": "lower_3_sigma", "color": "#1e90ff", "label": "-3s"},
+        ]
+
+    def _visualize_option(self) -> dict:
+        return {"position": "in"}
+
+
+bollinger_bands = Method.of(process_method=BollingerBandsProcess(), visualize_method=BollingerBandsVisualize())

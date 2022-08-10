@@ -2,11 +2,11 @@ from dataclasses import dataclass
 
 import pandas as pd
 
-from .method import Method, MethodType
+from .method import Method, MethodType, ProcessMethod, VisualizeMethod
 
 
 @dataclass(frozen=True)
-class ADX(Method):
+class AdxProcess(ProcessMethod):
     """
     相場のトレンドの強さを見るための指標である`ADX`を計算するクラス。
 
@@ -88,7 +88,7 @@ class ADX(Method):
         else:
             return 0
 
-    def _method(self, df: pd.DataFrame) -> pd.DataFrame:
+    def _apply(self, df: pd.DataFrame) -> pd.DataFrame:
         # 利用する値をshift
         df = df.assign(shift_high=df["high"].shift(1), shift_low=df["low"].shift(1), shift_close=df["close"].shift(1))
         df = df.assign(
@@ -159,6 +159,40 @@ class ADX(Method):
 
         return df
 
+    def _processed_columns(self) -> list:
+        return ["plus_di", "minus_di", "DX", "ADX", "ADXR"]
+
+    def _parameterize(self, df_x: pd.DataFrame, df_p: pd.DataFrame) -> dict:
+        return {
+            "adx_dx": df_p["DX"].tail(3).mean(),
+            "adx_adx": df_p["ADX"].tail(3).mean(),
+            "adx_adxr": df_p["ADXR"].tail(3).mean(),
+        }
+
+
+@dataclass(frozen=True)
+class AdxVisualize(VisualizeMethod):
+    """
+    相場のトレンドの強さを見るための指標である`ADX`を計算するクラス。
+
+    以下の指標を計算するクラス
+
+    * +DI: 株価の上昇の大きさ
+    * -DI: 株価の下降の大きさ
+    * ADX: 株価のトレンドの強さ
+    * ADXR: ADXの単純移動平均線
+
+    Args:
+        term (int):
+        adx_term (int):
+        adxr_term (int):
+
+    See Also:
+        * https://www.sevendata.co.jp/shihyou/technical/dmi.html
+        * https://www.sevendata.co.jp/shihyou/technical/adx.html
+
+    """
+
     def _color_mapping(self) -> list:
         return [
             {"df_key": "plus_di", "color": "", "label": "+DI"},
@@ -170,12 +204,5 @@ class ADX(Method):
     def _visualize_option(self) -> dict:
         return {"position": "lower"}
 
-    def _processed_columns(self) -> list:
-        return ["plus_di", "minus_di", "DX", "ADX", "ADXR"]
 
-    def _parameterize(self, df_x: pd.DataFrame, df_p: pd.DataFrame) -> dict:
-        return {
-            "adx_dx": df_p["DX"].tail(3).mean(),
-            "adx_adx": df_p["ADX"].tail(3).mean(),
-            "adx_adxr": df_p["ADXR"].tail(3).mean(),
-        }
+adx = Method.of(process_method=AdxProcess(), visualize_method=AdxVisualize())

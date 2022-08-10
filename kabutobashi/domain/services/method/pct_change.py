@@ -2,11 +2,11 @@ from dataclasses import dataclass
 
 import pandas as pd
 
-from .method import Method, MethodType
+from .method import Method, MethodType, ProcessMethod, VisualizeMethod
 
 
 @dataclass(frozen=True)
-class PctChange(Method):
+class PctChangeProcess(ProcessMethod):
     """
     変化率を計算する
     """
@@ -14,7 +14,7 @@ class PctChange(Method):
     method_name: str = "pct_change"
     method_type: MethodType = MethodType.PARAMETERIZE
 
-    def _method(self, df: pd.DataFrame) -> pd.DataFrame:
+    def _apply(self, df: pd.DataFrame) -> pd.DataFrame:
         return df
 
     def _signal(self, df: pd.DataFrame) -> pd.DataFrame:
@@ -24,12 +24,6 @@ class PctChange(Method):
         df_ = df_.join(self._cross(df_["diff"]))
         df_ = df_.rename(columns={"to_plus": "buy_signal", "to_minus": "sell_signal"})
         return df_
-
-    def _color_mapping(self) -> list:
-        return []
-
-    def _visualize_option(self) -> dict:
-        return {"position": "-"}
 
     def _processed_columns(self) -> list:
         return []
@@ -41,3 +35,19 @@ class PctChange(Method):
         pct_30 = df_x["close"].pct_change(30).mean()
         pct_40 = df_x["close"].pct_change(40).mean()
         return {"pct_05": pct_05, "pct_10": pct_10, "pct_20": pct_20, "pct_30": pct_30, "pct_40": pct_40}
+
+
+@dataclass(frozen=True)
+class PctChangeVisualize(VisualizeMethod):
+    """
+    変化率を計算する
+    """
+
+    def _color_mapping(self) -> list:
+        return []
+
+    def _visualize_option(self) -> dict:
+        return {"position": "-"}
+
+
+pct_change = Method.of(process_method=PctChangeProcess(), visualize_method=PctChangeVisualize())

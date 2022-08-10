@@ -1,24 +1,24 @@
 # import seaborn as sns
 
 # import errors
-from kabutobashi.domain.services import EfFundamental, EfVolume, EstimateFilter
+from kabutobashi.domain.services import SaFundamental, SaVolume, StockAnalysis
 
 # methods to analysis
 from kabutobashi.domain.services.method import (
-    ADX,
-    MACD,
-    SMA,
-    Basic,
-    BollingerBands,
-    Fitting,
-    Ichimoku,
-    IndustryCategories,
     Method,
-    Momentum,
-    PctChange,
-    PsychoLogical,
-    Stochastics,
-    Volatility,
+    adx,
+    basic,
+    bollinger_bands,
+    fitting,
+    ichimoku,
+    industry_categories,
+    macd,
+    momentum,
+    pct_change,
+    psycho_logical,
+    sma,
+    stochastics,
+    volatility,
 )
 
 from .domain import errors
@@ -26,9 +26,8 @@ from .domain.aggregates import StockCodeSingleAggregate
 from .domain.entity import OPTIONAL_COL, REQUIRED_COL, StockBrand, StockIpo, StockRecord, Weeks52HighLow
 from .domain.services import StockInfoMultipleDaysHtmlDecoder, StockIpoHtmlDecoder, Weeks52HighLowHtmlDecoder
 from .domain.values import (
-    StockDataEstimatedBySingleFilter,
-    StockDataProcessedBySingleMethod,
-    StockDataSingleCode,
+    StockDataEstimated,
+    StockDataProcessed,
     StockDataVisualized,
     StockInfoHtmlPage,
     StockInfoMultipleDaysMainHtmlPage,
@@ -38,9 +37,6 @@ from .domain.values import (
     StockWeeks52HighLowHtmlPage,
 )
 from .example_data import example
-
-# classes or functions about crawl web pages
-from .infrastructure.crawler import crawl_multiple, crawl_single  # ある年にIPOした銘柄の情報を取得する; 単一の株価の詳細情報を取得する; 52週高値底値の値を取得
 from .infrastructure.repository import StockRecordsetCrawler, StockRecordsetStorageBasicRepository
 
 # n営業日前までの日付のリストを返す関数; 銘柄コードでイテレーションする関数; window幅でデータを取得しつつデータを返す関数; 株価の動きを様々な統計量で表現
@@ -48,31 +44,16 @@ from .utilities import get_past_n_days
 
 # sns.set()
 
-# create and initialize instance
-sma = SMA(short_term=5, medium_term=21, long_term=70)
-macd = MACD(short_term=12, long_term=26, macd_span=9)
-stochastics = Stochastics()
-adx = ADX()
-bollinger_bands = BollingerBands()
-ichimoku = Ichimoku()
-momentum = Momentum()
-psycho_logical = PsychoLogical()
-fitting = Fitting()
-basic = Basic()
-volatility = Volatility()
-pct_change = PctChange()
-industry_cat = IndustryCategories()
-
 methods = [sma, macd, stochastics, adx, bollinger_bands, momentum, psycho_logical, fitting, basic]
 
 # estimate filters
-ef_fundamental = EfFundamental()
-ef_volume = EfVolume()
+sa_fundamental = SaFundamental()
+sa_volume = SaVolume()
 
-estimate_filters = [ef_fundamental, ef_volume]
+stock_analysis = [sa_fundamental, sa_volume]
 
 # comparable tuple
-VERSION = (0, 4, 5)
+VERSION = (0, 5, 0)
 # generate __version__ via VERSION tuple
 __version__ = ".".join(map(str, VERSION))
 

@@ -18,19 +18,19 @@ class-relationship.
 graph TD;
   subgraph Aggregates
     aggregate[StockCodeSingleAggregate]
-    aggregate --- single
+    aggregate --- recordset_single
     aggregate --- |Method| processed
     aggregate --- |Filter| filtered
      
     subgraph ValueObject
-      single[StockDataSingleCode]
+      recordset_single[StockRecordset/single]
       processed[StockDataProcessed]
       filtered[StockDataFiltered]
     end
   end
   
   subgraph Entities
-    recordset[StockRecordset]
+    recordset[StockRecordset/multiple]
     brand[StockBrand]
     record[StockRecord]
     
