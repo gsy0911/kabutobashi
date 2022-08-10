@@ -1,5 +1,14 @@
 # Release Note
 
+## 0.5.0
+
+- rename classes ([#121](https://github.com/gsy0911/kabutobashi/issues/121))
+- update document ([#120](https://github.com/gsy0911/kabutobashi/issues/120))
+- modify recordset repository ([#118](https://github.com/gsy0911/kabutobashi/issues/118))
+- fix error ([#117](https://github.com/gsy0911/kabutobashi/issues/117))
+- Method contains MethodProcess and MethodVisualize ([#116](https://github.com/gsy0911/kabutobashi/issues/116))
+- remove ``StockDataSingleCode`` ([#115](https://github.com/gsy0911/kabutobashi/issues/115))
+
 ## 0.4.5
 
 - modify method name ([#114](https://github.com/gsy0911/kabutobashi/issues/114))
