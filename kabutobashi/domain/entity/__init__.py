@@ -10,17 +10,15 @@ and when estimating stock-code which is to rise in the next day or so on.
 
 - define data-structure: ``basement``
 
-  - StockDataSingleDay
-  - StockDataSingleCode
+  - StockRecordset
+  - StockCodeSingleAggregate
 
 - initial step to analyze:  ``processed``
 
-  - StockDataProcessedBySingleMethod
-  - StockDataProcessedByMultipleMethod
+  - StockDataProcessed
 
 - second step to analyze:  ``estimated``
 
-  - StockDataEstimatedBySingleFilter
-  - StockDataEstimatedByMultipleFilter
+  - StockDataEstimated
 """
 from .stock_models import OPTIONAL_COL, REQUIRED_COL, StockBrand, StockIpo, StockRecord, Weeks52HighLow
