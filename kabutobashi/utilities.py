@@ -44,3 +44,10 @@ def _get_past_n_days(current_date: str, n: int, multiply: int) -> list:
     filter_holiday = [d for d in filter_weekend if not jpholiday.is_holiday(d)]
     # 文字列に日付を変えてreturn
     return list(map(lambda x: x.strftime("%Y-%m-%d"), filter_holiday[:n]))
+
+
+def filter_weekday(date_list: list) -> list:
+    def _check_weekday(date: str):
+        d = datetime.strptime(date, "%Y-%m-%d")
+        return d.weekday() < 5 and not jpholiday.is_holiday(d)
+    return [d for d in date_list if _check_weekday(date=d)]
