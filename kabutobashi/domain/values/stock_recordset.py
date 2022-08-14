@@ -7,6 +7,7 @@ import pandas as pd
 
 from kabutobashi.domain.entity import OPTIONAL_COL, REQUIRED_COL, StockBrand, StockRecord
 from kabutobashi.domain.errors import KabutobashiEntityError
+from kabutobashi.utilities import get_past_n_days
 
 logger = getLogger(__name__)
 logger.setLevel(INFO)
@@ -17,6 +18,8 @@ class StockRecordsetStatus:
     code: str
     stop_updating: bool = field(metadata={"jp": "更新停止"})
     contains_outlier: bool = field(metadata={"jp": "例外値を含む"})
+    start_at: str = field(metadata={"jp": "収集開始日"})
+    end_at: str = field(metadata={"jp": "最新日時"})
 
 
 @dataclass(frozen=True)
@@ -68,10 +71,24 @@ class StockRecordset:
 
         code = list(self.brand_set)[0].code
         df = self._to_df(code=code)
+        # 日時
+        start_at = list(df["dt"])[0]
+        end_at = list(df["dt"])[-1]
+
+        # 日時が全て取得できているか
+        date_list = get_past_n_days(current_date=end_at, n=len(df.index))
+        if date_list[-1] != start_at:
+            raise KabutobashiEntityError(
+                f"some stock data lacks. start_at({start_at}) must be equal to {date_list[-1]}"
+            )
 
         contains_outlier = any([v.is_outlier() for v in self.recordset])
         return StockRecordsetStatus(
-            code=code, stop_updating=_check_recent_update(_df=df), contains_outlier=contains_outlier
+            code=code,
+            stop_updating=_check_recent_update(_df=df),
+            contains_outlier=contains_outlier,
+            start_at=start_at,
+            end_at=end_at,
         )
 
     def sliding_split(
