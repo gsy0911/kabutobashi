@@ -7,7 +7,7 @@ import pandas as pd
 
 from kabutobashi.domain.entity import OPTIONAL_COL, REQUIRED_COL, StockBrand, StockRecord
 from kabutobashi.domain.errors import KabutobashiEntityError
-from kabutobashi.utilities import get_past_n_days
+from kabutobashi.utilities import filter_weekday, get_past_n_days
 
 logger = getLogger(__name__)
 logger.setLevel(INFO)
@@ -44,7 +44,13 @@ class StockRecordset:
         recordset = []
         brand_set = set()
         df = df.dropna(subset=["code"])
-        for _, row in df.iterrows():
+        df.index.name = None
+        # filter valid weekday
+        date_unique_list = list(set(df["dt"]))
+        dt_df = pd.DataFrame(filter_weekday(date_unique_list), columns=["dt"])
+        df_joined = pd.merge(df, dt_df, on="dt", how="inner")
+
+        for _, row in df_joined.iterrows():
             try:
                 recordset.append(StockRecord.loads(dict(row)))
                 brand_set.add(StockBrand.loads(data=dict(row)))
