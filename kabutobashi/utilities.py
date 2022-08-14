@@ -50,4 +50,5 @@ def filter_weekday(date_list: list) -> list:
     def _check_weekday(date: str):
         d = datetime.strptime(date, "%Y-%m-%d")
         return d.weekday() < 5 and not jpholiday.is_holiday(d)
+
     return [d for d in date_list if _check_weekday(date=d)]

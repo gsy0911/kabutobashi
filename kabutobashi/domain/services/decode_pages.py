@@ -97,6 +97,7 @@ class StockInfoHtmlDecoder:
                 "dt": self.html_page.dt,
                 "code": str(self.html_page.code),
                 "industry_type": PageDecoder(tag1="div", class1="ly_content_wrapper size_ss").decode(bs=stock_detail),
+                "market": result.get("stock_label", "").replace(" ", "").replace(str(self.html_page.code), ""),
                 "open": info.get("始値", "0"),
                 "high": info.get("高値", "0"),
                 "low": info.get("安値", "0"),
