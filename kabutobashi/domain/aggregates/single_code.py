@@ -35,12 +35,15 @@ class StockCodeSingleAggregate:
     processed_list: List[StockDataProcessed] = field(default_factory=list, repr=False)
     estimated_list: List[StockDataEstimated] = field(default_factory=list, repr=False)
 
+    def __post_init__(self):
+        _ = self.single_recordset.get_single_code_recordset_status()
+
     @staticmethod
     def of(entity: Union[pd.DataFrame, StockRecordset], *, code: Optional[str] = None) -> "StockCodeSingleAggregate":
         if type(entity) is pd.DataFrame:
             single_recordset = StockRecordset.of(df=entity)
         elif type(entity) is StockRecordset:
-            if code is None:
+            if code is None and entity.code_num > 1:
                 raise KabutobashiEntityError("code is required")
             df_ = entity.to_df(code=code)
             single_recordset = StockRecordset.of(df=df_)
