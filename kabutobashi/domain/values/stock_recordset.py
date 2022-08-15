@@ -35,7 +35,7 @@ class StockRecordset:
 
     def __post_init__(self):
         if not self.recordset:
-            raise KabutobashiEntityError(f"required stock_data")
+            raise KabutobashiEntityError("required stock_data")
 
     @staticmethod
     def of(df: pd.DataFrame) -> "StockRecordset":
@@ -157,7 +157,7 @@ class StockRecordset:
 
     def to_single_code(self, code: str) -> "StockRecordset":
         if type(code) is not str:
-            raise KabutobashiEntityError(f"code must be type of `str`")
+            raise KabutobashiEntityError("code must be type of `str`")
         return StockRecordset.of(df=self._to_df(code=code))
 
     def to_code_iterable(

@@ -4,7 +4,6 @@ from logging import getLogger
 from typing import List, Optional, Union
 
 import pandas as pd
-import requests  # type: ignore
 from bs4 import BeautifulSoup
 
 from kabutobashi.domain.entity import StockIpo, Weeks52HighLow
