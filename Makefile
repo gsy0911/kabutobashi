@@ -14,8 +14,8 @@ format: ## format with black ## make format
 
 .PHONY: lint
 lint: ## lint python (flake8 and mypy) ## make lint
-	pflake8 $(MODULE_NAME)
 	mypy $(MODULE_NAME)
+	pflake8 $(MODULE_NAME)
 
 .PHONY: deploy
 deploy: ## upload to pypi ## make deploy
