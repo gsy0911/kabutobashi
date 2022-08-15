@@ -1,10 +1,9 @@
 from dataclasses import dataclass
 from functools import reduce
 from logging import getLogger
-from typing import List, Optional, Union
+from typing import Dict, List, Optional, Union
 
 import pandas as pd
-import requests  # type: ignore
 from bs4 import BeautifulSoup
 
 from kabutobashi.domain.entity import StockIpo, Weeks52HighLow
@@ -72,7 +71,7 @@ class StockInfoHtmlDecoder:
 
     def decode(self) -> dict:
         soup = self.html_page.get_as_soup()
-        result = {}
+        result: Dict[str, Union[str, bool, int, float, List[str]]] = {}
 
         stock_board_tag = "md_stockBoard"
 
@@ -92,11 +91,13 @@ class StockInfoHtmlDecoder:
         info = {}
         for li in stock_detail.find_all("tr", {"class": "ly_vamd"}):
             info[li.find("th").get_text()] = li.find("td").get_text()
+        stock_label = str(result.get("stock_label", ""))
         result.update(
             {
                 "dt": self.html_page.dt,
                 "code": str(self.html_page.code),
                 "industry_type": PageDecoder(tag1="div", class1="ly_content_wrapper size_ss").decode(bs=stock_detail),
+                "market": stock_label.replace(" ", "").replace(str(self.html_page.code), ""),
                 "open": info.get("始値", "0"),
                 "high": info.get("高値", "0"),
                 "low": info.get("安値", "0"),
