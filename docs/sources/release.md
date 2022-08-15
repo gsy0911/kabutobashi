@@ -1,5 +1,11 @@
 # Release Note
 
+## 0.5.1
+
+- ENHANCEMENT: add lint and update packages ([#126](https://github.com/gsy0911/kabutobashi/issues/126))
+- BUG FIX: crawl ``market`` ([#125](https://github.com/gsy0911/kabutobashi/issues/125))
+- ENHANCEMENT: update stock-recordset requirement ([#124](https://github.com/gsy0911/kabutobashi/issues/124))
+
 ## 0.5.0
 
 - rename classes ([#121](https://github.com/gsy0911/kabutobashi/issues/121))
