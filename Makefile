@@ -1,3 +1,5 @@
+MODULE_NAME := kabutobashi
+
 .PHONY: help
 help: ## show commands ## make
 	@printf "\033[36m%-30s\033[0m %-50s %s\n" "[Sub command]" "[Description]" "[Example]"
@@ -6,10 +8,14 @@ help: ## show commands ## make
 
 .PHONY: format
 format: ## format with black ## make format
-	isort kabutobashi
+	isort $(MODULE_NAME)
 	isort test
 	black .
-	mypy kabutobashi
+
+.PHONY: lint
+lint: ## lint python (flake8 and mypy) ## make lint
+	pflake8 $(MODULE_NAME)
+	mypy $(MODULE_NAME)
 
 .PHONY: deploy
 deploy: ## upload to pypi ## make deploy
