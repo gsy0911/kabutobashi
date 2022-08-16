@@ -21,15 +21,11 @@ class StockDataProcessed:
     df: pd.DataFrame = field(repr=False)
     df_required_columns: List[str] = field(repr=False)
     parameters: Dict[str, Any]
-    impact: float
 
     def __post_init__(self):
         df_columns = self.df.columns
         if not all([c in df_columns for c in self.df_required_columns]):
             raise KabutobashiEntityError()
-
-    def get_impact(self) -> Dict[str, float]:
-        return {self.applied_method_name: self.impact}
 
 
 @dataclass(frozen=True)

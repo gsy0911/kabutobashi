@@ -67,6 +67,7 @@ class ProcessMethod(ABC):
 
         signal_df = self.signal(df=applied_df)
         params = self.parameterize(df_x=applied_df, df_p=signal_df)
+        params.update({self.method_name: self._get_impact(df=df, influence=influence, tail=tail)})
         return StockDataProcessed(
             code=code_list[0],
             df=signal_df,
@@ -75,7 +76,6 @@ class ProcessMethod(ABC):
             df_required_columns=required_columns,
             applied_method_name=self.method_name,
             parameters=params,
-            impact=self._get_impact(df=df, influence=influence, tail=tail),
         )
 
     def apply(self, df: pd.DataFrame) -> pd.DataFrame:
