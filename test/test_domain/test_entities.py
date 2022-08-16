@@ -95,6 +95,13 @@ class TestStockRecordset:
 
         status = records.get_single_code_recordset_status()
         assert status.code == "1375"
+        assert not status.is_delisting
+
+        # intended
+        delisting_records = example_records.to_single_code(code="9268")
+        status = delisting_records.get_single_code_recordset_status()
+        assert status.code == "9268"
+        assert status.is_delisting
 
 
 class TestStockSingleAggregate:
