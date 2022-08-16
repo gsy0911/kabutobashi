@@ -67,10 +67,10 @@ class StockCodeSingleAggregate:
         )
 
     def _to_single_estimated(self, stock_analysis: StockAnalysis) -> StockDataEstimated:
-        def get_impacts(influence: int = 2, tail: int = 5) -> Dict[str, float]:
+        def get_impacts() -> Dict[str, float]:
             data_ = {}
-            for a in self.processed_list:
-                data_.update(a.get_impact(influence=influence, tail=tail))
+            for p in self.processed_list:
+                data_.update(p.get_impact())
             return data_
 
         def get_parameters():

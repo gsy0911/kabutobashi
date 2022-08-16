@@ -46,7 +46,7 @@ class ProcessMethod(ABC):
     # 種類:
     method_type: MethodType
 
-    def process(self, df: pd.DataFrame) -> "StockDataProcessed":
+    def process(self, df: pd.DataFrame, influence: int = 2, tail: int = 5) -> "StockDataProcessed":
         code_list = list(set(df["code"].values))
         if len(code_list) != 1:
             raise KabutobashiEntityError
@@ -75,6 +75,7 @@ class ProcessMethod(ABC):
             df_required_columns=required_columns,
             applied_method_name=self.method_name,
             parameters=params,
+            impact=self._get_impact(df=df, influence=influence, tail=tail),
         )
 
     def apply(self, df: pd.DataFrame) -> pd.DataFrame:
@@ -178,6 +179,31 @@ class ProcessMethod(ABC):
     @abstractmethod
     def _parameterize(self, df_x: pd.DataFrame, df_p: pd.DataFrame) -> dict:
         raise NotImplementedError("please implement your code")
+
+    @staticmethod
+    def _get_impact(df: pd.DataFrame, influence: int, tail: int) -> float:
+        """
+        売りと買いのシグナルの余波の合計値を返す。
+
+        Args:
+            df:
+            influence:
+            tail:
+
+        Returns:
+            [-1,1]の値をとる。-1: 売り、1: 買いを表す
+        """
+        columns = df.columns
+        if "buy_impact" not in columns:
+            return 0
+        if "sell_impact" not in columns:
+            return 0
+
+        df["buy_impact"] = df["buy_signal"].ewm(span=influence).mean()
+        df["sell_impact"] = df["sell_signal"].ewm(span=influence).mean()
+        buy_impact_index = df["buy_impact"].iloc[-tail:].sum()
+        sell_impact_index = df["sell_impact"].iloc[-tail:].sum()
+        return round(buy_impact_index - sell_impact_index, 5)
 
 
 @dataclass(frozen=True)  # type: ignore
