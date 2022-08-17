@@ -4,6 +4,7 @@ from typing import Optional, Union
 from pydantic import BaseModel, Field
 
 from kabutobashi.domain.errors import KabutobashiEntityError
+from kabutobashi.domain.serialize import IDictSerialize
 
 REQUIRED_COL = ["code", "open", "close", "high", "low", "volume", "per", "psr", "pbr", "dt"]
 OPTIONAL_COL = ["name", "industry_type", "market", "unit", "is_delisting"]
@@ -47,7 +48,7 @@ def _convert_int(input_value: Union[str, float, int]) -> int:
     raise KabutobashiEntityError(f"cannot convert {input_value} to int")
 
 
-class StockBrand(BaseModel):
+class StockBrand(BaseModel, IDictSerialize):
     """
     StockBrand: entity
     """
@@ -88,12 +89,8 @@ class StockBrand(BaseModel):
             issued_shares=issued_shares,
         )
 
-    def dumps(self) -> dict:
-        return self.dict()
-
     @staticmethod
-    def loads(data: dict) -> "StockBrand":
-        # code may "100.0"
+    def from_dict(data: dict) -> "StockBrand":
         code = str(data["code"]).split(".")[0]
 
         return StockBrand(
@@ -106,6 +103,9 @@ class StockBrand(BaseModel):
             market_capitalization=data.get("market_capitalization", ""),
             issued_shares=data.get("issued_shares", ""),
         )
+
+    def to_dict(self) -> dict:
+        return self.dict()
 
     def is_reit(self) -> bool:
         return self.market == "東証REIT"
@@ -122,7 +122,7 @@ class StockBrand(BaseModel):
         orm_mode = True
 
 
-class StockRecord(BaseModel):
+class StockRecord(BaseModel, IDictSerialize):
     """
     StockRecord: entity
     """
@@ -210,11 +210,11 @@ class StockRecord(BaseModel):
     def is_outlier(self) -> bool:
         return self.open == 0 or self.high == 0 or self.low == 0 or self.close == 0
 
-    def dumps(self) -> dict:
+    def to_dict(self) -> dict:
         return self.dict()
 
     @staticmethod
-    def loads(data: dict) -> "StockRecord":
+    def from_dict(data: dict) -> "StockRecord":
 
         data_date = data.get("date")
         data_dt = data.get("dt")
@@ -252,7 +252,7 @@ class StockRecord(BaseModel):
         orm_mode = True
 
 
-class StockIpo(BaseModel):
+class StockIpo(BaseModel, IDictSerialize):
     """
     まだ取り込んでない値など
 
@@ -293,7 +293,7 @@ class StockIpo(BaseModel):
         )
 
     @staticmethod
-    def loads(data: dict) -> "StockIpo":
+    def from_dict(data: dict) -> "StockIpo":
         return StockIpo(
             id=data.get("id"),
             code=data["code"],
@@ -304,14 +304,14 @@ class StockIpo(BaseModel):
             initial_price=_convert_float(data["初値"]),
         )
 
-    def dumps(self) -> dict:
+    def to_dict(self) -> dict:
         return self.dict()
 
     class Config:
         orm_mode = True
 
 
-class Weeks52HighLow(BaseModel):
+class Weeks52HighLow(BaseModel, IDictSerialize):
     """
     Weeks52HighLow: Entity
 
@@ -328,13 +328,13 @@ class Weeks52HighLow(BaseModel):
     dt: str = Field(description="日付")
 
     @staticmethod
-    def from_page_of(data: dict) -> "Weeks52HighLow":
+    def from_dict(data: dict) -> "Weeks52HighLow":
 
         return Weeks52HighLow(
             id=0, code=data["code"], brand_name=data["brand_name"], buy_or_sell=data["buy_or_sell"], dt=data["dt"]
         )
 
-    def dumps(self) -> dict:
+    def to_dict(self) -> dict:
         return self.dict()
 
     class Config:
