@@ -1,3 +1,4 @@
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from functools import reduce
 from logging import getLogger
@@ -8,6 +9,7 @@ from bs4 import BeautifulSoup
 
 from kabutobashi.domain.entity import StockIpo, Weeks52HighLow
 from kabutobashi.domain.values import (
+    HtmlPage,
     StockInfoHtmlPage,
     StockInfoMultipleDaysMainHtmlPage,
     StockInfoMultipleDaysSubHtmlPage,
@@ -57,7 +59,19 @@ class PageDecoder:
 
 
 @dataclass(frozen=True)
-class StockInfoHtmlDecoder:
+class IHtmlDecoder(ABC):
+    html_page: HtmlPage
+
+    @abstractmethod
+    def _decode(self) -> dict:
+        raise NotImplementedError()
+
+    def decode(self) -> dict:
+        return self._decode()
+
+
+@dataclass(frozen=True)
+class StockInfoHtmlDecoder(IHtmlDecoder):
     """
 
     Examples:
@@ -69,7 +83,7 @@ class StockInfoHtmlDecoder:
 
     html_page: StockInfoHtmlPage
 
-    def decode(self) -> dict:
+    def _decode(self) -> dict:
         soup = self.html_page.get_as_soup()
         result: Dict[str, Union[str, bool, int, float, List[str]]] = {}
 
@@ -122,11 +136,11 @@ class StockInfoHtmlDecoder:
 
 
 @dataclass(frozen=True)
-class StockIpoHtmlDecoder:
+class StockIpoHtmlDecoder(IHtmlDecoder):
 
     html_page: StockIpoHtmlPage
 
-    def decode(self) -> dict:
+    def _decode(self) -> dict:
         soup = self.html_page.get_as_soup()
         table_content = soup.find("div", {"class": "tablewrap"})
         table_thead = table_content.find("thead")
@@ -147,10 +161,10 @@ class StockIpoHtmlDecoder:
 
 
 @dataclass(frozen=True)
-class Weeks52HighLowHtmlDecoder:
+class Weeks52HighLowHtmlDecoder(IHtmlDecoder):
     html_page: StockWeeks52HighLowHtmlPage
 
-    def decode(self) -> dict:
+    def _decode(self) -> dict:
         soup = self.html_page.get_as_soup()
 
         content = soup.find("body").find("tbody")
@@ -174,7 +188,7 @@ class Weeks52HighLowHtmlDecoder:
 
 
 @dataclass(frozen=True)
-class StockInfoMultipleDaysHtmlDecoder:
+class StockInfoMultipleDaysHtmlDecoder(IHtmlDecoder):
     """
 
     Examples:
@@ -189,7 +203,7 @@ class StockInfoMultipleDaysHtmlDecoder:
     main_html_page: StockInfoMultipleDaysMainHtmlPage
     sub_html_page: StockInfoMultipleDaysSubHtmlPage
 
-    def decode(self) -> dict:
+    def _decode(self) -> dict:
         result_1 = []
         result_2 = []
         main_soup = self.main_html_page.get_as_soup()

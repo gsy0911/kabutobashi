@@ -1,4 +1,5 @@
 from .html_pages import (
+    HtmlPage,
     StockInfoHtmlPage,
     StockInfoMultipleDaysMainHtmlPage,
     StockInfoMultipleDaysSubHtmlPage,
