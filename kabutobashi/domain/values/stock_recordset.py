@@ -52,8 +52,8 @@ class StockRecordset:
 
         for _, row in df_joined.iterrows():
             try:
-                recordset.append(StockRecord.loads(dict(row)))
-                brand_set.add(StockBrand.loads(data=dict(row)))
+                recordset.append(StockRecord.from_dict(dict(row)))
+                brand_set.add(StockBrand.from_dict(data=dict(row)))
             except KabutobashiEntityError:
                 logger.warning(f"error occurred at: {row}")
         return StockRecordset(
@@ -120,10 +120,10 @@ class StockRecordset:
         return list([v.code for v in self.brand_set])
 
     def _to_df(self, code: Optional[str]) -> pd.DataFrame:
-        df_brand = pd.DataFrame([v.dumps() for v in self.brand_set])
+        df_brand = pd.DataFrame([v.to_dict() for v in self.brand_set])
         if code:
             df_brand = df_brand[df_brand["code"] == code]
-        df_record = pd.DataFrame([v.dumps() for v in self.recordset])
+        df_record = pd.DataFrame([v.to_dict() for v in self.recordset])
         df = pd.merge(left=df_brand, right=df_record, how="inner", on="code")
 
         df = df.convert_dtypes()

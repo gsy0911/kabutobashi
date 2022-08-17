@@ -4,6 +4,7 @@ from typing import Optional, Union
 from pydantic import BaseModel, Field
 
 from kabutobashi.domain.errors import KabutobashiEntityError
+from kabutobashi.domain.serialize import IDictSerialize
 
 REQUIRED_COL = ["code", "open", "close", "high", "low", "volume", "per", "psr", "pbr", "dt"]
 OPTIONAL_COL = ["name", "industry_type", "market", "unit", "is_delisting"]
@@ -47,7 +48,7 @@ def _convert_int(input_value: Union[str, float, int]) -> int:
     raise KabutobashiEntityError(f"cannot convert {input_value} to int")
 
 
-class StockBrand(BaseModel):
+class StockBrand(BaseModel, IDictSerialize):
     """
     StockBrand: entity
     """
@@ -88,12 +89,8 @@ class StockBrand(BaseModel):
             issued_shares=issued_shares,
         )
 
-    def dumps(self) -> dict:
-        return self.dict()
-
     @staticmethod
-    def loads(data: dict) -> "StockBrand":
-        # code may "100.0"
+    def from_dict(data: dict) -> "StockBrand":
         code = str(data["code"]).split(".")[0]
 
         return StockBrand(
@@ -106,6 +103,9 @@ class StockBrand(BaseModel):
             market_capitalization=data.get("market_capitalization", ""),
             issued_shares=data.get("issued_shares", ""),
         )
+
+    def to_dict(self) -> dict:
+        return self.dict()
 
     def is_reit(self) -> bool:
         return self.market == "東証REIT"
@@ -122,7 +122,7 @@ class StockBrand(BaseModel):
         orm_mode = True
 
 
-class StockRecord(BaseModel):
+class StockRecord(BaseModel, IDictSerialize):
     """
     StockRecord: entity
     """
@@ -210,11 +210,11 @@ class StockRecord(BaseModel):
     def is_outlier(self) -> bool:
         return self.open == 0 or self.high == 0 or self.low == 0 or self.close == 0
 
-    def dumps(self) -> dict:
+    def to_dict(self) -> dict:
         return self.dict()
 
     @staticmethod
-    def loads(data: dict) -> "StockRecord":
+    def from_dict(data: dict) -> "StockRecord":
 
         data_date = data.get("date")
         data_dt = data.get("dt")
