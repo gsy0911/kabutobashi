@@ -252,7 +252,7 @@ class StockRecord(BaseModel, IDictSerialize):
         orm_mode = True
 
 
-class StockIpo(BaseModel):
+class StockIpo(BaseModel, IDictSerialize):
     """
     まだ取り込んでない値など
 
@@ -293,7 +293,7 @@ class StockIpo(BaseModel):
         )
 
     @staticmethod
-    def loads(data: dict) -> "StockIpo":
+    def from_dict(data: dict) -> "StockIpo":
         return StockIpo(
             id=data.get("id"),
             code=data["code"],
@@ -304,14 +304,14 @@ class StockIpo(BaseModel):
             initial_price=_convert_float(data["初値"]),
         )
 
-    def dumps(self) -> dict:
+    def to_dict(self) -> dict:
         return self.dict()
 
     class Config:
         orm_mode = True
 
 
-class Weeks52HighLow(BaseModel):
+class Weeks52HighLow(BaseModel, IDictSerialize):
     """
     Weeks52HighLow: Entity
 
@@ -328,13 +328,13 @@ class Weeks52HighLow(BaseModel):
     dt: str = Field(description="日付")
 
     @staticmethod
-    def from_page_of(data: dict) -> "Weeks52HighLow":
+    def from_dict(data: dict) -> "Weeks52HighLow":
 
         return Weeks52HighLow(
             id=0, code=data["code"], brand_name=data["brand_name"], buy_or_sell=data["buy_or_sell"], dt=data["dt"]
         )
 
-    def dumps(self) -> dict:
+    def to_dict(self) -> dict:
         return self.dict()
 
     class Config:

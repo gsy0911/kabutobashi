@@ -142,7 +142,7 @@ class StockIpoHtmlDecoder:
             table_body_dict = {}
             for header, td in zip(table_head_list, tr.find_all("td")):
                 table_body_dict[header] = td.get_text().replace("\n", "")
-            whole_result.append(StockIpo.loads(data=table_body_dict).dumps())
+            whole_result.append(StockIpo.from_dict(data=table_body_dict).to_dict())
         return {"ipo_list": whole_result}
 
 
@@ -168,7 +168,7 @@ class Weeks52HighLowHtmlDecoder:
                 "buy_or_sell": buy_or_sell,
                 "dt": self.html_page.dt,
             }
-            whole_result.append(Weeks52HighLow.from_page_of(data=data).dumps())
+            whole_result.append(Weeks52HighLow.from_dict(data=data).to_dict())
 
         return {"weeks_52_high_low": whole_result}
 
