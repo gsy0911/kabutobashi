@@ -1,9 +1,17 @@
 # Release Note
 
+## 0.5.2
+
+- ENHANCEMENT: modify `get_impact()` ([#133](https://github.com/gsy0911/kabutobashi/issues/133))
+- ENHANCEMENT: update attribute `delisting` ([#132](https://github.com/gsy0911/kabutobashi/issues/132))
+- ENHANCEMENT: add test on Python 3.10 ([#131](https://github.com/gsy0911/kabutobashi/issues/131))
+- ENHANCEMENT: add IDictSerialize ([#130](https://github.com/gsy0911/kabutobashi/issues/130))
+- ENHANCEMENT: add infrastructure on HtmlPages ([#119](https://github.com/gsy0911/kabutobashi/issues/119))
+
 ## 0.5.1
 
 - ENHANCEMENT: add lint and update packages ([#126](https://github.com/gsy0911/kabutobashi/issues/126))
-- BUG FIX: crawl ``market`` ([#125](https://github.com/gsy0911/kabutobashi/issues/125))
+- BUG FIX: crawl `market` ([#125](https://github.com/gsy0911/kabutobashi/issues/125))
 - ENHANCEMENT: update stock-recordset requirement ([#124](https://github.com/gsy0911/kabutobashi/issues/124))
 
 ## 0.5.0
@@ -13,7 +21,7 @@
 - modify recordset repository ([#118](https://github.com/gsy0911/kabutobashi/issues/118))
 - fix error ([#117](https://github.com/gsy0911/kabutobashi/issues/117))
 - Method contains MethodProcess and MethodVisualize ([#116](https://github.com/gsy0911/kabutobashi/issues/116))
-- remove ``StockDataSingleCode`` ([#115](https://github.com/gsy0911/kabutobashi/issues/115))
+- remove `StockDataSingleCode` ([#115](https://github.com/gsy0911/kabutobashi/issues/115))
 
 ## 0.4.5
 
