@@ -1,5 +1,3 @@
-import pytest
-
 import kabutobashi as kb
 
 
@@ -14,14 +12,14 @@ def test_crawl_page_detail():
 
 
 def test_crawl_ipo_list():
-    html_page = kb.StockIpoHtmlPage.of(year="2019")
-    result = kb.StockIpoHtmlDecoder(html_page=html_page).decode()
+    html_page = kb.StockIpoHtmlPageRepository(year="2019").read()
+    result = kb.StockIpoHtmlDecoder().decode(html_page=html_page)
     assert result is not None
     assert type(result) is dict
 
 
 def test_crawl_week_52_high_low_list():
-    html_page = kb.StockWeeks52HighLowHtmlPage.of(data_type="newly_low", dt="2022-07-22")
-    result = kb.Weeks52HighLowHtmlDecoder(html_page=html_page).decode()
+    html_page = kb.StockWeeks52HighLowHtmlPageRepository(data_type="newly_low", dt="2022-07-22").read()
+    result = kb.Weeks52HighLowHtmlDecoder().decode(html_page=html_page)
     assert result is not None
     assert type(result) is dict
