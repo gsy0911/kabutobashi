@@ -16,7 +16,7 @@ logger.setLevel(INFO)
 @dataclass(frozen=True)
 class StockRecordsetStatus:
     code: str
-    stop_updating: bool = field(metadata={"jp": "更新停止"})
+    is_delisting: bool = field(metadata={"jp": "更新停止"})
     contains_outlier: bool = field(metadata={"jp": "例外値を含む"})
     start_at: str = field(metadata={"jp": "収集開始日"})
     end_at: str = field(metadata={"jp": "最新日時"})
@@ -52,8 +52,8 @@ class StockRecordset:
 
         for _, row in df_joined.iterrows():
             try:
-                recordset.append(StockRecord.loads(dict(row)))
-                brand_set.add(StockBrand.loads(data=dict(row)))
+                recordset.append(StockRecord.from_dict(dict(row)))
+                brand_set.add(StockBrand.from_dict(data=dict(row)))
             except KabutobashiEntityError:
                 logger.warning(f"error occurred at: {row}")
         return StockRecordset(
@@ -61,16 +61,6 @@ class StockRecordset:
         )
 
     def get_single_code_recordset_status(self) -> StockRecordsetStatus:
-        def _check_recent_update(_df: pd.DataFrame) -> bool:
-            """
-            直近の更新が止まっているかどうか
-            """
-            return (
-                (len(_df["open"].tail(10).unique()) == 1)
-                or (len(_df["high"].tail(10).unique()) == 1)
-                or (len(_df["low"].tail(10).unique()) == 1)
-                or (len(_df["close"].tail(10).unique()) == 1)
-            )
 
         if self.code_num > 1:
             raise KabutobashiEntityError
@@ -91,7 +81,7 @@ class StockRecordset:
         contains_outlier = any([v.is_outlier() for v in self.recordset])
         return StockRecordsetStatus(
             code=code,
-            stop_updating=_check_recent_update(_df=df),
+            is_delisting=any([v.is_delisting for v in self.recordset]),
             contains_outlier=contains_outlier,
             start_at=start_at,
             end_at=end_at,
@@ -130,10 +120,10 @@ class StockRecordset:
         return list([v.code for v in self.brand_set])
 
     def _to_df(self, code: Optional[str]) -> pd.DataFrame:
-        df_brand = pd.DataFrame([v.dumps() for v in self.brand_set])
+        df_brand = pd.DataFrame([v.to_dict() for v in self.brand_set])
         if code:
             df_brand = df_brand[df_brand["code"] == code]
-        df_record = pd.DataFrame([v.dumps() for v in self.recordset])
+        df_record = pd.DataFrame([v.to_dict() for v in self.recordset])
         df = pd.merge(left=df_brand, right=df_record, how="inner", on="code")
 
         df = df.convert_dtypes()

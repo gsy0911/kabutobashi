@@ -1,12 +1,8 @@
+from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from typing import Union
+from typing import NoReturn, Union
 
-import requests  # type: ignore
 from bs4 import BeautifulSoup
-
-from kabutobashi.domain.errors import KabutobashiPageError
-
-from .user_agent import UserAgent
 
 
 @dataclass(frozen=True)
@@ -22,24 +18,28 @@ class HtmlPage:
     def __post_init__(self):
         assert self.page_type in ["info", "info_multiple", "ipo", "weeks_52_high_low"]
 
-    @staticmethod
-    def from_url(url: str, page_type: str) -> "HtmlPage":
-        """
-        TODO repositoryを利用するように修正する
-        requestsを使って、webからhtmlを取得する
-        """
-        user_agent = UserAgent.get_user_agent_header()
-        r = requests.get(url, headers=user_agent)
-
-        if r.status_code != 200:
-            raise KabutobashiPageError(url=url)
-
-        # 日本語に対応
-        r.encoding = r.apparent_encoding
-        return HtmlPage(html=r.text, page_type=page_type, url=url)
-
     def get_as_soup(self) -> BeautifulSoup:
         return BeautifulSoup(self.html, features="lxml")
+
+
+class IHtmlPageRepository(ABC):
+    def read(self) -> HtmlPage:
+        html_page = self._html_page_read()
+        return self._read_hook(html_page=html_page)
+
+    def _read_hook(self, html_page: HtmlPage) -> HtmlPage:
+        return html_page
+
+    @abstractmethod
+    def _html_page_read(self) -> HtmlPage:
+        raise NotImplementedError()
+
+    def write(self, data: HtmlPage) -> NoReturn:
+        self._html_page_write(data=data)
+
+    @abstractmethod
+    def _html_page_write(self, data: HtmlPage) -> NoReturn:
+        raise NotImplementedError()
 
 
 @dataclass(frozen=True)
@@ -47,24 +47,10 @@ class StockInfoHtmlPage(HtmlPage):
     code: Union[int, str]
     dt: str
 
-    @staticmethod
-    def of(code: Union[int, str], dt: str) -> "StockInfoHtmlPage":
-        url = f"https://minkabu.jp/stock/{code}"
-        page_type = "info"
-        html_page = HtmlPage.from_url(url=url, page_type=page_type)
-        return StockInfoHtmlPage(page_type=page_type, code=code, dt=dt, html=html_page.html, url=url)
-
 
 @dataclass(frozen=True)
 class StockIpoHtmlPage(HtmlPage):
     year: str
-
-    @staticmethod
-    def of(year: str) -> "StockIpoHtmlPage":
-        url = f"https://96ut.com/ipo/list.php?year={year}"
-        page_type = "ipo"
-        html_page = HtmlPage.from_url(url=url, page_type=page_type)
-        return StockIpoHtmlPage(page_type=page_type, year=year, html=html_page.html, url=url)
 
 
 @dataclass(frozen=True)
@@ -72,54 +58,12 @@ class StockWeeks52HighLowHtmlPage(HtmlPage):
     data_type: str
     dt: str
 
-    def __post_init__(self):
-        if self.data_type not in ["high", "low", "newly_high", "newly_low"]:
-            raise KabutobashiPageError()
-
-    @staticmethod
-    def _url_suffix(data_type: str) -> str:
-        # 52週の高値・底値を取得する関数とURL
-        if data_type == "high":
-            return "highs-and-lows-52wk-high"
-        elif data_type == "low":
-            return "highs-and-lows-52wk-low"
-        elif data_type == "newly_high":
-            return "highs-and-lows-ath"
-        elif data_type == "newly_low":
-            return "highs-and-lows-atl"
-
-        raise KabutobashiPageError()
-
-    @staticmethod
-    def of(data_type: str, dt: str) -> "StockWeeks52HighLowHtmlPage":
-        base_url = "https://jp.tradingview.com/markets/stocks-japan"
-        url = f"{base_url}/{StockWeeks52HighLowHtmlPage._url_suffix(data_type=data_type)}"
-        page_type = "weeks_52_high_low"
-        html_page = HtmlPage.from_url(url=url, page_type=page_type)
-        return StockWeeks52HighLowHtmlPage(
-            page_type=page_type, data_type=data_type, html=html_page.html, url=url, dt=dt
-        )
-
 
 @dataclass(frozen=True)
 class StockInfoMultipleDaysMainHtmlPage(HtmlPage):
     code: Union[int, str]
 
-    @staticmethod
-    def of(code: Union[int, str]) -> "StockInfoMultipleDaysMainHtmlPage":
-        url = f"https://minkabu.jp/stock/{code}/daily_bar"
-        page_type = "info_multiple"
-        html_page = HtmlPage.from_url(url=url, page_type=page_type)
-        return StockInfoMultipleDaysMainHtmlPage(page_type=page_type, code=code, html=html_page.html, url=url)
-
 
 @dataclass(frozen=True)
 class StockInfoMultipleDaysSubHtmlPage(HtmlPage):
     code: Union[int, str]
-
-    @staticmethod
-    def of(code: Union[int, str]) -> "StockInfoMultipleDaysSubHtmlPage":
-        url = f"https://minkabu.jp/stock/{code}/daily_valuation"
-        page_type = "info_multiple"
-        html_page = HtmlPage.from_url(url=url, page_type=page_type)
-        return StockInfoMultipleDaysSubHtmlPage(page_type=page_type, code=code, html=html_page.html, url=url)

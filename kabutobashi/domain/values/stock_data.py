@@ -27,39 +27,6 @@ class StockDataProcessed:
         if not all([c in df_columns for c in self.df_required_columns]):
             raise KabutobashiEntityError()
 
-    def get_impact(self, influence: int = 2, tail: int = 5) -> Dict[str, float]:
-        """
-
-        Args:
-            influence:
-            tail:
-
-        Returns:
-            Dict[str, float]
-
-        Examples:
-        """
-        return {self.applied_method_name: self._get_impact(df=self.df, influence=influence, tail=tail)}
-
-    @staticmethod
-    def _get_impact(df: pd.DataFrame, influence: int, tail: int) -> float:
-        """
-        売りと買いのシグナルの余波の合計値を返す。
-
-        Args:
-            df:
-            influence:
-            tail:
-
-        Returns:
-            [-1,1]の値をとる。-1: 売り、1: 買いを表す
-        """
-        df["buy_impact"] = df["buy_signal"].ewm(span=influence).mean()
-        df["sell_impact"] = df["sell_signal"].ewm(span=influence).mean()
-        buy_impact_index = df["buy_impact"].iloc[-tail:].sum()
-        sell_impact_index = df["sell_impact"].iloc[-tail:].sum()
-        return round(buy_impact_index - sell_impact_index, 5)
-
 
 @dataclass(frozen=True)
 class StockDataVisualized:

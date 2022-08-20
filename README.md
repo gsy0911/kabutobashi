@@ -20,12 +20,12 @@ graph TD;
     aggregate[StockCodeSingleAggregate]
     aggregate --- recordset_single
     aggregate --- |Method| processed
-    aggregate --- |Filter| filtered
+    aggregate --- |Analysis| estimated
      
     subgraph ValueObject
       recordset_single[StockRecordset/single]
       processed[StockDataProcessed]
-      filtered[StockDataFiltered]
+      estimated[StockDataEstimated]
     end
   end
   
@@ -55,9 +55,9 @@ import kabutobashi as kb
 
 records = kb.example()
 methods = kb.methods + [kb.basic, kb.pct_change, kb.volatility]
-filters = kb.estimate_filters
+analysis = kb.stock_analysis
 for df in records.to_code_iterable():
-    agg = kb.StockCodeSingleAggregate.of(entity=df).with_processed(methods).with_estimated(filters)
+    agg = kb.StockCodeSingleAggregate.of(entity=df).with_processed(methods).with_estimated(stock_analysis=analysis)
     print(agg)
 
 # n日前までの営業日の日付リストを取得する関数

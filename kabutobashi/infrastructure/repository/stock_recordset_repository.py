@@ -7,7 +7,8 @@ import pandas as pd
 
 from kabutobashi.domain.errors import KabutobashiPageError
 from kabutobashi.domain.services import StockInfoHtmlDecoder
-from kabutobashi.domain.values import IStockRecordsetRepository, StockInfoHtmlPage, StockRecordset
+from kabutobashi.domain.values import IStockRecordsetRepository, StockRecordset
+from kabutobashi.infrastructure.repository import StockInfoHtmlPageRepository
 
 logger = getLogger(__name__)
 
@@ -81,8 +82,8 @@ class StockRecordsetCrawler(IStockRecordsetRepository):
     @staticmethod
     def crawl_single(code: Union[int, str], dt: str) -> dict:
         try:
-            stock_page_html = StockInfoHtmlPage.of(code=code, dt=dt)
-            result = StockInfoHtmlDecoder(html_page=stock_page_html).decode()
+            stock_page_html = StockInfoHtmlPageRepository(code=code, dt=dt).read()
+            result = StockInfoHtmlDecoder().decode(html_page=stock_page_html)
             return result
         except KabutobashiPageError:
             return {}

@@ -1,4 +1,6 @@
 from .html_pages import (
+    HtmlPage,
+    IHtmlPageRepository,
     StockInfoHtmlPage,
     StockInfoMultipleDaysMainHtmlPage,
     StockInfoMultipleDaysSubHtmlPage,
@@ -7,3 +9,4 @@ from .html_pages import (
 )
 from .stock_data import StockDataEstimated, StockDataProcessed, StockDataVisualized
 from .stock_recordset import IStockRecordsetRepository, StockRecordset
+from .user_agent import UserAgent

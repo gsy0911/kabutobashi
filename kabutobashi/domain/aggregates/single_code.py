@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from typing import Dict, List, NoReturn, Optional, Union
+from typing import List, NoReturn, Optional, Union
 
 import pandas as pd
 
@@ -67,25 +67,16 @@ class StockCodeSingleAggregate:
         )
 
     def _to_single_estimated(self, stock_analysis: StockAnalysis) -> StockDataEstimated:
-        def get_impacts(influence: int = 2, tail: int = 5) -> Dict[str, float]:
-            data_ = {}
-            for a in self.processed_list:
-                data_.update(a.get_impact(influence=influence, tail=tail))
-            return data_
-
         def get_parameters():
             data_ = {}
             for a in self.processed_list:
                 data_.update(a.parameters)
             return data_
 
-        data = {}
-        data.update(get_impacts())
-        data.update(get_parameters())
         return StockDataEstimated(
             code=self.code,
             estimate_filter_name=stock_analysis.estimate_filter_name,
-            estimated_value=stock_analysis.estimate(data=data),
+            estimated_value=stock_analysis.estimate(data=get_parameters()),
         )
 
     def with_estimated(self, stock_analysis: List[StockAnalysis]) -> "StockCodeSingleAggregate":
