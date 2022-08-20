@@ -1,6 +1,6 @@
 from typing import NoReturn, Union
 
-import requests
+import requests  # type: ignore
 
 from kabutobashi.domain.errors import KabutobashiPageError
 from kabutobashi.domain.values import (
@@ -17,6 +17,8 @@ __all__ = [
     "StockInfoHtmlPageRepository",
     "StockIpoHtmlPageRepository",
     "StockWeeks52HighLowHtmlPageRepository",
+    "StockInfoMultipleDaysMainHtmlPageRepository",
+    "StockInfoMultipleDaysSubHtmlPageRepository",
 ]
 
 

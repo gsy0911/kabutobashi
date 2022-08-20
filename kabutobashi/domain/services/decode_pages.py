@@ -66,7 +66,7 @@ class PageDecoder:
         return result.replace("\xa0", " ")
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True)  # type: ignore
 class IHtmlDecoder(ABC):
     @abstractmethod
     def _decode(self, html_page: HtmlPage) -> dict:
@@ -90,10 +90,10 @@ class StockInfoHtmlDecoder(IHtmlDecoder):
     TODO BrandとRecordとで役割を分割する
 
     Examples:
-        >>> from kabutobashi import StockInfoHtmlPage
+        >>> import kabutobashi as kb
         >>> # get single page
-        >>> page_html = StockInfoHtmlPage(code="0001", dt="2022-07-22")
-        >>> result = StockInfoHtmlDecoder(page_html=page_html).decode()
+        >>> page_html = kb.StockInfoHtmlPageRepository(code="0001", dt="2022-07-22").read()
+        >>> result = StockInfoHtmlDecoder().decode(page_html=page_html)
     """
 
     def _decode(self, html_page: StockInfoHtmlPage) -> dict:
@@ -109,7 +109,6 @@ class StockInfoHtmlDecoder(IHtmlDecoder):
                 "stock_label": PageDecoder(tag1="div", class1="stock_label").decode(bs=stock_board),
                 "name": PageDecoder(tag1="p", class1="md_stockBoard_stockName").decode(bs=stock_board),
                 "close": PageDecoder(tag1="div", class1="stock_price").decode(bs=stock_board),
-                # "date": PageDecoder(tag1="h2", class1="stock_label fsl").decode(bs=stock_board),
             }
         )
 
@@ -173,10 +172,8 @@ class StockIpoHtmlDecoder(IHtmlDecoder):
 
 @dataclass(frozen=True)
 class Weeks52HighLowHtmlDecoder(IHtmlDecoder):
-    html_page: StockWeeks52HighLowHtmlPage
-
-    def _decode(self, html_page: StockIpoHtmlPage) -> dict:
-        soup = self.html_page.get_as_soup()
+    def _decode(self, html_page: StockWeeks52HighLowHtmlPage) -> dict:
+        soup = html_page.get_as_soup()
 
         content = soup.find("body").find("tbody")
         table = content.find_all("tr")
@@ -191,7 +188,7 @@ class Weeks52HighLowHtmlDecoder(IHtmlDecoder):
                 "code": PageDecoder(tag1="a").decode(bs=t),
                 "brand_name": PageDecoder(tag1="span").decode(bs=t),
                 "buy_or_sell": buy_or_sell,
-                "dt": self.html_page.dt,
+                "dt": html_page.dt,
             }
             whole_result.append(Weeks52HighLow.from_dict(data=data).to_dict())
 
@@ -204,8 +201,8 @@ class StockInfoMultipleDaysHtmlDecoder(IHtmlDecoder):
 
     Examples:
         >>> import kabutobashi as kb
-        >>> main_html_page = kb.StockInfoMultipleDaysMainHtmlPage.of(1375)
-        >>> sub_html_page = kb.StockInfoMultipleDaysSubHtmlPage.of(1375)
+        >>> main_html_page = kb.StockInfoMultipleDaysMainHtmlPageRepository(code=1375).read()
+        >>> sub_html_page = kb.StockInfoMultipleDaysSubHtmlPageRepository(code=1375).read()
         >>> data = kb.StockInfoMultipleDaysHtmlDecoder(main_html_page, sub_html_page).decode()
         >>> df = pd.DataFrame(data)
         >>> records = kb.StockRecordset.of(df)
@@ -223,7 +220,6 @@ class StockInfoMultipleDaysHtmlDecoder(IHtmlDecoder):
 
         # ページの情報を取得
         stock_recordset = main_soup.find("div", {"class": stock_recordset_tag})
-        # code,market,name,industry_type,open,high,low,close,psr,per,pbr,volume,unit,market_capitalization,issued_shares,dt,crawl_datetime
         mapping = {0: "dt", 1: "open", 2: "high", 3: "low", 4: "close", 5: "調整後終値", 6: "volume"}
         for tr in stock_recordset.find_all("tr"):
             tmp = {}
@@ -232,7 +228,6 @@ class StockInfoMultipleDaysHtmlDecoder(IHtmlDecoder):
             result_1.append(tmp)
 
         # そのほかの情報
-        # soup = BeautifulSoup(get_url_text(url=valuation_url.format(code=code)), features="lxml")
         stock_board = sub_soup.find("div", {"class": "md_card md_box mzp"})
         mapping2 = {0: "dt", 1: "psr", 2: "per", 3: "pbr", 4: "配当利回り(%)", 5: "close", 6: "調整後終値", 7: "volume"}
         for tr in stock_board.find_all("tr"):
