@@ -18,6 +18,14 @@ from kabutobashi.domain.values import (
 )
 
 logger = getLogger(__name__)
+__all__ = [
+    "IHtmlDecoder",
+    "PageDecoder",
+    "StockInfoHtmlDecoder",
+    "StockIpoHtmlDecoder",
+    "StockInfoMultipleDaysHtmlDecoder",
+    "Weeks52HighLowHtmlDecoder",
+]
 
 
 @dataclass(frozen=True)
@@ -60,31 +68,36 @@ class PageDecoder:
 
 @dataclass(frozen=True)
 class IHtmlDecoder(ABC):
-    html_page: HtmlPage
-
     @abstractmethod
-    def _decode(self) -> dict:
+    def _decode(self, html_page: HtmlPage) -> dict:
         raise NotImplementedError()
 
-    def decode(self) -> dict:
-        return self._decode()
+    def decode(self, html_page: HtmlPage) -> dict:
+        return self._decode(html_page=html_page)
+
+    # @abstractmethod
+    # def _decode_to_object_hook(self, data: dict):
+    #     raise NotImplementedError()
+    #
+    # def decode_to_object(self, html_page: HtmlPage):
+    #     data = self._decode(html_page=html_page)
+    #     return self._decode_to_object_hook(data=data)
 
 
 @dataclass(frozen=True)
 class StockInfoHtmlDecoder(IHtmlDecoder):
     """
+    TODO BrandとRecordとで役割を分割する
 
     Examples:
         >>> from kabutobashi import StockInfoHtmlPage
         >>> # get single page
-        >>> page_html = StockInfoHtmlPage.of(code="0001", dt="2022-07-22")
+        >>> page_html = StockInfoHtmlPage(code="0001", dt="2022-07-22")
         >>> result = StockInfoHtmlDecoder(page_html=page_html).decode()
     """
 
-    html_page: StockInfoHtmlPage
-
-    def _decode(self) -> dict:
-        soup = self.html_page.get_as_soup()
+    def _decode(self, html_page: StockInfoHtmlPage) -> dict:
+        soup = html_page.get_as_soup()
         result: Dict[str, Union[str, bool, int, float, List[str]]] = {}
 
         stock_board_tag = "md_stockBoard"
@@ -106,12 +119,13 @@ class StockInfoHtmlDecoder(IHtmlDecoder):
         for li in stock_detail.find_all("tr", {"class": "ly_vamd"}):
             info[li.find("th").get_text()] = li.find("td").get_text()
         stock_label = str(result.get("stock_label", ""))
+        code, market = stock_label.split("  ")
         result.update(
             {
-                "dt": self.html_page.dt,
-                "code": str(self.html_page.code),
+                "dt": html_page.dt,
+                "code": code,
                 "industry_type": PageDecoder(tag1="div", class1="ly_content_wrapper size_ss").decode(bs=stock_detail),
-                "market": stock_label.replace(" ", "").replace(str(self.html_page.code), ""),
+                "market": market,
                 "open": info.get("始値", "0"),
                 "high": info.get("高値", "0"),
                 "low": info.get("安値", "0"),
@@ -137,11 +151,8 @@ class StockInfoHtmlDecoder(IHtmlDecoder):
 
 @dataclass(frozen=True)
 class StockIpoHtmlDecoder(IHtmlDecoder):
-
-    html_page: StockIpoHtmlPage
-
-    def _decode(self) -> dict:
-        soup = self.html_page.get_as_soup()
+    def _decode(self, html_page: StockIpoHtmlPage) -> dict:
+        soup = html_page.get_as_soup()
         table_content = soup.find("div", {"class": "tablewrap"})
         table_thead = table_content.find("thead")
         # headの取得
@@ -164,7 +175,7 @@ class StockIpoHtmlDecoder(IHtmlDecoder):
 class Weeks52HighLowHtmlDecoder(IHtmlDecoder):
     html_page: StockWeeks52HighLowHtmlPage
 
-    def _decode(self) -> dict:
+    def _decode(self, html_page: StockIpoHtmlPage) -> dict:
         soup = self.html_page.get_as_soup()
 
         content = soup.find("body").find("tbody")
@@ -203,7 +214,7 @@ class StockInfoMultipleDaysHtmlDecoder(IHtmlDecoder):
     main_html_page: StockInfoMultipleDaysMainHtmlPage
     sub_html_page: StockInfoMultipleDaysSubHtmlPage
 
-    def _decode(self) -> dict:
+    def _decode(self, html_page: StockIpoHtmlPage) -> dict:
         result_1 = []
         result_2 = []
         main_soup = self.main_html_page.get_as_soup()
