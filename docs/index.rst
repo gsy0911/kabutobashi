@@ -64,19 +64,19 @@ Concept
    graph TD;
      subgraph Aggregates
        aggregate[StockCodeSingleAggregate]
-       aggregate --- single
+       aggregate --- recordset_single
        aggregate --- |Method| processed
-       aggregate --- |Filter| filtered
+       aggregate --- |Analysis| estimated
 
        subgraph ValueObject
-         single[StockDataSingleCode]
+         recordset_single[StockRecordset/single]
          processed[StockDataProcessed]
-         filtered[StockDataFiltered]
+         estimated[StockDataEstimated]
        end
      end
 
      subgraph Entities
-       recordset[StockRecordset]
+       recordset[StockRecordset/multiple]
        brand[StockBrand]
        record[StockRecord]
 
