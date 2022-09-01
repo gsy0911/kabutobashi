@@ -7,6 +7,10 @@ on:
   pull_request:
     branches:
       - develop
+  workflow_dispatch:
+    branches:
+      - master
+      - develop
 
 jobs:
   pytest:
@@ -21,12 +25,12 @@ jobs:
       # リポジトリをチェックアウトする
       # See: https://github.com/actions/checkout
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       # Python のランタイムをセットアップする
       # バージョンは `strategy.matrix` に並べたものを指定する
       # See: https://github.com/actions/setup-python
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
       # Poetry そのものをインストールする
@@ -45,8 +49,8 @@ jobs:
       - name: Upload coverage to Codecov
         # 上記のstepsが全て完了した場合にcodecovへupload
         if: ${{ matrix.python-version==3.8 }}
-        uses: codecov/codecov-action@v1
+        uses: codecov/codecov-action@v3
         with:
           file: ./coverage.xml
-          name: codecov-umbrella
+          flags: unittests
           fail_ci_if_error: true
