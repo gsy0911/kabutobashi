@@ -1,51 +1,18 @@
 from datetime import datetime
-from typing import Optional, Union
+from typing import Optional
 
 from pydantic import BaseModel, Field
 
 from kabutobashi.domain.errors import KabutobashiEntityError
 from kabutobashi.domain.serialize import IDictSerialize
 
+from .util import _convert_float, _convert_int
+
 REQUIRED_COL = ["code", "open", "close", "high", "low", "volume", "per", "psr", "pbr", "dt"]
 OPTIONAL_COL = ["name", "industry_type", "market", "unit", "is_delisting"]
 
 
 __all__ = ["StockBrand", "StockRecord", "StockIpo", "Weeks52HighLow", "REQUIRED_COL", "OPTIONAL_COL"]
-
-
-def _replace(input_value: str) -> str:
-    if input_value == "-":
-        return "0"
-    return input_value.replace("---", "0").replace("円", "").replace("株", "").replace("倍", "").replace(",", "")
-
-
-def _convert_float(input_value: Union[str, float, int]) -> float:
-    if type(input_value) is float:
-        return input_value
-    elif type(input_value) is int:
-        return float(input_value)
-    elif type(input_value) is str:
-        try:
-            return float(_replace(input_value=input_value))
-        except ValueError as e:
-            raise KabutobashiEntityError(f"cannot convert {input_value} to float: {e}")
-    raise KabutobashiEntityError(f"cannot convert {input_value} to float")
-
-
-def _convert_int(input_value: Union[str, float, int]) -> int:
-    if type(input_value) == int:
-        return input_value
-    elif type(input_value) == float:
-        try:
-            return int(input_value)
-        except ValueError:
-            return 0
-    elif type(input_value) is str:
-        try:
-            return int(_replace(input_value=input_value))
-        except ValueError as e:
-            raise KabutobashiEntityError(f"cannot convert {input_value} to integer: {e}")
-    raise KabutobashiEntityError(f"cannot convert {input_value} to int")
 
 
 class StockBrand(BaseModel, IDictSerialize):
