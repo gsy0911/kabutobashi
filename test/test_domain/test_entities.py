@@ -26,22 +26,21 @@ class TestStockBrand:
 
 
 class TestStockRecord:
-    def test_error_init(self):
-        with pytest.raises(pydantic.ValidationError):
-            _ = kb.StockRecord(
-                id=None,
-                code="1234",
-                open="",
-                high="",
-                low="",
-                close="",
-                psr="",
-                per="",
-                pbr="",
-                volume="",
-                dt="",
-                is_delisting=False,
-            )
+    def test_pass_init(self):
+        _ = kb.StockRecord(
+            id=None,
+            code="1234",
+            open="",
+            high="",
+            low="",
+            close="",
+            psr="",
+            per="",
+            pbr="",
+            volume="",
+            dt="",
+            is_delisting=False,
+        )
 
 
 class TestStockIpo:

@@ -6,6 +6,8 @@ from kabutobashi.domain.errors import KabutobashiEntityError
 def _replace(input_value: str) -> str:
     if input_value == "-":
         return "0"
+    elif input_value == "":
+        return "0"
     return input_value.replace("---", "0").replace("円", "").replace("株", "").replace("倍", "").replace(",", "")
 
 
