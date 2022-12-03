@@ -9,7 +9,7 @@ from kabutobashi.domain.services.analyze import StockAnalysis
 from kabutobashi.domain.services.method import Method
 from kabutobashi.domain.values import StockDataEstimated, StockDataProcessed, StockDataVisualized, StockRecordset
 
-__all__ = ["StockCodeSingleAggregate", "IStockCodeSingleAggregateRepository"]
+__all__ = ["StockCodeSingleAggregate", "IStockCodeSingleAggregateReadRepository"]
 
 
 @dataclass(frozen=True)
@@ -110,40 +110,15 @@ class StockCodeSingleAggregate:
             raise KabutobashiEntityError(f"method {method.process_method.method_name} has no visualize method")
 
 
-class IStockCodeSingleAggregateRepository(ABC):
+class IStockCodeSingleAggregateReadRepository(ABC):
     def read(self, code: str) -> "StockCodeSingleAggregate":
         return StockCodeSingleAggregate(
             code=code,
             single_recordset=self._stock_data_read(code=code),
-            processed_list=self._stock_processed_read(code=code),
-            estimated_list=self._stock_estimated_read(code=code),
+            processed_list=[],
+            estimated_list=[],
         )
 
     @abstractmethod
     def _stock_data_read(self, code: str) -> "StockRecordset":
-        raise NotImplementedError()
-
-    @abstractmethod
-    def _stock_processed_read(self, code: str) -> List["StockDataProcessed"]:
-        raise NotImplementedError()
-
-    @abstractmethod
-    def _stock_estimated_read(self, code: str) -> List["StockDataEstimated"]:
-        raise NotImplementedError()
-
-    def write(self, data: StockCodeSingleAggregate) -> NoReturn:
-        self._stock_data_write(data=data.single_recordset)
-        self._stock_processed_write(data=data.processed_list)
-        self._stock_estimated_write(data=data.estimated_list)
-
-    @abstractmethod
-    def _stock_data_write(self, data: StockRecordset) -> NoReturn:
-        raise NotImplementedError()
-
-    @abstractmethod
-    def _stock_processed_write(self, data: List[StockDataProcessed]) -> NoReturn:
-        raise NotImplementedError()
-
-    @abstractmethod
-    def _stock_estimated_write(self, data: List[StockDataEstimated]) -> NoReturn:
         raise NotImplementedError()
