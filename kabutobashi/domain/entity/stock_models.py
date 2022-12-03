@@ -4,7 +4,7 @@ from typing import Optional
 from pydantic import BaseModel, Field
 
 from kabutobashi.domain.errors import KabutobashiEntityError
-from kabutobashi.domain.serialize import IDictSerialize
+from kabutobashi.domain.serialize import ICsvLineSerialize, IDictSerialize
 
 from .util import _convert_float, _convert_int
 
@@ -89,7 +89,7 @@ class StockBrand(BaseModel, IDictSerialize):
         orm_mode = True
 
 
-class StockRecord(BaseModel, IDictSerialize):
+class StockRecord(BaseModel, IDictSerialize, ICsvLineSerialize):
     """
     StockRecord: entity
     """
@@ -214,6 +214,28 @@ class StockRecord(BaseModel, IDictSerialize):
             is_delisting=data.get("is_delisting", False),
             dt=dt,
         )
+
+    @staticmethod
+    def from_line(data: str):
+        data = {sp_v[0]: sp_v[1] for v in data.split(",") if len(sp_v := v.split("=")) == 2}
+        return StockRecord(**data)
+
+    def to_line(self) -> str:
+        data = [
+            f"id={self.id}",
+            f"code={self.code}",
+            f"open={self.open}",
+            f"high={self.high}",
+            f"low={self.low}",
+            f"close={self.close}",
+            f"psr={self.psr}",
+            f"per={self.per}",
+            f"pbr={self.pbr}",
+            f"volume={self.volume}",
+            f"is_delisting={self.is_delisting}",
+            f"dt={self.dt}",
+        ]
+        return ",".join(data)
 
     class Config:
         orm_mode = True
