@@ -1,51 +1,18 @@
 from datetime import datetime
-from typing import Optional, Union
+from typing import Optional
 
 from pydantic import BaseModel, Field
 
 from kabutobashi.domain.errors import KabutobashiEntityError
-from kabutobashi.domain.serialize import IDictSerialize
+from kabutobashi.domain.serialize import ICsvLineSerialize, IDictSerialize
+
+from .util import _convert_float, _convert_int
 
 REQUIRED_COL = ["code", "open", "close", "high", "low", "volume", "per", "psr", "pbr", "dt"]
 OPTIONAL_COL = ["name", "industry_type", "market", "unit", "is_delisting"]
 
 
 __all__ = ["StockBrand", "StockRecord", "StockIpo", "Weeks52HighLow", "REQUIRED_COL", "OPTIONAL_COL"]
-
-
-def _replace(input_value: str) -> str:
-    if input_value == "-":
-        return "0"
-    return input_value.replace("---", "0").replace("円", "").replace("株", "").replace("倍", "").replace(",", "")
-
-
-def _convert_float(input_value: Union[str, float, int]) -> float:
-    if type(input_value) is float:
-        return input_value
-    elif type(input_value) is int:
-        return float(input_value)
-    elif type(input_value) is str:
-        try:
-            return float(_replace(input_value=input_value))
-        except ValueError as e:
-            raise KabutobashiEntityError(f"cannot convert {input_value} to float: {e}")
-    raise KabutobashiEntityError(f"cannot convert {input_value} to float")
-
-
-def _convert_int(input_value: Union[str, float, int]) -> int:
-    if type(input_value) == int:
-        return input_value
-    elif type(input_value) == float:
-        try:
-            return int(input_value)
-        except ValueError:
-            return 0
-    elif type(input_value) is str:
-        try:
-            return int(_replace(input_value=input_value))
-        except ValueError as e:
-            raise KabutobashiEntityError(f"cannot convert {input_value} to integer: {e}")
-    raise KabutobashiEntityError(f"cannot convert {input_value} to int")
 
 
 class StockBrand(BaseModel, IDictSerialize):
@@ -122,7 +89,7 @@ class StockBrand(BaseModel, IDictSerialize):
         orm_mode = True
 
 
-class StockRecord(BaseModel, IDictSerialize):
+class StockRecord(BaseModel, IDictSerialize, ICsvLineSerialize):
     """
     StockRecord: entity
     """
@@ -161,14 +128,14 @@ class StockRecord(BaseModel, IDictSerialize):
         super().__init__(
             id=id,
             code=code,
-            open=open,
-            high=high,
-            low=low,
-            close=close,
-            psr=psr,
-            per=per,
-            pbr=pbr,
-            volume=volume,
+            open=_convert_float(open),
+            high=_convert_float(high),
+            low=_convert_float(low),
+            close=_convert_float(close),
+            psr=_convert_float(psr),
+            per=_convert_float(per),
+            pbr=_convert_float(pbr),
+            volume=_convert_float(volume),
             is_delisting=is_delisting,
             dt=dt,
         )
@@ -180,14 +147,14 @@ class StockRecord(BaseModel, IDictSerialize):
             return StockRecord(
                 id=data.get("id"),
                 code=label_split[0],
-                open=_convert_float(data["open"]),
-                high=_convert_float(data["high"]),
-                low=_convert_float(data["low"]),
-                close=_convert_float(data["close"]),
-                psr=_convert_float(data["psr"]),
-                per=_convert_float(data["per"]),
-                pbr=_convert_float(data["pbr"]),
-                volume=_convert_int(data["volume"]),
+                open=data["open"],
+                high=data["high"],
+                low=data["low"],
+                close=data["close"],
+                psr=data["psr"],
+                per=data["per"],
+                pbr=data["pbr"],
+                volume=data["volume"],
                 is_delisting=data.get("is_delisting", False),
                 dt=data["date"],
             )
@@ -236,17 +203,39 @@ class StockRecord(BaseModel, IDictSerialize):
         return StockRecord(
             id=data.get("id"),
             code=code,
-            open=_convert_float(data["open"]),
-            high=_convert_float(data["high"]),
-            low=_convert_float(data["low"]),
-            close=_convert_float(data["close"]),
-            psr=_convert_float(data["psr"]),
-            per=_convert_float(data["per"]),
-            pbr=_convert_float(data["pbr"]),
-            volume=_convert_int(data["volume"]),
+            open=data["open"],
+            high=data["high"],
+            low=data["low"],
+            close=data["close"],
+            psr=data["psr"],
+            per=data["per"],
+            pbr=data["pbr"],
+            volume=data["volume"],
             is_delisting=data.get("is_delisting", False),
             dt=dt,
         )
+
+    @staticmethod
+    def from_line(data: str):
+        data = {sp_v[0]: sp_v[1] for v in data.split(",") if len(sp_v := v.split("=")) == 2}
+        return StockRecord(**data)
+
+    def to_line(self) -> str:
+        data = [
+            f"id={self.id}",
+            f"code={self.code}",
+            f"open={self.open}",
+            f"high={self.high}",
+            f"low={self.low}",
+            f"close={self.close}",
+            f"psr={self.psr}",
+            f"per={self.per}",
+            f"pbr={self.pbr}",
+            f"volume={self.volume}",
+            f"is_delisting={self.is_delisting}",
+            f"dt={self.dt}",
+        ]
+        return ",".join(data)
 
     class Config:
         orm_mode = True
