@@ -3,13 +3,13 @@ name: pytest
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
     branches:
       - develop
   workflow_dispatch:
     branches:
-      - master
+      - main
       - develop
 
 jobs:
