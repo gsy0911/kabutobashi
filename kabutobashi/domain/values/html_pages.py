@@ -45,7 +45,6 @@ class IHtmlPageRepository(ABC):
 @dataclass(frozen=True)
 class StockInfoHtmlPage(HtmlPage):
     code: Union[int, str]
-    dt: str
 
 
 @dataclass(frozen=True)
@@ -99,6 +98,7 @@ class StockInfoMinkabuTopPage(DecodedHtmlPage):
     pbr: str
     volume: str
     market_capitalization: str
+    html: str = field(repr=False)
 
     def _validate(self):
         pass

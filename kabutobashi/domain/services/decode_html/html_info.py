@@ -36,11 +36,14 @@ class StockInfoMinkabuTopHtmlDecoder(IHtmlDecoder):
             market=data["market"],
             market_capitalization=data["market_capitalization"],
             industry_type=data["industry_type"],
+            html=data["html"],
         )
 
     def _decode(self, html_page: StockInfoHtmlPage) -> dict:
         soup = html_page.get_as_soup()
-        result: Dict[str, Union[str, bool, int, float, List[str]]] = {}
+        result: Dict[str, Union[str, bool, int, float, List[str]]] = {
+            "html": html_page.html
+        }
 
         stock_board_tag = "md_stockBoard"
 
