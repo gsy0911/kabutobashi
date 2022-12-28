@@ -1,5 +1,7 @@
+import re
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
+from datetime import datetime
 from functools import reduce
 from logging import getLogger
 from typing import Dict, List, Optional, Union
@@ -92,7 +94,7 @@ class StockInfoHtmlDecoder(IHtmlDecoder):
     Examples:
         >>> import kabutobashi as kb
         >>> # get single page
-        >>> page_html = kb.StockInfoHtmlPageRepository(code="0001", dt="2022-07-22").read()
+        >>> page_html = kb.StockInfoHtmlPageRepository(code="0001").read()
         >>> result = StockInfoHtmlDecoder().decode(page_html=page_html)
     """
 
@@ -101,6 +103,17 @@ class StockInfoHtmlDecoder(IHtmlDecoder):
         result: Dict[str, Union[str, bool, int, float, List[str]]] = {}
 
         stock_board_tag = "md_stockBoard"
+
+        raw_dt = PageDecoder(tag1="span", class1="fsm").decode(bs=soup)
+        pattern = r"\((?P<month>[0-9]+)/(?P<day>[0-9]+)\)|\((?P<hour>[0-9]+):(?P<minute>[0-9]+)\)"
+        match_result = re.match(pattern, raw_dt)
+        dt = datetime.now()
+        if result:
+            rep = match_result.groupdict()
+            if rep.get("month"):
+                dt = dt.replace(month=int(rep["month"]))
+            if rep.get("day"):
+                dt = dt.replace(day=int(rep["day"]))
 
         # ページ上部の情報を取得
         stock_board = soup.find("div", {"class": stock_board_tag})
@@ -121,7 +134,7 @@ class StockInfoHtmlDecoder(IHtmlDecoder):
         code, market = stock_label.split("  ")
         result.update(
             {
-                "dt": html_page.dt,
+                "dt": dt.strftime("%Y-%m-%d"),
                 "code": code,
                 "industry_type": PageDecoder(tag1="div", class1="ly_content_wrapper size_ss").decode(bs=stock_detail),
                 "market": market,

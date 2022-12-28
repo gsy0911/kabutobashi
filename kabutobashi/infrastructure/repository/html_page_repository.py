@@ -53,15 +53,12 @@ class HtmlPageBasicRepository(IHtmlPageRepository):
 
 
 class StockInfoHtmlPageRepository(HtmlPageBasicRepository):
-    def __init__(self, code: Union[int, str], dt: str):
+    def __init__(self, code: Union[int, str]):
         super().__init__(page_type="info", url=f"https://minkabu.jp/stock/{code}")
         self.code = code
-        self.dt = dt
 
     def _read_hook(self, html_page: HtmlPage) -> StockInfoHtmlPage:
-        return StockInfoHtmlPage(
-            code=self.code, html=html_page.html, dt=self.dt, page_type=self.page_type, url=self.url
-        )
+        return StockInfoHtmlPage(code=self.code, html=html_page.html, page_type=self.page_type, url=self.url)
 
 
 class StockIpoHtmlPageRepository(HtmlPageBasicRepository):

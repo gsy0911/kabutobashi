@@ -45,7 +45,6 @@ class IHtmlPageRepository(ABC):
 @dataclass(frozen=True)
 class StockInfoHtmlPage(HtmlPage):
     code: Union[int, str]
-    dt: str
 
 
 @dataclass(frozen=True)
@@ -67,3 +66,45 @@ class StockInfoMultipleDaysMainHtmlPage(HtmlPage):
 @dataclass(frozen=True)
 class StockInfoMultipleDaysSubHtmlPage(HtmlPage):
     code: Union[int, str]
+
+
+@dataclass(frozen=True)
+class DecodedHtmlPage(ABC):
+    """
+    id: code & dt
+    """
+
+    def __post_init__(self):
+        self._validate()
+
+    @abstractmethod
+    def _validate(self):
+        raise NotImplementedError()
+
+
+@dataclass(frozen=True)
+class StockInfoMinkabuTopPage(DecodedHtmlPage):
+    code: str
+    dt: str
+    industry_type: str
+    market: str
+    open: str
+    high: str
+    low: str
+    close: str
+    unit: str
+    per: str
+    psr: str
+    pbr: str
+    volume: str
+    market_capitalization: str
+    html: str = field(repr=False)
+
+    def _validate(self):
+        pass
+
+    def is_delisting(self) -> bool:
+        # 上場廃止の確認
+        if self.open == "---" and self.high == "---" and self.low == "---":
+            return True
+        return False

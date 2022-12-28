@@ -60,9 +60,8 @@ class StockRecordsetStorageBasicRepository(IStockRecordsetRepository):
 
 
 class StockRecordsetCrawler(IStockRecordsetRepository):
-    def __init__(self, code_list: list, dt: str, use_mp: bool = False, max_workers: int = 2):
+    def __init__(self, code_list: list, use_mp: bool = False, max_workers: int = 2):
         self.code_list = code_list
-        self.dt = dt
         self.use_mp = use_mp
         self.max_workers = max_workers
 
@@ -71,18 +70,18 @@ class StockRecordsetCrawler(IStockRecordsetRepository):
         # 日次の株データ取得
         stock_data: List[dict] = []
         if self.use_mp:
-            stock_data.extend(self.crawl_multiple(code_list=self.code_list, max_workers=self.max_workers, dt=self.dt))
+            stock_data.extend(self.crawl_multiple(code_list=self.code_list, max_workers=self.max_workers))
         else:
-            stock_data.extend([self.crawl_single(code=code, dt=self.dt) for code in self.code_list])
+            stock_data.extend([self.crawl_single(code=code) for code in self.code_list])
 
         # データを整形してStockDataとして保存
         df = pd.DataFrame(stock_data)
         return StockRecordset.of(df=df)
 
     @staticmethod
-    def crawl_single(code: Union[int, str], dt: str) -> dict:
+    def crawl_single(code: Union[int, str]) -> dict:
         try:
-            stock_page_html = StockInfoHtmlPageRepository(code=code, dt=dt).read()
+            stock_page_html = StockInfoHtmlPageRepository(code=code).read()
             result = StockInfoHtmlDecoder().decode(html_page=stock_page_html)
             return result
         except KabutobashiPageError:
@@ -95,8 +94,8 @@ class StockRecordsetCrawler(IStockRecordsetRepository):
             return {}
 
     @staticmethod
-    def crawl_multiple(code_list: List[Union[int, str]], dt: str, max_workers: int = 2) -> List[dict]:
-        partial_crawl_single = functools.partial(StockRecordsetCrawler.crawl_single, dt=dt)
+    def crawl_multiple(code_list: List[Union[int, str]], max_workers: int = 2) -> List[dict]:
+        partial_crawl_single = functools.partial(StockRecordsetCrawler.crawl_single)
         response_list = []
         with ThreadPoolExecutor(max_workers=max_workers) as executor:
             map_gen = executor.map(partial_crawl_single, code_list)
