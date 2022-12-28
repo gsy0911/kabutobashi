@@ -58,9 +58,7 @@ class StockInfoHtmlPageRepository(HtmlPageBasicRepository):
         self.code = code
 
     def _read_hook(self, html_page: HtmlPage) -> StockInfoHtmlPage:
-        return StockInfoHtmlPage(
-            code=self.code, html=html_page.html, page_type=self.page_type, url=self.url
-        )
+        return StockInfoHtmlPage(code=self.code, html=html_page.html, page_type=self.page_type, url=self.url)
 
 
 class StockIpoHtmlPageRepository(HtmlPageBasicRepository):
