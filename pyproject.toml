@@ -42,7 +42,7 @@ sphinxcontrib-mermaid = "^0.7.1"
 [tool.poetry.group.dev.dependencies]
 jupyterlab = "^3.5.0"
 twine = "^3.1.1"
-wheel = "^0.34.2"
+wheel = "^0.38.1"
 memory-profiler = "^0.60.0"
 
 [build-system]
