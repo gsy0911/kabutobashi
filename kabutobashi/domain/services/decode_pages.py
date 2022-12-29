@@ -9,14 +9,13 @@ from typing import Dict, List, Optional, Union
 import pandas as pd
 from bs4 import BeautifulSoup
 
-from kabutobashi.domain.entity import StockIpo, Weeks52HighLow
+from kabutobashi.domain.entity import StockIpo
 from kabutobashi.domain.values import (
     HtmlPage,
     StockInfoHtmlPage,
     StockInfoMultipleDaysMainHtmlPage,
     StockInfoMultipleDaysSubHtmlPage,
     StockIpoHtmlPage,
-    StockWeeks52HighLowHtmlPage,
 )
 
 logger = getLogger(__name__)
@@ -26,7 +25,6 @@ __all__ = [
     "StockInfoHtmlDecoder",
     "StockIpoHtmlDecoder",
     "StockInfoMultipleDaysHtmlDecoder",
-    "Weeks52HighLowHtmlDecoder",
 ]
 
 
@@ -181,31 +179,6 @@ class StockIpoHtmlDecoder(IHtmlDecoder):
                 table_body_dict[header] = td.get_text().replace("\n", "")
             whole_result.append(StockIpo.from_dict(data=table_body_dict).to_dict())
         return {"ipo_list": whole_result}
-
-
-@dataclass(frozen=True)
-class Weeks52HighLowHtmlDecoder(IHtmlDecoder):
-    def _decode(self, html_page: StockWeeks52HighLowHtmlPage) -> dict:
-        soup = html_page.get_as_soup()
-
-        content = soup.find("body").find("tbody")
-        table = content.find_all("tr")
-        whole_result = []
-        for t in table:
-            buy_or_sell = ""
-
-            for td in t.find_all("td"):
-                if td.text in ["買い", "強い買い", "売り", "強い売り"]:
-                    buy_or_sell = td.text
-            data = {
-                "code": PageDecoder(tag1="a").decode(bs=t),
-                "brand_name": PageDecoder(tag1="span").decode(bs=t),
-                "buy_or_sell": buy_or_sell,
-                "dt": html_page.dt,
-            }
-            whole_result.append(Weeks52HighLow.from_dict(data=data).to_dict())
-
-        return {"weeks_52_high_low": whole_result}
 
 
 @dataclass(frozen=True)

@@ -5,5 +5,4 @@ from .decode_pages import (
     StockInfoHtmlDecoder,
     StockInfoMultipleDaysHtmlDecoder,
     StockIpoHtmlDecoder,
-    Weeks52HighLowHtmlDecoder,
 )
