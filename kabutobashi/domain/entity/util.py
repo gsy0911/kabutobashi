@@ -37,4 +37,8 @@ def _convert_int(input_value: Union[str, float, int]) -> int:
             return int(_replace(input_value=input_value))
         except ValueError as e:
             raise KabutobashiEntityError(f"cannot convert {input_value} to integer: {e}")
-    raise KabutobashiEntityError(f"cannot convert {input_value} to int")
+    else:
+        try:
+            return int(input_value)
+        except Exception:
+            raise KabutobashiEntityError(f"cannot convert {input_value} to int")
