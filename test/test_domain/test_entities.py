@@ -51,14 +51,6 @@ class TestStockIpo:
             )
 
 
-class TestWeeks52HihLow:
-    def test_error_init(self):
-        with pytest.raises(pydantic.ValidationError):
-            _ = kb.Weeks52HighLow(
-                code="", brand_name="", close="", buy_or_sell="", volatility_ratio="", volatility_value=""
-            )
-
-
 class TestStockRecordset:
     def test_code_iterable(self, example_records: kb.StockRecordset):
         for _ in example_records.to_code_iterable(until=1):
