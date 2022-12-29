@@ -12,7 +12,7 @@ REQUIRED_COL = ["code", "open", "close", "high", "low", "volume", "per", "psr", 
 OPTIONAL_COL = ["name", "industry_type", "market", "unit", "is_delisting"]
 
 
-__all__ = ["StockBrand", "StockRecord", "StockIpo", "Weeks52HighLow", "REQUIRED_COL", "OPTIONAL_COL"]
+__all__ = ["StockBrand", "StockRecord", "StockIpo", "REQUIRED_COL", "OPTIONAL_COL"]
 
 
 class StockBrand(BaseModel, IDictSerialize):
@@ -291,36 +291,6 @@ class StockIpo(BaseModel, IDictSerialize):
             public_offering=_convert_float(data["公募"]),
             evaluation=data["評価"],
             initial_price=_convert_float(data["初値"]),
-        )
-
-    def to_dict(self) -> dict:
-        return self.dict()
-
-    class Config:
-        orm_mode = True
-
-
-class Weeks52HighLow(BaseModel, IDictSerialize):
-    """
-    Weeks52HighLow: Entity
-
-    52週高値・底値の値を保持するクラス
-    """
-
-    id: int = Field(description="id")
-    code: str = Field(description="銘柄コード")
-    brand_name: str = Field(description="銘柄名")
-    # close: float = Field(description="終値")
-    buy_or_sell: str = Field(description="買い, 強い買い, 売り, 強い売り")
-    # volatility_ratio: float = Field(description="価格変動比")
-    # volatility_value: float = Field(description="価格変動値")
-    dt: str = Field(description="日付")
-
-    @staticmethod
-    def from_dict(data: dict) -> "Weeks52HighLow":
-
-        return Weeks52HighLow(
-            id=0, code=data["code"], brand_name=data["brand_name"], buy_or_sell=data["buy_or_sell"], dt=data["dt"]
         )
 
     def to_dict(self) -> dict:
