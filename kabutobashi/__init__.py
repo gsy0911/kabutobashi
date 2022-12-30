@@ -22,8 +22,8 @@ from kabutobashi.domain.services.method import (
 )
 
 from .domain import errors
-from .domain.aggregates import IStockCodeSingleAggregateReadRepository, StockCodeSingleAggregate
-from .domain.entity import OPTIONAL_COL, REQUIRED_COL, StockBrand, StockIpo, StockRecord
+from .domain.aggregates import StockCodeSingleAggregate
+from .domain.entity import OPTIONAL_COL, REQUIRED_COL, Stock, StockBrand, StockIpo, StockRecord
 from .domain.services import StockInfoMultipleDaysHtmlDecoder, StockIpoHtmlDecoder
 from .domain.values import (
     StockDataEstimated,

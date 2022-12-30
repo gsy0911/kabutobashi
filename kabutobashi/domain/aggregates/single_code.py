@@ -1,15 +1,15 @@
-from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from typing import List, NoReturn, Optional, Union
+from typing import List, Optional, Union
 
 import pandas as pd
 
+from kabutobashi.domain.entity import Stock
 from kabutobashi.domain.errors import KabutobashiEntityError
 from kabutobashi.domain.services.analyze import StockAnalysis
 from kabutobashi.domain.services.method import Method
-from kabutobashi.domain.values import StockDataEstimated, StockDataProcessed, StockDataVisualized, StockRecordset
+from kabutobashi.domain.values import StockDataEstimated, StockDataProcessed, StockDataVisualized
 
-__all__ = ["StockCodeSingleAggregate", "IStockCodeSingleAggregateReadRepository"]
+__all__ = ["StockCodeSingleAggregate"]
 
 
 @dataclass(frozen=True)
@@ -31,27 +31,25 @@ class StockCodeSingleAggregate:
     """
 
     code: str
-    single_recordset: StockRecordset
+    stock: Stock
     processed_list: List[StockDataProcessed] = field(default_factory=list, repr=False)
     estimated_list: List[StockDataEstimated] = field(default_factory=list, repr=False)
 
     def __post_init__(self):
-        _ = self.single_recordset.get_single_code_recordset_status()
+        pass
 
     @staticmethod
-    def of(entity: Union[pd.DataFrame, StockRecordset], *, code: Optional[str] = None) -> "StockCodeSingleAggregate":
+    def of(entity: Union[pd.DataFrame, Stock], *, code: Optional[str] = None) -> "StockCodeSingleAggregate":
         if type(entity) is pd.DataFrame:
-            single_recordset = StockRecordset.of(df=entity)
-        elif type(entity) is StockRecordset:
-            if code is None and entity.code_num > 1:
-                raise KabutobashiEntityError("code is required")
-            df_ = entity.to_df(code=code)
-            single_recordset = StockRecordset.of(df=df_)
+            entity["code"] = entity["code"].astype(str)
+            stock = Stock.from_df(data=entity[entity["code"] == code])
+        elif type(entity) is Stock:
+            stock = entity
         else:
             raise KabutobashiEntityError("accept pd.DataFrame or StockDataSingleCode")
 
-        code = single_recordset.get_single_code_recordset_status().code
-        return StockCodeSingleAggregate(code=code, single_recordset=single_recordset)
+        code = stock.code
+        return StockCodeSingleAggregate(code=code, stock=stock)
 
     def with_processed(self, methods: List[Method]) -> "StockCodeSingleAggregate":
         # check all methods
@@ -59,10 +57,10 @@ class StockCodeSingleAggregate:
             if not isinstance(method, Method):
                 raise KabutobashiEntityError()
 
-        df = self.single_recordset.to_df()
+        df = self.stock.to_df()
         return StockCodeSingleAggregate(
             code=self.code,
-            single_recordset=self.single_recordset,
+            stock=self.stock,
             processed_list=[m.process_method.process(df=df) for m in methods],
         )
 
@@ -87,7 +85,7 @@ class StockCodeSingleAggregate:
         """
         return StockCodeSingleAggregate(
             code=self.code,
-            single_recordset=self.single_recordset,
+            stock=self.stock,
             processed_list=self.processed_list,
             estimated_list=[self._to_single_estimated(stock_analysis=sa) for sa in stock_analysis],
         )
@@ -102,23 +100,9 @@ class StockCodeSingleAggregate:
         return "_".join(estimate_filter_names)
 
     def visualize(self, method: Method, size_ratio: int = 2) -> StockDataVisualized:
-        df = self.single_recordset.to_df()
+        df = self.stock.to_df()
         processed_df = method.process_method.process(df=df)
         if method.visualize_method:
             return method.visualize_method.visualize(size_ratio=size_ratio, df=processed_df.df)
         else:
             raise KabutobashiEntityError(f"method {method.process_method.method_name} has no visualize method")
-
-
-class IStockCodeSingleAggregateReadRepository(ABC):
-    def read(self, code: str) -> "StockCodeSingleAggregate":
-        return StockCodeSingleAggregate(
-            code=code,
-            single_recordset=self._stock_data_read(code=code),
-            processed_list=[],
-            estimated_list=[],
-        )
-
-    @abstractmethod
-    def _stock_data_read(self, code: str) -> "StockRecordset":
-        raise NotImplementedError()
