@@ -1,14 +1,13 @@
 import os
 
-from kabutobashi.domain.values import StockRecordset
-from kabutobashi.infrastructure.repository import StockRecordsetStorageBasicRepository
+import pandas as pd
 
 PARENT_PATH = os.path.abspath(os.path.dirname(__file__))
 SOURCE_PATH = os.path.abspath(os.path.dirname(PARENT_PATH))
 DATA_PATH = f"{SOURCE_PATH}/data"
 
 
-def example() -> StockRecordset:
+def example() -> pd.DataFrame:
     """
 
     Examples:
@@ -18,4 +17,4 @@ def example() -> StockRecordset:
         >>> processed = agg.with_processed(kb.methods)
     """
     file_name = "example.csv.gz"
-    return StockRecordsetStorageBasicRepository(f"{DATA_PATH}/{file_name}").read()
+    return pd.read_csv(f"{DATA_PATH}/{file_name}")

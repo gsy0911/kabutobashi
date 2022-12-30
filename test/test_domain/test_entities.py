@@ -6,7 +6,7 @@ from kabutobashi.domain.errors import KabutobashiEntityError
 
 
 @pytest.fixture(scope="module", autouse=True)
-def example_records() -> kb.StockRecordset:
+def example_stock() -> kb.Stock:
     yield kb.example()
 
 
@@ -96,9 +96,9 @@ class TestStockRecordset:
 
 
 class TestStockSingleAggregate:
-    def test_pass(self, example_records: kb.StockRecordset):
+    def test_pass(self, example_stock: kb.Stock):
         methods = kb.methods + [kb.basic, kb.pct_change, kb.volatility]
-        agg = kb.StockCodeSingleAggregate.of(entity=example_records, code="1375")
+        agg = kb.StockCodeSingleAggregate.of(entity=example_stock, code="1375")
         estimated = agg.with_processed(methods=methods).with_estimated(stock_analysis=kb.stock_analysis)
         value = estimated.weighted_estimated_value({"fundamental": 1.0, "volume": 1.0})
         assert value != 0
