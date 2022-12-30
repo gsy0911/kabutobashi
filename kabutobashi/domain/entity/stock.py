@@ -1,6 +1,7 @@
 from datetime import datetime
 from typing import List, Optional
 
+import jpholiday
 import pandas as pd
 from pydantic import BaseModel, Field
 
@@ -196,8 +197,13 @@ class StockPriceRecord(BaseModel, IDictSerialize, ICsvLineSerialize, IDfSerializ
 
         records = []
         for _, row in data.iterrows():
-            records.append(StockPriceRecord.from_dict(row))
+            record = StockPriceRecord.from_dict(row)
+            if record.is_valid_date():
+                records.append(record)
         return records
+
+    def is_valid_date(self) -> bool:
+        return not jpholiday.is_holiday(datetime.strptime(self.dt, "%Y-%m-%d"))
 
     class Config:
         orm_mode = True
@@ -261,6 +267,8 @@ class Stock(BaseModel, IDfSerialize):
     brand: StockBrand = Field(description="銘柄情報")
     daily_price_records: List[StockPriceRecord] = Field(description="日次株価記録", repr=False)
     reference_indicator: StockReferenceIndicator = Field(description="参考指標")
+    start_at: str = Field(description="収集開始日")
+    end_at: str = Field(description="最新日時")
 
     def __init__(
         self,
@@ -269,8 +277,14 @@ class Stock(BaseModel, IDfSerialize):
         daily_price_records: List[StockPriceRecord],
         reference_indicator: StockReferenceIndicator,
     ):
+        dt_list = [v.dt for v in daily_price_records]
         super().__init__(
-            code=code, brand=brand, daily_price_records=daily_price_records, reference_indicator=reference_indicator
+            code=code,
+            brand=brand,
+            daily_price_records=daily_price_records,
+            reference_indicator=reference_indicator,
+            start_at=min(dt_list),
+            end_at=max(dt_list),
         )
 
     def to_df(self, add_brand=False) -> pd.DataFrame:
@@ -303,9 +317,9 @@ class Stock(BaseModel, IDfSerialize):
     def from_df(data: pd.DataFrame) -> "Stock":
         required_cols = ["open", "high", "low", "close", "code", "dt", "volume"]
         if set(required_cols) - set(data.columns):
-            raise ValueError()
+            raise KabutobashiEntityError()
         if len(set(data["code"])) != 1:
-            raise ValueError()
+            raise KabutobashiEntityError()
 
         code = str(data["code"][0])
         daily_price_records = StockPriceRecord.from_df(data=data)
@@ -318,3 +332,6 @@ class Stock(BaseModel, IDfSerialize):
             daily_price_records=daily_price_records,
             reference_indicator=StockReferenceIndicator.from_dict(data=latest_info),
         )
+
+    def contains_outlier(self) -> bool:
+        return any([v.is_outlier() for v in self.daily_price_records])
