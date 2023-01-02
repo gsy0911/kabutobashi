@@ -34,7 +34,6 @@ from .domain.values import (
     StockInfoMultipleDaysSubHtmlPage,
     StockIpo,
     StockIpoHtmlPage,
-    StockWeeks52HighLowHtmlPage,
 )
 from .example_data import example
 from .infrastructure.repository import (

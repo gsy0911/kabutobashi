@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from dataclasses import asdict, dataclass, field
-from typing import NoReturn, Optional, Union
+from typing import NoReturn, Union
 
 from bs4 import BeautifulSoup
 
@@ -52,12 +52,6 @@ class StockInfoHtmlPage(HtmlPage):
 @dataclass(frozen=True)
 class StockIpoHtmlPage(HtmlPage):
     year: str
-
-
-@dataclass(frozen=True)
-class StockWeeks52HighLowHtmlPage(HtmlPage):
-    data_type: str
-    dt: str
 
 
 @dataclass(frozen=True)
