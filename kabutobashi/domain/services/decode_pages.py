@@ -7,11 +7,11 @@ from typing import List, Optional, Union
 import pandas as pd
 from bs4 import BeautifulSoup
 
-from kabutobashi.domain.entity import StockIpo
 from kabutobashi.domain.values import (
     HtmlPage,
     StockInfoMultipleDaysMainHtmlPage,
     StockInfoMultipleDaysSubHtmlPage,
+    StockIpo,
     StockIpoHtmlPage,
 )
 

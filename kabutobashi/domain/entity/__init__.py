@@ -22,4 +22,3 @@ and when estimating stock-code which is to rise in the next day or so on.
   - StockDataEstimated
 """
 from .stock import Stock
-from .stock_models import StockIpo

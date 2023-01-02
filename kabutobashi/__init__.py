@@ -23,7 +23,7 @@ from kabutobashi.domain.services.method import (
 
 from .domain import errors
 from .domain.aggregates import StockCodeSingleAggregate
-from .domain.entity import Stock, StockIpo
+from .domain.entity import Stock
 from .domain.services import StockInfoMultipleDaysHtmlDecoder, StockIpoHtmlDecoder
 from .domain.values import (
     StockDataEstimated,
@@ -32,6 +32,7 @@ from .domain.values import (
     StockInfoHtmlPage,
     StockInfoMultipleDaysMainHtmlPage,
     StockInfoMultipleDaysSubHtmlPage,
+    StockIpo,
     StockIpoHtmlPage,
     StockWeeks52HighLowHtmlPage,
 )

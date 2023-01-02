@@ -5,6 +5,7 @@ from .html_pages import (
     StockInfoMinkabuTopPage,
     StockInfoMultipleDaysMainHtmlPage,
     StockInfoMultipleDaysSubHtmlPage,
+    StockIpo,
     StockIpoHtmlPage,
     StockWeeks52HighLowHtmlPage,
 )
