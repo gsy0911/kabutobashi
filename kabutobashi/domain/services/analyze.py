@@ -12,11 +12,11 @@ class StockAnalysis(ABC):
 
     @abstractmethod
     def _validate(self, data: dict):
-        raise NotImplementedError()
+        raise NotImplementedError()  # pragma: no cover
 
     @abstractmethod
     def _estimate(self, data: dict) -> float:
-        raise NotImplementedError()
+        raise NotImplementedError()  # pragma: no cover
 
 
 @dataclass(frozen=True)

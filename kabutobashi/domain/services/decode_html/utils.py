@@ -54,14 +54,14 @@ class PageDecoder:
 class IHtmlDecoder(ABC):
     @abstractmethod
     def _decode(self, html_page: HtmlPage) -> dict:
-        raise NotImplementedError()
+        raise NotImplementedError()  # pragma: no cover
 
     def decode_to_dict(self, html_page: HtmlPage) -> dict:
         return self._decode(html_page=html_page)
 
     @abstractmethod
     def _decode_to_object_hook(self, data: dict) -> object:
-        raise NotImplementedError()
+        raise NotImplementedError()  # pragma: no cover
 
     def decode_to_object(self, html_page: HtmlPage) -> object:
         data = self._decode(html_page=html_page)

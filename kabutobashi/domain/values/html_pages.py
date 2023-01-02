@@ -34,14 +34,14 @@ class IHtmlPageRepository(ABC):
 
     @abstractmethod
     def _html_page_read(self) -> HtmlPage:
-        raise NotImplementedError()
+        raise NotImplementedError()  # pragma: no cover
 
     def write(self, data: HtmlPage) -> NoReturn:
         self._html_page_write(data=data)
 
     @abstractmethod
     def _html_page_write(self, data: HtmlPage) -> NoReturn:
-        raise NotImplementedError()
+        raise NotImplementedError()  # pragma: no cover
 
 
 @dataclass(frozen=True)
@@ -81,7 +81,7 @@ class DecodedHtmlPage(ABC):
 
     @abstractmethod
     def _validate(self):
-        raise NotImplementedError()
+        raise NotImplementedError()  # pragma: no cover
 
 
 @dataclass(frozen=True)

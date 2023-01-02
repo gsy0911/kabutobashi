@@ -93,7 +93,15 @@ class TestStock:
 
 
 class TestStockSingleAggregate:
-    def test_pass(self, entity: pd.DataFrame):
+    def test_pass_init(self, entity: pd.DataFrame):
+        stock = kb.Stock.from_df(data=entity[entity["code"] == 1375])
+        _ = kb.StockCodeSingleAggregate.of(entity=stock)
+
+    def test_error_init(self, entity: pd.DataFrame):
+        with pytest.raises(KabutobashiEntityError):
+            _ = kb.StockCodeSingleAggregate.of(entity="")
+
+    def test_pass_methods(self, entity: pd.DataFrame):
         methods = kb.methods + [kb.basic, kb.pct_change, kb.volatility]
         agg = kb.StockCodeSingleAggregate.of(entity=entity, code="1375")
         estimated = agg.with_processed(methods=methods).with_estimated(stock_analysis=kb.stock_analysis)
@@ -107,3 +115,9 @@ class TestStockSingleAggregate:
         # check visualize multiple columns
         data_visualized = agg.visualize(kb.macd)
         assert data_visualized.fig
+
+    def test_error_methods(self, entity: pd.DataFrame):
+        methods = kb.methods + [kb.basic, kb.pct_change, kb.volatility]
+        agg = kb.StockCodeSingleAggregate.of(entity=entity, code="1375")
+        with pytest.raises(KabutobashiEntityError):
+            _ = agg.with_processed(methods=[""])

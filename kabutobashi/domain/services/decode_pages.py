@@ -66,7 +66,7 @@ class PageDecoder:
 class IHtmlDecoder(ABC):
     @abstractmethod
     def _decode(self, html_page: HtmlPage) -> dict:
-        raise NotImplementedError()
+        raise NotImplementedError()  # pragma: no cover
 
     def decode(self, html_page: HtmlPage) -> dict:
         return self._decode(html_page=html_page)

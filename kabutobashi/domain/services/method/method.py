@@ -92,7 +92,7 @@ class ProcessMethod(ABC):
 
     @abstractmethod
     def _apply(self, df: pd.DataFrame) -> pd.DataFrame:
-        raise NotImplementedError("please implement your code")
+        raise NotImplementedError("please implement your code")  # pragma: no cover
 
     def processed_columns(self) -> list:
         return self._processed_columns()
@@ -105,7 +105,7 @@ class ProcessMethod(ABC):
         Returns:
 
         """
-        raise NotImplementedError("please implement your code")
+        raise NotImplementedError("please implement your code")  # pragma: no cover
 
     def signal(self, df: pd.DataFrame) -> pd.DataFrame:
         """
@@ -121,7 +121,7 @@ class ProcessMethod(ABC):
 
     @abstractmethod
     def _signal(self, df: pd.DataFrame) -> pd.DataFrame:
-        raise NotImplementedError("please implement your code")
+        raise NotImplementedError("please implement your code")  # pragma: no cover
 
     @staticmethod
     def _cross(_s: pd.Series, to_plus_name=None, to_minus_name=None) -> pd.DataFrame:
@@ -178,7 +178,7 @@ class ProcessMethod(ABC):
 
     @abstractmethod
     def _parameterize(self, df_x: pd.DataFrame, df_p: pd.DataFrame) -> dict:
-        raise NotImplementedError("please implement your code")
+        raise NotImplementedError("please implement your code")  # pragma: no cover
 
     @staticmethod
     def _get_impact(df: pd.DataFrame, influence: int, tail: int) -> float:
@@ -213,14 +213,14 @@ class VisualizeMethod(ABC):
 
     @abstractmethod
     def _color_mapping(self) -> list:
-        raise NotImplementedError("please implement your code")
+        raise NotImplementedError("please implement your code")  # pragma: no cover
 
     def visualize_option(self) -> dict:
         return self._visualize_option()
 
     @abstractmethod
     def _visualize_option(self) -> dict:
-        raise NotImplementedError("please implement your code")
+        raise NotImplementedError("please implement your code")  # pragma: no cover
 
     @staticmethod
     def _add_ax_candlestick(ax, _df: pd.DataFrame):
