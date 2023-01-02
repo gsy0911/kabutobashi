@@ -22,8 +22,8 @@ from kabutobashi.domain.services.method import (
 )
 
 from .domain import errors
-from .domain.aggregates import IStockCodeSingleAggregateReadRepository, StockCodeSingleAggregate
-from .domain.entity import OPTIONAL_COL, REQUIRED_COL, StockBrand, StockIpo, StockRecord
+from .domain.aggregates import StockCodeSingleAggregate
+from .domain.entity import Stock, StockIpo
 from .domain.services import StockInfoMultipleDaysHtmlDecoder, StockIpoHtmlDecoder
 from .domain.values import (
     StockDataEstimated,
@@ -33,7 +33,6 @@ from .domain.values import (
     StockInfoMultipleDaysMainHtmlPage,
     StockInfoMultipleDaysSubHtmlPage,
     StockIpoHtmlPage,
-    StockRecordset,
     StockWeeks52HighLowHtmlPage,
 )
 from .example_data import example
@@ -42,8 +41,6 @@ from .infrastructure.repository import (
     StockInfoMultipleDaysMainHtmlPageRepository,
     StockInfoMultipleDaysSubHtmlPageRepository,
     StockIpoHtmlPageRepository,
-    StockRecordsetCrawler,
-    StockRecordsetStorageBasicRepository,
 )
 
 # n営業日前までの日付のリストを返す関数; 銘柄コードでイテレーションする関数; window幅でデータを取得しつつデータを返す関数; 株価の動きを様々な統計量で表現

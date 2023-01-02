@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
 
+import pandas as pd
+
 
 class IDictSerialize(ABC):
     @abstractmethod
@@ -20,4 +22,15 @@ class ICsvLineSerialize(ABC):
     @staticmethod
     @abstractmethod
     def from_line(data: str):
+        raise NotImplementedError()
+
+
+class IDfSerialize(ABC):
+    @abstractmethod
+    def to_df(self) -> pd.DataFrame:
+        raise NotImplementedError()
+
+    @staticmethod
+    @abstractmethod
+    def from_df(data: pd.DataFrame):
         raise NotImplementedError()

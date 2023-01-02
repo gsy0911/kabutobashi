@@ -53,12 +53,11 @@ graph TD;
 ```python
 import kabutobashi as kb
 
-records = kb.example()
+df = kb.example()
 methods = kb.methods + [kb.basic, kb.pct_change, kb.volatility]
 analysis = kb.stock_analysis
-for df in records.to_code_iterable():
-    agg = kb.StockCodeSingleAggregate.of(entity=df).with_processed(methods).with_estimated(stock_analysis=analysis)
-    print(agg)
+agg = kb.StockCodeSingleAggregate.of(entity=df, code="1234").with_processed(methods).with_estimated(stock_analysis=analysis)
+print(agg)
 
 # n日前までの営業日の日付リストを取得する関数
 target_date = "2020-01-01"
