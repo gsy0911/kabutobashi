@@ -17,7 +17,7 @@ class StockInfoMinkabuTopHtmlDecoder(IHtmlDecoder):
     Examples:
         >>> import kabutobashi as kb
         >>> # get single page
-        >>> page_html = kb.StockInfoHtmlPageRepository(code="0001", dt="2022-07-22").read()
+        >>> page_html = kb.StockInfoHtmlPageRepository(code="0001").read()
         >>> result = StockInfoMinkabuTopHtmlDecoder().decode_to_dict(page_html=page_html)
     """
 

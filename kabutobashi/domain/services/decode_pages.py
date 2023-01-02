@@ -112,7 +112,7 @@ class StockInfoMultipleDaysHtmlDecoder(IHtmlDecoder):
         >>> sub_html_page = kb.StockInfoMultipleDaysSubHtmlPageRepository(code=1375).read()
         >>> data = kb.StockInfoMultipleDaysHtmlDecoder(main_html_page, sub_html_page).decode()
         >>> df = pd.DataFrame(data)
-        >>> records = kb.StockRecordset.of(df)
+        >>> records = kb.Stock.from_df(df)
     """
 
     main_html_page: StockInfoMultipleDaysMainHtmlPage

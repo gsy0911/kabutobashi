@@ -21,13 +21,14 @@ class StockCodeSingleAggregate:
         >>> import kabutobashi as kb
         >>> import pandas as pd
         >>> data_list = []
-        >>> records = kb.example()
+        >>> df = kb.example()
         >>> methods = kb.methods + [kb.basic, kb.pct_change, kb.volatility]
         >>> stock_analysis = kb.stock_analysis
         >>>
-        >>> for df in records.to_code_iterable(until=1, row_more_than=80):
-        >>>     agg = kb.StockCodeSingleAggregate.of(entity=df).with_processed(methods).with_estimated(stock_analysis)
-        >>>     print(agg.weighted_estimated_value())
+        >>> agg = kb.StockCodeSingleAggregate.of(entity=df, code="1234")
+        >>>     .with_processed(methods)
+        >>>     .with_estimated(stock_analysis)
+        >>> print(agg.weighted_estimated_value())
     """
 
     code: str
