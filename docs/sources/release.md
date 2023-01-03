@@ -9,6 +9,8 @@
 - ENHANCEMENT: add `Stock`-Entity ([#144](https://github.com/gsy0911/kabutobashi/issues/144))
 - ENHANCEMENT: add `IpoPage`-ValueObject ([#145](https://github.com/gsy0911/kabutobashi/issues/145))
 - ENHANCEMENT: replace directory,files and docs ([#146](https://github.com/gsy0911/kabutobashi/issues/146))
+- ENHANCEMENT: add pplication using ``injection`` ([#147](https://github.com/gsy0911/kabutobashi/issues/147))
+- ENHANCEMENT: public utilities function ([#148](https://github.com/gsy0911/kabutobashi/issues/148))
 
 
 ## 0.5.2

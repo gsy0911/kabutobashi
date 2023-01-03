@@ -49,7 +49,7 @@ sa_volume = SaVolume()
 stock_analysis = [sa_fundamental, sa_volume]
 
 # comparable tuple
-VERSION = (0, 5, 2)
+VERSION = (0, 6, 0)
 # generate __version__ via VERSION tuple
 __version__ = ".".join(map(str, VERSION))
 
