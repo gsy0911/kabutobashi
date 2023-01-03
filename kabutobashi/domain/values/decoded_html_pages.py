@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from dataclasses import asdict, dataclass, field
 
-from kabutobashi.domain.entity.util import _convert_float
+from kabutobashi.utilities import convert_float
 from kabutobashi.domain.serialize import IDictSerialize
 
 
@@ -122,9 +122,9 @@ class StockIpo(DecodedHtmlPage, IDictSerialize):
             code=data["code"],
             manager=manager,
             stock_listing_at=stock_listing_at,
-            public_offering=_convert_float(public_offering),
+            public_offering=convert_float(public_offering),
             evaluation=evaluation,
-            initial_price=_convert_float(initial_price),
+            initial_price=convert_float(initial_price),
         )
 
     def to_dict(self) -> dict:
