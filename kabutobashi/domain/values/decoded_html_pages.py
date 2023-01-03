@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
 from dataclasses import asdict, dataclass, field
 
-from kabutobashi.utilities import convert_float
 from kabutobashi.domain.serialize import IDictSerialize
+from kabutobashi.utilities import convert_float
 
 
 @dataclass(frozen=True)

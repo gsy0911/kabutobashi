@@ -7,7 +7,6 @@ from pydantic import BaseModel, Field
 
 from kabutobashi.domain.errors import KabutobashiEntityError
 from kabutobashi.domain.serialize import ICsvLineSerialize, IDfSerialize, IDictSerialize
-
 from kabutobashi.utilities import convert_float, convert_int
 
 __all__ = ["StockBrand", "StockPriceRecord", "StockReferenceIndicator", "Stock"]
