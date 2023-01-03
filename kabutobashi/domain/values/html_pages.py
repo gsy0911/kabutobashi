@@ -67,6 +67,8 @@ class StockInfoMultipleDaysSubHtmlPage(HtmlPage):
 @dataclass(frozen=True)
 class DecodedHtmlPage(ABC):
     """
+    Model: ValueObject
+    JP: 変換済みHTML
     id: code & dt
     """
 
