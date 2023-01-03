@@ -33,23 +33,7 @@ class StockInfoMinkabuTopHtmlDecoder(IHtmlDecoder):
     """
 
     def _decode_to_object_hook(self, data: dict) -> StockInfoMinkabuTopPage:
-        return StockInfoMinkabuTopPage(
-            code=data["code"],
-            dt=data["dt"],
-            open=data["open"],
-            high=data["high"],
-            low=data["low"],
-            close=data["close"],
-            pbr=data["pbr"],
-            per=data["per"],
-            psr=data["psr"],
-            unit=data["unit"],
-            volume=data["volume"],
-            market=data["market"],
-            market_capitalization=data["market_capitalization"],
-            industry_type=data["industry_type"],
-            html=data["html"],
-        )
+        return StockInfoMinkabuTopPage.from_dict(data=data)
 
     def _decode(self, html_page: StockInfoHtmlPage) -> dict:
         soup = html_page.get_as_soup()
@@ -132,8 +116,12 @@ class StockIpoHtmlDecoder(IHtmlDecoder):
             whole_result.append(StockIpo.from_dict(data=table_body_dict).to_dict())
         return {"ipo_list": whole_result}
 
-    def _decode_to_object_hook(self, data: dict) -> object:
-        pass
+    def _decode_to_object_hook(self, data: dict) -> List[StockIpo]:
+        ipo_list = data["ipo_list"]
+        result_list = []
+        for v in ipo_list:
+            result_list.append(StockIpo.from_dict(data=v))
+        return result_list
 
 
 @dataclass(frozen=True)
