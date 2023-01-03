@@ -4,7 +4,16 @@ from datetime import datetime
 from logging import getLogger
 from typing import Dict, List, Union
 
-from kabutobashi.domain.values import StockInfoHtmlPage, StockInfoMinkabuTopPage
+import pandas as pd
+
+from kabutobashi.domain.values import (
+    StockInfoHtmlPage,
+    StockInfoMinkabuTopPage,
+    StockInfoMultipleDaysMainHtmlPage,
+    StockInfoMultipleDaysSubHtmlPage,
+    StockIpo,
+    StockIpoHtmlPage,
+)
 
 from .utils import IHtmlDecoder, PageDecoder
 
@@ -14,6 +23,8 @@ logger = getLogger(__name__)
 @dataclass(frozen=True)
 class StockInfoMinkabuTopHtmlDecoder(IHtmlDecoder):
     """
+    Model: Service(Implemented)
+
     Examples:
         >>> import kabutobashi as kb
         >>> # get single page
@@ -94,3 +105,88 @@ class StockInfoMinkabuTopHtmlDecoder(IHtmlDecoder):
         )
 
         return result
+
+
+@dataclass(frozen=True)
+class StockIpoHtmlDecoder(IHtmlDecoder):
+    """
+    Model: Service(Implemented)
+    """
+
+    def _decode(self, html_page: StockIpoHtmlPage) -> dict:
+        soup = html_page.get_as_soup()
+        table_content = soup.find("div", {"class": "tablewrap"})
+        table_thead = table_content.find("thead")
+        # headの取得
+        table_head_list = []
+        for th in table_thead.find_all("th"):
+            table_head_list.append(th.get_text())
+
+        # bodyの取得
+        table_tbody = table_content.find("tbody")
+        whole_result = []
+        for idx, tr in enumerate(table_tbody.find_all("tr")):
+            table_body_dict = {}
+            for header, td in zip(table_head_list, tr.find_all("td")):
+                table_body_dict[header] = td.get_text().replace("\n", "")
+            whole_result.append(StockIpo.from_dict(data=table_body_dict).to_dict())
+        return {"ipo_list": whole_result}
+
+    def _decode_to_object_hook(self, data: dict) -> object:
+        pass
+
+
+@dataclass(frozen=True)
+class StockInfoMultipleDaysHtmlDecoder(IHtmlDecoder):
+    """
+    Model: Service(Implemented)
+
+    Examples:
+        >>> import kabutobashi as kb
+        >>> main_html_page = kb.StockInfoMultipleDaysMainHtmlPageRepository(code=1375).read()
+        >>> sub_html_page = kb.StockInfoMultipleDaysSubHtmlPageRepository(code=1375).read()
+        >>> data = kb.StockInfoMultipleDaysHtmlDecoder(main_html_page, sub_html_page).decode()
+        >>> df = pd.DataFrame(data)
+        >>> records = kb.Stock.from_df(df)
+    """
+
+    main_html_page: StockInfoMultipleDaysMainHtmlPage
+    sub_html_page: StockInfoMultipleDaysSubHtmlPage
+
+    def _decode(self, html_page: StockIpoHtmlPage) -> dict:
+        result_1 = []
+        result_2 = []
+        main_soup = self.main_html_page.get_as_soup()
+        sub_soup = self.sub_html_page.get_as_soup()
+        stock_recordset_tag = "md_card md_box"
+
+        # ページの情報を取得
+        stock_recordset = main_soup.find("div", {"class": stock_recordset_tag})
+        mapping = {0: "dt", 1: "open", 2: "high", 3: "low", 4: "close", 5: "調整後終値", 6: "volume"}
+        for tr in stock_recordset.find_all("tr"):
+            tmp = {}
+            for idx, td in enumerate(tr.find_all("td")):
+                tmp.update({mapping[idx]: td.get_text()})
+            result_1.append(tmp)
+
+        # そのほかの情報
+        stock_board = sub_soup.find("div", {"class": "md_card md_box mzp"})
+        mapping2 = {0: "dt", 1: "psr", 2: "per", 3: "pbr", 4: "配当利回り(%)", 5: "close", 6: "調整後終値", 7: "volume"}
+        for tr in stock_board.find_all("tr"):
+            tmp = {}
+            for idx, td in enumerate(tr.find_all("td")):
+                tmp.update({mapping2[idx]: td.get_text()})
+            result_2.append(tmp)
+
+        df1 = pd.DataFrame(result_1).dropna()
+        df2 = pd.DataFrame(result_2).dropna()
+
+        df1 = df1[["dt", "open", "high", "low", "close"]]
+        df2 = df2[["dt", "psr", "per", "pbr", "volume"]]
+
+        df = pd.merge(df1, df2, on="dt")
+        df["code"] = self.main_html_page.code
+        return df.to_dict(orient="records")
+
+    def _decode_to_object_hook(self, data: dict) -> object:
+        pass

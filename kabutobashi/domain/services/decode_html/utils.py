@@ -52,6 +52,11 @@ class PageDecoder:
 
 @dataclass(frozen=True)  # type: ignore
 class IHtmlDecoder(ABC):
+    """
+    Model: Service(Interface)
+    JP: HTML変換サービス
+    """
+
     @abstractmethod
     def _decode(self, html_page: RawHtmlPage) -> dict:
         raise NotImplementedError()  # pragma: no cover
