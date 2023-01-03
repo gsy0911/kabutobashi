@@ -34,12 +34,6 @@ from .domain.values import (
     StockIpoHtmlPage,
 )
 from .example_data import example
-from .infrastructure.repository import (
-    StockInfoHtmlPageRepository,
-    StockInfoMultipleDaysMainHtmlPageRepository,
-    StockInfoMultipleDaysSubHtmlPageRepository,
-    StockIpoHtmlPageRepository,
-)
 
 # n営業日前までの日付のリストを返す関数; 銘柄コードでイテレーションする関数; window幅でデータを取得しつつデータを返す関数; 株価の動きを様々な統計量で表現
 from .utilities import get_past_n_days
