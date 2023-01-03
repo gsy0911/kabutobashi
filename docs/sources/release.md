@@ -1,5 +1,16 @@
 # Release Note
 
+## 0.6.0
+
+- ENHANCEMENT: modify codecov ([#135](https://github.com/gsy0911/kabutobashi/issues/135))
+- ENHANCEMENT: add Serialize-method ([#136](https://github.com/gsy0911/kabutobashi/issues/136))
+- ENHANCEMENT: add `Html`-decoded-ValueObject ([#138](https://github.com/gsy0911/kabutobashi/issues/138))
+- ENHANCEMENT: remove `52WeeksHighLow` related ([#143](https://github.com/gsy0911/kabutobashi/issues/143))
+- ENHANCEMENT: add `Stock`-Entity ([#144](https://github.com/gsy0911/kabutobashi/issues/144))
+- ENHANCEMENT: add `IpoPage`-ValueObject ([#145](https://github.com/gsy0911/kabutobashi/issues/145))
+- ENHANCEMENT: replace directory,files and docs ([#146](https://github.com/gsy0911/kabutobashi/issues/146))
+
+
 ## 0.5.2
 
 - ENHANCEMENT: modify `get_impact()` ([#133](https://github.com/gsy0911/kabutobashi/issues/133))
