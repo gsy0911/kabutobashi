@@ -14,36 +14,51 @@
 
 class-relationship.
 
+- `E`: Entity
+- `VO`: ValueObject
+- `S`: Service
+- `A`: Aggregate
+
 ```mermaid
 graph TD;
-  subgraph Aggregates
-    aggregate[StockCodeSingleAggregate]
-    aggregate --- recordset_single
-    aggregate --- |Method| processed
-    aggregate --- |Analysis| estimated
-     
-    subgraph ValueObject
-      recordset_single[StockRecordset/single]
-      processed[StockDataProcessed]
-      estimated[StockDataEstimated]
-    end
-  end
   
-  subgraph Entities
-    recordset[StockRecordset/multiple]
-    brand[StockBrand]
-    record[StockRecord]
+  subgraph Stock
+    stock[Stock:E]
+    brand[StockBrand:E]
+    record[StockRecord:E]
+    indicator[StockIndicator:E]
     
-    recordset --> brand
-    recordset --> record
-    recordset ---> aggregate
+    stock --> brand
+    stock --> record
+    stock --> indicator
   end
 
-  subgraph Repositories
-    web[[Web]] --- | crawl | recordset
-    repositories[(Storage/Database)] --- | read/write | recordset
+  subgraph Stock-to-Analysis
+    aggregate[StockCodeSingleAggregate:A]
+    processed[StockDataProcessed:VO]
+    estimated[StockDataEstimated:VO]
     
-    repositories --- | read/write | aggregate
+    aggregate --- |Info| stock
+    aggregate --- |Method| processed
+    aggregate --- |Analysis| estimated
+  end
+
+  subgraph Repositories/Storage
+    repositories[(Storage/Database)] --- | read/write | stock
+  end
+
+  subgraph Pages
+    raw_html[RawHtml:VO]
+    decoder[Decoder:S]
+    decoded_html[DecodedHtml:VO]
+
+    raw_html --> decoder
+    decoder --> decoded_html
+    decoded_html --> repositories
+  end
+
+  subgraph Repositories/Web
+    web[[Web]] --> | crawl | raw_html
   end
 ```
 

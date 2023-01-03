@@ -270,6 +270,11 @@ class StockReferenceIndicator(BaseModel, IDictSerialize, ICsvLineSerialize):
 
 
 class Stock(BaseModel, IDfSerialize):
+    """
+    Model: Entity
+    JP: 株
+    """
+
     code: str = Field(description="銘柄コード")
     brand: StockBrand = Field(description="銘柄情報")
     daily_price_records: List[StockPriceRecord] = Field(description="日次株価記録", repr=False)
