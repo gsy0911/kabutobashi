@@ -33,23 +33,7 @@ class StockInfoMinkabuTopHtmlDecoder(IHtmlDecoder):
     """
 
     def _decode_to_object_hook(self, data: dict) -> StockInfoMinkabuTopPage:
-        return StockInfoMinkabuTopPage(
-            code=data["code"],
-            dt=data["dt"],
-            open=data["open"],
-            high=data["high"],
-            low=data["low"],
-            close=data["close"],
-            pbr=data["pbr"],
-            per=data["per"],
-            psr=data["psr"],
-            unit=data["unit"],
-            volume=data["volume"],
-            market=data["market"],
-            market_capitalization=data["market_capitalization"],
-            industry_type=data["industry_type"],
-            html=data["html"],
-        )
+        return StockInfoMinkabuTopPage.from_dict(data=data)
 
     def _decode(self, html_page: StockInfoHtmlPage) -> dict:
         soup = html_page.get_as_soup()

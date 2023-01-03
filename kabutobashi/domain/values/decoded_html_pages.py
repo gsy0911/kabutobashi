@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from dataclasses import asdict, dataclass, field
 
 from kabutobashi.domain.entity.util import _convert_float
+from kabutobashi.domain.serialize import IDictSerialize
 
 
 @dataclass(frozen=True)
@@ -21,7 +22,7 @@ class DecodedHtmlPage(ABC):
 
 
 @dataclass(frozen=True)
-class StockInfoMinkabuTopPage(DecodedHtmlPage):
+class StockInfoMinkabuTopPage(DecodedHtmlPage, IDictSerialize):
     code: str
     dt: str
     industry_type: str
@@ -47,9 +48,34 @@ class StockInfoMinkabuTopPage(DecodedHtmlPage):
             return True
         return False
 
+    def to_dict(self) -> dict:
+        data = asdict(self)
+        del data["html"]
+        return data
+
+    @staticmethod
+    def from_dict(data: dict) -> "StockInfoMinkabuTopPage":
+        return StockInfoMinkabuTopPage(
+            code=data["code"],
+            dt=data["dt"],
+            open=data["open"],
+            high=data["high"],
+            low=data["low"],
+            close=data["close"],
+            pbr=data["pbr"],
+            per=data["per"],
+            psr=data["psr"],
+            unit=data["unit"],
+            volume=data["volume"],
+            market=data["market"],
+            market_capitalization=data["market_capitalization"],
+            industry_type=data["industry_type"],
+            html=data["html"],
+        )
+
 
 @dataclass(frozen=True)
-class StockIpo(DecodedHtmlPage):
+class StockIpo(DecodedHtmlPage, IDictSerialize):
     code: str = field(metadata={"jp": "銘柄コード"})
     manager: str = field(metadata={"jp": "主幹"})
     stock_listing_at: str = field(metadata={"jp": "上場日"})
