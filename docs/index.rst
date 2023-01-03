@@ -118,10 +118,9 @@ Get Japanese-Stock-Market info.
 .. code-block:: python
 
     import kabutobashi as kb
-    code_list = [...]
-    dt = "%Y-%m-%d"
-    recordset = kb.StockRecordsetCrawler(code_list=code_list, dt=dt).read()
-    
+    stock_info = kb.crawl_info(code="1234")
+    ipo_info = kb.crawl_ipo(year="2022")
+
 
 Analysis
 --------
@@ -130,11 +129,9 @@ Analysis
 
     import kabutobashi as kb
 
-    file_path_list = [...]
-    recordset = kb.StockRecordsetStorageBasicRepository(path_candidate=file_path_list).read()
-    for recordset in recordset.to_code_iterable():
-        processed = recordset.to_processed(methods=kb.methods)
-        print(processed.get_impact())
+    df = kb.example()
+    StockCodeSingleAggregate.of(entity=df, code=1375).to_processed(kb.methods)
+    print(processed.get_impact())
 
 
 
@@ -147,8 +144,8 @@ You can use, but Not Completed Yet.
 .. code-block:: python
 
     import kabutobashi as kb
-    recordset = kb.example()
-    sdp = recordset.to_single_code(code=1375).to_processed([kb.sma, kb.macd])
+    df = kb.example()
+    sdp = StockCodeSingleAggregate.of(entity=df, code=1375).to_processed([kb.sma, kb.macd])
     sdp.visualize()
 
 
