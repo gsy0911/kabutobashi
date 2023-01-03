@@ -1,5 +1,5 @@
 import kabutobashi as kb
-from kabutobashi.domain.services.decode_html import StockInfoMinkabuTopHtmlDecoder
+from kabutobashi.domain.services.decode_html import StockInfoMinkabuTopHtmlDecoder, StockIpoHtmlDecoder
 from kabutobashi.domain.values import StockInfoMinkabuTopPage
 from kabutobashi.infrastructure.repository import StockInfoHtmlPageRepository
 
@@ -18,6 +18,6 @@ def test_crawl_page_detail():
 
 def test_crawl_ipo_list():
     html_page = kb.StockIpoHtmlPageRepository(year="2019").read()
-    result = kb.StockIpoHtmlDecoder().decode(html_page=html_page)
+    result = StockIpoHtmlDecoder().decode_to_dict(html_page=html_page)
     assert result is not None
     assert type(result) is dict

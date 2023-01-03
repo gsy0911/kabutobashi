@@ -1,72 +1,14 @@
 from abc import ABC, abstractmethod
 from dataclasses import asdict, dataclass, field
-from typing import NoReturn, Union
-
-from bs4 import BeautifulSoup
 
 from kabutobashi.domain.entity.util import _convert_float
 
 
 @dataclass(frozen=True)
-class HtmlPage:
-    """
-    id: code & dt
-    """
-
-    html: str = field(repr=False)
-    page_type: str
-    url: str
-
-    def __post_init__(self):
-        assert self.page_type in ["info", "info_multiple", "ipo", "weeks_52_high_low"]
-
-    def get_as_soup(self) -> BeautifulSoup:
-        return BeautifulSoup(self.html, features="lxml")
-
-
-class IHtmlPageRepository(ABC):
-    def read(self) -> HtmlPage:
-        html_page = self._html_page_read()
-        return self._read_hook(html_page=html_page)
-
-    def _read_hook(self, html_page: HtmlPage) -> HtmlPage:
-        return html_page
-
-    @abstractmethod
-    def _html_page_read(self) -> HtmlPage:
-        raise NotImplementedError()  # pragma: no cover
-
-    def write(self, data: HtmlPage) -> NoReturn:
-        self._html_page_write(data=data)
-
-    @abstractmethod
-    def _html_page_write(self, data: HtmlPage) -> NoReturn:
-        raise NotImplementedError()  # pragma: no cover
-
-
-@dataclass(frozen=True)
-class StockInfoHtmlPage(HtmlPage):
-    code: Union[int, str]
-
-
-@dataclass(frozen=True)
-class StockIpoHtmlPage(HtmlPage):
-    year: str
-
-
-@dataclass(frozen=True)
-class StockInfoMultipleDaysMainHtmlPage(HtmlPage):
-    code: Union[int, str]
-
-
-@dataclass(frozen=True)
-class StockInfoMultipleDaysSubHtmlPage(HtmlPage):
-    code: Union[int, str]
-
-
-@dataclass(frozen=True)
 class DecodedHtmlPage(ABC):
     """
+    Model: ValueObject
+    JP: 変換済みHTML
     id: code & dt
     """
 

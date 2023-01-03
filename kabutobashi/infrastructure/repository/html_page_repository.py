@@ -3,7 +3,7 @@ from typing import NoReturn, Union
 import requests  # type: ignore
 
 from kabutobashi.domain.errors import KabutobashiPageError
-from kabutobashi.domain.values import HtmlPage, IHtmlPageRepository, StockInfoHtmlPage, StockIpoHtmlPage, UserAgent
+from kabutobashi.domain.values import IHtmlPageRepository, RawHtmlPage, StockInfoHtmlPage, StockIpoHtmlPage, UserAgent
 
 __all__ = [
     "HtmlPageBasicRepository",
@@ -20,7 +20,7 @@ class HtmlPageBasicRepository(IHtmlPageRepository):
         self.page_type = page_type
 
     @staticmethod
-    def from_url(url: str, page_type: str) -> "HtmlPage":
+    def from_url(url: str, page_type: str) -> "RawHtmlPage":
         """
         requestsを使って、webからhtmlを取得する
         """
@@ -32,15 +32,15 @@ class HtmlPageBasicRepository(IHtmlPageRepository):
 
         # 日本語に対応
         r.encoding = r.apparent_encoding
-        return HtmlPage(html=r.text, page_type=page_type, url=url)
+        return RawHtmlPage(html=r.text, page_type=page_type, url=url)
 
-    def _html_page_read(self) -> HtmlPage:
+    def _html_page_read(self) -> RawHtmlPage:
         return self.from_url(url=self.url, page_type=self.page_type)
 
-    def _read_hook(self, html_page: HtmlPage) -> HtmlPage:
+    def _read_hook(self, html_page: RawHtmlPage) -> RawHtmlPage:
         return html_page
 
-    def _html_page_write(self, data: HtmlPage) -> NoReturn:
+    def _html_page_write(self, data: RawHtmlPage) -> NoReturn:
         pass
 
 
@@ -49,7 +49,7 @@ class StockInfoHtmlPageRepository(HtmlPageBasicRepository):
         super().__init__(page_type="info", url=f"https://minkabu.jp/stock/{code}")
         self.code = code
 
-    def _read_hook(self, html_page: HtmlPage) -> StockInfoHtmlPage:
+    def _read_hook(self, html_page: RawHtmlPage) -> StockInfoHtmlPage:
         return StockInfoHtmlPage(code=self.code, html=html_page.html, page_type=self.page_type, url=self.url)
 
 
@@ -58,7 +58,7 @@ class StockIpoHtmlPageRepository(HtmlPageBasicRepository):
         super().__init__(page_type="ipo", url=f"https://96ut.com/ipo/list.php?year={year}")
         self.year = year
 
-    def _read_hook(self, html_page: HtmlPage) -> StockIpoHtmlPage:
+    def _read_hook(self, html_page: RawHtmlPage) -> StockIpoHtmlPage:
         return StockIpoHtmlPage(html=html_page.html, page_type=self.page_type, url=self.url, year=self.year)
 
 
@@ -75,8 +75,8 @@ class StockInfoMultipleDaysSubHtmlPageRepository(HtmlPageBasicRepository):
 
 
 class HtmlPageStorageRepository(IHtmlPageRepository):
-    def _html_page_read(self) -> HtmlPage:
+    def _html_page_read(self) -> RawHtmlPage:
         pass
 
-    def _html_page_write(self, data: HtmlPage) -> NoReturn:
+    def _html_page_write(self, data: RawHtmlPage) -> NoReturn:
         pass

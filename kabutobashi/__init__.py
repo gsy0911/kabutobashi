@@ -1,5 +1,3 @@
-# import seaborn as sns
-
 # import errors
 from kabutobashi.domain.services import SaFundamental, SaVolume, StockAnalysis
 
@@ -24,7 +22,6 @@ from kabutobashi.domain.services.method import (
 from .domain import errors
 from .domain.aggregates import StockCodeSingleAggregate
 from .domain.entity import Stock
-from .domain.services import StockInfoMultipleDaysHtmlDecoder, StockIpoHtmlDecoder
 from .domain.values import (
     StockDataEstimated,
     StockDataProcessed,

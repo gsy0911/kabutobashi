@@ -15,7 +15,8 @@ __all__ = ["StockBrand", "StockPriceRecord", "StockReferenceIndicator", "Stock"]
 
 class StockBrand(BaseModel, IDictSerialize):
     """
-    StockBrand: entity
+    Model: Entity
+    JP: 銘柄
     """
 
     id: int = Field(description="id")
@@ -91,7 +92,8 @@ class StockBrand(BaseModel, IDictSerialize):
 
 class StockPriceRecord(BaseModel, IDictSerialize, ICsvLineSerialize, IDfSerialize):
     """
-    StockRecord: entity
+    Model: Entity
+    JP: 日次株価
     """
 
     id: int = Field(description="id")
@@ -210,6 +212,11 @@ class StockPriceRecord(BaseModel, IDictSerialize, ICsvLineSerialize, IDfSerializ
 
 
 class StockReferenceIndicator(BaseModel, IDictSerialize, ICsvLineSerialize):
+    """
+    Model: Entity
+    JP: 参考指標
+    """
+
     id: Optional[int]
     code: str = Field(description="銘柄コード")
     dt: str = Field(description="日付")
@@ -263,6 +270,11 @@ class StockReferenceIndicator(BaseModel, IDictSerialize, ICsvLineSerialize):
 
 
 class Stock(BaseModel, IDfSerialize):
+    """
+    Model: Entity
+    JP: 株
+    """
+
     code: str = Field(description="銘柄コード")
     brand: StockBrand = Field(description="銘柄情報")
     daily_price_records: List[StockPriceRecord] = Field(description="日次株価記録", repr=False)

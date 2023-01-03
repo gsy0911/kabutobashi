@@ -6,7 +6,7 @@ from typing import List, Optional, Union
 
 from bs4 import BeautifulSoup
 
-from kabutobashi.domain.values import HtmlPage
+from kabutobashi.domain.values import RawHtmlPage
 
 logger = getLogger(__name__)
 __all__ = ["IHtmlDecoder", "PageDecoder"]
@@ -52,17 +52,22 @@ class PageDecoder:
 
 @dataclass(frozen=True)  # type: ignore
 class IHtmlDecoder(ABC):
+    """
+    Model: Service(Interface)
+    JP: HTML変換サービス
+    """
+
     @abstractmethod
-    def _decode(self, html_page: HtmlPage) -> dict:
+    def _decode(self, html_page: RawHtmlPage) -> dict:
         raise NotImplementedError()  # pragma: no cover
 
-    def decode_to_dict(self, html_page: HtmlPage) -> dict:
+    def decode_to_dict(self, html_page: RawHtmlPage) -> dict:
         return self._decode(html_page=html_page)
 
     @abstractmethod
     def _decode_to_object_hook(self, data: dict) -> object:
         raise NotImplementedError()  # pragma: no cover
 
-    def decode_to_object(self, html_page: HtmlPage) -> object:
+    def decode_to_object(self, html_page: RawHtmlPage) -> object:
         data = self._decode(html_page=html_page)
         return self._decode_to_object_hook(data=data)
