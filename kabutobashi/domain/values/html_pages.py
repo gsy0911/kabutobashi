@@ -8,9 +8,10 @@ from kabutobashi.domain.entity.util import _convert_float
 
 
 @dataclass(frozen=True)
-class HtmlPage:
+class RawHtmlPage:
     """
-    id: code & dt
+    Model: ValueObject
+    JP: 変換対象HTML
     """
 
     html: str = field(repr=False)
@@ -25,42 +26,42 @@ class HtmlPage:
 
 
 class IHtmlPageRepository(ABC):
-    def read(self) -> HtmlPage:
+    def read(self) -> RawHtmlPage:
         html_page = self._html_page_read()
         return self._read_hook(html_page=html_page)
 
-    def _read_hook(self, html_page: HtmlPage) -> HtmlPage:
+    def _read_hook(self, html_page: RawHtmlPage) -> RawHtmlPage:
         return html_page
 
     @abstractmethod
-    def _html_page_read(self) -> HtmlPage:
+    def _html_page_read(self) -> RawHtmlPage:
         raise NotImplementedError()  # pragma: no cover
 
-    def write(self, data: HtmlPage) -> NoReturn:
+    def write(self, data: RawHtmlPage) -> NoReturn:
         self._html_page_write(data=data)
 
     @abstractmethod
-    def _html_page_write(self, data: HtmlPage) -> NoReturn:
+    def _html_page_write(self, data: RawHtmlPage) -> NoReturn:
         raise NotImplementedError()  # pragma: no cover
 
 
 @dataclass(frozen=True)
-class StockInfoHtmlPage(HtmlPage):
+class StockInfoHtmlPage(RawHtmlPage):
     code: Union[int, str]
 
 
 @dataclass(frozen=True)
-class StockIpoHtmlPage(HtmlPage):
+class StockIpoHtmlPage(RawHtmlPage):
     year: str
 
 
 @dataclass(frozen=True)
-class StockInfoMultipleDaysMainHtmlPage(HtmlPage):
+class StockInfoMultipleDaysMainHtmlPage(RawHtmlPage):
     code: Union[int, str]
 
 
 @dataclass(frozen=True)
-class StockInfoMultipleDaysSubHtmlPage(HtmlPage):
+class StockInfoMultipleDaysSubHtmlPage(RawHtmlPage):
     code: Union[int, str]
 
 

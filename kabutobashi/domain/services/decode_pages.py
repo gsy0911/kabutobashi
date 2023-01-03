@@ -8,7 +8,7 @@ import pandas as pd
 from bs4 import BeautifulSoup
 
 from kabutobashi.domain.values import (
-    HtmlPage,
+    RawHtmlPage,
     StockInfoMultipleDaysMainHtmlPage,
     StockInfoMultipleDaysSubHtmlPage,
     StockIpo,
@@ -65,10 +65,10 @@ class PageDecoder:
 @dataclass(frozen=True)  # type: ignore
 class IHtmlDecoder(ABC):
     @abstractmethod
-    def _decode(self, html_page: HtmlPage) -> dict:
+    def _decode(self, html_page: RawHtmlPage) -> dict:
         raise NotImplementedError()  # pragma: no cover
 
-    def decode(self, html_page: HtmlPage) -> dict:
+    def decode(self, html_page: RawHtmlPage) -> dict:
         return self._decode(html_page=html_page)
 
     # @abstractmethod

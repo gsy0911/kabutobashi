@@ -1,6 +1,6 @@
 from .html_pages import (
-    HtmlPage,
     IHtmlPageRepository,
+    RawHtmlPage,
     StockInfoHtmlPage,
     StockInfoMinkabuTopPage,
     StockInfoMultipleDaysMainHtmlPage,
