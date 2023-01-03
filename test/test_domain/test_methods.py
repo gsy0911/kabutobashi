@@ -5,12 +5,12 @@ import kabutobashi as kb
 
 @pytest.fixture(scope="module", autouse=True)
 def stock_agg() -> kb.StockCodeSingleAggregate:
-    records = kb.example()
-    yield kb.StockCodeSingleAggregate.of(entity=records, code="1375")
+    df = kb.example()
+    yield kb.StockCodeSingleAggregate.of(entity=df, code="1375")
 
 
 def test_example_data(stock_agg):
-    columns = stock_agg.single_recordset.to_df().columns
+    columns = stock_agg.stock.to_df().columns
     assert "dt" in columns
     assert "open" in columns
     assert "close" in columns

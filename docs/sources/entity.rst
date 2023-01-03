@@ -5,20 +5,11 @@ crawling
 .. autoclass:: kabutobashi.StockIpo
    :members:
 
-.. autoclass:: kabutobashi.Weeks52HighLow
-   :members:
-
 
 basement
 ========
 
-.. autoclass:: kabutobashi.StockBrand
-   :members:
-
-.. autoclass:: kabutobashi.StockRecord
-   :members:
-
-.. autoclass:: kabutobashi.StockRecordset
+.. autoclass:: kabutobashi.Stock
    :members:
 
 

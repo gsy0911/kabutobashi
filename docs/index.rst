@@ -59,37 +59,51 @@ Installation
 Concept
 =======
 
+- ``E``: Entity
+- ``VO``: ValueObject
+- ``S``: Service
+- ``A``: Aggregate
+
 .. mermaid::
 
    graph TD;
-     subgraph Aggregates
-       aggregate[StockCodeSingleAggregate]
-       aggregate --- recordset_single
+     subgraph Stock
+       stock[Stock:E]
+       brand[StockBrand:E]
+       record[StockRecord:E]
+       indicator[StockIndicator:E]
+
+       stock --> brand
+       stock --> record
+       stock --> indicator
+     end
+
+     subgraph Stock-to-Analysis
+       aggregate[StockCodeSingleAggregate:A]
+       processed[StockDataProcessed:VO]
+       estimated[StockDataEstimated:VO]
+
+       aggregate --- |Info| stock
        aggregate --- |Method| processed
        aggregate --- |Analysis| estimated
-
-       subgraph ValueObject
-         recordset_single[StockRecordset/single]
-         processed[StockDataProcessed]
-         estimated[StockDataEstimated]
-       end
      end
 
-     subgraph Entities
-       recordset[StockRecordset/multiple]
-       brand[StockBrand]
-       record[StockRecord]
-
-       recordset --> brand
-       recordset --> record
-       recordset ---> aggregate
+     subgraph Repositories/Storage
+       repositories[(Storage/Database)] --- | read/write | stock
      end
 
-     subgraph Repositories
-       web[[Web]] --- | crawl | recordset
-       repositories[(Storage/Database)] --- | read/write | recordset
+     subgraph Pages
+       raw_html[RawHtml:VO]
+       decoder[Decoder:S]
+       decoded_html[DecodedHtml:VO]
 
-       repositories --- | read/write | aggregate
+       raw_html --> decoder
+       decoder --> decoded_html
+       decoded_html --> repositories
+     end
+
+     subgraph Repositories/Web
+       web[[Web]] --> | crawl | raw_html
      end
 
 
@@ -104,10 +118,9 @@ Get Japanese-Stock-Market info.
 .. code-block:: python
 
     import kabutobashi as kb
-    code_list = [...]
-    dt = "%Y-%m-%d"
-    recordset = kb.StockRecordsetCrawler(code_list=code_list, dt=dt).read()
-    
+    stock_info = kb.crawl_info(code="1234")
+    ipo_info = kb.crawl_ipo(year="2022")
+
 
 Analysis
 --------
@@ -116,11 +129,9 @@ Analysis
 
     import kabutobashi as kb
 
-    file_path_list = [...]
-    recordset = kb.StockRecordsetStorageBasicRepository(path_candidate=file_path_list).read()
-    for recordset in recordset.to_code_iterable():
-        processed = recordset.to_processed(methods=kb.methods)
-        print(processed.get_impact())
+    df = kb.example()
+    StockCodeSingleAggregate.of(entity=df, code=1375).to_processed(kb.methods)
+    print(processed.get_impact())
 
 
 
@@ -133,8 +144,8 @@ You can use, but Not Completed Yet.
 .. code-block:: python
 
     import kabutobashi as kb
-    recordset = kb.example()
-    sdp = recordset.to_single_code(code=1375).to_processed([kb.sma, kb.macd])
+    df = kb.example()
+    sdp = StockCodeSingleAggregate.of(entity=df, code=1375).to_processed([kb.sma, kb.macd])
     sdp.visualize()
 
 

@@ -1,113 +1,109 @@
+import pandas as pd
 import pydantic
 import pytest
 
 import kabutobashi as kb
+from kabutobashi.domain.entity.stock import StockBrand, StockPriceRecord, StockReferenceIndicator
 from kabutobashi.domain.errors import KabutobashiEntityError
 
 
 @pytest.fixture(scope="module", autouse=True)
-def example_records() -> kb.StockRecordset:
+def entity() -> pd.DataFrame:
     yield kb.example()
 
 
 class TestStockBrand:
     def test_error_init(self):
+        # type-error
         with pytest.raises(pydantic.ValidationError):
-            _ = kb.StockBrand(
+            _ = StockBrand(
                 id=None,
                 code="1234",
-                market="",
-                name="",
+                market="東証",
+                name="例",
                 unit="",
                 market_capitalization="",
                 industry_type="",
                 issued_shares="",
             )
 
+    def test_init(self):
+        brand = StockBrand(
+            id=None,
+            code="1234",
+            market="東証",
+            name="例",
+            unit=100,
+            market_capitalization="",
+            industry_type="",
+            issued_shares="",
+        )
+        brand_dict = brand.to_dict()
+        assert type(brand_dict) == dict
+        assert brand_dict["code"] == "1234"
+        assert brand_dict["market"] == "東証"
+        assert brand_dict["name"] == "例"
+        assert brand_dict["unit"] == 100
+
 
 class TestStockRecord:
-    def test_error_init(self):
-        with pytest.raises(pydantic.ValidationError):
-            _ = kb.StockRecord(
-                id=None,
-                code="1234",
-                open="",
-                high="",
-                low="",
-                close="",
-                psr="",
-                per="",
-                pbr="",
-                volume="",
-                dt="",
-                is_delisting=False,
-            )
+    def test_pass_init(self):
+        _ = StockPriceRecord(
+            id=None,
+            code="1234",
+            open=0,
+            high=0,
+            low=0,
+            close=0,
+            volume=0,
+            dt="",
+        )
+
+
+class TestStockReferenceIndicator:
+    def test_pass_init(self):
+        _ = StockReferenceIndicator(id=0, code="1234", dt="2023-01-01", pbr=0, psr=0, per=0)
+        _ = StockReferenceIndicator.from_dict(
+            {"id": 0, "code": "1234", "dt": "2023-01-01", "pbr": 0, "psr": 0, "per": 0}
+        )
+        _ = StockReferenceIndicator.from_line("id=0,code=1234,dt=2023-01-01,pbr=0,psr=0,per=0")
 
 
 class TestStockIpo:
-    def test_error_init(self):
-        with pytest.raises(pydantic.ValidationError):
-            _ = kb.StockIpo(
-                id=None, code="", manager="", stock_listing_at="", public_offering="", evaluation="", initial_price=""
-            )
+    def test_pass_init(self):
+        _ = kb.StockIpo(code="", manager="", stock_listing_at="", public_offering=0, evaluation="", initial_price=0)
 
 
-class TestWeeks52HihLow:
-    def test_error_init(self):
-        with pytest.raises(pydantic.ValidationError):
-            _ = kb.Weeks52HighLow(
-                code="", brand_name="", close="", buy_or_sell="", volatility_ratio="", volatility_value=""
-            )
-
-
-class TestStockRecordset:
-    def test_code_iterable(self, example_records: kb.StockRecordset):
-        for _ in example_records.to_code_iterable(until=1):
-            pass
-
-    def test_multiple_code_error(self, example_records: kb.StockRecordset):
+class TestStock:
+    def test_df_error(self, entity: pd.DataFrame):
         with pytest.raises(KabutobashiEntityError):
-            _ = example_records.get_single_code_recordset_status()
+            _ = kb.Stock.from_df(data=entity)
 
-    def test_invalid_column_error(self, example_records: kb.StockRecordset):
-        # check invalid column
-        with pytest.raises(KabutobashiEntityError):
-            _ = kb.StockRecordset.of(df=example_records.to_df()[["close"]])
-
-    def test_get_df(self, example_records: kb.StockRecordset):
-        records = example_records.to_single_code(code="1375")
-
-        required_cols = ["code", "open", "close", "high", "low", "volume", "per", "psr", "pbr", "dt"]
-        optional_cols = ["name", "industry_type", "market", "unit"]
-
-        # check minimum df
-        minimum_df = records.to_df()
-        assert all([(c in minimum_df.columns) for c in required_cols])
-        assert all([(c not in minimum_df.columns) for c in optional_cols])
-
-        # check full df
-        full_df = records.to_df(minimum=False)
-        assert all([(c in full_df.columns) for c in required_cols])
-        assert all([(c in full_df.columns) for c in optional_cols])
-
-        latest_date_df = records.to_df(latest=True)
-        assert len(latest_date_df.index) == 1
-
-        status = records.get_single_code_recordset_status()
-        assert status.code == "1375"
-        assert not status.is_delisting
-
-        # intended
-        delisting_records = example_records.to_single_code(code="9268")
-        status = delisting_records.get_single_code_recordset_status()
-        assert status.code == "9268"
-        assert status.is_delisting
+    def test_df_pass(self, entity: pd.DataFrame):
+        stock = kb.Stock.from_df(data=entity[entity["code"] == 1375])
+        stock_df = stock.to_df(add_brand=True)
+        stock_df_columns = stock_df.columns
+        assert "industry_type" in stock_df_columns
+        assert "market" in stock_df_columns
+        assert "name" in stock_df_columns
+        assert "is_delisting" in stock_df_columns
+        assert "pbr" in stock_df_columns
+        assert "per" in stock_df_columns
+        assert "psr" in stock_df_columns
 
 
 class TestStockSingleAggregate:
-    def test_pass(self, example_records: kb.StockRecordset):
+    def test_pass_init(self, entity: pd.DataFrame):
+        stock = kb.Stock.from_df(data=entity[entity["code"] == 1375])
+        _ = kb.StockCodeSingleAggregate.of(entity=stock)
+
+    def test_error_init(self, entity: pd.DataFrame):
+        with pytest.raises(KabutobashiEntityError):
+            _ = kb.StockCodeSingleAggregate.of(entity="")
+
+    def test_pass_methods(self, entity: pd.DataFrame):
         methods = kb.methods + [kb.basic, kb.pct_change, kb.volatility]
-        agg = kb.StockCodeSingleAggregate.of(entity=example_records, code="1375")
+        agg = kb.StockCodeSingleAggregate.of(entity=entity, code="1375")
         estimated = agg.with_processed(methods=methods).with_estimated(stock_analysis=kb.stock_analysis)
         value = estimated.weighted_estimated_value({"fundamental": 1.0, "volume": 1.0})
         assert value != 0
@@ -119,3 +115,9 @@ class TestStockSingleAggregate:
         # check visualize multiple columns
         data_visualized = agg.visualize(kb.macd)
         assert data_visualized.fig
+
+    def test_error_methods(self, entity: pd.DataFrame):
+        methods = kb.methods + [kb.basic, kb.pct_change, kb.volatility]
+        agg = kb.StockCodeSingleAggregate.of(entity=entity, code="1375")
+        with pytest.raises(KabutobashiEntityError):
+            _ = agg.with_processed(methods=[""])

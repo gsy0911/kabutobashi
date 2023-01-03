@@ -1,8 +1,9 @@
 from datetime import datetime, timedelta
+from typing import Union
 
 import jpholiday
 
-from kabutobashi.domain.errors import KabutobashiBaseError
+from kabutobashi.domain.errors import KabutobashiBaseError, KabutobashiEntityError
 
 
 def get_past_n_days(current_date: str, n: int = 60) -> list:
@@ -46,9 +47,42 @@ def _get_past_n_days(current_date: str, n: int, multiply: int) -> list:
     return list(map(lambda x: x.strftime("%Y-%m-%d"), filter_holiday[:n]))
 
 
-def filter_weekday(date_list: list) -> list:
-    def _check_weekday(date: str):
-        d = datetime.strptime(date, "%Y-%m-%d")
-        return d.weekday() < 5 and not jpholiday.is_holiday(d)
+def replace(input_value: str) -> str:
+    if input_value == "-":
+        return "0"
+    elif input_value == "":
+        return "0"
+    return input_value.replace("---", "0").replace("円", "").replace("株", "").replace("倍", "").replace(",", "")
 
-    return [d for d in date_list if _check_weekday(date=d)]
+
+def convert_float(input_value: Union[str, float, int]) -> float:
+    if type(input_value) is float:
+        return input_value
+    elif type(input_value) is int:
+        return float(input_value)
+    elif type(input_value) is str:
+        try:
+            return float(replace(input_value=input_value))
+        except ValueError as e:
+            raise KabutobashiEntityError(f"cannot convert {input_value} to float: {e}")
+    raise KabutobashiEntityError(f"cannot convert {input_value} to float")
+
+
+def convert_int(input_value: Union[str, float, int]) -> int:
+    if type(input_value) == int:
+        return input_value
+    elif type(input_value) == float:
+        try:
+            return int(input_value)
+        except ValueError:
+            return 0
+    elif type(input_value) is str:
+        try:
+            return int(replace(input_value=input_value))
+        except ValueError as e:
+            raise KabutobashiEntityError(f"cannot convert {input_value} to integer: {e}")
+    else:
+        try:
+            return int(input_value)
+        except Exception:
+            raise KabutobashiEntityError(f"cannot convert {input_value} to int")

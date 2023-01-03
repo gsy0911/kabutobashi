@@ -1,106 +1,56 @@
-from abc import ABC, abstractmethod
+import re
 from dataclasses import dataclass
-from functools import reduce
+from datetime import datetime
 from logging import getLogger
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Union
 
 import pandas as pd
-from bs4 import BeautifulSoup
 
-from kabutobashi.domain.entity import StockIpo, Weeks52HighLow
 from kabutobashi.domain.values import (
-    HtmlPage,
     StockInfoHtmlPage,
+    StockInfoMinkabuTopPage,
     StockInfoMultipleDaysMainHtmlPage,
     StockInfoMultipleDaysSubHtmlPage,
+    StockIpo,
     StockIpoHtmlPage,
-    StockWeeks52HighLowHtmlPage,
 )
 
+from .utils import IHtmlDecoder, PageDecoder
+
 logger = getLogger(__name__)
-__all__ = [
-    "IHtmlDecoder",
-    "PageDecoder",
-    "StockInfoHtmlDecoder",
-    "StockIpoHtmlDecoder",
-    "StockInfoMultipleDaysHtmlDecoder",
-    "Weeks52HighLowHtmlDecoder",
-]
 
 
 @dataclass(frozen=True)
-class PageDecoder:
-    tag1: Optional[str] = None
-    class1: Optional[str] = None
-    id1: Optional[str] = None
-    default: str = ""
-
-    def _decode(self, value):
-        class1 = {"class": self.class1}
-
-        set_value = None
-        # tag1から取得
-        if self.tag1 is not None:
-            if class1["class"] is not None:
-                set_value = value.find(self.tag1, self.class1)
-            else:
-                set_value = value.find(self.tag1)
-
-        if set_value is None:
-            return self.default
-
-        # 文字列を置換して保持
-        return self.replace(set_value.get_text())
-
-    def decode(self, bs: BeautifulSoup) -> Union[str, List[str]]:
-        return self._decode(value=bs)
-
-    @staticmethod
-    def replace(input_text: str) -> str:
-        target_list = [" ", "\t", "\n", "\r", "円"]
-
-        def remove_of(_input: str, target: str):
-            return _input.replace(target, "")
-
-        result = reduce(remove_of, target_list, input_text)
-        return result.replace("\xa0", " ")
-
-
-@dataclass(frozen=True)  # type: ignore
-class IHtmlDecoder(ABC):
-    @abstractmethod
-    def _decode(self, html_page: HtmlPage) -> dict:
-        raise NotImplementedError()
-
-    def decode(self, html_page: HtmlPage) -> dict:
-        return self._decode(html_page=html_page)
-
-    # @abstractmethod
-    # def _decode_to_object_hook(self, data: dict):
-    #     raise NotImplementedError()
-    #
-    # def decode_to_object(self, html_page: HtmlPage):
-    #     data = self._decode(html_page=html_page)
-    #     return self._decode_to_object_hook(data=data)
-
-
-@dataclass(frozen=True)
-class StockInfoHtmlDecoder(IHtmlDecoder):
+class StockInfoMinkabuTopHtmlDecoder(IHtmlDecoder):
     """
-    TODO BrandとRecordとで役割を分割する
+    Model: Service(Implemented)
 
     Examples:
         >>> import kabutobashi as kb
         >>> # get single page
-        >>> page_html = kb.StockInfoHtmlPageRepository(code="0001", dt="2022-07-22").read()
-        >>> result = StockInfoHtmlDecoder().decode(page_html=page_html)
+        >>> page_html = kb.StockInfoHtmlPageRepository(code="0001").read()
+        >>> result = StockInfoMinkabuTopHtmlDecoder().decode_to_dict(page_html=page_html)
     """
+
+    def _decode_to_object_hook(self, data: dict) -> StockInfoMinkabuTopPage:
+        return StockInfoMinkabuTopPage.from_dict(data=data)
 
     def _decode(self, html_page: StockInfoHtmlPage) -> dict:
         soup = html_page.get_as_soup()
-        result: Dict[str, Union[str, bool, int, float, List[str]]] = {}
+        result: Dict[str, Union[str, bool, int, float, List[str]]] = {"html": html_page.html}
 
         stock_board_tag = "md_stockBoard"
+
+        raw_dt = PageDecoder(tag1="span", class1="fsm").decode(bs=soup)
+        pattern = r"\((?P<month>[0-9]+)/(?P<day>[0-9]+)\)|\((?P<hour>[0-9]+):(?P<minute>[0-9]+)\)"
+        match_result = re.match(pattern, raw_dt)
+        dt = datetime.now()
+        if result:
+            rep = match_result.groupdict()
+            if rep.get("month"):
+                dt = dt.replace(month=int(rep["month"]))
+            if rep.get("day"):
+                dt = dt.replace(day=int(rep["day"]))
 
         # ページ上部の情報を取得
         stock_board = soup.find("div", {"class": stock_board_tag})
@@ -121,7 +71,7 @@ class StockInfoHtmlDecoder(IHtmlDecoder):
         code, market = stock_label.split("  ")
         result.update(
             {
-                "dt": html_page.dt,
+                "dt": dt.strftime("%Y-%m-%d"),
                 "code": code,
                 "industry_type": PageDecoder(tag1="div", class1="ly_content_wrapper size_ss").decode(bs=stock_detail),
                 "market": market,
@@ -135,21 +85,18 @@ class StockInfoHtmlDecoder(IHtmlDecoder):
                 "volume": info.get("出来高", "0"),
                 "market_capitalization": info.get("時価総額", "---"),
                 "issued_shares": info.get("発行済株数", "---"),
-                "is_delisting": False,
             }
         )
 
-        # 上場廃止の確認
-        open_value = result["open"]
-        high_value = result["high"]
-        low_value = result["low"]
-        if open_value == "---" and high_value == "---" and low_value == "---":
-            result.update({"is_delisting": True})
         return result
 
 
 @dataclass(frozen=True)
 class StockIpoHtmlDecoder(IHtmlDecoder):
+    """
+    Model: Service(Implemented)
+    """
+
     def _decode(self, html_page: StockIpoHtmlPage) -> dict:
         soup = html_page.get_as_soup()
         table_content = soup.find("div", {"class": "tablewrap"})
@@ -169,35 +116,18 @@ class StockIpoHtmlDecoder(IHtmlDecoder):
             whole_result.append(StockIpo.from_dict(data=table_body_dict).to_dict())
         return {"ipo_list": whole_result}
 
-
-@dataclass(frozen=True)
-class Weeks52HighLowHtmlDecoder(IHtmlDecoder):
-    def _decode(self, html_page: StockWeeks52HighLowHtmlPage) -> dict:
-        soup = html_page.get_as_soup()
-
-        content = soup.find("body").find("tbody")
-        table = content.find_all("tr")
-        whole_result = []
-        for t in table:
-            buy_or_sell = ""
-
-            for td in t.find_all("td"):
-                if td.text in ["買い", "強い買い", "売り", "強い売り"]:
-                    buy_or_sell = td.text
-            data = {
-                "code": PageDecoder(tag1="a").decode(bs=t),
-                "brand_name": PageDecoder(tag1="span").decode(bs=t),
-                "buy_or_sell": buy_or_sell,
-                "dt": html_page.dt,
-            }
-            whole_result.append(Weeks52HighLow.from_dict(data=data).to_dict())
-
-        return {"weeks_52_high_low": whole_result}
+    def _decode_to_object_hook(self, data: dict) -> List[StockIpo]:
+        ipo_list = data["ipo_list"]
+        result_list = []
+        for v in ipo_list:
+            result_list.append(StockIpo.from_dict(data=v))
+        return result_list
 
 
 @dataclass(frozen=True)
 class StockInfoMultipleDaysHtmlDecoder(IHtmlDecoder):
     """
+    Model: Service(Implemented)
 
     Examples:
         >>> import kabutobashi as kb
@@ -205,7 +135,7 @@ class StockInfoMultipleDaysHtmlDecoder(IHtmlDecoder):
         >>> sub_html_page = kb.StockInfoMultipleDaysSubHtmlPageRepository(code=1375).read()
         >>> data = kb.StockInfoMultipleDaysHtmlDecoder(main_html_page, sub_html_page).decode()
         >>> df = pd.DataFrame(data)
-        >>> records = kb.StockRecordset.of(df)
+        >>> records = kb.Stock.from_df(df)
     """
 
     main_html_page: StockInfoMultipleDaysMainHtmlPage
@@ -245,3 +175,6 @@ class StockInfoMultipleDaysHtmlDecoder(IHtmlDecoder):
         df = pd.merge(df1, df2, on="dt")
         df["code"] = self.main_html_page.code
         return df.to_dict(orient="records")
+
+    def _decode_to_object_hook(self, data: dict) -> object:
+        pass
