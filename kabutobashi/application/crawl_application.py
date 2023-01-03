@@ -20,7 +20,13 @@ class DataCrawlController:
         return self.html_decoder.decode_to_object(html_page=page_html)
 
 
-def crawl(code: str):
+def crawl_info(code: str):
     di = Injector([StockCrawlDi(page_type="info", code=code)])
+    data_crawler = di.get(DataCrawlController)
+    return data_crawler.run()
+
+
+def crawl_ipo(year: str):
+    di = Injector([StockCrawlDi(page_type="ipo", year=year)])
     data_crawler = di.get(DataCrawlController)
     return data_crawler.run()

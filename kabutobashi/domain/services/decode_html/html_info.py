@@ -132,8 +132,12 @@ class StockIpoHtmlDecoder(IHtmlDecoder):
             whole_result.append(StockIpo.from_dict(data=table_body_dict).to_dict())
         return {"ipo_list": whole_result}
 
-    def _decode_to_object_hook(self, data: dict) -> object:
-        pass
+    def _decode_to_object_hook(self, data: dict) -> List[StockIpo]:
+        ipo_list = data["ipo_list"]
+        result_list = []
+        for v in ipo_list:
+            result_list.append(StockIpo.from_dict(data=v))
+        return result_list
 
 
 @dataclass(frozen=True)

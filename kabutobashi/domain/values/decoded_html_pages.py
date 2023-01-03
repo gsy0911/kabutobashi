@@ -62,13 +62,43 @@ class StockIpo(DecodedHtmlPage):
 
     @staticmethod
     def from_dict(data: dict) -> "StockIpo":
+        manager = ""
+        stock_listing_at = ""
+        public_offering = 0
+        evaluation = ""
+        initial_price = 0
+        if "主幹" in data:
+            manager = data["主幹"]
+        elif "manager" in data:
+            manager = data["manager"]
+
+        if "上場" in data:
+            stock_listing_at = data["上場"]
+        elif "stock_listing_at" in data:
+            stock_listing_at = data["stock_listing_at"]
+
+        if "公募" in data:
+            public_offering = data["公募"]
+        elif "public_offering" in data:
+            public_offering = data["public_offering"]
+
+        if "評価" in data:
+            evaluation = data["評価"]
+        elif "evaluation" in data:
+            evaluation = data["evaluation"]
+
+        if "初値" in data:
+            initial_price = data["初値"]
+        elif "initial_price" in data:
+            initial_price = data["initial_price"]
+
         return StockIpo(
             code=data["code"],
-            manager=data["主幹"],
-            stock_listing_at=data["上場"],
-            public_offering=_convert_float(data["公募"]),
-            evaluation=data["評価"],
-            initial_price=_convert_float(data["初値"]),
+            manager=manager,
+            stock_listing_at=stock_listing_at,
+            public_offering=_convert_float(public_offering),
+            evaluation=evaluation,
+            initial_price=_convert_float(initial_price),
         )
 
     def to_dict(self) -> dict:
