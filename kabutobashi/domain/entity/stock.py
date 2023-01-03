@@ -7,8 +7,7 @@ from pydantic import BaseModel, Field
 
 from kabutobashi.domain.errors import KabutobashiEntityError
 from kabutobashi.domain.serialize import ICsvLineSerialize, IDfSerialize, IDictSerialize
-
-from .util import _convert_float, _convert_int
+from kabutobashi.utilities import convert_float, convert_int
 
 __all__ = ["StockBrand", "StockPriceRecord", "StockReferenceIndicator", "Stock"]
 
@@ -63,7 +62,7 @@ class StockBrand(BaseModel, IDictSerialize):
         return StockBrand(
             id=data.get("id"),
             code=code,
-            unit=_convert_int(data.get("unit", 0)),
+            unit=convert_int(data.get("unit", 0)),
             market=data.get("market"),
             name=data.get("name"),
             industry_type=data.get("industry_type"),
@@ -120,11 +119,11 @@ class StockPriceRecord(BaseModel, IDictSerialize, ICsvLineSerialize, IDfSerializ
         super().__init__(
             id=0 if id is None else id,
             code=code,
-            open=_convert_float(open),
-            high=_convert_float(high),
-            low=_convert_float(low),
-            close=_convert_float(close),
-            volume=_convert_float(volume),
+            open=convert_float(open),
+            high=convert_float(high),
+            low=convert_float(low),
+            close=convert_float(close),
+            volume=convert_float(volume),
             dt=dt,
         )
 
