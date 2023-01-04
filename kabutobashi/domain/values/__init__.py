@@ -1,4 +1,4 @@
-from .decoded_html_pages import StockInfoMinkabuTopPage, StockIpo
+from .decoded_html_pages import DecodedHtmlPage, StockInfoMinkabuTopPage, StockIpo
 from .raw_html_pages import (
     IHtmlPageRepository,
     RawHtmlPage,

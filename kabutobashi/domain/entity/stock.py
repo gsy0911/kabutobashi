@@ -246,9 +246,9 @@ class StockReferenceIndicator(BaseModel, IDictSerialize, ICsvLineSerialize):
             id=0,
             code=data["code"],
             dt=data["dt"],
-            psr=data.get("psr"),
-            per=data.get("per"),
-            pbr=data.get("pbr"),
+            psr=convert_float(data.get("psr")),
+            per=convert_float(data.get("per")),
+            pbr=convert_float(data.get("pbr")),
         )
 
     @staticmethod
