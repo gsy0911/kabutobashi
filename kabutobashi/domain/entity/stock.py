@@ -277,16 +277,16 @@ class Stock(BaseModel, IDfSerialize):
     code: str = Field(description="銘柄コード")
     brand: StockBrand = Field(description="銘柄情報")
     daily_price_records: List[StockPriceRecord] = Field(description="日次株価記録", repr=False)
-    reference_indicator: StockReferenceIndicator = Field(description="参考指標")
-    start_at: str = Field(description="収集開始日")
-    end_at: str = Field(description="最新日時")
+    reference_indicator: Optional[StockReferenceIndicator] = Field(description="参考指標")
+    start_at: Optional[str] = Field(description="収集開始日")
+    end_at: Optional[str] = Field(description="最新日時")
 
     def __init__(
         self,
         code: str,
         brand: StockBrand,
         daily_price_records: List[StockPriceRecord],
-        reference_indicator: StockReferenceIndicator,
+        reference_indicator: Optional[StockReferenceIndicator],
     ):
         dt_list = [v.dt for v in daily_price_records]
         super().__init__(
@@ -294,8 +294,8 @@ class Stock(BaseModel, IDfSerialize):
             brand=brand,
             daily_price_records=daily_price_records,
             reference_indicator=reference_indicator,
-            start_at=min(dt_list),
-            end_at=max(dt_list),
+            start_at=min(dt_list) if dt_list else None,
+            end_at=max(dt_list) if dt_list else None,
         )
 
     def to_df(self, add_brand=False) -> pd.DataFrame:
