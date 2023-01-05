@@ -100,6 +100,7 @@ Concept
        raw_html --> decoder
        decoder --> decoded_html
        decoded_html --> repositories
+       decoded_html --> stock
      end
 
      subgraph Repositories/Web
