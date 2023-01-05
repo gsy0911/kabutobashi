@@ -334,13 +334,15 @@ class Stock(BaseModel, IDfSerialize):
     ):
         if code != brand.code:
             raise KabutobashiEntityError()
-        if code != reference_indicator.code:
-            raise KabutobashiEntityError()
+        if reference_indicator is not None:
+            if code != reference_indicator.code:
+                raise KabutobashiEntityError()
         records_code_list = list(set([v.code for v in daily_price_records]))
         if len(records_code_list) > 1:
             raise KabutobashiEntityError()
-        if code != records_code_list[0]:
-            raise KabutobashiEntityError()
+        if records_code_list:
+            if code != records_code_list[0]:
+                raise KabutobashiEntityError()
 
         dt_list = [v.dt for v in daily_price_records]
         super().__init__(
