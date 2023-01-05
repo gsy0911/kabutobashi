@@ -302,8 +302,6 @@ class StockReferenceIndicator(BaseModel, IDictSerialize, ICsvLineSerialize):
             raise KabutobashiEntityError()
         if self.code != other.code:
             raise KabutobashiEntityError()
-        if self.dt != other.dt:
-            raise KabutobashiEntityError()
         return StockReferenceIndicator(
             id=self.id,
             code=self.code,
@@ -382,6 +380,7 @@ class Stock(BaseModel, IDfSerialize):
 
     @staticmethod
     def from_df(data: pd.DataFrame) -> "Stock":
+        data = data.reset_index()
         required_cols = ["open", "high", "low", "close", "code", "dt", "volume"]
         if set(required_cols) - set(data.columns):
             raise KabutobashiEntityError()
@@ -404,8 +403,14 @@ class Stock(BaseModel, IDfSerialize):
         return any([v.is_outlier() for v in self.daily_price_records])
 
     @staticmethod
-    def reduce(self, stocks: List["Stock"]):
-        pass
+    def reduce(stocks: List["Stock"]) -> "Stock":
+        code_list = list(set([v.code for v in stocks]))
+        if len(code_list) > 1:
+            raise KabutobashiEntityError()
+        merge_target = stocks[0]
+        for v in stocks[1:]:
+            merge_target = merge_target + v
+        return merge_target
 
     def __add__(self, other: "Stock") -> "Stock":
         if other is None:
