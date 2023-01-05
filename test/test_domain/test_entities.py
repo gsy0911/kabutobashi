@@ -190,13 +190,8 @@ class TestStockReferenceIndicator:
     def test_error_merge(self):
         reference1 = StockReferenceIndicator(id=0, code="1234", dt="2023-01-01", pbr=0, psr=0, per=0)
         reference2 = StockReferenceIndicator(id=0, code="1235", dt="2023-01-01", pbr=0, psr=0, per=0)
-        reference3 = StockReferenceIndicator(id=0, code="1234", dt="2023-01-02", pbr=0, psr=0, per=0)
         with pytest.raises(KabutobashiEntityError):
             _ = reference1 + reference2
-        with pytest.raises(KabutobashiEntityError):
-            _ = reference1 + reference3
-        with pytest.raises(KabutobashiEntityError):
-            _ = reference2 + reference3
         with pytest.raises(KabutobashiEntityError):
             _ = reference1 + ""
 
@@ -219,7 +214,7 @@ class TestStockIpo:
 
 
 class TestStock:
-    def test_init_error(self, entity: pd.DataFrame):
+    def test_init_error(self):
         brand = StockBrand(
             id=None,
             code="1234",
@@ -287,7 +282,7 @@ class TestStock:
         assert "per" in stock_df_columns
         assert "psr" in stock_df_columns
 
-    def test_merge_error(self, entity: pd.DataFrame):
+    def test_merge_error(self):
         brand = StockBrand(
             id=None,
             code="1234",
@@ -339,7 +334,7 @@ class TestStock:
         with pytest.raises(KabutobashiEntityError):
             _ = stock + stock_2
 
-    def test_merge_pass(self, entity: pd.DataFrame):
+    def test_merge_pass(self):
         brand = StockBrand(
             id=None,
             code="1234",
@@ -369,13 +364,27 @@ class TestStock:
         assert merge.code == "1234"
         assert len(merge.daily_price_records) == 1
 
+    def test_reduce_error(self, entity: pd.DataFrame):
+        stock1 = kb.Stock.from_df(data=entity[entity["code"] == 1375])
+        stock2 = kb.Stock.from_df(data=entity[entity["code"] == 1439])
+        with pytest.raises(KabutobashiEntityError):
+            kb.Stock.reduce(stocks=[stock1, stock2])
+
+    def test_reduce_pass(self, entity: pd.DataFrame):
+        filtered_entity = entity[entity["code"] == 1375]
+        stock1 = kb.Stock.from_df(data=filtered_entity[:10])
+        stock2 = kb.Stock.from_df(data=filtered_entity[10:])
+        stock3 = kb.Stock.from_df(data=filtered_entity)
+
+        assert len(kb.Stock.reduce(stocks=[stock1, stock2]).daily_price_records) == len(stock3.daily_price_records)
+
 
 class TestStockSingleAggregate:
     def test_pass_init(self, entity: pd.DataFrame):
         stock = kb.Stock.from_df(data=entity[entity["code"] == 1375])
         _ = kb.StockCodeSingleAggregate.of(entity=stock)
 
-    def test_error_init(self, entity: pd.DataFrame):
+    def test_error_init(self):
         with pytest.raises(KabutobashiEntityError):
             _ = kb.StockCodeSingleAggregate.of(entity="")
 
