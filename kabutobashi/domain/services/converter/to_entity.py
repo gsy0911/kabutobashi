@@ -16,6 +16,7 @@ class StockConverter:
     @staticmethod
     def _convert_stock_info_minkabu_top_page(value_object: StockInfoMinkabuTopPage) -> Stock:
         data = value_object.to_dict()
+
         stock_brand = StockBrand.from_dict(data)
         stock_reference_indicator = StockReferenceIndicator.from_dict(data)
 

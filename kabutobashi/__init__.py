@@ -19,7 +19,7 @@ from kabutobashi.domain.services.method import (
     volatility,
 )
 
-from .application import crawl_info, crawl_ipo
+from .application import crawl_info, crawl_ipo, decode_brand_list
 from .domain import errors
 from .domain.aggregates import StockCodeSingleAggregate
 from .domain.entity import Stock
