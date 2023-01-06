@@ -26,9 +26,9 @@ class StockInfoMinkabuTopHtmlDecoder(IHtmlDecoder):
     Model: Service(Implemented)
 
     Examples:
-        >>> import kabutobashi as kb
+        >>> from kabutobashi.infrastructure.repository import StockInfoHtmlPageRepository
         >>> # get single page
-        >>> page_html = kb.StockInfoHtmlPageRepository(code="0001").read()
+        >>> page_html = StockInfoHtmlPageRepository(code="0001").read()
         >>> result = StockInfoMinkabuTopHtmlDecoder().decode_to_dict(page_html=page_html)
     """
 
@@ -130,10 +130,13 @@ class StockInfoMultipleDaysHtmlDecoder(IHtmlDecoder):
     Model: Service(Implemented)
 
     Examples:
+        >>> from kabutobashi.infrastructure.repository import StockInfoMultipleDaysMainHtmlPageRepository
+        >>> from kabutobashi.infrastructure.repository import StockInfoMultipleDaysSubHtmlPageRepository
+        >>> from kabutobashi.domain.services import StockInfoMultipleDaysHtmlDecoder
         >>> import kabutobashi as kb
-        >>> main_html_page = kb.StockInfoMultipleDaysMainHtmlPageRepository(code=1375).read()
-        >>> sub_html_page = kb.StockInfoMultipleDaysSubHtmlPageRepository(code=1375).read()
-        >>> data = kb.StockInfoMultipleDaysHtmlDecoder(main_html_page, sub_html_page).decode()
+        >>> main_html_page = StockInfoMultipleDaysMainHtmlPageRepository(code=1375).read()
+        >>> sub_html_page = StockInfoMultipleDaysSubHtmlPageRepository(code=1375).read()
+        >>> data = StockInfoMultipleDaysHtmlDecoder(main_html_page, sub_html_page).decode_to_dict()
         >>> df = pd.DataFrame(data)
         >>> records = kb.Stock.from_df(df)
     """
