@@ -1,5 +1,10 @@
 # Release Note
 
+## 0.6.1
+
+- ENHANCEMENT: add Service to convert ValueObject to Entity ([#149](https://github.com/gsy0911/kabutobashi/issues/149))
+- ENHANCEMENT: add application to get code-list ([#150](https://github.com/gsy0911/kabutobashi/issues/150))
+
 ## 0.6.0
 
 - ENHANCEMENT: modify codecov ([#135](https://github.com/gsy0911/kabutobashi/issues/135))

@@ -1,8 +1,11 @@
-# import errors
-from kabutobashi.domain.services import SaFundamental, SaVolume, StockAnalysis
+from .application import crawl_info, crawl_ipo, decode_brand_list
+from .domain import errors
+from .domain.aggregates import StockCodeSingleAggregate
+from .domain.entity import Stock
+from .domain.services import SaFundamental, SaVolume, StockAnalysis
 
 # methods to analysis
-from kabutobashi.domain.services.method import (
+from .domain.services.method import (
     Method,
     adx,
     basic,
@@ -18,11 +21,6 @@ from kabutobashi.domain.services.method import (
     stochastics,
     volatility,
 )
-
-from .application import crawl_info, crawl_ipo
-from .domain import errors
-from .domain.aggregates import StockCodeSingleAggregate
-from .domain.entity import Stock
 from .domain.values import (
     StockDataEstimated,
     StockDataProcessed,
@@ -35,10 +33,8 @@ from .domain.values import (
 )
 from .example_data import example
 
-# n営業日前までの日付のリストを返す関数; 銘柄コードでイテレーションする関数; window幅でデータを取得しつつデータを返す関数; 株価の動きを様々な統計量で表現
+# n営業日前までの日付のリストを返す関数
 from .utilities import get_past_n_days
-
-# sns.set()
 
 methods = [sma, macd, stochastics, adx, bollinger_bands, momentum, psycho_logical, fitting, basic]
 
@@ -49,7 +45,7 @@ sa_volume = SaVolume()
 stock_analysis = [sa_fundamental, sa_volume]
 
 # comparable tuple
-VERSION = (0, 6, 0)
+VERSION = (0, 6, 1)
 # generate __version__ via VERSION tuple
 __version__ = ".".join(map(str, VERSION))
 

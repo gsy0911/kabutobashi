@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 from injector import Injector, inject
 
-from kabutobashi.domain.services import IHtmlDecoder
+from kabutobashi.domain.services import IHtmlDecoder, StockConverter
 from kabutobashi.domain.values import IHtmlPageRepository
 
 from .di_container import StockCrawlDi
@@ -23,10 +23,12 @@ class DataCrawlController:
 def crawl_info(code: str):
     di = Injector([StockCrawlDi(page_type="info", code=code)])
     data_crawler = di.get(DataCrawlController)
-    return data_crawler.run()
+    info_object = data_crawler.run()
+    return StockConverter().convert(value_object=info_object)
 
 
 def crawl_ipo(year: str):
     di = Injector([StockCrawlDi(page_type="ipo", year=year)])
     data_crawler = di.get(DataCrawlController)
-    return data_crawler.run()
+    ipo_list_object = data_crawler.run()
+    return [StockConverter().convert(value_object=v) for v in ipo_list_object]

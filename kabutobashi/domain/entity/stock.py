@@ -85,6 +85,26 @@ class StockBrand(BaseModel, IDictSerialize):
     def __hash__(self):
         return hash(self.code)
 
+    def __add__(self, other: "StockBrand") -> "StockBrand":
+        if other is None:
+            return self
+        if type(other) is not StockBrand:
+            raise KabutobashiEntityError()
+        if self.code != other.code:
+            raise KabutobashiEntityError()
+        return StockBrand(
+            code=self.code if self.code is not None else other.code,
+            unit=self.unit if self.unit is not None else other.unit,
+            market=self.market if self.market is not None else other.market,
+            industry_type=self.industry_type if self.industry_type is not None else other.industry_type,
+            market_capitalization=self.market_capitalization
+            if self.market_capitalization is not None
+            else other.market_capitalization,
+            name=self.name if self.name is not None else other.name,
+            issued_shares=self.issued_shares if self.issued_shares is not None else other.issued_shares,
+            is_delisting=self.is_delisting or other.is_delisting,
+        )
+
     class Config:
         orm_mode = True
 
@@ -206,6 +226,14 @@ class StockPriceRecord(BaseModel, IDictSerialize, ICsvLineSerialize, IDfSerializ
     def is_valid_date(self) -> bool:
         return not jpholiday.is_holiday(datetime.strptime(self.dt, "%Y-%m-%d"))
 
+    def __eq__(self, other):
+        if not isinstance(other, StockPriceRecord):
+            return False
+        return self.code == other.code and self.dt == other.dt
+
+    def __hash__(self):
+        return hash(self.code)
+
     class Config:
         orm_mode = True
 
@@ -246,9 +274,9 @@ class StockReferenceIndicator(BaseModel, IDictSerialize, ICsvLineSerialize):
             id=0,
             code=data["code"],
             dt=data["dt"],
-            psr=data.get("psr"),
-            per=data.get("per"),
-            pbr=data.get("pbr"),
+            psr=convert_float(data.get("psr")),
+            per=convert_float(data.get("per")),
+            pbr=convert_float(data.get("pbr")),
         )
 
     @staticmethod
@@ -267,6 +295,22 @@ class StockReferenceIndicator(BaseModel, IDictSerialize, ICsvLineSerialize):
         ]
         return ",".join(data)
 
+    def __add__(self, other: "StockReferenceIndicator") -> "StockReferenceIndicator":
+        if other is None:
+            return self
+        if type(other) is not StockReferenceIndicator:
+            raise KabutobashiEntityError()
+        if self.code != other.code:
+            raise KabutobashiEntityError()
+        return StockReferenceIndicator(
+            id=self.id,
+            code=self.code,
+            dt=self.dt,
+            psr=self.psr if self.psr is not None else other.psr,
+            pbr=self.pbr if self.pbr is not None else other.pbr,
+            per=self.per if self.per is not None else other.per,
+        )
+
 
 class Stock(BaseModel, IDfSerialize):
     """
@@ -277,25 +321,37 @@ class Stock(BaseModel, IDfSerialize):
     code: str = Field(description="銘柄コード")
     brand: StockBrand = Field(description="銘柄情報")
     daily_price_records: List[StockPriceRecord] = Field(description="日次株価記録", repr=False)
-    reference_indicator: StockReferenceIndicator = Field(description="参考指標")
-    start_at: str = Field(description="収集開始日")
-    end_at: str = Field(description="最新日時")
+    reference_indicator: Optional[StockReferenceIndicator] = Field(description="参考指標")
+    start_at: Optional[str] = Field(description="収集開始日")
+    end_at: Optional[str] = Field(description="最新日時")
 
     def __init__(
         self,
         code: str,
         brand: StockBrand,
         daily_price_records: List[StockPriceRecord],
-        reference_indicator: StockReferenceIndicator,
+        reference_indicator: Optional[StockReferenceIndicator],
     ):
+        if code != brand.code:
+            raise KabutobashiEntityError()
+        if reference_indicator is not None:
+            if code != reference_indicator.code:
+                raise KabutobashiEntityError()
+        records_code_list = list(set([v.code for v in daily_price_records]))
+        if len(records_code_list) > 1:
+            raise KabutobashiEntityError()
+        if records_code_list:
+            if code != records_code_list[0]:
+                raise KabutobashiEntityError()
+
         dt_list = [v.dt for v in daily_price_records]
         super().__init__(
             code=code,
             brand=brand,
             daily_price_records=daily_price_records,
             reference_indicator=reference_indicator,
-            start_at=min(dt_list),
-            end_at=max(dt_list),
+            start_at=min(dt_list) if dt_list else None,
+            end_at=max(dt_list) if dt_list else None,
         )
 
     def to_df(self, add_brand=False) -> pd.DataFrame:
@@ -326,6 +382,7 @@ class Stock(BaseModel, IDfSerialize):
 
     @staticmethod
     def from_df(data: pd.DataFrame) -> "Stock":
+        data = data.reset_index()
         required_cols = ["open", "high", "low", "close", "code", "dt", "volume"]
         if set(required_cols) - set(data.columns):
             raise KabutobashiEntityError()
@@ -346,3 +403,33 @@ class Stock(BaseModel, IDfSerialize):
 
     def contains_outlier(self) -> bool:
         return any([v.is_outlier() for v in self.daily_price_records])
+
+    @staticmethod
+    def reduce(stocks: List["Stock"]) -> "Stock":
+        code_list = list(set([v.code for v in stocks]))
+        if len(code_list) > 1:
+            raise KabutobashiEntityError()
+        merge_target = stocks[0]
+        for v in stocks[1:]:
+            merge_target = merge_target + v
+        return merge_target
+
+    def __add__(self, other: "Stock") -> "Stock":
+        if other is None:
+            return self
+        if type(other) is not Stock:
+            raise KabutobashiEntityError()
+        if self.code != other.code:
+            raise KabutobashiEntityError()
+        daily_price_records = []
+        if self.daily_price_records:
+            daily_price_records.extend(self.daily_price_records)
+        if other.daily_price_records:
+            daily_price_records.extend(other.daily_price_records)
+
+        return Stock(
+            code=self.code,
+            brand=self.brand + other.brand,
+            daily_price_records=list(set(daily_price_records)),
+            reference_indicator=self.reference_indicator + other.reference_indicator,
+        )
