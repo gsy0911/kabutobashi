@@ -1,5 +1,12 @@
 # Release Note
 
+## 0.6.3
+
+- BUG FIX: `_get_impact` function
+- BUG FIX: remove unused `index` column ([#151](https://github.com/gsy0911/kabutobashi/issues/151))
+- BUG FIX: add missing columns ([#152](https://github.com/gsy0911/kabutobashi/issues/152))
+
+
 ## 0.6.2
 
 - BUG FIX: pattern match result check
