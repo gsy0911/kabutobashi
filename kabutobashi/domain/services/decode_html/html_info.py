@@ -45,7 +45,7 @@ class StockInfoMinkabuTopHtmlDecoder(IHtmlDecoder):
         pattern = r"\((?P<month>[0-9]+)/(?P<day>[0-9]+)\)|\((?P<hour>[0-9]+):(?P<minute>[0-9]+)\)"
         match_result = re.match(pattern, raw_dt)
         dt = datetime.now()
-        if result:
+        if match_result:
             rep = match_result.groupdict()
             if rep.get("month"):
                 dt = dt.replace(month=int(rep["month"]))
