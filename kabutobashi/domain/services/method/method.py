@@ -67,7 +67,7 @@ class ProcessMethod(ABC):
 
         signal_df = self.signal(df=applied_df)
         params = self.parameterize(df_x=applied_df, df_p=signal_df)
-        params.update({self.method_name: self._get_impact(df=df, influence=influence, tail=tail)})
+        params.update({self.method_name: self._get_impact(df=signal_df, influence=influence, tail=tail)})
         return StockDataProcessed(
             code=code_list[0],
             df=signal_df,
@@ -194,9 +194,9 @@ class ProcessMethod(ABC):
             [-1,1]の値をとる。-1: 売り、1: 買いを表す
         """
         columns = df.columns
-        if "buy_impact" not in columns:
+        if "buy_signal" not in columns:
             return 0
-        if "sell_impact" not in columns:
+        if "sell_signal" not in columns:
             return 0
 
         df["buy_impact"] = df["buy_signal"].ewm(span=influence).mean()
