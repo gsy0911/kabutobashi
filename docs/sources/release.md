@@ -1,5 +1,9 @@
 # Release Note
 
+## 0.6.2
+
+- BUG FIX: pattern match result check
+
 ## 0.6.1
 
 - ENHANCEMENT: add Service to convert ValueObject to Entity ([#149](https://github.com/gsy0911/kabutobashi/issues/149))
