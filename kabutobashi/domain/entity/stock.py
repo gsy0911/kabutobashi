@@ -370,6 +370,8 @@ class Stock(BaseModel, IDfSerialize):
                 record_df["industry_type"] = self.brand.industry_type
             if self.brand.issued_shares:
                 record_df["issued_shares"] = self.brand.issued_shares
+            if self.brand.unit:
+                record_df["unit"] = self.brand.unit
             record_df["is_delisting"] = self.brand.is_delisting
         # from reference-indicator
         if self.reference_indicator.pbr:
@@ -378,11 +380,11 @@ class Stock(BaseModel, IDfSerialize):
             record_df["per"] = self.reference_indicator.per
         if self.reference_indicator.psr:
             record_df["psr"] = self.reference_indicator.psr
-        return record_df.convert_dtypes().reset_index()
+        return record_df.convert_dtypes().reset_index(drop=True)
 
     @staticmethod
     def from_df(data: pd.DataFrame) -> "Stock":
-        data = data.reset_index()
+        data = data.reset_index(drop=True)
         required_cols = ["open", "high", "low", "close", "code", "dt", "volume"]
         if set(required_cols) - set(data.columns):
             raise KabutobashiEntityError()

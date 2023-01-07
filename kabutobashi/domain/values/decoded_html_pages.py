@@ -25,6 +25,7 @@ class DecodedHtmlPage(ABC):
 class StockInfoMinkabuTopPage(DecodedHtmlPage, IDictSerialize):
     code: str
     dt: str
+    name: str
     industry_type: str
     market: str
     open: str
@@ -37,6 +38,7 @@ class StockInfoMinkabuTopPage(DecodedHtmlPage, IDictSerialize):
     pbr: str
     volume: str
     market_capitalization: str
+    issued_shares: str
     html: str = field(repr=False)
 
     def _validate(self):
@@ -58,6 +60,7 @@ class StockInfoMinkabuTopPage(DecodedHtmlPage, IDictSerialize):
         return StockInfoMinkabuTopPage(
             code=data["code"],
             dt=data["dt"],
+            name=data["name"],
             open=data["open"],
             high=data["high"],
             low=data["low"],
@@ -70,6 +73,7 @@ class StockInfoMinkabuTopPage(DecodedHtmlPage, IDictSerialize):
             market=data["market"],
             market_capitalization=data["market_capitalization"],
             industry_type=data["industry_type"],
+            issued_shares=data["issued_shares"],
             html=data["html"],
         )
 
