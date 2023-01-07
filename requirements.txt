@@ -8,3 +8,4 @@ matplotlib
 cerberus
 pydantic
 scipy
+xlrd
