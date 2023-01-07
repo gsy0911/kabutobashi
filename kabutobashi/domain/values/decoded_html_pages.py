@@ -25,6 +25,7 @@ class DecodedHtmlPage(ABC):
 class StockInfoMinkabuTopPage(DecodedHtmlPage, IDictSerialize):
     code: str
     dt: str
+    name: str
     industry_type: str
     market: str
     open: str
@@ -59,6 +60,7 @@ class StockInfoMinkabuTopPage(DecodedHtmlPage, IDictSerialize):
         return StockInfoMinkabuTopPage(
             code=data["code"],
             dt=data["dt"],
+            name=data["name"],
             open=data["open"],
             high=data["high"],
             low=data["low"],
