@@ -370,6 +370,8 @@ class Stock(BaseModel, IDfSerialize):
                 record_df["industry_type"] = self.brand.industry_type
             if self.brand.issued_shares:
                 record_df["issued_shares"] = self.brand.issued_shares
+            if self.brand.unit:
+                record_df["unit"] = self.brand.unit
             record_df["is_delisting"] = self.brand.is_delisting
         # from reference-indicator
         if self.reference_indicator.pbr:
