@@ -403,6 +403,17 @@ class TestStockSingleAggregate:
         data_visualized = agg.visualize(kb.macd)
         assert data_visualized.fig
 
+        data = estimated.to_dict()
+        assert "code" in data
+        assert "name" in data
+        assert "market" in data
+        assert "industry_type" in data
+        assert "weighted_estimated_value" in data
+        assert "estimate_name" in data
+
+        with pytest.raises(NotImplementedError):
+            kb.StockCodeSingleAggregate.from_dict(data={})
+
     def test_error_methods(self, entity: pd.DataFrame):
         methods = kb.methods + [kb.basic, kb.pct_change, kb.volatility]
         agg = kb.StockCodeSingleAggregate.of(entity=entity, code="1375")
