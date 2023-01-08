@@ -5,6 +5,7 @@ import pandas as pd
 
 from kabutobashi.domain.entity import Stock
 from kabutobashi.domain.errors import KabutobashiEntityError
+from kabutobashi.domain.serialize import IDictSerialize
 from kabutobashi.domain.services.analyze import StockAnalysis
 from kabutobashi.domain.services.method import Method
 from kabutobashi.domain.values import StockDataEstimated, StockDataProcessed, StockDataVisualized
@@ -13,7 +14,7 @@ __all__ = ["StockCodeSingleAggregate"]
 
 
 @dataclass(frozen=True)
-class StockCodeSingleAggregate:
+class StockCodeSingleAggregate(IDictSerialize):
     """
     StockCodeSingleAggregate: Aggregate
 
@@ -107,3 +108,17 @@ class StockCodeSingleAggregate:
             return method.visualize_method.visualize(size_ratio=size_ratio, df=processed_df.df)
         else:
             raise KabutobashiEntityError(f"method {method.process_method.method_name} has no visualize method")
+
+    def to_dict(self) -> dict:
+        return {
+            "code": self.code,
+            "name": self.stock.brand.name,
+            "market": self.stock.brand.market,
+            "industry_type": self.stock.brand.industry_type,
+            "weighted_estimated_value": self.weighted_estimated_value(),
+            "estimate_name": self.estimate_filter_concat_name(),
+        }
+
+    @staticmethod
+    def from_dict(data: dict):
+        raise NotImplementedError("The method would not be implemented.")
