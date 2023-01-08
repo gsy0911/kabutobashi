@@ -185,7 +185,6 @@ class TestStockReferenceIndicator:
         _ = StockReferenceIndicator.from_dict(
             {"id": 0, "code": "1234", "dt": "2023-01-01", "pbr": 0, "psr": 0, "per": 0}
         )
-        _ = StockReferenceIndicator.from_line("id=0,code=1234,dt=2023-01-01,pbr=0,psr=0,per=0")
 
     def test_error_merge(self):
         reference1 = StockReferenceIndicator(id=0, code="1234", dt="2023-01-01", pbr=0, psr=0, per=0)
