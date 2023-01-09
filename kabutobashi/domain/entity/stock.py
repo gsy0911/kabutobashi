@@ -6,7 +6,7 @@ import pandas as pd
 from pydantic import BaseModel, Field
 
 from kabutobashi.domain.errors import KabutobashiEntityError
-from kabutobashi.domain.serialize import ICsvLineSerialize, IDfSerialize, IDictSerialize
+from kabutobashi.domain.serialize import IDfSerialize, IDictSerialize
 from kabutobashi.utilities import convert_float, convert_int
 
 __all__ = ["StockBrand", "StockPriceRecord", "StockReferenceIndicator", "Stock"]
@@ -109,7 +109,7 @@ class StockBrand(BaseModel, IDictSerialize):
         orm_mode = True
 
 
-class StockPriceRecord(BaseModel, IDictSerialize, ICsvLineSerialize, IDfSerialize):
+class StockPriceRecord(BaseModel, IDictSerialize, IDfSerialize):
     """
     Model: Entity
     JP: 日次株価
@@ -187,24 +187,6 @@ class StockPriceRecord(BaseModel, IDictSerialize, ICsvLineSerialize, IDfSerializ
             dt=dt,
         )
 
-    @staticmethod
-    def from_line(data: str):
-        data = {sp_v[0]: sp_v[1] for v in data.split(",") if len(sp_v := v.split("=")) == 2}
-        return StockPriceRecord(**data)
-
-    def to_line(self) -> str:
-        data = [
-            f"id={self.id}",
-            f"code={self.code}",
-            f"open={self.open}",
-            f"high={self.high}",
-            f"low={self.low}",
-            f"close={self.close}",
-            f"volume={self.volume}",
-            f"dt={self.dt}",
-        ]
-        return ",".join(data)
-
     def to_df(self) -> pd.DataFrame:
         return pd.DataFrame([self.to_dict()])
 
@@ -238,7 +220,7 @@ class StockPriceRecord(BaseModel, IDictSerialize, ICsvLineSerialize, IDfSerializ
         orm_mode = True
 
 
-class StockReferenceIndicator(BaseModel, IDictSerialize, ICsvLineSerialize):
+class StockReferenceIndicator(BaseModel, IDictSerialize):
     """
     Model: Entity
     JP: 参考指標
@@ -278,22 +260,6 @@ class StockReferenceIndicator(BaseModel, IDictSerialize, ICsvLineSerialize):
             per=convert_float(data.get("per")),
             pbr=convert_float(data.get("pbr")),
         )
-
-    @staticmethod
-    def from_line(data: str):
-        data = {sp_v[0]: sp_v[1] for v in data.split(",") if len(sp_v := v.split("=")) == 2}
-        return StockReferenceIndicator(**data)
-
-    def to_line(self) -> str:
-        data = [
-            f"id={self.id}",
-            f"code={self.code}",
-            f"dt={self.dt}",
-            f"psr={self.psr}",
-            f"per={self.per}",
-            f"pbr={self.pbr}",
-        ]
-        return ",".join(data)
 
     def __add__(self, other: "StockReferenceIndicator") -> "StockReferenceIndicator":
         if other is None:

@@ -1,5 +1,13 @@
 # Release Note
 
+## 0.6.4
+
+- ENHANCEMENT: add `to_dict()` to `StockAgg` ([#153](https://github.com/gsy0911/kabutobashi/issues/153))
+- ENHANCEMENT: remove unused `serialize-method` ([#154](https://github.com/gsy0911/kabutobashi/issues/154))
+- ENHANCEMENT: rename `DecodeHtmlPage` and `RawHtmlPage` ([#155](https://github.com/gsy0911/kabutobashi/issues/155))
+- ENHANCEMENT: add DecodedHtmlPageStockInfoMultipleDays ([#156](https://github.com/gsy0911/kabutobashi/issues/156))
+- ENHANCEMENT: add `repository` to crawl multiple pages ([#157](https://github.com/gsy0911/kabutobashi/issues/157))
+
 ## 0.6.3
 
 - BUG FIX: `_get_impact` function

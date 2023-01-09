@@ -14,17 +14,6 @@ class IDictSerialize(ABC):
         raise NotImplementedError()  # pragma: no cover
 
 
-class ICsvLineSerialize(ABC):
-    @abstractmethod
-    def to_line(self) -> str:
-        raise NotImplementedError()  # pragma: no cover
-
-    @staticmethod
-    @abstractmethod
-    def from_line(data: str):
-        raise NotImplementedError()  # pragma: no cover
-
-
 class IDfSerialize(ABC):
     @abstractmethod
     def to_df(self) -> pd.DataFrame:

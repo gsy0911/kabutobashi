@@ -185,7 +185,6 @@ class TestStockReferenceIndicator:
         _ = StockReferenceIndicator.from_dict(
             {"id": 0, "code": "1234", "dt": "2023-01-01", "pbr": 0, "psr": 0, "per": 0}
         )
-        _ = StockReferenceIndicator.from_line("id=0,code=1234,dt=2023-01-01,pbr=0,psr=0,per=0")
 
     def test_error_merge(self):
         reference1 = StockReferenceIndicator(id=0, code="1234", dt="2023-01-01", pbr=0, psr=0, per=0)
@@ -210,7 +209,9 @@ class TestStockReferenceIndicator:
 
 class TestStockIpo:
     def test_pass_init(self):
-        _ = kb.StockIpo(code="", manager="", stock_listing_at="", public_offering=0, evaluation="", initial_price=0)
+        _ = kb.DecodeHtmlPageStockIpo(
+            code="", manager="", stock_listing_at="", public_offering=0, evaluation="", initial_price=0
+        )
 
 
 class TestStock:
@@ -402,6 +403,17 @@ class TestStockSingleAggregate:
         # check visualize multiple columns
         data_visualized = agg.visualize(kb.macd)
         assert data_visualized.fig
+
+        data = estimated.to_dict()
+        assert "code" in data
+        assert "name" in data
+        assert "market" in data
+        assert "industry_type" in data
+        assert "weighted_estimated_value" in data
+        assert "estimate_name" in data
+
+        with pytest.raises(NotImplementedError):
+            kb.StockCodeSingleAggregate.from_dict(data={})
 
     def test_error_methods(self, entity: pd.DataFrame):
         methods = kb.methods + [kb.basic, kb.pct_change, kb.volatility]

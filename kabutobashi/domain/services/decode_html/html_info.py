@@ -7,12 +7,13 @@ from typing import Dict, List, Union
 import pandas as pd
 
 from kabutobashi.domain.values import (
-    StockInfoHtmlPage,
-    StockInfoMinkabuTopPage,
-    StockInfoMultipleDaysMainHtmlPage,
-    StockInfoMultipleDaysSubHtmlPage,
-    StockIpo,
-    StockIpoHtmlPage,
+    DecodeHtmlPageStockInfoMinkabuTop,
+    DecodeHtmlPageStockInfoMultipleDays,
+    DecodeHtmlPageStockIpo,
+    RawHtmlPageStockInfo,
+    RawHtmlPageStockInfoMultipleDaysMain,
+    RawHtmlPageStockInfoMultipleDaysSub,
+    RawHtmlPageStockIpo,
 )
 
 from .utils import IHtmlDecoder, PageDecoder
@@ -28,14 +29,14 @@ class StockInfoMinkabuTopHtmlDecoder(IHtmlDecoder):
     Examples:
         >>> from kabutobashi.infrastructure.repository import StockInfoHtmlPageRepository
         >>> # get single page
-        >>> page_html = StockInfoHtmlPageRepository(code="0001").read()
-        >>> result = StockInfoMinkabuTopHtmlDecoder().decode_to_dict(page_html=page_html)
+        >>> html_page = StockInfoHtmlPageRepository(code="0001").read()
+        >>> result = StockInfoMinkabuTopHtmlDecoder().decode_to_dict(html_page=html_page)
     """
 
-    def _decode_to_object_hook(self, data: dict) -> StockInfoMinkabuTopPage:
-        return StockInfoMinkabuTopPage.from_dict(data=data)
+    def _decode_to_object_hook(self, data: dict) -> DecodeHtmlPageStockInfoMinkabuTop:
+        return DecodeHtmlPageStockInfoMinkabuTop.from_dict(data=data)
 
-    def _decode(self, html_page: StockInfoHtmlPage) -> dict:
+    def _decode(self, html_page: RawHtmlPageStockInfo) -> dict:
         soup = html_page.get_as_soup()
         result: Dict[str, Union[str, bool, int, float, List[str]]] = {"html": html_page.html}
 
@@ -97,7 +98,7 @@ class StockIpoHtmlDecoder(IHtmlDecoder):
     Model: Service(Implemented)
     """
 
-    def _decode(self, html_page: StockIpoHtmlPage) -> dict:
+    def _decode(self, html_page: RawHtmlPageStockIpo) -> dict:
         soup = html_page.get_as_soup()
         table_content = soup.find("div", {"class": "tablewrap"})
         table_thead = table_content.find("thead")
@@ -113,14 +114,14 @@ class StockIpoHtmlDecoder(IHtmlDecoder):
             table_body_dict = {}
             for header, td in zip(table_head_list, tr.find_all("td")):
                 table_body_dict[header] = td.get_text().replace("\n", "")
-            whole_result.append(StockIpo.from_dict(data=table_body_dict).to_dict())
+            whole_result.append(DecodeHtmlPageStockIpo.from_dict(data=table_body_dict).to_dict())
         return {"ipo_list": whole_result}
 
-    def _decode_to_object_hook(self, data: dict) -> List[StockIpo]:
+    def _decode_to_object_hook(self, data: dict) -> List[DecodeHtmlPageStockIpo]:
         ipo_list = data["ipo_list"]
         result_list = []
         for v in ipo_list:
-            result_list.append(StockIpo.from_dict(data=v))
+            result_list.append(DecodeHtmlPageStockIpo.from_dict(data=v))
         return result_list
 
 
@@ -130,25 +131,22 @@ class StockInfoMultipleDaysHtmlDecoder(IHtmlDecoder):
     Model: Service(Implemented)
 
     Examples:
-        >>> from kabutobashi.infrastructure.repository import StockInfoMultipleDaysMainHtmlPageRepository
-        >>> from kabutobashi.infrastructure.repository import StockInfoMultipleDaysSubHtmlPageRepository
+        >>> from kabutobashi.infrastructure.repository import StockInfoMultipleDaysHtmlPageRepository
         >>> from kabutobashi.domain.services import StockInfoMultipleDaysHtmlDecoder
         >>> import kabutobashi as kb
-        >>> main_html_page = StockInfoMultipleDaysMainHtmlPageRepository(code=1375).read()
-        >>> sub_html_page = StockInfoMultipleDaysSubHtmlPageRepository(code=1375).read()
-        >>> data = StockInfoMultipleDaysHtmlDecoder(main_html_page, sub_html_page).decode_to_dict()
+        >>> html_page_list = StockInfoMultipleDaysHtmlPageRepository(code=1375).read()
+        >>> data = StockInfoMultipleDaysHtmlDecoder().decode_to_dict(html_page=html_page_list)
         >>> df = pd.DataFrame(data)
         >>> records = kb.Stock.from_df(df)
     """
 
-    main_html_page: StockInfoMultipleDaysMainHtmlPage
-    sub_html_page: StockInfoMultipleDaysSubHtmlPage
-
-    def _decode(self, html_page: StockIpoHtmlPage) -> dict:
+    def _decode(
+        self, html_page: List[Union[RawHtmlPageStockInfoMultipleDaysMain, RawHtmlPageStockInfoMultipleDaysSub]]
+    ) -> dict:
         result_1 = []
         result_2 = []
-        main_soup = self.main_html_page.get_as_soup()
-        sub_soup = self.sub_html_page.get_as_soup()
+        main_soup = html_page[0].get_as_soup()
+        sub_soup = html_page[1].get_as_soup()
         stock_recordset_tag = "md_card md_box"
 
         # ページの情報を取得
@@ -176,8 +174,12 @@ class StockInfoMultipleDaysHtmlDecoder(IHtmlDecoder):
         df2 = df2[["dt", "psr", "per", "pbr", "volume"]]
 
         df = pd.merge(df1, df2, on="dt")
-        df["code"] = self.main_html_page.code
-        return df.to_dict(orient="records")
+        df["code"] = html_page[0].code
+        return {"info_list": df.to_dict(orient="records")}
 
-    def _decode_to_object_hook(self, data: dict) -> object:
-        pass
+    def _decode_to_object_hook(self, data: dict) -> List["DecodeHtmlPageStockInfoMultipleDays"]:
+        info_list = data["info_list"]
+        result_list = []
+        for v in info_list:
+            result_list.append(DecodeHtmlPageStockInfoMultipleDays.from_dict(data=v))
+        return result_list

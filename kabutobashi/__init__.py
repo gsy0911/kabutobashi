@@ -1,4 +1,4 @@
-from .application import crawl_info, crawl_ipo, decode_brand_list
+from .application import crawl_info, crawl_info_multiple, crawl_ipo, decode_brand_list
 from .domain import errors
 from .domain.aggregates import StockCodeSingleAggregate
 from .domain.entity import Stock
@@ -22,14 +22,14 @@ from .domain.services.method import (
     volatility,
 )
 from .domain.values import (
+    DecodeHtmlPageStockIpo,
+    RawHtmlPageStockInfo,
+    RawHtmlPageStockInfoMultipleDaysMain,
+    RawHtmlPageStockInfoMultipleDaysSub,
+    RawHtmlPageStockIpo,
     StockDataEstimated,
     StockDataProcessed,
     StockDataVisualized,
-    StockInfoHtmlPage,
-    StockInfoMultipleDaysMainHtmlPage,
-    StockInfoMultipleDaysSubHtmlPage,
-    StockIpo,
-    StockIpoHtmlPage,
 )
 from .example_data import example
 
@@ -45,7 +45,7 @@ sa_volume = SaVolume()
 stock_analysis = [sa_fundamental, sa_volume]
 
 # comparable tuple
-VERSION = (0, 6, 3)
+VERSION = (0, 6, 4)
 # generate __version__ via VERSION tuple
 __version__ = ".".join(map(str, VERSION))
 

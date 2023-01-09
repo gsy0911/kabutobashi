@@ -1,29 +1,37 @@
-from typing import NoReturn, Union
+from typing import List, NoReturn, Union
 
 import requests  # type: ignore
 
 from kabutobashi.domain.errors import KabutobashiPageError
-from kabutobashi.domain.values import IHtmlPageRepository, RawHtmlPage, StockInfoHtmlPage, StockIpoHtmlPage, UserAgent
+from kabutobashi.domain.values import (
+    IHtmlPageRepository,
+    RawHtmlPage,
+    RawHtmlPageStockInfo,
+    RawHtmlPageStockInfoMultipleDaysMain,
+    RawHtmlPageStockInfoMultipleDaysSub,
+    RawHtmlPageStockIpo,
+    UserAgent,
+)
 
 __all__ = [
     "HtmlPageBasicRepository",
     "StockInfoHtmlPageRepository",
     "StockIpoHtmlPageRepository",
-    "StockInfoMultipleDaysMainHtmlPageRepository",
-    "StockInfoMultipleDaysSubHtmlPageRepository",
+    "StockInfoMultipleDaysHtmlPageRepository",
 ]
 
 
 class HtmlPageBasicRepository(IHtmlPageRepository):
-    def __init__(self, url: str, page_type: str):
-        self.url = url
+    """
+    Model: Repository(Interface)
+    """
+
+    def __init__(self, urls: List[str], page_type: str):
+        self.urls = urls
         self.page_type = page_type
 
     @staticmethod
     def from_url(url: str, page_type: str) -> "RawHtmlPage":
-        """
-        requestsを使って、webからhtmlを取得する
-        """
         user_agent = UserAgent.get_user_agent_header()
         r = requests.get(url, headers=user_agent)
 
@@ -34,8 +42,8 @@ class HtmlPageBasicRepository(IHtmlPageRepository):
         r.encoding = r.apparent_encoding
         return RawHtmlPage(html=r.text, page_type=page_type, url=url)
 
-    def _html_page_read(self) -> RawHtmlPage:
-        return self.from_url(url=self.url, page_type=self.page_type)
+    def _html_page_read(self) -> List[RawHtmlPage]:
+        return [self.from_url(url=url, page_type=self.page_type) for url in self.urls]
 
     def _read_hook(self, html_page: RawHtmlPage) -> RawHtmlPage:
         return html_page
@@ -45,38 +53,54 @@ class HtmlPageBasicRepository(IHtmlPageRepository):
 
 
 class StockInfoHtmlPageRepository(HtmlPageBasicRepository):
+    """
+    Model: Repository(Implemented)
+    """
+
     def __init__(self, code: Union[int, str]):
-        super().__init__(page_type="info", url=f"https://minkabu.jp/stock/{code}")
+        super().__init__(page_type="info", urls=[f"https://minkabu.jp/stock/{code}"])
         self.code = code
 
-    def _read_hook(self, html_page: RawHtmlPage) -> StockInfoHtmlPage:
-        return StockInfoHtmlPage(code=self.code, html=html_page.html, page_type=self.page_type, url=self.url)
+    def _read_hook(self, html_page_list: List[RawHtmlPage]) -> RawHtmlPageStockInfo:
+        return RawHtmlPageStockInfo(
+            code=self.code, html=html_page_list[0].html, page_type=self.page_type, url=self.urls[0]
+        )
 
 
 class StockIpoHtmlPageRepository(HtmlPageBasicRepository):
+    """
+    Model: Repository(Implemented)
+    """
+
     def __init__(self, year: str):
-        super().__init__(page_type="ipo", url=f"https://96ut.com/ipo/list.php?year={year}")
+        super().__init__(page_type="ipo", urls=[f"https://96ut.com/ipo/list.php?year={year}"])
         self.year = year
 
-    def _read_hook(self, html_page: RawHtmlPage) -> StockIpoHtmlPage:
-        return StockIpoHtmlPage(html=html_page.html, page_type=self.page_type, url=self.url, year=self.year)
+    def _read_hook(self, html_page_list: List[RawHtmlPage]) -> RawHtmlPageStockIpo:
+        return RawHtmlPageStockIpo(
+            html=html_page_list[0].html, page_type=self.page_type, url=self.urls[0], year=self.year
+        )
 
 
-class StockInfoMultipleDaysMainHtmlPageRepository(HtmlPageBasicRepository):
+class StockInfoMultipleDaysHtmlPageRepository(HtmlPageBasicRepository):
+    """
+    Model: Repository(Implemented)
+    """
+
     def __init__(self, code: Union[int, str]):
-        super().__init__(page_type="info_multiple", url=f"https://minkabu.jp/stock/{code}/daily_bar")
+        main_html = f"https://minkabu.jp/stock/{code}/daily_bar"
+        sub_html = f"https://minkabu.jp/stock/{code}/daily_valuation"
+        super().__init__(page_type="info_multiple", urls=[main_html, sub_html])
         self.code = code
 
-
-class StockInfoMultipleDaysSubHtmlPageRepository(HtmlPageBasicRepository):
-    def __init__(self, code: Union[int, str]):
-        super().__init__(page_type="info_multiple", url=f"https://minkabu.jp/stock/{code}/daily_valuation")
-        self.code = code
-
-
-class HtmlPageStorageRepository(IHtmlPageRepository):
-    def _html_page_read(self) -> RawHtmlPage:
-        pass
-
-    def _html_page_write(self, data: RawHtmlPage) -> NoReturn:
-        pass
+    def _read_hook(
+        self, html_page_list: List[RawHtmlPage]
+    ) -> List[Union[RawHtmlPageStockInfoMultipleDaysMain, RawHtmlPageStockInfoMultipleDaysSub]]:
+        return [
+            RawHtmlPageStockInfoMultipleDaysMain(
+                html=html_page_list[0].html, page_type=self.page_type, url=self.urls[0], code=self.code
+            ),
+            RawHtmlPageStockInfoMultipleDaysSub(
+                html=html_page_list[1].html, page_type=self.page_type, url=self.urls[1], code=self.code
+            ),
+        ]
