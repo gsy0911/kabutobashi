@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from typing import NoReturn, Union
+from typing import List, NoReturn, Union
 
 from bs4 import BeautifulSoup
 
@@ -28,15 +28,15 @@ class IHtmlPageRepository(ABC):
     Model: Repository(for ValueObject)
     """
 
-    def read(self) -> RawHtmlPage:
-        html_page = self._html_page_read()
-        return self._read_hook(html_page=html_page)
+    def read(self) -> Union[RawHtmlPage, List[RawHtmlPage]]:
+        html_page_list = self._html_page_read()
+        return self._read_hook(html_page_list=html_page_list)
 
-    def _read_hook(self, html_page: RawHtmlPage) -> RawHtmlPage:
-        return html_page
+    def _read_hook(self, html_page_list: List[RawHtmlPage]) -> Union[RawHtmlPage, List[RawHtmlPage]]:
+        return html_page_list
 
     @abstractmethod
-    def _html_page_read(self) -> RawHtmlPage:
+    def _html_page_read(self) -> Union[RawHtmlPage, List[RawHtmlPage]]:
         raise NotImplementedError()  # pragma: no cover
 
     def write(self, data: RawHtmlPage) -> NoReturn:
