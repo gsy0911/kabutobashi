@@ -7,12 +7,12 @@ from typing import Dict, List, Union
 import pandas as pd
 
 from kabutobashi.domain.values import (
-    StockInfoHtmlPage,
+    RawHtmlPageStockInfo,
+    RawHtmlPageStockInfoMultipleDaysMain,
+    RawHtmlPageStockInfoMultipleDaysSub,
+    RawHtmlPageStockIpo,
     StockInfoMinkabuTopPage,
-    StockInfoMultipleDaysMainHtmlPage,
-    StockInfoMultipleDaysSubHtmlPage,
     StockIpo,
-    StockIpoHtmlPage,
 )
 
 from .utils import IHtmlDecoder, PageDecoder
@@ -35,7 +35,7 @@ class StockInfoMinkabuTopHtmlDecoder(IHtmlDecoder):
     def _decode_to_object_hook(self, data: dict) -> StockInfoMinkabuTopPage:
         return StockInfoMinkabuTopPage.from_dict(data=data)
 
-    def _decode(self, html_page: StockInfoHtmlPage) -> dict:
+    def _decode(self, html_page: RawHtmlPageStockInfo) -> dict:
         soup = html_page.get_as_soup()
         result: Dict[str, Union[str, bool, int, float, List[str]]] = {"html": html_page.html}
 
@@ -97,7 +97,7 @@ class StockIpoHtmlDecoder(IHtmlDecoder):
     Model: Service(Implemented)
     """
 
-    def _decode(self, html_page: StockIpoHtmlPage) -> dict:
+    def _decode(self, html_page: RawHtmlPageStockIpo) -> dict:
         soup = html_page.get_as_soup()
         table_content = soup.find("div", {"class": "tablewrap"})
         table_thead = table_content.find("thead")
@@ -141,10 +141,10 @@ class StockInfoMultipleDaysHtmlDecoder(IHtmlDecoder):
         >>> records = kb.Stock.from_df(df)
     """
 
-    main_html_page: StockInfoMultipleDaysMainHtmlPage
-    sub_html_page: StockInfoMultipleDaysSubHtmlPage
+    main_html_page: RawHtmlPageStockInfoMultipleDaysMain
+    sub_html_page: RawHtmlPageStockInfoMultipleDaysSub
 
-    def _decode(self, html_page: StockIpoHtmlPage) -> dict:
+    def _decode(self, html_page: RawHtmlPageStockIpo) -> dict:
         result_1 = []
         result_2 = []
         main_soup = self.main_html_page.get_as_soup()
