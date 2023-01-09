@@ -72,11 +72,3 @@ class StockInfoMultipleDaysSubHtmlPageRepository(HtmlPageBasicRepository):
     def __init__(self, code: Union[int, str]):
         super().__init__(page_type="info_multiple", url=f"https://minkabu.jp/stock/{code}/daily_valuation")
         self.code = code
-
-
-class HtmlPageStorageRepository(IHtmlPageRepository):
-    def _html_page_read(self) -> RawHtmlPage:
-        pass
-
-    def _html_page_write(self, data: RawHtmlPage) -> NoReturn:
-        pass
