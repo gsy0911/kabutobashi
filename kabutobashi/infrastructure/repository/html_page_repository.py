@@ -22,15 +22,16 @@ __all__ = [
 
 
 class HtmlPageBasicRepository(IHtmlPageRepository):
+    """
+    Model: Repository(Interface)
+    """
+
     def __init__(self, urls: List[str], page_type: str):
         self.urls = urls
         self.page_type = page_type
 
     @staticmethod
     def from_url(url: str, page_type: str) -> "RawHtmlPage":
-        """
-        requestsを使って、webからhtmlを取得する
-        """
         user_agent = UserAgent.get_user_agent_header()
         r = requests.get(url, headers=user_agent)
 
@@ -52,6 +53,10 @@ class HtmlPageBasicRepository(IHtmlPageRepository):
 
 
 class StockInfoHtmlPageRepository(HtmlPageBasicRepository):
+    """
+    Model: Repository(Implemented)
+    """
+
     def __init__(self, code: Union[int, str]):
         super().__init__(page_type="info", urls=[f"https://minkabu.jp/stock/{code}"])
         self.code = code
@@ -63,6 +68,10 @@ class StockInfoHtmlPageRepository(HtmlPageBasicRepository):
 
 
 class StockIpoHtmlPageRepository(HtmlPageBasicRepository):
+    """
+    Model: Repository(Implemented)
+    """
+
     def __init__(self, year: str):
         super().__init__(page_type="ipo", urls=[f"https://96ut.com/ipo/list.php?year={year}"])
         self.year = year
@@ -74,6 +83,10 @@ class StockIpoHtmlPageRepository(HtmlPageBasicRepository):
 
 
 class StockInfoMultipleDaysHtmlPageRepository(HtmlPageBasicRepository):
+    """
+    Model: Repository(Implemented)
+    """
+
     def __init__(self, code: Union[int, str]):
         main_html = f"https://minkabu.jp/stock/{code}/daily_bar"
         sub_html = f"https://minkabu.jp/stock/{code}/daily_valuation"

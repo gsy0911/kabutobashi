@@ -25,7 +25,7 @@ class RawHtmlPage:
 
 class IHtmlPageRepository(ABC):
     """
-    Model: Repository(for ValueObject)
+    Model: Repository(for ValueObject, Interface)
     """
 
     def read(self) -> Union[RawHtmlPage, List[RawHtmlPage]]:
