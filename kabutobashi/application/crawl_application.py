@@ -27,6 +27,13 @@ def crawl_info(code: str):
     return StockConverter().convert(value_object=info_object)
 
 
+def crawl_info_multiple(code: str):
+    di = Injector([StockCrawlDi(page_type="info_multiple", code=code)])
+    data_crawler = di.get(DataCrawlController)
+    info_object = data_crawler.run()
+    return StockConverter().convert(value_object=info_object)
+
+
 def crawl_ipo(year: str):
     di = Injector([StockCrawlDi(page_type="ipo", year=year)])
     data_crawler = di.get(DataCrawlController)

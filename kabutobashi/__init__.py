@@ -1,4 +1,4 @@
-from .application import crawl_info, crawl_ipo, decode_brand_list
+from .application import crawl_info, crawl_info_multiple, crawl_ipo, decode_brand_list
 from .domain import errors
 from .domain.aggregates import StockCodeSingleAggregate
 from .domain.entity import Stock
