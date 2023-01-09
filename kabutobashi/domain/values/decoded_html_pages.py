@@ -79,6 +79,45 @@ class DecodeHtmlPageStockInfoMinkabuTop(DecodedHtmlPage, IDictSerialize):
 
 
 @dataclass(frozen=True)
+class DecodeHtmlPageStockInfoMultipleDays(DecodedHtmlPage, IDictSerialize):
+    code: str
+    dt: str
+    open: str
+    high: str
+    low: str
+    close: str
+    per: str
+    psr: str
+    pbr: str
+    volume: str
+    html: str = field(repr=False)
+
+    def _validate(self):
+        pass
+
+    def to_dict(self) -> dict:
+        data = asdict(self)
+        del data["html"]
+        return data
+
+    @staticmethod
+    def from_dict(data: dict) -> "DecodeHtmlPageStockInfoMultipleDays":
+        return DecodeHtmlPageStockInfoMultipleDays(
+            code=data["code"],
+            dt=data["dt"],
+            open=data["open"],
+            high=data["high"],
+            low=data["low"],
+            close=data["close"],
+            pbr=data["pbr"],
+            per=data["per"],
+            psr=data["psr"],
+            volume=data["volume"],
+            html="",
+        )
+
+
+@dataclass(frozen=True)
 class DecodeHtmlPageStockIpo(DecodedHtmlPage, IDictSerialize):
     code: str = field(metadata={"jp": "銘柄コード"})
     manager: str = field(metadata={"jp": "主幹"})

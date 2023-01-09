@@ -15,9 +15,18 @@ class StockCrawlDi(Module):
 
     def configure(self, binder: Binder) -> None:
         # repository/decoders
-        from kabutobashi.domain.services import IHtmlDecoder, StockInfoMinkabuTopHtmlDecoder, StockIpoHtmlDecoder
+        from kabutobashi.domain.services import (
+            IHtmlDecoder,
+            StockInfoMinkabuTopHtmlDecoder,
+            StockInfoMultipleDaysHtmlDecoder,
+            StockIpoHtmlDecoder,
+        )
         from kabutobashi.domain.values import IHtmlPageRepository
-        from kabutobashi.infrastructure.repository import StockInfoHtmlPageRepository, StockIpoHtmlPageRepository
+        from kabutobashi.infrastructure.repository import (
+            StockInfoHtmlPageRepository,
+            StockInfoMultipleDaysHtmlPageRepository,
+            StockIpoHtmlPageRepository,
+        )
 
         if self.page_type == "info":
             # repository-bind
@@ -29,3 +38,8 @@ class StockCrawlDi(Module):
             binder.bind(IHtmlPageRepository, StockIpoHtmlPageRepository(year=self.year))
             # decoder-bind
             binder.bind(IHtmlDecoder, StockIpoHtmlDecoder)
+        elif self.page_type == "info_multiple":
+            # repository-bind
+            binder.bind(IHtmlPageRepository, StockInfoMultipleDaysHtmlPageRepository(code=self.code))
+            # decoder-bind
+            binder.bind(IHtmlDecoder, StockInfoMultipleDaysHtmlDecoder)
