@@ -209,7 +209,9 @@ class TestStockReferenceIndicator:
 
 class TestStockIpo:
     def test_pass_init(self):
-        _ = kb.StockIpo(code="", manager="", stock_listing_at="", public_offering=0, evaluation="", initial_price=0)
+        _ = kb.DecodeHtmlPageStockIpo(
+            code="", manager="", stock_listing_at="", public_offering=0, evaluation="", initial_price=0
+        )
 
 
 class TestStock:

@@ -22,6 +22,7 @@ from .domain.services.method import (
     volatility,
 )
 from .domain.values import (
+    DecodeHtmlPageStockIpo,
     RawHtmlPageStockInfo,
     RawHtmlPageStockInfoMultipleDaysMain,
     RawHtmlPageStockInfoMultipleDaysSub,
@@ -29,7 +30,6 @@ from .domain.values import (
     StockDataEstimated,
     StockDataProcessed,
     StockDataVisualized,
-    StockIpo,
 )
 from .example_data import example
 
