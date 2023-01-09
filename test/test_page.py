@@ -1,5 +1,5 @@
 from kabutobashi.domain.services.decode_html import StockInfoMinkabuTopHtmlDecoder, StockIpoHtmlDecoder
-from kabutobashi.domain.values import StockInfoMinkabuTopPage
+from kabutobashi.domain.values import DecodeHtmlPageStockInfoMinkabuTop
 from kabutobashi.infrastructure.repository import StockInfoHtmlPageRepository, StockIpoHtmlPageRepository
 
 
@@ -12,7 +12,7 @@ def test_crawl_page_detail():
 
     result_object = StockInfoMinkabuTopHtmlDecoder().decode_to_object(html_page=html_page)
     assert result_object is not None
-    assert type(result_object) is StockInfoMinkabuTopPage
+    assert type(result_object) is DecodeHtmlPageStockInfoMinkabuTop
 
 
 def test_crawl_ipo_list():

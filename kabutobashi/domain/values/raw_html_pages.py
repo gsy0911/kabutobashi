@@ -48,20 +48,20 @@ class IHtmlPageRepository(ABC):
 
 
 @dataclass(frozen=True)
-class StockInfoHtmlPage(RawHtmlPage):
+class RawHtmlPageStockInfo(RawHtmlPage):
     code: Union[int, str]
 
 
 @dataclass(frozen=True)
-class StockIpoHtmlPage(RawHtmlPage):
+class RawHtmlPageStockIpo(RawHtmlPage):
     year: str
 
 
 @dataclass(frozen=True)
-class StockInfoMultipleDaysMainHtmlPage(RawHtmlPage):
+class RawHtmlPageStockInfoMultipleDaysMain(RawHtmlPage):
     code: Union[int, str]
 
 
 @dataclass(frozen=True)
-class StockInfoMultipleDaysSubHtmlPage(RawHtmlPage):
+class RawHtmlPageStockInfoMultipleDaysSub(RawHtmlPage):
     code: Union[int, str]

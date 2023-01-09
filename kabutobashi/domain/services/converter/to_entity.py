@@ -1,20 +1,20 @@
 from typing import Union
 
 from kabutobashi.domain.entity.stock import Stock, StockBrand, StockPriceRecord, StockReferenceIndicator
-from kabutobashi.domain.values import StockInfoMinkabuTopPage, StockIpo
+from kabutobashi.domain.values import DecodeHtmlPageStockInfoMinkabuTop, DecodeHtmlPageStockIpo
 
 
 class StockConverter:
-    def convert(self, value_object: Union[StockIpo, StockInfoMinkabuTopPage]) -> Stock:
-        if type(value_object) is StockInfoMinkabuTopPage:
+    def convert(self, value_object: Union[DecodeHtmlPageStockIpo, DecodeHtmlPageStockInfoMinkabuTop]) -> Stock:
+        if type(value_object) is DecodeHtmlPageStockInfoMinkabuTop:
             return self._convert_stock_info_minkabu_top_page(value_object=value_object)
-        elif type(value_object) is StockIpo:
+        elif type(value_object) is DecodeHtmlPageStockIpo:
             return self._convert_stock_ipo_page(value_object=value_object)
         else:
             raise ValueError()
 
     @staticmethod
-    def _convert_stock_info_minkabu_top_page(value_object: StockInfoMinkabuTopPage) -> Stock:
+    def _convert_stock_info_minkabu_top_page(value_object: DecodeHtmlPageStockInfoMinkabuTop) -> Stock:
         data = value_object.to_dict()
 
         stock_brand = StockBrand.from_dict(data)
@@ -28,7 +28,7 @@ class StockConverter:
         )
 
     @staticmethod
-    def _convert_stock_ipo_page(value_object: StockIpo) -> Stock:
+    def _convert_stock_ipo_page(value_object: DecodeHtmlPageStockIpo) -> Stock:
 
         data = value_object.to_dict()
         stock_brand = StockBrand.from_dict(data)

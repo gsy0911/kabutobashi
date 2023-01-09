@@ -1,11 +1,11 @@
-from .decoded_html_pages import DecodedHtmlPage, StockInfoMinkabuTopPage, StockIpo
+from .decoded_html_pages import DecodedHtmlPage, DecodeHtmlPageStockInfoMinkabuTop, DecodeHtmlPageStockIpo
 from .raw_html_pages import (
     IHtmlPageRepository,
     RawHtmlPage,
-    StockInfoHtmlPage,
-    StockInfoMultipleDaysMainHtmlPage,
-    StockInfoMultipleDaysSubHtmlPage,
-    StockIpoHtmlPage,
+    RawHtmlPageStockInfo,
+    RawHtmlPageStockInfoMultipleDaysMain,
+    RawHtmlPageStockInfoMultipleDaysSub,
+    RawHtmlPageStockIpo,
 )
 from .stock_data import StockDataEstimated, StockDataProcessed, StockDataVisualized
 from .user_agent import UserAgent

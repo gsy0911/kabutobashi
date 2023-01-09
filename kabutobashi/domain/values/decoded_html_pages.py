@@ -22,7 +22,7 @@ class DecodedHtmlPage(ABC):
 
 
 @dataclass(frozen=True)
-class StockInfoMinkabuTopPage(DecodedHtmlPage, IDictSerialize):
+class DecodeHtmlPageStockInfoMinkabuTop(DecodedHtmlPage, IDictSerialize):
     code: str
     dt: str
     name: str
@@ -56,8 +56,8 @@ class StockInfoMinkabuTopPage(DecodedHtmlPage, IDictSerialize):
         return data
 
     @staticmethod
-    def from_dict(data: dict) -> "StockInfoMinkabuTopPage":
-        return StockInfoMinkabuTopPage(
+    def from_dict(data: dict) -> "DecodeHtmlPageStockInfoMinkabuTop":
+        return DecodeHtmlPageStockInfoMinkabuTop(
             code=data["code"],
             dt=data["dt"],
             name=data["name"],
@@ -79,7 +79,7 @@ class StockInfoMinkabuTopPage(DecodedHtmlPage, IDictSerialize):
 
 
 @dataclass(frozen=True)
-class StockIpo(DecodedHtmlPage, IDictSerialize):
+class DecodeHtmlPageStockIpo(DecodedHtmlPage, IDictSerialize):
     code: str = field(metadata={"jp": "銘柄コード"})
     manager: str = field(metadata={"jp": "主幹"})
     stock_listing_at: str = field(metadata={"jp": "上場日"})
@@ -91,7 +91,7 @@ class StockIpo(DecodedHtmlPage, IDictSerialize):
         pass
 
     @staticmethod
-    def from_dict(data: dict) -> "StockIpo":
+    def from_dict(data: dict) -> "DecodeHtmlPageStockIpo":
         manager = ""
         stock_listing_at = ""
         public_offering = 0
@@ -122,7 +122,7 @@ class StockIpo(DecodedHtmlPage, IDictSerialize):
         elif "initial_price" in data:
             initial_price = data["initial_price"]
 
-        return StockIpo(
+        return DecodeHtmlPageStockIpo(
             code=data["code"],
             manager=manager,
             stock_listing_at=stock_listing_at,

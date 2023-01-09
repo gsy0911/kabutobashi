@@ -22,14 +22,14 @@ from .domain.services.method import (
     volatility,
 )
 from .domain.values import (
+    DecodeHtmlPageStockIpo,
+    RawHtmlPageStockInfo,
+    RawHtmlPageStockInfoMultipleDaysMain,
+    RawHtmlPageStockInfoMultipleDaysSub,
+    RawHtmlPageStockIpo,
     StockDataEstimated,
     StockDataProcessed,
     StockDataVisualized,
-    StockInfoHtmlPage,
-    StockInfoMultipleDaysMainHtmlPage,
-    StockInfoMultipleDaysSubHtmlPage,
-    StockIpo,
-    StockIpoHtmlPage,
 )
 from .example_data import example
 
