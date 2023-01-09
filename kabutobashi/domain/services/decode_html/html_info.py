@@ -28,8 +28,8 @@ class StockInfoMinkabuTopHtmlDecoder(IHtmlDecoder):
     Examples:
         >>> from kabutobashi.infrastructure.repository import StockInfoHtmlPageRepository
         >>> # get single page
-        >>> page_html = StockInfoHtmlPageRepository(code="0001").read()
-        >>> result = StockInfoMinkabuTopHtmlDecoder().decode_to_dict(page_html=page_html)
+        >>> html_page = StockInfoHtmlPageRepository(code="0001").read()
+        >>> result = StockInfoMinkabuTopHtmlDecoder().decode_to_dict(html_page=html_page)
     """
 
     def _decode_to_object_hook(self, data: dict) -> DecodeHtmlPageStockInfoMinkabuTop:
@@ -130,13 +130,11 @@ class StockInfoMultipleDaysHtmlDecoder(IHtmlDecoder):
     Model: Service(Implemented)
 
     Examples:
-        >>> from kabutobashi.infrastructure.repository import StockInfoMultipleDaysMainHtmlPageRepository
-        >>> from kabutobashi.infrastructure.repository import StockInfoMultipleDaysSubHtmlPageRepository
+        >>> from kabutobashi.infrastructure.repository import StockInfoMultipleDaysHtmlPageRepository
         >>> from kabutobashi.domain.services import StockInfoMultipleDaysHtmlDecoder
         >>> import kabutobashi as kb
-        >>> main_html_page = StockInfoMultipleDaysMainHtmlPageRepository(code=1375).read()
-        >>> sub_html_page = StockInfoMultipleDaysSubHtmlPageRepository(code=1375).read()
-        >>> data = StockInfoMultipleDaysHtmlDecoder(main_html_page, sub_html_page).decode_to_dict()
+        >>> html_page_list = StockInfoMultipleDaysHtmlPageRepository(code=1375).read()
+        >>> data = StockInfoMultipleDaysHtmlDecoder().decode_to_dict(html_page=html_page_list)
         >>> df = pd.DataFrame(data)
         >>> records = kb.Stock.from_df(df)
     """
