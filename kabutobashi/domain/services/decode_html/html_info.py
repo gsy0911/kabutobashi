@@ -8,6 +8,7 @@ import pandas as pd
 
 from kabutobashi.domain.values import (
     DecodeHtmlPageStockInfoMinkabuTop,
+    DecodeHtmlPageStockInfoMultipleDays,
     DecodeHtmlPageStockIpo,
     RawHtmlPageStockInfo,
     RawHtmlPageStockInfoMultipleDaysMain,
@@ -174,7 +175,11 @@ class StockInfoMultipleDaysHtmlDecoder(IHtmlDecoder):
 
         df = pd.merge(df1, df2, on="dt")
         df["code"] = html_page[0].code
-        return df.to_dict(orient="records")
+        return {"info_list": df.to_dict(orient="records")}
 
-    def _decode_to_object_hook(self, data: dict) -> object:
-        pass
+    def _decode_to_object_hook(self, data: dict) -> List["DecodeHtmlPageStockInfoMultipleDays"]:
+        info_list = data["info_list"]
+        result_list = []
+        for v in info_list:
+            result_list.append(DecodeHtmlPageStockInfoMultipleDays.from_dict(data=v))
+        return result_list
