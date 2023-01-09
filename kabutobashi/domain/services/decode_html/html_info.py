@@ -141,14 +141,13 @@ class StockInfoMultipleDaysHtmlDecoder(IHtmlDecoder):
         >>> records = kb.Stock.from_df(df)
     """
 
-    main_html_page: RawHtmlPageStockInfoMultipleDaysMain
-    sub_html_page: RawHtmlPageStockInfoMultipleDaysSub
-
-    def _decode(self, html_page: RawHtmlPageStockIpo) -> dict:
+    def _decode(
+        self, html_page: List[Union[RawHtmlPageStockInfoMultipleDaysMain, RawHtmlPageStockInfoMultipleDaysSub]]
+    ) -> dict:
         result_1 = []
         result_2 = []
-        main_soup = self.main_html_page.get_as_soup()
-        sub_soup = self.sub_html_page.get_as_soup()
+        main_soup = html_page[0].get_as_soup()
+        sub_soup = html_page[1].get_as_soup()
         stock_recordset_tag = "md_card md_box"
 
         # ページの情報を取得
@@ -176,7 +175,7 @@ class StockInfoMultipleDaysHtmlDecoder(IHtmlDecoder):
         df2 = df2[["dt", "psr", "per", "pbr", "volume"]]
 
         df = pd.merge(df1, df2, on="dt")
-        df["code"] = self.main_html_page.code
+        df["code"] = html_page[0].code
         return df.to_dict(orient="records")
 
     def _decode_to_object_hook(self, data: dict) -> object:
