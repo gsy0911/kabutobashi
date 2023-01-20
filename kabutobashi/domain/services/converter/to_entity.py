@@ -45,7 +45,6 @@ class StockConverter:
 
         stock_brand = StockBrand.from_dict(data)
         stock_reference_indicator = StockReferenceIndicator.from_dict(data)
-        print(f"{data=}")
         return Stock(
             code=value_object.code,
             brand=stock_brand,
