@@ -85,7 +85,7 @@ class StockBrand(BaseModel, IDictSerialize):
             id=data.get("id"),
             code=code,
             unit=convert_int(data.get("unit", 0)),
-            market=data.get("market"),
+            market=Market.get(target=data.get("market")).market_name,
             name=data.get("name"),
             industry_type=data.get("industry_type"),
             market_capitalization=data.get("market_capitalization"),
@@ -95,9 +95,6 @@ class StockBrand(BaseModel, IDictSerialize):
 
     def to_dict(self) -> dict:
         return self.dict()
-
-    def is_reit(self) -> bool:
-        return self.market == "東証REIT"
 
     def __eq__(self, other):
         if not isinstance(other, StockBrand):
