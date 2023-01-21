@@ -1,4 +1,6 @@
+import re
 from datetime import datetime
+from enum import Enum
 from typing import List, Optional
 
 import jpholiday
@@ -9,7 +11,27 @@ from kabutobashi.domain.errors import KabutobashiEntityError
 from kabutobashi.domain.serialize import IDfSerialize, IDictSerialize
 from kabutobashi.utilities import convert_float, convert_int
 
-__all__ = ["StockBrand", "StockPriceRecord", "StockReferenceIndicator", "Stock"]
+__all__ = ["Market", "StockBrand", "StockPriceRecord", "StockReferenceIndicator", "Stock"]
+
+
+class Market(Enum):
+    TOKYO_STOCK_EXCHANGE_PRIME = ("東証プライム", "^(東証|東京証券取引所).*?(プライム).*?$")
+    TOKYO_STOCK_EXCHANGE_STANDARD = ("東証スタンダード", "^(東証|東京証券取引所).*?(スタンダード).*?$")
+    TOKYO_STOCK_EXCHANGE_GROWTH = ("東証グロース", "^(東証|東京証券取引所).*?(グロース).*?$")
+    NONE = ("該当無し", "NONE")
+
+    def __init__(self, market_name: str, regex: str):
+        self.market_name = market_name
+        self.regex = regex
+
+    @staticmethod
+    def get(target: Optional[str]):
+        if target is None:
+            return Market.NONE
+        for v in list(Market):
+            if re.match(v.regex, target):
+                return v
+        return Market.NONE
 
 
 class StockBrand(BaseModel, IDictSerialize):
@@ -63,7 +85,7 @@ class StockBrand(BaseModel, IDictSerialize):
             id=data.get("id"),
             code=code,
             unit=convert_int(data.get("unit", 0)),
-            market=data.get("market"),
+            market=Market.get(target=data.get("market")).market_name,
             name=data.get("name"),
             industry_type=data.get("industry_type"),
             market_capitalization=data.get("market_capitalization"),
@@ -73,9 +95,6 @@ class StockBrand(BaseModel, IDictSerialize):
 
     def to_dict(self) -> dict:
         return self.dict()
-
-    def is_reit(self) -> bool:
-        return self.market == "東証REIT"
 
     def __eq__(self, other):
         if not isinstance(other, StockBrand):
