@@ -3,13 +3,25 @@ import pydantic
 import pytest
 
 import kabutobashi as kb
-from kabutobashi.domain.entity.stock import StockBrand, StockPriceRecord, StockReferenceIndicator
+from kabutobashi.domain.entity.stock import Market, StockBrand, StockPriceRecord, StockReferenceIndicator
 from kabutobashi.domain.errors import KabutobashiEntityError
 
 
 @pytest.fixture(scope="module", autouse=True)
 def entity() -> pd.DataFrame:
     yield kb.example()
+
+
+class TestMarket:
+    def test_get(self):
+        assert Market.get(target="") is Market.NONE
+        assert Market.get(target="東証プライ") is Market.NONE
+        assert Market.get(target="東証スタンダー") is Market.NONE
+        assert Market.get(target="東証グロー") is Market.NONE
+        assert Market.get(target=None) is Market.NONE
+        assert Market.get(target="東証プライム") is Market.TOKYO_STOCK_EXCHANGE_PRIME
+        assert Market.get(target="東証スタンダード") is Market.TOKYO_STOCK_EXCHANGE_STANDARD
+        assert Market.get(target="東証グロース") is Market.TOKYO_STOCK_EXCHANGE_GROWTH
 
 
 class TestStockBrand:
