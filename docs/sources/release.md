@@ -1,5 +1,10 @@
 # Release Note
 
+## 0.6.5
+
+- ENHANCEMENT: add stock-market-enum ([#159](https://github.com/gsy0911/kabutobashi/issues/159))
+- FIX: document works
+
 ## 0.6.4
 
 - ENHANCEMENT: add `to_dict()` to `StockAgg` ([#153](https://github.com/gsy0911/kabutobashi/issues/153))
