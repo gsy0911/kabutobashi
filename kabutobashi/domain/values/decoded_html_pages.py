@@ -1,6 +1,6 @@
 from abc import ABC
 
-from pydantic import BaseModel, Field, computed_field, field_validator
+from pydantic import BaseModel, Field, computed_field
 
 from kabutobashi.utilities import convert_float
 
@@ -38,9 +38,6 @@ class DecodeHtmlPageStockInfoMinkabuTop(BaseModel, DecodedHtmlPage):
     market_capitalization: str
     issued_shares: str
     html: str = Field(repr=False)
-
-    def _validate(self):
-        pass
 
     @computed_field
     @property
