@@ -94,7 +94,7 @@ class StockBrand(BaseModel, IDictSerialize):
         )
 
     def to_dict(self) -> dict:
-        return self.dict()
+        return self.model_dump()
 
     def __eq__(self, other):
         if not isinstance(other, StockBrand):
@@ -124,8 +124,9 @@ class StockBrand(BaseModel, IDictSerialize):
             is_delisting=self.is_delisting or other.is_delisting,
         )
 
-    class Config:
-        orm_mode = True
+    # TODO modify
+    # class Config:
+    #     orm_mode = True
 
 
 class StockPriceRecord(BaseModel, IDictSerialize, IDfSerialize):
@@ -170,8 +171,7 @@ class StockPriceRecord(BaseModel, IDictSerialize, IDfSerialize):
         return self.open == 0 or self.high == 0 or self.low == 0 or self.close == 0
 
     def to_dict(self) -> dict:
-        data = self.dict()
-        del data["id"]
+        data = self.model_dump(exclude={"id"})
         return data
 
     @staticmethod
@@ -218,8 +218,9 @@ class StockPriceRecord(BaseModel, IDictSerialize, IDfSerialize):
     def __hash__(self):
         return hash(self.code)
 
-    class Config:
-        orm_mode = True
+    # TODO update
+    # class Config:
+    #     orm_mode = True
 
 
 class StockReferenceIndicator(BaseModel, IDictSerialize):
@@ -250,7 +251,7 @@ class StockReferenceIndicator(BaseModel, IDictSerialize):
         )
 
     def to_dict(self) -> dict:
-        return self.dict()
+        return self.model_dump()
 
     @staticmethod
     def from_dict(data: dict) -> "StockReferenceIndicator":
