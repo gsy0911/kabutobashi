@@ -1,0 +1,36 @@
+version: '3'
+
+vars:
+  MODULE_NAME: kabutobashi
+
+
+tasks:
+  default:
+    cmds:
+      - task -l --sort none
+    silent: true
+
+  format:
+    desc: format with black
+    cmds:
+      - isort {{.MODULE_NAME}}
+      - isort test
+      - black .
+    preconditions:
+      - type python > /dev/null 2>&1
+
+  lint:
+    desc: lint python (flake8 and mypy)
+    cmds:
+      - pflake8 {{.MODULE_NAME}}
+      - mypy {{.MODULE_NAME}}
+      - bandit --recursive src
+    preconditions:
+      - type python > /dev/null 2>&1
+
+  test:
+    desc: deploy sphinx-contents
+    cmds:
+      - pytest ./test -vv --cov=./{{.MODULE_NAME}} --cov-report=html
+    preconditions:
+      - type python > /dev/null 2>&1
