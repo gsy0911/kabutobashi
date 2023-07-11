@@ -1,11 +1,17 @@
-from abc import ABC, abstractmethod
-from dataclasses import asdict, dataclass, field
+from abc import ABC
 
-from kabutobashi.domain.serialize import IDictSerialize
+from pydantic import BaseModel, Field, computed_field, field_validator
+
 from kabutobashi.utilities import convert_float
 
+__all__ = [
+    "DecodedHtmlPage",
+    "DecodeHtmlPageStockIpo",
+    "DecodeHtmlPageStockInfoMultipleDays",
+    "DecodeHtmlPageStockInfoMinkabuTop",
+]
 
-@dataclass(frozen=True)
+
 class DecodedHtmlPage(ABC):
     """
     Model: ValueObject
@@ -13,16 +19,8 @@ class DecodedHtmlPage(ABC):
     id: code & dt
     """
 
-    def __post_init__(self):
-        self._validate()
 
-    @abstractmethod
-    def _validate(self):
-        raise NotImplementedError()  # pragma: no cover
-
-
-@dataclass(frozen=True)
-class DecodeHtmlPageStockInfoMinkabuTop(DecodedHtmlPage, IDictSerialize):
+class DecodeHtmlPageStockInfoMinkabuTop(BaseModel, DecodedHtmlPage):
     code: str
     dt: str
     name: str
@@ -39,21 +37,20 @@ class DecodeHtmlPageStockInfoMinkabuTop(DecodedHtmlPage, IDictSerialize):
     volume: str
     market_capitalization: str
     issued_shares: str
-    html: str = field(repr=False)
+    html: str = Field(repr=False)
 
     def _validate(self):
         pass
 
-    def is_delisting(self) -> bool:
-        # 上場廃止の確認
+    @computed_field
+    @property
+    def is_delisting(self) -> int:
         if self.open == "---" and self.high == "---" and self.low == "---":
             return True
         return False
 
     def to_dict(self) -> dict:
-        data = asdict(self)
-        del data["html"]
-        return data
+        return self.model_dump(exclude={"html"})
 
     @staticmethod
     def from_dict(data: dict) -> "DecodeHtmlPageStockInfoMinkabuTop":
@@ -78,8 +75,7 @@ class DecodeHtmlPageStockInfoMinkabuTop(DecodedHtmlPage, IDictSerialize):
         )
 
 
-@dataclass(frozen=True)
-class DecodeHtmlPageStockInfoMultipleDays(DecodedHtmlPage, IDictSerialize):
+class DecodeHtmlPageStockInfoMultipleDays(BaseModel, DecodedHtmlPage):
     code: str
     dt: str
     open: str
@@ -90,15 +86,10 @@ class DecodeHtmlPageStockInfoMultipleDays(DecodedHtmlPage, IDictSerialize):
     psr: str
     pbr: str
     volume: str
-    html: str = field(repr=False)
-
-    def _validate(self):
-        pass
+    html: str = Field(repr=False)
 
     def to_dict(self) -> dict:
-        data = asdict(self)
-        del data["html"]
-        return data
+        return self.model_dump(exclude={"html"})
 
     @staticmethod
     def from_dict(data: dict) -> "DecodeHtmlPageStockInfoMultipleDays":
@@ -117,17 +108,13 @@ class DecodeHtmlPageStockInfoMultipleDays(DecodedHtmlPage, IDictSerialize):
         )
 
 
-@dataclass(frozen=True)
-class DecodeHtmlPageStockIpo(DecodedHtmlPage, IDictSerialize):
-    code: str = field(metadata={"jp": "銘柄コード"})
-    manager: str = field(metadata={"jp": "主幹"})
-    stock_listing_at: str = field(metadata={"jp": "上場日"})
-    public_offering: float = field(metadata={"jp": "公募"})
-    evaluation: str = field(metadata={"jp": "評価"})
-    initial_price: float = field(metadata={"jp": "初値"})
-
-    def _validate(self):
-        pass
+class DecodeHtmlPageStockIpo(BaseModel, DecodedHtmlPage):
+    code: str = Field(description="銘柄コード")
+    manager: str = Field(description="主幹")
+    stock_listing_at: str = Field(description="上場日")
+    public_offering: float = Field(description="公募")
+    evaluation: str = Field(description="評価")
+    initial_price: float = Field(description="初値")
 
     @staticmethod
     def from_dict(data: dict) -> "DecodeHtmlPageStockIpo":
@@ -171,4 +158,4 @@ class DecodeHtmlPageStockIpo(DecodedHtmlPage, IDictSerialize):
         )
 
     def to_dict(self) -> dict:
-        return asdict(self)
+        return self.model_dump()
