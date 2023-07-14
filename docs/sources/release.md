@@ -1,5 +1,9 @@
 # Release Note
 
+## 0.7.0
+
+- ENHANCEMENT: use Pydantic v2 ([#166](https://github.com/gsy0911/kabutobashi/issues/166))
+
 ## 0.6.5
 
 - ENHANCEMENT: add stock-market-enum ([#159](https://github.com/gsy0911/kabutobashi/issues/159))
