@@ -94,7 +94,7 @@ class StockBrand(BaseModel, IDictSerialize):
         )
 
     def to_dict(self) -> dict:
-        return self.dict()
+        return self.model_dump()
 
     def __eq__(self, other):
         if not isinstance(other, StockBrand):
@@ -124,8 +124,9 @@ class StockBrand(BaseModel, IDictSerialize):
             is_delisting=self.is_delisting or other.is_delisting,
         )
 
-    class Config:
-        orm_mode = True
+    # TODO modify
+    # class Config:
+    #     orm_mode = True
 
 
 class StockPriceRecord(BaseModel, IDictSerialize, IDfSerialize):
@@ -170,8 +171,7 @@ class StockPriceRecord(BaseModel, IDictSerialize, IDfSerialize):
         return self.open == 0 or self.high == 0 or self.low == 0 or self.close == 0
 
     def to_dict(self) -> dict:
-        data = self.dict()
-        del data["id"]
+        data = self.model_dump(exclude={"id"})
         return data
 
     @staticmethod
@@ -218,8 +218,9 @@ class StockPriceRecord(BaseModel, IDictSerialize, IDfSerialize):
     def __hash__(self):
         return hash(self.code)
 
-    class Config:
-        orm_mode = True
+    # TODO update
+    # class Config:
+    #     orm_mode = True
 
 
 class StockReferenceIndicator(BaseModel, IDictSerialize):
@@ -231,13 +232,13 @@ class StockReferenceIndicator(BaseModel, IDictSerialize):
     id: Optional[int]
     code: str = Field(description="銘柄コード")
     dt: str = Field(description="日付")
-    psr: Optional[float] = Field(description="株価売上高倍率:Price to Sales Ratio")
-    per: Optional[float] = Field(description="株価収益率:Price Earnings Ratio")
-    pbr: Optional[float] = Field(description="株価純資産倍率:Price Book-value Ratio")
-    ipo_manager: Optional[str] = Field(description="IPO_主幹")
-    ipo_evaluation: Optional[str] = Field(description="IPO_評価")
-    stock_listing_at: Optional[str] = Field(description="上場日")
-    initial_price: Optional[float] = Field(description="初値")
+    psr: Optional[float] = Field(description="株価売上高倍率:Price to Sales Ratio", default=None)
+    per: Optional[float] = Field(description="株価収益率:Price Earnings Ratio", default=None)
+    pbr: Optional[float] = Field(description="株価純資産倍率:Price Book-value Ratio", default=None)
+    ipo_manager: Optional[str] = Field(description="IPO_主幹", default=None)
+    ipo_evaluation: Optional[str] = Field(description="IPO_評価", default=None)
+    stock_listing_at: Optional[str] = Field(description="上場日", default=None)
+    initial_price: Optional[float] = Field(description="初値", default=None)
 
     def __init__(self, id: int, code: str, dt: str, psr: Optional[float], per: Optional[float], pbr: Optional[float]):
         super().__init__(
@@ -250,7 +251,7 @@ class StockReferenceIndicator(BaseModel, IDictSerialize):
         )
 
     def to_dict(self) -> dict:
-        return self.dict()
+        return self.model_dump()
 
     @staticmethod
     def from_dict(data: dict) -> "StockReferenceIndicator":

@@ -1,23 +1,24 @@
 from abc import ABC, abstractmethod
-from dataclasses import dataclass, field
 from typing import List, NoReturn, Union
 
 from bs4 import BeautifulSoup
+from pydantic import BaseModel, Field, field_validator
 
 
-@dataclass(frozen=True)
-class RawHtmlPage:
+class RawHtmlPage(BaseModel):
     """
     Model: ValueObject
     JP: 変換対象HTML
     """
 
-    html: str = field(repr=False)
+    html: str = Field(repr=False)
     page_type: str
     url: str
 
-    def __post_init__(self):
-        assert self.page_type in ["info", "info_multiple", "ipo"]
+    @classmethod
+    @field_validator("page_type")
+    def _validate_page_type(cls, v):
+        assert v in ["info", "info_multiple", "ipo"]
 
     def get_as_soup(self) -> BeautifulSoup:
         return BeautifulSoup(self.html, features="lxml")
@@ -47,21 +48,17 @@ class IHtmlPageRepository(ABC):
         raise NotImplementedError()  # pragma: no cover
 
 
-@dataclass(frozen=True)
 class RawHtmlPageStockInfo(RawHtmlPage):
     code: Union[int, str]
 
 
-@dataclass(frozen=True)
 class RawHtmlPageStockIpo(RawHtmlPage):
     year: str
 
 
-@dataclass(frozen=True)
 class RawHtmlPageStockInfoMultipleDaysMain(RawHtmlPage):
     code: Union[int, str]
 
 
-@dataclass(frozen=True)
 class RawHtmlPageStockInfoMultipleDaysSub(RawHtmlPage):
     code: Union[int, str]
