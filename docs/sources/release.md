@@ -1,5 +1,9 @@
 # Release Note
 
+## 0.7.1
+
+- FIX: catch additional error ([#167](https://github.com/gsy0911/kabutobashi/issues/167))
+
 ## 0.7.0
 
 - ENHANCEMENT: use Pydantic v2 ([#166](https://github.com/gsy0911/kabutobashi/issues/166))

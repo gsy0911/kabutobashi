@@ -1,11 +1,8 @@
-from dataclasses import dataclass
-
 import pandas as pd
 
 from .method import Method, MethodType, ProcessMethod, VisualizeMethod
 
 
-@dataclass(frozen=True)
 class PsychoLogicalProcess(ProcessMethod):
     """
     See Also:
@@ -45,7 +42,6 @@ class PsychoLogicalProcess(ProcessMethod):
         return {"psycho_line": df_p["psycho_line"].tail(3).mean()}
 
 
-@dataclass(frozen=True)
 class PsychoLogicalVisualize(VisualizeMethod):
     """
     See Also:

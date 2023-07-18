@@ -1,11 +1,8 @@
-from dataclasses import dataclass
-
 import pandas as pd
 
 from .method import Method, MethodType, ProcessMethod, VisualizeMethod
 
 
-@dataclass(frozen=True)
 class IchimokuProcess(ProcessMethod):
     """
 
@@ -59,7 +56,6 @@ class IchimokuProcess(ProcessMethod):
         return {}
 
 
-@dataclass(frozen=True)
 class IchimokuVisualize(VisualizeMethod):
     """
 
