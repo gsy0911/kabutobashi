@@ -31,17 +31,25 @@ class BasicProcess(ProcessMethod):
             pbr = float(list(df_x["pbr"])[-1])
         except ValueError:
             pbr = 0
+        except TypeError:
+            pbr = 0
         try:
             per = float(list(df_x["per"])[-1])
         except ValueError:
+            per = 0
+        except TypeError:
             per = 0
         try:
             psr = float(list(df_x["psr"])[-1])
         except ValueError:
             psr = 0
+        except TypeError:
+            psr = 0
         try:
             volume = float(list(df_x["volume"])[-1])
         except ValueError:
+            volume = 0
+        except TypeError:
             volume = 0
         return {"pbr": pbr, "psr": psr, "per": per, "volume": volume}
 
