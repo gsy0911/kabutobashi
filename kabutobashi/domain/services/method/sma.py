@@ -1,11 +1,8 @@
-from dataclasses import dataclass
-
 import pandas as pd
 
 from .method import Method, MethodType, ProcessMethod, VisualizeMethod
 
 
-@dataclass(frozen=True)
 class SmaProcess(ProcessMethod):
     """
     SMAを計算する
@@ -52,7 +49,6 @@ class SmaProcess(ProcessMethod):
         }
 
 
-@dataclass(frozen=True)
 class SmaVisualize(VisualizeMethod):
     """
     SMAを計算する

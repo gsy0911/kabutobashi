@@ -1,11 +1,8 @@
-from dataclasses import dataclass
-
 import pandas as pd
 
 from .method import Method, MethodType, ProcessMethod
 
 
-@dataclass(frozen=True)
 class BasicProcess(ProcessMethod):
     """
     株のvolumeやPBR, PSR, PERなどの値を返す。

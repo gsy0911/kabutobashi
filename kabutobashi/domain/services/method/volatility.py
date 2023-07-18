@@ -1,11 +1,8 @@
-from dataclasses import dataclass
-
 import pandas as pd
 
 from .method import Method, MethodType, ProcessMethod, VisualizeMethod
 
 
-@dataclass(frozen=True)
 class VolatilityProcess(ProcessMethod):
     """
     変動幅を計算する
@@ -36,7 +33,6 @@ class VolatilityProcess(ProcessMethod):
         return {"volatility": volatility_, "close_volatility": close_volatility}
 
 
-@dataclass(frozen=True)
 class VolatilityVisualize(VisualizeMethod):
     def _color_mapping(self) -> list:
         return []

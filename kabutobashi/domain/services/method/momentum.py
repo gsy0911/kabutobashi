@@ -1,11 +1,8 @@
-from dataclasses import dataclass
-
 import pandas as pd
 
 from .method import Method, MethodType, ProcessMethod, VisualizeMethod
 
 
-@dataclass(frozen=True)
 class MomentumProcess(ProcessMethod):
     """
     See Also:
@@ -35,7 +32,6 @@ class MomentumProcess(ProcessMethod):
         return {}
 
 
-@dataclass(frozen=True)
 class MomentumVisualize(VisualizeMethod):
     """
     See Also:

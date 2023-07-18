@@ -1,11 +1,8 @@
-from dataclasses import dataclass
-
 import pandas as pd
 
 from .method import Method, MethodType, ProcessMethod, VisualizeMethod
 
 
-@dataclass(frozen=True)
 class PctChangeProcess(ProcessMethod):
     """
     変化率を計算する
@@ -37,7 +34,6 @@ class PctChangeProcess(ProcessMethod):
         return {"pct_05": pct_05, "pct_10": pct_10, "pct_20": pct_20, "pct_30": pct_30, "pct_40": pct_40}
 
 
-@dataclass(frozen=True)
 class PctChangeVisualize(VisualizeMethod):
     """
     変化率を計算する
