@@ -1,11 +1,8 @@
-from dataclasses import dataclass
-
 import pandas as pd
 
 from .method import Method, MethodType, ProcessMethod, VisualizeMethod
 
 
-@dataclass(frozen=True)
 class AdxProcess(ProcessMethod):
     """
     相場のトレンドの強さを見るための指標である`ADX`を計算するクラス。
@@ -170,7 +167,6 @@ class AdxProcess(ProcessMethod):
         }
 
 
-@dataclass(frozen=True)
 class AdxVisualize(VisualizeMethod):
     """
     相場のトレンドの強さを見るための指標である`ADX`を計算するクラス。

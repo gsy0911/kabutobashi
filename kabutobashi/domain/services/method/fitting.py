@@ -1,5 +1,3 @@
-from dataclasses import dataclass
-
 import numpy as np
 import pandas as pd
 from scipy.optimize import curve_fit
@@ -7,7 +5,6 @@ from scipy.optimize import curve_fit
 from .method import Method, MethodType, ProcessMethod, VisualizeMethod
 
 
-@dataclass(frozen=True)
 class FittingProcess(ProcessMethod):
     """
     1次、2次、3次の関数でfittingした値を返す
@@ -73,7 +70,6 @@ class FittingProcess(ProcessMethod):
         }
 
 
-@dataclass(frozen=True)
 class FittingVisualize(VisualizeMethod):
     """
     1次、2次、3次の関数でfittingした値を返す

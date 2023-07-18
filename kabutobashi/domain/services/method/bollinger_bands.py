@@ -1,11 +1,8 @@
-from dataclasses import dataclass
-
 import pandas as pd
 
 from .method import Method, MethodType, ProcessMethod, VisualizeMethod
 
 
-@dataclass(frozen=True)
 class BollingerBandsProcess(ProcessMethod):
     """
     株価の勢いの変化や反転の目安、方向を見る ``BollingerBands`` を計算するクラス。
@@ -64,7 +61,6 @@ class BollingerBandsProcess(ProcessMethod):
         }
 
 
-@dataclass(frozen=True)
 class BollingerBandsVisualize(VisualizeMethod):
     """
     株価の勢いの変化や反転の目安、方向を見る ``BollingerBands`` を計算するクラス。

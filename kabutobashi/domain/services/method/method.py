@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
 from enum import Enum, auto
 from typing import Optional
 
@@ -8,6 +7,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from mplfinance.original_flavor import candlestick_ohlc
+from pydantic import BaseModel, ConfigDict
 
 from kabutobashi.domain.errors import KabutobashiEntityError
 from kabutobashi.domain.values import StockDataProcessed, StockDataVisualized
@@ -22,8 +22,7 @@ class MethodType(Enum):
     SIGNAL_PROCESSING = auto()
 
 
-@dataclass(frozen=True)  # type: ignore
-class ProcessMethod(ABC):
+class ProcessMethod(ABC, BaseModel):
     """
     株のテクニカル分析に関するメソッドを提供するクラス
 
@@ -45,6 +44,7 @@ class ProcessMethod(ABC):
     method_name: str
     # 種類:
     method_type: MethodType
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
     def process(self, df: pd.DataFrame, influence: int = 2, tail: int = 5) -> "StockDataProcessed":
         code_list = list(set(df["code"].values))
@@ -206,8 +206,7 @@ class ProcessMethod(ABC):
         return round(buy_impact_index - sell_impact_index, 5)
 
 
-@dataclass(frozen=True)  # type: ignore
-class VisualizeMethod(ABC):
+class VisualizeMethod(ABC, BaseModel):
     def color_mapping(self) -> list:
         return self._color_mapping()
 
@@ -309,8 +308,7 @@ class VisualizeMethod(ABC):
         return fig
 
 
-@dataclass(frozen=True)  # type: ignore
-class Method:
+class Method(BaseModel):
     process_method: ProcessMethod
     visualize_method: Optional[VisualizeMethod]
 

@@ -1,11 +1,8 @@
-from dataclasses import dataclass
-
 import pandas as pd
 
 from .method import Method, MethodType, ProcessMethod, VisualizeMethod
 
 
-@dataclass(frozen=True)
 class MacdProcess(ProcessMethod):
     """
     macdを基準として今後上昇するかどうかをスコアで返す。
@@ -45,7 +42,6 @@ class MacdProcess(ProcessMethod):
         return {"signal": df_p["signal"].tail(3).mean(), "histogram": df_p["histogram"].tail(3).mean()}
 
 
-@dataclass(frozen=True)
 class MacdVisualize(VisualizeMethod):
     """
     macdを基準として今後上昇するかどうかをスコアで返す。

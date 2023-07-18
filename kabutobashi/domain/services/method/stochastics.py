@@ -1,12 +1,10 @@
 import math
-from dataclasses import dataclass
 
 import pandas as pd
 
 from .method import Method, MethodType, ProcessMethod, VisualizeMethod
 
 
-@dataclass(frozen=True)
 class StochasticsProcess(ProcessMethod):
     """
     買いのシグナルを計算で求める
@@ -117,7 +115,6 @@ class StochasticsProcess(ProcessMethod):
         }
 
 
-@dataclass(frozen=True)
 class StochasticsVisualize(VisualizeMethod):
     """
     買いのシグナルを計算で求める
