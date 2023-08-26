@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "kabutobashi"
-version = "0.7.1"
+version = "0.7.2"
 description = "Analyze stock"
 authors = ["yoshiki <yoshiki0911@gmail.com>"]
 license = "MIT"
