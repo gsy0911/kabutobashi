@@ -1,8 +1,12 @@
 [tool.poetry]
 name = "kabutobashi"
-version = "0.7.1"
-description = ""
+version = "0.7.2"
+description = "Analyze stock"
 authors = ["yoshiki <yoshiki0911@gmail.com>"]
+license = "MIT"
+repository = 'https://github.com/gsy0911/kabutobashi'
+readme = 'README.md'
+keywords = ['stock']
 
 [tool.poetry.dependencies]
 python = ">=3.9,<3.13"

@@ -88,7 +88,7 @@ class ProcessMethod(ABC, BaseModel):
         Returns:
             各分析手法の結果を付与したDataFrame
         """
-        return self._apply(df=df)
+        return self._apply(df=df.sort_values("dt"))
 
     @abstractmethod
     def _apply(self, df: pd.DataFrame) -> pd.DataFrame:
@@ -117,7 +117,7 @@ class ProcessMethod(ABC, BaseModel):
         Returns:
 
         """
-        return self._signal(df=df)
+        return self._signal(df=df.sort_values("dt"))
 
     @abstractmethod
     def _signal(self, df: pd.DataFrame) -> pd.DataFrame:
