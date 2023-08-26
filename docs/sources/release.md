@@ -1,5 +1,9 @@
 # Release Note
 
+## 0.7.2
+
+- FIX: sort values by `dt` ([#168](https://github.com/gsy0911/kabutobashi/issues/168))
+
 ## 0.7.1
 
 - FIX: catch additional error ([#167](https://github.com/gsy0911/kabutobashi/issues/167))
