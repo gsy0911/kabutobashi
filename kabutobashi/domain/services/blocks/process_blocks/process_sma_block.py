@@ -46,5 +46,6 @@ class ProcessSmaBlock(IProcessBlock):
         applied_df = self._apply(df=block_input.series)
         signal_df = self._signal(df=applied_df)
         return ProcessSmaBlockOutput.of(
-            series=signal_df[["sma_short", "sma_medium", "sma_long", "buy_signal", "sell_signal"]], params={}
+            series=signal_df[["sma_short", "sma_medium", "sma_long", "buy_signal", "sell_signal"]],
+            params=block_input.params,
         )

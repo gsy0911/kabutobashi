@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from typing import Dict, Optional
 
 import pandas as pd
@@ -60,10 +60,19 @@ class IBlock(ABC):
 
 @dataclass(frozen=True)
 class BlockGlue:
-    series: pd.DataFrame
-    params: dict
-    block_outputs: Dict[str, IBlockOutput] = field(default_factory=dict)
+    series: Optional[pd.DataFrame] = None
+    params: Optional[dict] = None
+    block_outputs: Dict[str, IBlockOutput] = field(default_factory=dict, repr=False)
 
     def update(self, block_output: IBlockOutput) -> "BlockGlue":
         self.block_outputs[block_output.block_name] = block_output
-        return self
+        if self.series is None:
+            series = block_output.series
+        else:
+            series = self.series
+
+        if self.params is None:
+            params = block_output.params
+        else:
+            params = self.params
+        return replace(self, series=series, params=params, block_outputs=self.block_outputs)

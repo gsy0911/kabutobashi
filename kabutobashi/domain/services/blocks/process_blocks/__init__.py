@@ -1,1 +1,2 @@
+from .process_macd_block import ProcessMacdBlock, ProcessMacdBlockInput
 from .process_sma_block import ProcessSmaBlock, ProcessSmaBlockInput
