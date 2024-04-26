@@ -1,8 +1,9 @@
-from ..abc_block import IBlockOutput, IBlockInput
-from .abc_process_block import IProcessBlock
-from typing import Tuple
-import pandas as pd
 from dataclasses import dataclass
+
+import pandas as pd
+
+from ..abc_block import IBlockInput, IBlockOutput
+from .abc_process_block import IProcessBlock
 
 
 @dataclass(frozen=True)
@@ -44,4 +45,6 @@ class ProcessSmaBlock(IProcessBlock):
     def _process(self, block_input: ProcessSmaBlockInput) -> ProcessSmaBlockOutput:
         applied_df = self._apply(df=block_input.series)
         signal_df = self._signal(df=applied_df)
-        return ProcessSmaBlockOutput.of(series=signal_df[["sma_short", "sma_medium", "sma_long", "buy_signal", "sell_signal"]], params={})
+        return ProcessSmaBlockOutput.of(
+            series=signal_df[["sma_short", "sma_medium", "sma_long", "buy_signal", "sell_signal"]], params={}
+        )

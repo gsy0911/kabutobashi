@@ -116,9 +116,9 @@ class StockBrand(BaseModel, IDictSerialize):
             unit=self.unit if self.unit is not None else other.unit,
             market=self.market if self.market is not None else other.market,
             industry_type=self.industry_type if self.industry_type is not None else other.industry_type,
-            market_capitalization=self.market_capitalization
-            if self.market_capitalization is not None
-            else other.market_capitalization,
+            market_capitalization=(
+                self.market_capitalization if self.market_capitalization is not None else other.market_capitalization
+            ),
             name=self.name if self.name is not None else other.name,
             issued_shares=self.issued_shares if self.issued_shares is not None else other.issued_shares,
             is_delisting=self.is_delisting or other.is_delisting,

@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
-from ..abc_block import IBlockOutput, IBlock, IBlockInput
+
 import pandas as pd
+
+from ..abc_block import IBlock, IBlockInput, IBlockOutput
 
 
 class IProcessBlock(IBlock, ABC):

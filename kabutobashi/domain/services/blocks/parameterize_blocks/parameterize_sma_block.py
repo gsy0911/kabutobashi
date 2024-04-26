@@ -1,7 +1,7 @@
-from ..abc_block import IBlockOutput, IBlockInput
-from .abc_parameterize_block import IParameterizeBlock
-import pandas as pd
 from dataclasses import dataclass
+
+from ..abc_block import BlockGlue, IBlockInput, IBlockOutput
+from .abc_parameterize_block import IParameterizeBlock
 
 
 @dataclass(frozen=True)
@@ -54,7 +54,7 @@ class ParameterizeSmaBlock(IParameterizeBlock):
             "sma_long_diff": df["sma_long_diff"].tail(3).mean(),
             "sma_long_short": df["sma_long_short"].tail(3).mean(),
             "sma_long_medium": df["sma_long_medium"].tail(3).mean(),
-            "sma_impact": self._get_impact(df=df, influence=self.influence, tail=self.tail)
+            "sma_impact": self._get_impact(df=df, influence=self.influence, tail=self.tail),
         }
 
         return ParameterizeSmaBlockOutput.of(series=None, params=params)

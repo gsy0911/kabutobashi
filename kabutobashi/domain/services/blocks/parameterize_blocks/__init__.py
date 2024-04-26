@@ -1,1 +1,1 @@
-from .parameterize_sma_block import ParameterizeSmaBlockInput, ParameterizeSmaBlock
+from .parameterize_sma_block import ParameterizeSmaBlock, ParameterizeSmaBlockInput

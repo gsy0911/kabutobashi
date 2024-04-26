@@ -18,6 +18,7 @@ Method modules provide technical analysis for stock chart.
   - Basic: only used `parameterize`
 
 """
+
 from .adx import AdxProcess, adx
 from .basic import BasicProcess, basic
 from .bollinger_bands import BollingerBandsProcess, bollinger_bands
