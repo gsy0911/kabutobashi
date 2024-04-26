@@ -7,9 +7,11 @@ from dataclasses import dataclass
 @dataclass(frozen=True)
 class ParameterizeSmaBlockInput(IBlockInput):
 
-    @staticmethod
-    def of(base_series: pd.DataFrame, processed_series: pd.DataFrame) -> 'ParameterizeSmaBlockInput':
-        return ParameterizeSmaBlockInput(series=processed_series.join(base_series["close"]), params={})
+    @classmethod
+    def of(cls, block_glue: "BlockGlue"):
+        initial_series = block_glue.series
+        processed_sma_series = block_glue.block_outputs["process_sma"].series
+        return ParameterizeSmaBlockInput(series=processed_sma_series.join(initial_series["close"]), params={})
 
     def _validate(self):
         columns = self.series.columns

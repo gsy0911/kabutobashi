@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
-from typing import Optional
+from dataclasses import dataclass, field
+from typing import Dict, Optional
+
 import pandas as pd
 
 
@@ -8,6 +9,10 @@ import pandas as pd
 class IBlockInput(ABC):
     series: pd.DataFrame
     params: dict
+
+    @classmethod
+    def of(cls, block_glue: "BlockGlue"):
+        return cls(series=block_glue.series, params=block_glue.params)
 
     def __post_init__(self):
         self.validate()
@@ -43,11 +48,22 @@ class IBlockOutput(ABC):
 
 @dataclass(frozen=True)
 class IBlock(ABC):
+    block_input: IBlockInput
 
-    def process(self, block_input) -> IBlockOutput:
-        block_input.validate()
-        return self._process(block_input=block_input)
+    def process(self) -> IBlockOutput:
+        return self._process(block_input=self.block_input)
 
     @abstractmethod
     def _process(self, block_input: IBlockInput) -> IBlockOutput:
         raise NotImplementedError()
+
+
+@dataclass(frozen=True)
+class BlockGlue:
+    series: pd.DataFrame
+    params: dict
+    block_outputs: Dict[str, IBlockOutput] = field(default_factory=dict)
+
+    def update(self, block_output: IBlockOutput) -> "BlockGlue":
+        self.block_outputs[block_output.block_name] = block_output
+        return self
