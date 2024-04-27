@@ -1,8 +1,20 @@
+from injector import Injector, inject, Binder
 from abc import ABC, abstractmethod
+from dataclasses import dataclass
 
 import pandas as pd
 
-from ..abc_block import IBlock, IBlockInput, IBlockOutput
+from ..abc_block import IBlock, IBlockInput, IBlockOutput, BlockGlue, ILayer
+
+
+@dataclass(frozen=True)
+class IProcessBlockInput(IBlockInput, ABC):
+    pass
+
+
+@dataclass(frozen=True)
+class IProcessBlockOutput(IBlockOutput, ABC):
+    pass
 
 
 class IProcessBlock(IBlock, ABC):
@@ -45,3 +57,10 @@ class IProcessBlock(IBlock, ABC):
 
     def _signal(self, df: pd.DataFrame) -> pd.DataFrame:
         raise NotImplementedError()
+
+
+@inject
+@dataclass(frozen=True)
+class IProcessLayer(ILayer, ABC):
+    block_input: IProcessBlockInput
+    block: IProcessBlock

@@ -1,20 +1,20 @@
 from dataclasses import dataclass
+from injector import Injector, inject, Binder, InstanceProvider
 
 import pandas as pd
 
-from ..abc_block import IBlockInput, IBlockOutput
-from .abc_process_block import IProcessBlock
+from .abc_process_block import IProcessBlock, IProcessBlockInput, IProcessBlockOutput, IProcessLayer
 
 
 @dataclass(frozen=True)
-class ProcessSmaBlockInput(IBlockInput):
+class ProcessSmaBlockInput(IProcessBlockInput):
 
     def _validate(self):
         pass
 
 
 @dataclass(frozen=True)
-class ProcessSmaBlockOutput(IBlockOutput):
+class ProcessSmaBlockOutput(IProcessBlockOutput):
     block_name: str = "process_sma"
 
     def _validate(self):
@@ -49,3 +49,10 @@ class ProcessSmaBlock(IProcessBlock):
             series=signal_df[["sma_short", "sma_medium", "sma_long", "buy_signal", "sell_signal"]],
             params=block_input.params,
         )
+
+
+class ProcessSmaLayer(IProcessLayer):
+    @classmethod
+    def configure(cls, binder: Binder) -> None:
+        binder.bind(IProcessBlockInput, to=ProcessSmaBlockInput)
+        binder.bind(IProcessBlock, to=ProcessSmaBlock)

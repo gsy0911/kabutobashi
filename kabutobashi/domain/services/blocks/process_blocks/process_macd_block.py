@@ -2,19 +2,18 @@ from dataclasses import dataclass
 
 import pandas as pd
 
-from ..abc_block import IBlockInput, IBlockOutput
-from .abc_process_block import IProcessBlock
+from .abc_process_block import IProcessBlock, IProcessBlockInput, IProcessBlockOutput
 
 
 @dataclass(frozen=True)
-class ProcessMacdBlockInput(IBlockInput):
+class ProcessMacdBlockInput(IProcessBlockInput):
 
     def _validate(self):
         pass
 
 
 @dataclass(frozen=True)
-class ProcessMacdBlockOutput(IBlockOutput):
+class ProcessMacdBlockOutput(IProcessBlockOutput):
     block_name: str = "process_macd"
 
     def _validate(self):

@@ -1,3 +1,4 @@
+from injector import Injector, inject, Binder
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field, replace
 from typing import Dict, Optional
@@ -7,8 +8,8 @@ import pandas as pd
 
 @dataclass(frozen=True)
 class IBlockInput(ABC):
-    series: pd.DataFrame
-    params: dict
+    series: Optional[pd.DataFrame] = None
+    params: Optional[dict] = None
 
     @classmethod
     def of(cls, block_glue: "BlockGlue"):
@@ -48,10 +49,9 @@ class IBlockOutput(ABC):
 
 @dataclass(frozen=True)
 class IBlock(ABC):
-    block_input: IBlockInput
 
-    def process(self) -> IBlockOutput:
-        return self._process(block_input=self.block_input)
+    def process(self, block_input: IBlockInput) -> IBlockOutput:
+        return self._process(block_input=block_input)
 
     @abstractmethod
     def _process(self, block_input: IBlockInput) -> IBlockOutput:
@@ -76,3 +76,26 @@ class BlockGlue:
         else:
             params = self.params
         return replace(self, series=series, params=params, block_outputs=self.block_outputs)
+
+
+@inject
+@dataclass(frozen=True)
+class ILayer(ABC):
+    block_input: IBlockInput
+    block: IBlock
+
+    @classmethod
+    def of(cls):
+        configured_injector = Injector(cls.configure)
+        process_layer = configured_injector.get(cls)
+        return process_layer
+
+    @classmethod
+    @abstractmethod
+    def configure(cls, binder: Binder) -> None:
+        raise NotImplementedError()
+
+    def process(self, glue: BlockGlue) -> BlockGlue:
+        block_output = self.block.process(block_input=self.block_input.of(glue))
+        updated_glue = glue.update(block_output=block_output)
+        return updated_glue
