@@ -1,22 +1,16 @@
-from injector import inject
-from abc import ABC, abstractmethod
+from abc import ABC
 from dataclasses import dataclass
 
-import pandas as pd
+from injector import inject
 
-from ..abc_block import IBlock, IBlockInput, IBlockOutput, ILayer
+from ..abc_block import IBlock, IBlockInput
 
 
 class IReadBlockInput(IBlockInput, ABC):
     pass
 
 
-class IReadBlock(IBlock, ABC):
-    pass
-
-
 @inject
 @dataclass(frozen=True)
-class IReadLayer(ILayer, ABC):
+class IReadBlock(IBlock, ABC):
     block_input: IReadBlockInput
-    block: IReadBlock

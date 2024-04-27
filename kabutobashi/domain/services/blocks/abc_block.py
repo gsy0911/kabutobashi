@@ -1,9 +1,9 @@
-from injector import Injector, inject, Binder
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field, replace
 from typing import Dict, Optional
 
 import pandas as pd
+from injector import Binder, Injector, inject
 
 
 @dataclass(frozen=True)
@@ -47,14 +47,28 @@ class IBlockOutput(ABC):
         raise NotImplementedError()
 
 
+@inject
 @dataclass(frozen=True)
 class IBlock(ABC):
+    block_input: Optional[IBlockInput]
 
-    def process(self, block_input: IBlockInput) -> IBlockOutput:
-        return self._process(block_input=block_input)
+    def process(self) -> IBlockOutput:
+        return self._process(block_input=self.block_input)
 
     @abstractmethod
     def _process(self, block_input: IBlockInput) -> IBlockOutput:
+        raise NotImplementedError()
+
+    @classmethod
+    def glue(cls, glue: "BlockGlue") -> "BlockGlue":
+        block = Injector(cls.configure).get(cls)
+        updated_block = replace(cls(block_input=None), block_input=block.block_input.of(block_glue=glue))
+        updated_glue = glue.update(block_output=updated_block.process())
+        return updated_glue
+
+    @classmethod
+    @abstractmethod
+    def configure(cls, binder: Binder) -> None:
         raise NotImplementedError()
 
 
@@ -76,26 +90,3 @@ class BlockGlue:
         else:
             params = self.params
         return replace(self, series=series, params=params, block_outputs=self.block_outputs)
-
-
-@inject
-@dataclass(frozen=True)
-class ILayer(ABC):
-    block_input: IBlockInput
-    block: IBlock
-
-    @classmethod
-    def of(cls):
-        configured_injector = Injector(cls.configure)
-        process_layer = configured_injector.get(cls)
-        return process_layer
-
-    @classmethod
-    @abstractmethod
-    def configure(cls, binder: Binder) -> None:
-        raise NotImplementedError()
-
-    def process(self, glue: BlockGlue) -> BlockGlue:
-        block_output = self.block.process(block_input=self.block_input.of(glue))
-        updated_glue = glue.update(block_output=block_output)
-        return updated_glue

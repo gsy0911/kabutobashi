@@ -1,9 +1,9 @@
-from dataclasses import dataclass
-from injector import Injector, inject, Binder, InstanceProvider
+from dataclasses import dataclass, field
 
 import pandas as pd
+from injector import Binder, inject
 
-from .abc_process_block import IProcessBlock, IProcessBlockInput, IProcessBlockOutput, IProcessLayer
+from .abc_process_block import IProcessBlock, IProcessBlockInput, IProcessBlockOutput
 
 
 @dataclass(frozen=True)
@@ -21,11 +21,12 @@ class ProcessSmaBlockOutput(IProcessBlockOutput):
         pass
 
 
+@inject
 @dataclass(frozen=True)
 class ProcessSmaBlock(IProcessBlock):
-    short_term: int = 5
-    medium_term: int = 21
-    long_term: int = 70
+    short_term: int = field(default=5)
+    medium_term: int = field(default=21)
+    long_term: int = field(default=70)
 
     def _apply(self, df: pd.DataFrame) -> pd.DataFrame:
         df = df.assign(
@@ -50,9 +51,6 @@ class ProcessSmaBlock(IProcessBlock):
             params=block_input.params,
         )
 
-
-class ProcessSmaLayer(IProcessLayer):
     @classmethod
     def configure(cls, binder: Binder) -> None:
         binder.bind(IProcessBlockInput, to=ProcessSmaBlockInput)
-        binder.bind(IProcessBlock, to=ProcessSmaBlock)

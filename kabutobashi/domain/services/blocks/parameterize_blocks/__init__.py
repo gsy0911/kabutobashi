@@ -1,2 +1,2 @@
-from .parameterize_macd_block import ParameterizeMacdBlock, ParameterizeMacdBlockInput
-from .parameterize_sma_block import ParameterizeSmaBlock, ParameterizeSmaBlockInput
+from .parameterize_macd_block import ParameterizeMacdBlock
+from .parameterize_sma_block import ParameterizeSmaBlock

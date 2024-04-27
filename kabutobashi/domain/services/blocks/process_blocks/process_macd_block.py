@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
 import pandas as pd
+from injector import Binder, inject
 
 from .abc_process_block import IProcessBlock, IProcessBlockInput, IProcessBlockOutput
 
@@ -20,6 +21,7 @@ class ProcessMacdBlockOutput(IProcessBlockOutput):
         pass
 
 
+@inject
 @dataclass(frozen=True)
 class ProcessMacdBlock(IProcessBlock):
     short_term: int = 12
@@ -51,3 +53,7 @@ class ProcessMacdBlock(IProcessBlock):
             series=signal_df[["ema_short", "ema_long", "macd", "signal", "histogram", "buy_signal", "sell_signal"]],
             params=block_input.params,
         )
+
+    @classmethod
+    def configure(cls, binder: Binder) -> None:
+        binder.bind(IProcessBlockInput, to=ProcessMacdBlockInput)

@@ -1,5 +1,7 @@
 from dataclasses import dataclass
 
+from injector import Binder, inject
+
 from ..abc_block import BlockGlue, IBlockInput, IBlockOutput
 from .abc_parameterize_block import IParameterizeBlock
 
@@ -13,9 +15,10 @@ class ParameterizeMacdBlockInput(IBlockInput):
         return ParameterizeMacdBlockInput(series=processed_macd_series, params=block_glue.params)
 
     def _validate(self):
-        columns = self.series.columns
-        assert "signal" in columns, "ParameterizeMacdBlockInput must have 'signal' column"
-        assert "histogram" in columns, "ParameterizeMacdBlockInput must have 'histogram' column"
+        if self.series is not None:
+            columns = self.series.columns
+            assert "signal" in columns, "ParameterizeMacdBlockInput must have 'signal' column"
+            assert "histogram" in columns, "ParameterizeMacdBlockInput must have 'histogram' column"
 
 
 @dataclass(frozen=True)
@@ -29,6 +32,7 @@ class ParameterizeMacdBlockOutput(IBlockOutput):
         assert "macd_impact" in keys, "ParameterizeMacdBlockOutput must have 'macd_impact' column"
 
 
+@inject
 @dataclass(frozen=True)
 class ParameterizeMacdBlock(IParameterizeBlock):
 
@@ -41,3 +45,7 @@ class ParameterizeMacdBlock(IParameterizeBlock):
         }
 
         return ParameterizeMacdBlockOutput.of(series=None, params=params)
+
+    @classmethod
+    def configure(cls, binder: Binder) -> None:
+        binder.bind(IBlockInput, to=ParameterizeMacdBlockInput)

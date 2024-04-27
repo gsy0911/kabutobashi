@@ -1,5 +1,7 @@
 from dataclasses import dataclass
 
+from injector import Binder, inject
+
 from ..abc_block import BlockGlue, IBlockInput, IBlockOutput
 from .abc_parameterize_block import IParameterizeBlock
 
@@ -14,13 +16,14 @@ class ParameterizeSmaBlockInput(IBlockInput):
         return ParameterizeSmaBlockInput(series=processed_sma_series.join(initial_series["close"]), params={})
 
     def _validate(self):
-        columns = self.series.columns
-        assert "close" in columns, "ParameterizeSmaBlockInput must have 'close' column"
-        assert "sma_short" in columns, "ParameterizeSmaBlockInput must have 'sma_short' column"
-        assert "sma_medium" in columns, "ParameterizeSmaBlockInput must have 'sma_medium' column"
-        assert "sma_long" in columns, "ParameterizeSmaBlockInput must have 'sma_long' column"
-        assert "buy_signal" in columns, "ParameterizeSmaBlockInput must have 'buy_signal' column"
-        assert "sell_signal" in columns, "ParameterizeSmaBlockInput must have 'sell_signal' column"
+        if self.series is not None:
+            columns = self.series.columns
+            assert "close" in columns, "ParameterizeSmaBlockInput must have 'close' column"
+            assert "sma_short" in columns, "ParameterizeSmaBlockInput must have 'sma_short' column"
+            assert "sma_medium" in columns, "ParameterizeSmaBlockInput must have 'sma_medium' column"
+            assert "sma_long" in columns, "ParameterizeSmaBlockInput must have 'sma_long' column"
+            assert "buy_signal" in columns, "ParameterizeSmaBlockInput must have 'buy_signal' column"
+            assert "sell_signal" in columns, "ParameterizeSmaBlockInput must have 'sell_signal' column"
 
 
 @dataclass(frozen=True)
@@ -37,6 +40,7 @@ class ParameterizeSmaBlockOutput(IBlockOutput):
         assert "sma_impact" in keys, "ParameterizeSmaBlockOutput must have 'sma_impact' column"
 
 
+@inject
 @dataclass(frozen=True)
 class ParameterizeSmaBlock(IParameterizeBlock):
 
@@ -58,3 +62,7 @@ class ParameterizeSmaBlock(IParameterizeBlock):
         }
 
         return ParameterizeSmaBlockOutput.of(series=None, params=params)
+
+    @classmethod
+    def configure(cls, binder: Binder) -> None:
+        binder.bind(IBlockInput, to=ParameterizeSmaBlockInput)

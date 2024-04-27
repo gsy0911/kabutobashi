@@ -1,11 +1,12 @@
 import os
 from dataclasses import dataclass
 from pathlib import Path
-from injector import Binder, InstanceProvider
+
 import pandas as pd
+from injector import Binder, inject
 
 from ..abc_block import IBlockOutput
-from .abc_read_block import IReadBlock, IReadBlockInput, IReadLayer
+from .abc_read_block import IReadBlock, IReadBlockInput
 
 PARENT_PATH = os.path.abspath(os.path.dirname(__file__))
 PACKAGE_ROOT = Path(PARENT_PATH).parent.parent.parent.parent.parent
@@ -28,6 +29,8 @@ class ReadExampleBlockOutput(IBlockOutput):
         pass
 
 
+@inject
+@dataclass(frozen=True)
 class ReadExampleBlock(IReadBlock):
     def _process(self, block_input: ReadExampleBlockInput) -> ReadExampleBlockOutput:
         file_name = "example.csv.gz"
@@ -36,9 +39,6 @@ class ReadExampleBlock(IReadBlock):
         df.index = df["dt"]
         return ReadExampleBlockOutput.of(series=df, params=block_input.params)
 
-
-class ReadExampleLayer(IReadLayer):
     @classmethod
     def configure(cls, binder: Binder) -> None:
         binder.bind(IReadBlockInput, to=ReadExampleBlockInput)
-        binder.bind(IReadBlock, to=ReadExampleBlock)

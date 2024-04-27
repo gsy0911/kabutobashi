@@ -1,11 +1,16 @@
-from abc import ABC, abstractmethod
+from abc import ABC
+from dataclasses import dataclass
 
 import pandas as pd
+from injector import inject
 
-from ..abc_block import IBlock, IBlockInput, IBlockOutput
+from ..abc_block import IBlock, IBlockInput
 
 
+@inject
+@dataclass(frozen=True)
 class IParameterizeBlock(IBlock, ABC):
+    block_input: IBlockInput
     influence: int = 2
     tail: int = 5
 
