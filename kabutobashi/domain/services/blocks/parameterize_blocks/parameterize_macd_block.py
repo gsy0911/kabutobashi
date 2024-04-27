@@ -47,5 +47,5 @@ class ParameterizeMacdBlock(IParameterizeBlock):
         return ParameterizeMacdBlockOutput.of(series=None, params=params)
 
     @classmethod
-    def configure(cls, binder: Binder) -> None:
+    def _configure(cls, binder: Binder) -> None:
         binder.bind(IBlockInput, to=ParameterizeMacdBlockInput)

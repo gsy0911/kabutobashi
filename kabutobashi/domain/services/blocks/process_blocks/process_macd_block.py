@@ -55,5 +55,5 @@ class ProcessMacdBlock(IProcessBlock):
         )
 
     @classmethod
-    def configure(cls, binder: Binder) -> None:
+    def _configure(cls, binder: Binder) -> None:
         binder.bind(IProcessBlockInput, to=ProcessMacdBlockInput)

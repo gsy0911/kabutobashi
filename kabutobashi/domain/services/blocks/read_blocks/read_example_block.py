@@ -40,5 +40,5 @@ class ReadExampleBlock(IReadBlock):
         return ReadExampleBlockOutput.of(series=df, params=block_input.params)
 
     @classmethod
-    def configure(cls, binder: Binder) -> None:
+    def _configure(cls, binder: Binder) -> None:
         binder.bind(IReadBlockInput, to=ReadExampleBlockInput)

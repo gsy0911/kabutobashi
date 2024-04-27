@@ -61,14 +61,14 @@ class IBlock(ABC):
 
     @classmethod
     def glue(cls, glue: "BlockGlue") -> "BlockGlue":
-        block = Injector(cls.configure).get(cls)
+        block = Injector(cls._configure).get(cls)
         updated_block = replace(cls(block_input=None), block_input=block.block_input.of(block_glue=glue))
         updated_glue = glue.update(block_output=updated_block.process())
         return updated_glue
 
     @classmethod
     @abstractmethod
-    def configure(cls, binder: Binder) -> None:
+    def _configure(cls, binder: Binder) -> None:
         raise NotImplementedError()
 
 

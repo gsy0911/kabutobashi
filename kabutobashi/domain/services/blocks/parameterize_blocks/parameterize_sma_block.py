@@ -64,5 +64,5 @@ class ParameterizeSmaBlock(IParameterizeBlock):
         return ParameterizeSmaBlockOutput.of(series=None, params=params)
 
     @classmethod
-    def configure(cls, binder: Binder) -> None:
+    def _configure(cls, binder: Binder) -> None:
         binder.bind(IBlockInput, to=ParameterizeSmaBlockInput)
