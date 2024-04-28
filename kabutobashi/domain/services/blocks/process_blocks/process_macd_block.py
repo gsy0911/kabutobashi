@@ -3,11 +3,27 @@ from dataclasses import dataclass
 import pandas as pd
 from injector import Binder, inject
 
+from ..abc_block import BlockGlue
 from .abc_process_block import IProcessBlock, IProcessBlockInput, IProcessBlockOutput
 
 
 @dataclass(frozen=True)
 class ProcessMacdBlockInput(IProcessBlockInput):
+
+    @classmethod
+    def of(cls, block_glue: "BlockGlue"):
+        input_params = block_glue.params.get("macd", {})
+        short_term = input_params.get("short_term", 12)
+        long_term = input_params.get("long_term", 26)
+        macd_span = input_params.get("macd_span", 9)
+        return cls(
+            series=block_glue.series,
+            params={
+                "short_term": short_term,
+                "long_term": long_term,
+                "macd_span": macd_span,
+            },
+        )
 
     def _validate(self):
         pass
@@ -24,17 +40,19 @@ class ProcessMacdBlockOutput(IProcessBlockOutput):
 @inject
 @dataclass(frozen=True)
 class ProcessMacdBlock(IProcessBlock):
-    short_term: int = 12
-    long_term: int = 26
-    macd_span: int = 9
 
     def _apply(self, df: pd.DataFrame) -> pd.DataFrame:
+        input_params = self.block_input.params
+        short_term = input_params["short_term"]
+        long_term = input_params["long_term"]
+        macd_span = input_params["macd_span"]
+
         df = df.assign(
             # MACDの計算
-            ema_short=lambda x: x["close"].ewm(span=self.short_term).mean(),
-            ema_long=lambda x: x["close"].ewm(span=self.long_term).mean(),
+            ema_short=lambda x: x["close"].ewm(span=short_term).mean(),
+            ema_long=lambda x: x["close"].ewm(span=long_term).mean(),
             macd=lambda x: x["ema_short"] - x["ema_long"],
-            signal=lambda x: x["macd"].ewm(span=self.macd_span).mean(),
+            signal=lambda x: x["macd"].ewm(span=macd_span).mean(),
             # ヒストグラム値
             histogram=lambda x: x["macd"] - x["signal"],
         )

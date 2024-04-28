@@ -1,13 +1,29 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 import pandas as pd
 from injector import Binder, inject
 
+from ..abc_block import BlockGlue
 from .abc_process_block import IProcessBlock, IProcessBlockInput, IProcessBlockOutput
 
 
 @dataclass(frozen=True)
 class ProcessSmaBlockInput(IProcessBlockInput):
+
+    @classmethod
+    def of(cls, block_glue: "BlockGlue"):
+        input_params = block_glue.params.get("sma", {})
+        short_term = input_params.get("short_term", 5)
+        medium_term = input_params.get("medium_term", 21)
+        long_term = input_params.get("long_term", 70)
+        return cls(
+            series=block_glue.series,
+            params={
+                "short_term": short_term,
+                "medium_term": medium_term,
+                "long_term": long_term,
+            },
+        )
 
     def _validate(self):
         pass
@@ -24,15 +40,17 @@ class ProcessSmaBlockOutput(IProcessBlockOutput):
 @inject
 @dataclass(frozen=True)
 class ProcessSmaBlock(IProcessBlock):
-    short_term: int = field(default=5)
-    medium_term: int = field(default=21)
-    long_term: int = field(default=70)
 
     def _apply(self, df: pd.DataFrame) -> pd.DataFrame:
+        input_params = self.block_input.params
+        short_term = input_params["short_term"]
+        medium_term = input_params["medium_term"]
+        long_term = input_params["long_term"]
+
         df = df.assign(
-            sma_short=df["close"].rolling(self.short_term).mean(),
-            sma_medium=df["close"].rolling(self.medium_term).mean(),
-            sma_long=df["close"].rolling(self.long_term).mean(),
+            sma_short=df["close"].rolling(short_term).mean(),
+            sma_medium=df["close"].rolling(medium_term).mean(),
+            sma_long=df["close"].rolling(long_term).mean(),
         )
         return df
 
