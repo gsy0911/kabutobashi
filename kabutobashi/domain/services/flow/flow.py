@@ -1,12 +1,21 @@
 from dataclasses import dataclass, replace
-from typing import List, Optional, Union
+from typing import List, Union
 
 from kabutobashi.domain.entity.blocks.abc_block import BlockGlue, IBlock
+from kabutobashi.domain.entity.blocks.hub_block import FromJsonBlock
 
 
 @dataclass(frozen=True)
 class Flow:
     block_glue: BlockGlue
+
+    @staticmethod
+    def from_json(params_list: List[dict]) -> "Flow":
+        flow_initial_params = {"code": 1375}
+        block_list = []
+        for params in params_list:
+            block_list.append(FromJsonBlock.from_json(params).get())
+        return Flow.initialize(flow_initial_params).then(block=block_list)
 
     @staticmethod
     def initialize(params: dict) -> "Flow":

@@ -12,7 +12,7 @@ class ProcessSmaBlockInput(IProcessBlockInput):
 
     @classmethod
     def of(cls, block_glue: "BlockGlue"):
-        input_params = block_glue.params.get("sma", {})
+        input_params = block_glue.params.get("process_macd", {})
         short_term = input_params.get("short_term", 5)
         medium_term = input_params.get("medium_term", 21)
         long_term = input_params.get("long_term", 70)
