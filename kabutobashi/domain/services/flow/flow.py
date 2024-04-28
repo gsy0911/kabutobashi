@@ -1,7 +1,7 @@
 from dataclasses import dataclass, replace
 from typing import List, Optional, Union
 
-from kabutobashi.domain.services.blocks.abc_block import BlockGlue, IBlock
+from kabutobashi.domain.entity.blocks.abc_block import BlockGlue, IBlock
 
 
 @dataclass(frozen=True)
