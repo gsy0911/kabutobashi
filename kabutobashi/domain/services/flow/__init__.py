@@ -1,1 +1,1 @@
-from .flow import Flow
+from .flow import Flow, FlowPath

@@ -1,4 +1,4 @@
-from dataclasses import dataclass, replace
+from dataclasses import dataclass, field, replace
 from typing import List, Union
 
 from kabutobashi.domain.entity.blocks.abc_block import BlockGlue, IBlock
@@ -39,3 +39,63 @@ class Flow:
     def reduce(self, block: IBlock) -> BlockGlue:
         new_glue = block.glue(glue=self.block_glue)
         return new_glue
+
+
+@dataclass(frozen=True)
+class FlowPath:
+    next_sequence_no: int = field(default=1)
+    flow_params_list: list = field(default_factory=list)
+
+    def sma(self) -> "FlowPath":
+        next_sequence_no = self.next_sequence_no
+        flow_params_list = self.flow_params_list
+        process = {"id": "process_sma", "block_name": "process_sma", "sequence_no": next_sequence_no, "params": {}}
+        parameterize = {
+            "id": "parameterize_sma",
+            "block_name": "parameterize_sma",
+            "sequence_no": next_sequence_no + 1,
+            "params": {},
+        }
+        flow_params_list.extend([process, parameterize])
+        return replace(self, next_sequence_no=next_sequence_no + 2, flow_params_list=flow_params_list)
+
+    def macd(self) -> "FlowPath":
+        next_sequence_no = self.next_sequence_no
+        flow_params_list = self.flow_params_list
+
+        process = {"id": "process_macd", "block_name": "process_macd", "sequence_no": next_sequence_no, "params": {}}
+        parameterize = {
+            "id": "parameterize_macd",
+            "block_name": "parameterize_macd",
+            "sequence_no": next_sequence_no + 1,
+            "params": {},
+        }
+        flow_params_list.extend([process, parameterize])
+        return replace(self, next_sequence_no=next_sequence_no + 2, flow_params_list=flow_params_list)
+
+    def read_example(self, code: int) -> "FlowPath":
+        next_sequence_no = self.next_sequence_no
+        flow_params_list = self.flow_params_list
+        flow_params_list.append(
+            {
+                "id": "read_example",
+                "block_name": "read_example",
+                "sequence_no": next_sequence_no,
+                "params": {"code": code},
+            }
+        )
+        return replace(self, next_sequence_no=next_sequence_no + 1, flow_params_list=flow_params_list)
+
+    def apply_default_pre_process(self) -> "FlowPath":
+        next_sequence_no = self.next_sequence_no
+        flow_params_list = self.flow_params_list
+        flow_params_list.append(
+            {"id": "default_pre_process", "block_name": "default_pre_process", "sequence_no": next_sequence_no}
+        )
+        return replace(self, next_sequence_no=next_sequence_no + 1, flow_params_list=flow_params_list)
+
+    def read(self) -> "FlowPath":
+        pass
+
+    def dumps(self) -> List[dict]:
+        return self.flow_params_list
