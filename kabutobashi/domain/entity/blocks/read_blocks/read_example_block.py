@@ -5,7 +5,7 @@ from pathlib import Path
 import pandas as pd
 from injector import Binder, inject
 
-from ..abc_block import IBlockOutput
+from ..abc_block import BlockGlue, IBlockOutput
 from .abc_read_block import IReadBlock, IReadBlockInput
 
 PARENT_PATH = os.path.abspath(os.path.dirname(__file__))
@@ -15,6 +15,18 @@ DATA_PATH = f"{PACKAGE_ROOT}/data"
 
 @dataclass(frozen=True)
 class ReadExampleBlockInput(IReadBlockInput):
+
+    @classmethod
+    def of(cls, block_glue: "BlockGlue"):
+        input_params = block_glue.params.get("read_example", {})
+        code = input_params.get("code")
+        return cls(
+            series=block_glue.series,
+            params={
+                "code": code,
+            },
+        )
+
     def _validate(self):
         if self.params:
             keys = self.params.keys()
@@ -35,7 +47,7 @@ class ReadExampleBlock(IReadBlock):
     def _process(self, block_input: ReadExampleBlockInput) -> ReadExampleBlockOutput:
         file_name = "example.csv.gz"
         df = pd.read_csv(f"{DATA_PATH}/{file_name}")
-        df = df[df["code"] == 1375]
+        df = df[df["code"] == block_input.params["code"]]
         df.index = df["dt"]
         return ReadExampleBlockOutput.of(series=df, params=block_input.params)
 

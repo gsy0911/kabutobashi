@@ -11,11 +11,13 @@ class Flow:
 
     @staticmethod
     def from_json(params_list: List[dict]) -> "Flow":
-        flow_initial_params = {"code": 1375}
+        flow_params = {}
         block_list = []
         for params in params_list:
-            block_list.append(FromJsonBlock.from_json(params).get())
-        return Flow.initialize(flow_initial_params).then(block=block_list)
+            block, block_params = FromJsonBlock.from_json(params).get()
+            block_list.append(block)
+            flow_params.update(block_params)
+        return Flow.initialize(params=flow_params).then(block=block_list)
 
     @staticmethod
     def initialize(params: dict) -> "Flow":
