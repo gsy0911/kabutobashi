@@ -20,11 +20,14 @@ class FromJsonBlock(BaseModel):
 
     def get(self) -> Tuple[IBlock, dict]:
         from .parameterize_blocks import ParameterizeMacdBlock, ParameterizeSmaBlock
+        from .pre_process_blocks import DefaultPreProcessBlock
         from .process_blocks import ProcessMacdBlock, ProcessSmaBlock
         from .read_blocks import ReadExampleBlock
 
         if self.block_name == "read_example":
             return ReadExampleBlock, {self.block_name: self.params}
+        elif self.block_name == "default_pre_process":
+            return DefaultPreProcessBlock, {self.block_name: self.params}
         elif self.block_name == "process_sma":
             return ProcessSmaBlock, {self.block_name: self.params}
         elif self.block_name == "parameterize_sma":
