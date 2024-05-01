@@ -16,6 +16,7 @@ class FullyConnectBlockInput(IBlockInput):
         macd_impact_ratio = input_params.get("macd_impact_ratio", 0.1)
         adx_impact_ratio = input_params.get("adx_impact_ratio", 0.1)
         bollinger_bands_impact_ratio = input_params.get("bollinger_bands_impact_ratio", 0.1)
+        momentum_impact_ratio = input_params.get("momentum_impact_ratio", 0.1)
         return FullyConnectBlockInput(
             series=None,
             params={
@@ -25,10 +26,12 @@ class FullyConnectBlockInput(IBlockInput):
                 "bollinger_bands_impact": block_outputs["parameterize_bollinger_bands"].params[
                     "bollinger_bands_impact"
                 ],
+                "momentum_impact": block_outputs["parameterize_momentum"].params["momentum_impact"],
                 "sma_impact_ratio": sma_impact_ratio,
                 "macd_impact_ratio": macd_impact_ratio,
                 "adx_impact_ratio": adx_impact_ratio,
                 "bollinger_bands_impact_ratio": bollinger_bands_impact_ratio,
+                "momentum_impact_ratio": momentum_impact_ratio,
             },
         )
 
