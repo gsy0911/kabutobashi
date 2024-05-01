@@ -73,6 +73,96 @@ class FlowPath:
         flow_params_list.extend([process, parameterize])
         return replace(self, next_sequence_no=next_sequence_no + 2, flow_params_list=flow_params_list)
 
+    def stochastics(self) -> "FlowPath":
+        next_sequence_no = self.next_sequence_no
+        flow_params_list = self.flow_params_list
+
+        process = {
+            "id": "process_stochastics",
+            "block_name": "process_stochastics",
+            "sequence_no": next_sequence_no,
+            "params": {},
+        }
+        parameterize = {
+            "id": "parameterize_stochastics",
+            "block_name": "parameterize_stochastics",
+            "sequence_no": next_sequence_no + 1,
+            "params": {},
+        }
+        flow_params_list.extend([process, parameterize])
+        return replace(self, next_sequence_no=next_sequence_no + 2, flow_params_list=flow_params_list)
+
+    def momentum(self) -> "FlowPath":
+        next_sequence_no = self.next_sequence_no
+        flow_params_list = self.flow_params_list
+
+        process = {
+            "id": "process_momentum",
+            "block_name": "process_momentum",
+            "sequence_no": next_sequence_no,
+            "params": {},
+        }
+        parameterize = {
+            "id": "parameterize_momentum",
+            "block_name": "parameterize_momentum",
+            "sequence_no": next_sequence_no + 1,
+            "params": {},
+        }
+        flow_params_list.extend([process, parameterize])
+        return replace(self, next_sequence_no=next_sequence_no + 2, flow_params_list=flow_params_list)
+
+    def adx(self) -> "FlowPath":
+        next_sequence_no = self.next_sequence_no
+        flow_params_list = self.flow_params_list
+
+        process = {"id": "process_adx", "block_name": "process_adx", "sequence_no": next_sequence_no, "params": {}}
+        parameterize = {
+            "id": "parameterize_adx",
+            "block_name": "parameterize_adx",
+            "sequence_no": next_sequence_no + 1,
+            "params": {},
+        }
+        flow_params_list.extend([process, parameterize])
+        return replace(self, next_sequence_no=next_sequence_no + 2, flow_params_list=flow_params_list)
+
+    def psycho_logical(self) -> "FlowPath":
+        next_sequence_no = self.next_sequence_no
+        flow_params_list = self.flow_params_list
+
+        process = {
+            "id": "process_psycho_logical",
+            "block_name": "process_psycho_logical",
+            "sequence_no": next_sequence_no,
+            "params": {},
+        }
+        parameterize = {
+            "id": "parameterize_psycho_logical",
+            "block_name": "parameterize_psycho_logical",
+            "sequence_no": next_sequence_no + 1,
+            "params": {},
+        }
+        flow_params_list.extend([process, parameterize])
+        return replace(self, next_sequence_no=next_sequence_no + 2, flow_params_list=flow_params_list)
+
+    def bollinger_bands(self) -> "FlowPath":
+        next_sequence_no = self.next_sequence_no
+        flow_params_list = self.flow_params_list
+
+        process = {
+            "id": "process_bollinger_bands",
+            "block_name": "process_bollinger_bands",
+            "sequence_no": next_sequence_no,
+            "params": {},
+        }
+        parameterize = {
+            "id": "parameterize_bollinger_bands",
+            "block_name": "parameterize_bollinger_bands",
+            "sequence_no": next_sequence_no + 1,
+            "params": {},
+        }
+        flow_params_list.extend([process, parameterize])
+        return replace(self, next_sequence_no=next_sequence_no + 2, flow_params_list=flow_params_list)
+
     def read_example(self, code: int) -> "FlowPath":
         next_sequence_no = self.next_sequence_no
         flow_params_list = self.flow_params_list

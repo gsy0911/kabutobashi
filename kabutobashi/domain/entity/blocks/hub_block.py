@@ -19,9 +19,25 @@ class FromJsonBlock(BaseModel):
         )
 
     def get(self) -> Tuple[IBlock, dict]:
-        from .parameterize_blocks import ParameterizeMacdBlock, ParameterizeSmaBlock
+        from .parameterize_blocks import (
+            ParameterizeAdxBlock,
+            ParameterizeBollingerBandsBlock,
+            ParameterizeMacdBlock,
+            ParameterizeMomentumBlock,
+            ParameterizePsychoLogicalBlock,
+            ParameterizeSmaBlock,
+            ParameterizeStochasticsBlock,
+        )
         from .pre_process_blocks import DefaultPreProcessBlock
-        from .process_blocks import ProcessMacdBlock, ProcessSmaBlock
+        from .process_blocks import (
+            ProcessAdxBlock,
+            ProcessBollingerBandsBlock,
+            ProcessMacdBlock,
+            ProcessMomentumBlock,
+            ProcessPsychoLogicalBlock,
+            ProcessSmaBlock,
+            ProcessStochasticsBlock,
+        )
         from .read_blocks import ReadExampleBlock
 
         if self.block_name == "read_example":
@@ -36,3 +52,23 @@ class FromJsonBlock(BaseModel):
             return ProcessMacdBlock, {self.block_name: self.params}
         elif self.block_name == "parameterize_macd":
             return ParameterizeMacdBlock, {self.block_name: self.params}
+        elif self.block_name == "process_adx":
+            return ProcessAdxBlock, {self.block_name: self.params}
+        elif self.block_name == "parameterize_adx":
+            return ParameterizeAdxBlock, {self.block_name: self.params}
+        elif self.block_name == "process_bollinger_bands":
+            return ProcessBollingerBandsBlock, {self.block_name: self.params}
+        elif self.block_name == "parameterize_bollinger_bands":
+            return ParameterizeBollingerBandsBlock, {self.block_name: self.params}
+        elif self.block_name == "process_momentum":
+            return ProcessMomentumBlock, {self.block_name: self.params}
+        elif self.block_name == "parameterize_momentum":
+            return ParameterizeMomentumBlock, {self.block_name: self.params}
+        elif self.block_name == "process_psycho_logical":
+            return ProcessPsychoLogicalBlock, {self.block_name: self.params}
+        elif self.block_name == "parameterize_psycho_logical":
+            return ParameterizePsychoLogicalBlock, {self.block_name: self.params}
+        elif self.block_name == "process_stochastics":
+            return ProcessStochasticsBlock, {self.block_name: self.params}
+        elif self.block_name == "parameterize_stochastics":
+            return ParameterizeStochasticsBlock, {self.block_name: self.params}
