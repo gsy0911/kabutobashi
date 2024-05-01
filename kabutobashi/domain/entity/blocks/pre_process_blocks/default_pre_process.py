@@ -34,7 +34,7 @@ class DefaultPreProcessBlockOutput(IPreProcessBlockOutput):
 class DefaultPreProcessBlock(IPreProcessBlock):
 
     def _process(self, block_input: DefaultPreProcessBlockInput) -> DefaultPreProcessBlockOutput:
-        required_cols = ["open", "high", "low", "close", "code", "dt", "volume"]
+        required_cols = ["open", "high", "low", "close", "code", "volume"]
         df = block_input.series
         df = df[required_cols]
         return DefaultPreProcessBlockOutput.of(

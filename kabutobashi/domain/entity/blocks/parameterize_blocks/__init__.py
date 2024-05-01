@@ -1,2 +1,3 @@
+from .parameterize_adx_block import ParameterizeAdxBlock
 from .parameterize_macd_block import ParameterizeMacdBlock
 from .parameterize_sma_block import ParameterizeSmaBlock

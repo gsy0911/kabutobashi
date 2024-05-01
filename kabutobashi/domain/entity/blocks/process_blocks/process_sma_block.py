@@ -6,6 +6,8 @@ from injector import Binder, inject
 from ..abc_block import BlockGlue
 from .abc_process_block import IProcessBlock, IProcessBlockInput, IProcessBlockOutput
 
+__all__ = ["ProcessSmaBlock"]
+
 
 @dataclass(frozen=True)
 class ProcessSmaBlockInput(IProcessBlockInput):
