@@ -4,3 +4,4 @@ from .process_macd_block import ProcessMacdBlock
 from .process_momentum_block import ProcessMomentumBlock
 from .process_psycho_logical_block import ProcessPsychoLogicalBlock
 from .process_sma_block import ProcessSmaBlock
+from .process_stochastics_block import ProcessStochasticsBlock
