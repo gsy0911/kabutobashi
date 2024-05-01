@@ -1,3 +1,4 @@
 from .parameterize_adx_block import ParameterizeAdxBlock
+from .parameterize_bollinger_bands_block import ParameterizeBollingerBandsBlock
 from .parameterize_macd_block import ParameterizeMacdBlock
 from .parameterize_sma_block import ParameterizeSmaBlock
