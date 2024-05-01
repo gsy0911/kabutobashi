@@ -17,6 +17,7 @@ class FullyConnectBlockInput(IBlockInput):
         adx_impact_ratio = input_params.get("adx_impact_ratio", 0.1)
         bollinger_bands_impact_ratio = input_params.get("bollinger_bands_impact_ratio", 0.1)
         momentum_impact_ratio = input_params.get("momentum_impact_ratio", 0.1)
+        psycho_logical_impact_ratio = input_params.get("psycho_logical_impact_ratio", 0.1)
         return FullyConnectBlockInput(
             series=None,
             params={
@@ -27,11 +28,13 @@ class FullyConnectBlockInput(IBlockInput):
                     "bollinger_bands_impact"
                 ],
                 "momentum_impact": block_outputs["parameterize_momentum"].params["momentum_impact"],
+                "psycho_logical_impact": block_outputs["parameterize_psycho_logical"].params["psycho_logical_impact"],
                 "sma_impact_ratio": sma_impact_ratio,
                 "macd_impact_ratio": macd_impact_ratio,
                 "adx_impact_ratio": adx_impact_ratio,
                 "bollinger_bands_impact_ratio": bollinger_bands_impact_ratio,
                 "momentum_impact_ratio": momentum_impact_ratio,
+                "psycho_logical_impact_ratio": psycho_logical_impact_ratio,
             },
         )
 
@@ -67,6 +70,9 @@ class FullyConnectBlock(IBlock):
             "impact": params["sma_impact"] * params["sma_impact_ratio"]
             + params["macd_impact"] * params["macd_impact_ratio"]
             + params["adx_impact"] * params["adx_impact_ratio"]
+            + params["bollinger_bands_impact"] * params["bollinger_bands_impact_ratio"]
+            + params["momentum_impact"] * params["momentum_impact_ratio"]
+            + params["psycho_logical_impact"] * params["psycho_logical_impact_ratio"]
         }
         return FullyConnectBlockOutput.of(
             series=None,
