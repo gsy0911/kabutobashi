@@ -80,3 +80,64 @@ target_date = "2020-01-01"
 date_list = kb.get_past_n_days(target_date, n=40)
 
 ```
+
+## concept: Blocks
+
+### Block
+
+Abstract classes are `BlockInput`, `Block`, and `BlockOutput`.
+`BlockGlue` is concrete class to connect two-Blocks.
+
+```mermaid
+classDiagram
+  class BlockInput{
+    series: pd.Pandas
+    params: dict
+    +of()
+  }
+  class Block{
+    series: pd.Pandas
+    params: dict
+    +glue(BlockGlue)BlockGlue
+    +process(BlockInput)
+  }
+  class BlockOutput{
+    series: pd.Pandas
+    params: dict
+    +of()
+  }
+  class BlockGlue{
+    series: pd.Pandas
+    params: dict
+    outpus: List[dict]
+    +update(BlockOutput)
+  }
+```
+
+Relationships and data-flow between classes.
+
+```mermaid
+graph LR
+    glue1[BlockGlue.prev]
+    glue2[BlockGlue.next]
+    
+    subgraph Block
+        i[BlockInput]
+        b[Block]
+        o[BlockOutput]
+    end
+    p([+])
+    glue1-->i
+    i-->b
+    b-->o
+    o-->p
+    glue1-->p
+    p--|update()|-->glue2
+```
+
+### Read-Block
+### Crawl-Block
+### PreProcess-Block
+### Process-Block
+### Parameterize-Block
+### Reduce-Block

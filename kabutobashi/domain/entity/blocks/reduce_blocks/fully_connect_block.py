@@ -11,6 +11,29 @@ class FullyConnectBlockInput(IBlockInput):
     @classmethod
     def of(cls, block_glue: "BlockGlue"):
         block_outputs = block_glue.block_outputs
+        # impact
+        sma_impact = 0
+        if "parameterize_sma" in block_outputs:
+            sma_impact = block_outputs["parameterize_sma"].params["sma_impact"]
+        macd_impact = 0
+        if "parameterize_macd" in block_outputs:
+            macd_impact = block_outputs["parameterize_macd"].params["macd_impact"]
+        adx_impact = 0
+        if "parameterize_adx" in block_outputs:
+            adx_impact = block_outputs["parameterize_adx"].params["adx_impact"]
+        momentum_impact = 0
+        if "parameterize_momentum" in block_outputs:
+            momentum_impact = block_outputs["parameterize_momentum"].params["momentum_impact"]
+        bollinger_bands_impact = 0
+        if "parameterize_bollinger_bands" in block_outputs:
+            bollinger_bands_impact = block_outputs["parameterize_bollinger_bands"].params["bollinger_bands_impact"]
+        psycho_logical_impact = 0
+        if "parameterize_psycho_logical" in block_outputs:
+            psycho_logical_impact = block_outputs["parameterize_psycho_logical"].params["psycho_logical_impact"]
+        stochastics_impact = 0
+        if "parameterize_stochastics" in block_outputs:
+            stochastics_impact = block_outputs["parameterize_stochastics"].params["stochastics_impact"]
+        # ratio
         input_params = block_glue.params.get("fully_connect", {})
         sma_impact_ratio = input_params.get("sma_impact_ratio", 0.1)
         macd_impact_ratio = input_params.get("macd_impact_ratio", 0.1)
@@ -22,15 +45,13 @@ class FullyConnectBlockInput(IBlockInput):
         return FullyConnectBlockInput(
             series=None,
             params={
-                "sma_impact": block_outputs["parameterize_sma"].params["sma_impact"],
-                "macd_impact": block_outputs["parameterize_macd"].params["macd_impact"],
-                "adx_impact": block_outputs["parameterize_adx"].params["adx_impact"],
-                "bollinger_bands_impact": block_outputs["parameterize_bollinger_bands"].params[
-                    "bollinger_bands_impact"
-                ],
-                "momentum_impact": block_outputs["parameterize_momentum"].params["momentum_impact"],
-                "psycho_logical_impact": block_outputs["parameterize_psycho_logical"].params["psycho_logical_impact"],
-                "stochastics_impact": block_outputs["parameterize_stochastics"].params["stochastics_impact"],
+                "sma_impact": sma_impact,
+                "macd_impact": macd_impact,
+                "adx_impact": adx_impact,
+                "bollinger_bands_impact": bollinger_bands_impact,
+                "momentum_impact": momentum_impact,
+                "psycho_logical_impact": psycho_logical_impact,
+                "stochastics_impact": stochastics_impact,
                 "sma_impact_ratio": sma_impact_ratio,
                 "macd_impact_ratio": macd_impact_ratio,
                 "adx_impact_ratio": adx_impact_ratio,
