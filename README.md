@@ -136,8 +136,47 @@ graph LR
 ```
 
 ### Read-Block
+
+- input
+  - params
+- output
+  - series
+
 ### Crawl-Block
+
+- input
+  - params
+- output
+  - output.params
+
 ### PreProcess-Block
+
+- input
+  - series
+  - params
+- output
+  - series
+
 ### Process-Block
+
+- input
+  - series
+  - params
+- output
+  - output.series
+
 ### Parameterize-Block
+
+- input
+  - series
+  - params
+- output
+  - output.params
+
 ### Reduce-Block
+
+- input
+  - series
+  - params
+- output
+  - params
