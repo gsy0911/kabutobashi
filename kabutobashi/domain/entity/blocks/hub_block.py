@@ -19,6 +19,7 @@ class FromJsonBlock(BaseModel):
         )
 
     def get(self) -> Tuple[IBlock, dict]:
+        # TODO ここのブロックの取得方法をメタプログラミングっぽく
         from .parameterize_blocks import (
             ParameterizeAdxBlock,
             ParameterizeBollingerBandsBlock,
