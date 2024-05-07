@@ -10,7 +10,13 @@ def decode_brand_list(path: str) -> List[Stock]:
     See Also: https://www.jpx.co.jp/markets/statistics-equities/misc/01.html
     """
     df = pd.read_excel(path)
-    column_renames = {"日付": "dt", "コード": "code", "銘柄名": "name", "市場・商品区分": "market", "33業種区分": "industry_type"}
+    column_renames = {
+        "日付": "dt",
+        "コード": "code",
+        "銘柄名": "name",
+        "市場・商品区分": "market",
+        "33業種区分": "industry_type",
+    }
     df = df.rename(columns=column_renames)
     df = df[column_renames.values()]
     df["market"] = df["market"].apply(lambda x: x.replace("（内国株式）", ""))

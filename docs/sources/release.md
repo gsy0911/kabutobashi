@@ -1,5 +1,9 @@
 # Release Note
 
+## 0.7.3
+
+- ENHANCEMENT: add Block and Flow classes ([#184](https://github.com/gsy0911/kabutobashi/issues/184))
+
 ## 0.7.2
 
 - FIX: sort values by `dt` ([#168](https://github.com/gsy0911/kabutobashi/issues/168))
