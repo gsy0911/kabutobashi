@@ -113,7 +113,7 @@ class StockInfoExtractBlock(IExtractBlock):
     def _process(self, block_input: StockInfoExtractBlockInput) -> StockInfoExtractBlockOutput:
         params = block_input.params
         html_text = params["html_text"]
-        result = self._decode(html_text=f"https://minkabu.jp/stock/{html_text}")
+        result = self._decode(html_text=html_text)
         return StockInfoExtractBlockOutput.of(series=None, params=result)
 
     @classmethod
