@@ -149,6 +149,13 @@ graph LR
 - output
   - output.params
 
+### Extract-Block
+
+- input
+  - params
+- output
+  - output.params
+
 ### PreProcess-Block
 
 - input
