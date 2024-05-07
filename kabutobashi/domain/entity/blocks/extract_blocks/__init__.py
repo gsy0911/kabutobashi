@@ -1,0 +1,1 @@
+from .stock_info_extract_block import StockInfoExtractBlock
