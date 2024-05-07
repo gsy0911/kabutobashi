@@ -124,15 +124,15 @@ graph LR
     subgraph Block
         i[BlockInput]
         b[Block]
-        o[BlockOutput]
+        out[BlockOutput]
     end
-    p([+])
+    plus([+])
     glue1-->i
     i-->b
-    b-->o
-    o-->p
-    glue1-->p
-    p--|update()|-->glue2
+    b-->out
+    out-->plus
+    glue1-->plus
+    plus--|update()|-->glue2
 ```
 
 ### Read-Block
