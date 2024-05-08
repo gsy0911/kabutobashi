@@ -2,7 +2,6 @@ from dataclasses import dataclass
 
 import pandas as pd
 from injector import Binder, inject
-from overrides import override
 
 from kabutobashi.domain.errors import KabutobashiBlockInstanceMismatchError, KabutobashiBlockParamsIsNoneError
 
@@ -44,8 +43,12 @@ class ProcessBollingerBandsBlockOutput(IProcessBlockOutput):
 @dataclass(frozen=True)
 class ProcessBollingerBandsBlock(IProcessBlock):
 
-    @override
-    def _apply(self, df: pd.DataFrame, band_term: int) -> pd.DataFrame:
+    def _apply(self, df: pd.DataFrame) -> pd.DataFrame:
+        params = self.block_input.params
+        if params is None:
+            raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
+        band_term = params["band_term"]
+
         df = df.assign(mean=df["close"].rolling(band_term).mean(), std=df["close"].rolling(band_term).std())
         df = df.assign(
             upper_1_sigma=df.apply(lambda x: x["mean"] + x["std"] * 1, axis=1),
@@ -57,8 +60,12 @@ class ProcessBollingerBandsBlock(IProcessBlock):
         )
         return df
 
-    @override
-    def _signal(self, df: pd.DataFrame, continuity_term: int) -> pd.DataFrame:
+    def _signal(self, df: pd.DataFrame) -> pd.DataFrame:
+        params = self.block_input.params
+        if params is None:
+            raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
+        continuity_term = params["continuity_term"]
+
         df = df.assign(
             over_upper=df.apply(lambda x: 1 if x["close"] > x["upper_2_sigma"] else 0, axis=1),
             over_lower=df.apply(lambda x: 1 if x["close"] < x["lower_2_sigma"] else 0, axis=1),
@@ -73,14 +80,9 @@ class ProcessBollingerBandsBlock(IProcessBlock):
     def _process(self, block_input: IBlockInput) -> ProcessBollingerBandsBlockOutput:
         if not isinstance(block_input, ProcessBollingerBandsBlockInput):
             raise KabutobashiBlockInstanceMismatchError()
-        params = block_input.params
-        if params is None:
-            raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
-        band_term = params["band_term"]
-        continuity_term = params["continuity_term"]
 
-        applied_df = self._apply(df=block_input.series, band_term=band_term)
-        signal_df = self._signal(df=applied_df, continuity_term=continuity_term)
+        applied_df = self._apply(df=block_input.series)
+        signal_df = self._signal(df=applied_df)
         required_columns = [
             "upper_1_sigma",
             "lower_1_sigma",
@@ -93,7 +95,7 @@ class ProcessBollingerBandsBlock(IProcessBlock):
         ]
         return ProcessBollingerBandsBlockOutput.of(
             series=signal_df[required_columns],
-            params=params,
+            params=block_input.params,
         )
 
     @classmethod

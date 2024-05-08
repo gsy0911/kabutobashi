@@ -18,7 +18,12 @@ class ParameterizeMomentumBlockInput(IBlockInput):
     @classmethod
     def of(cls, block_glue: "BlockGlue"):
         initial_series = block_glue.series
+        if initial_series is None:
+            raise KabutobashiBlockSeriesIsNoneError()
         processed_momentum_series = block_glue.block_outputs["process_momentum"].series
+        if processed_momentum_series is None:
+            raise KabutobashiBlockSeriesIsNoneError()
+
         return ParameterizeMomentumBlockInput(series=processed_momentum_series.join(initial_series["close"]), params={})
 
     def _validate(self):

@@ -16,7 +16,10 @@ class ProcessSmaBlockInput(IProcessBlockInput):
 
     @classmethod
     def of(cls, block_glue: "BlockGlue"):
-        input_params = block_glue.params.get("process_macd", {})
+        params = block_glue.params
+        if params is None:
+            raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
+        input_params = params.get("process_macd", {})
         short_term = input_params.get("short_term", 5)
         medium_term = input_params.get("medium_term", 21)
         long_term = input_params.get("long_term", 70)
@@ -47,6 +50,8 @@ class ProcessSmaBlock(IProcessBlock):
 
     def _apply(self, df: pd.DataFrame) -> pd.DataFrame:
         input_params = self.block_input.params
+        if input_params is None:
+            raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
         short_term = input_params["short_term"]
         medium_term = input_params["medium_term"]
         long_term = input_params["long_term"]

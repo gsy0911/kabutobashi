@@ -47,4 +47,4 @@ class StockIpoCrawlBlock(ICrawlBlock):
 
     @classmethod
     def _configure(cls, binder: Binder) -> None:
-        binder.bind(ICrawlBlockInput, to=StockIpoCrawlBlockInput)
+        binder.bind(IBlockInput, to=StockIpoCrawlBlockInput)

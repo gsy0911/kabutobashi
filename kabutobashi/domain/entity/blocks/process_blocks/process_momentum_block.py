@@ -2,7 +2,6 @@ from dataclasses import dataclass
 
 import pandas as pd
 from injector import Binder, inject
-from overrides import override
 
 from kabutobashi.domain.errors import KabutobashiBlockInstanceMismatchError, KabutobashiBlockParamsIsNoneError
 
@@ -40,8 +39,12 @@ class ProcessMomentumBlockOutput(IProcessBlockOutput):
 @dataclass(frozen=True)
 class ProcessMomentumBlock(IProcessBlock):
 
-    @override
-    def _apply(self, df: pd.DataFrame, term: int) -> pd.DataFrame:
+    def _apply(self, df: pd.DataFrame) -> pd.DataFrame:
+        params = self.block_input.params
+        if params is None:
+            raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
+        term = params["term"]
+
         df = df.assign(
             momentum=df["close"].shift(10),
         ).fillna(0)
@@ -56,12 +59,8 @@ class ProcessMomentumBlock(IProcessBlock):
     def _process(self, block_input: IBlockInput) -> ProcessMomentumBlockOutput:
         if not isinstance(block_input, ProcessMomentumBlockInput):
             raise KabutobashiBlockInstanceMismatchError()
-        term = block_input.params["term"]
-        params = block_input.params
-        if params is None:
-            raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
 
-        applied_df = self._apply(df=block_input.series, term=term)
+        applied_df = self._apply(df=block_input.series)
         signal_df = self._signal(df=applied_df)
         required_columns = ["momentum", "sma_momentum", "buy_signal", "sell_signal"]
         return ProcessMomentumBlockOutput.of(

@@ -13,8 +13,11 @@ class ParameterizeBollingerBandsBlockInput(IBlockInput):
 
     @classmethod
     def of(cls, block_glue: "BlockGlue"):
-        processed_sma_series = block_glue.block_outputs["process_bollinger_bands"].series
-        return ParameterizeBollingerBandsBlockInput(series=processed_sma_series, params={})
+        processed_bollinger_bands_series = block_glue.block_outputs["process_bollinger_bands"].series
+        if processed_bollinger_bands_series is None:
+            raise KabutobashiBlockSeriesIsNoneError()
+
+        return ParameterizeBollingerBandsBlockInput(series=processed_bollinger_bands_series, params={})
 
     def _validate(self):
         if self.series is not None:

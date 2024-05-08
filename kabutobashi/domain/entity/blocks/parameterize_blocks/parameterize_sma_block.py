@@ -18,7 +18,12 @@ class ParameterizeSmaBlockInput(IBlockInput):
     @classmethod
     def of(cls, block_glue: "BlockGlue"):
         initial_series = block_glue.series
+        if initial_series is None:
+            raise KabutobashiBlockSeriesIsNoneError()
         processed_sma_series = block_glue.block_outputs["process_sma"].series
+        if processed_sma_series is None:
+            raise KabutobashiBlockSeriesIsNoneError()
+
         return ParameterizeSmaBlockInput(series=processed_sma_series.join(initial_series["close"]), params={})
 
     def _validate(self):

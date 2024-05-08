@@ -18,7 +18,12 @@ class ParameterizePsychoLogicalBlockInput(IBlockInput):
     @classmethod
     def of(cls, block_glue: "BlockGlue"):
         initial_series = block_glue.series
+        if initial_series is None:
+            raise KabutobashiBlockSeriesIsNoneError()
         processed_psycho_logical_series = block_glue.block_outputs["process_psycho_logical"].series
+        if processed_psycho_logical_series is None:
+            raise KabutobashiBlockSeriesIsNoneError()
+
         return ParameterizePsychoLogicalBlockInput(
             series=processed_psycho_logical_series.join(initial_series["close"]), params={}
         )

@@ -89,4 +89,4 @@ class StockInfoMultipleDaysExtractBlock(IExtractBlock):
 
     @classmethod
     def _configure(cls, binder: Binder) -> None:
-        binder.bind(IExtractBlockInput, to=StockInfoMultipleDaysExtractBlockInput)
+        binder.bind(IBlockInput, to=StockInfoMultipleDaysExtractBlockInput)

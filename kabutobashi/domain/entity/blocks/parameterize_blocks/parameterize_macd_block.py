@@ -18,6 +18,9 @@ class ParameterizeMacdBlockInput(IBlockInput):
     @classmethod
     def of(cls, block_glue: "BlockGlue"):
         processed_macd_series = block_glue.block_outputs["process_macd"].series
+        if processed_macd_series is None:
+            raise KabutobashiBlockSeriesIsNoneError()
+
         return ParameterizeMacdBlockInput(series=processed_macd_series, params=block_glue.params)
 
     def _validate(self):

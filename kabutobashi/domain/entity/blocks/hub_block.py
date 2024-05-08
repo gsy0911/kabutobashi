@@ -73,3 +73,4 @@ class FromJsonBlock(BaseModel):
             return ProcessStochasticsBlock, {self.block_name: self.params}
         elif self.block_name == "parameterize_stochastics":
             return ParameterizeStochasticsBlock, {self.block_name: self.params}
+        raise ValueError()

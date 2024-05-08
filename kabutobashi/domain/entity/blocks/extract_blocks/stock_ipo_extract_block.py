@@ -70,4 +70,4 @@ class StockIpoExtractBlock(IExtractBlock):
 
     @classmethod
     def _configure(cls, binder: Binder) -> None:
-        binder.bind(IExtractBlockInput, to=StockIpoExtractBlockInput)
+        binder.bind(IBlockInput, to=StockIpoExtractBlockInput)

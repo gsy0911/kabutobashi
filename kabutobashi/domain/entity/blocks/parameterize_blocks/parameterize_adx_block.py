@@ -13,8 +13,11 @@ class ParameterizeAdxBlockInput(IBlockInput):
 
     @classmethod
     def of(cls, block_glue: "BlockGlue"):
-        processed_sma_series = block_glue.block_outputs["process_adx"].series
-        return ParameterizeAdxBlockInput(series=processed_sma_series, params={})
+        processed_adx_series = block_glue.block_outputs["process_adx"].series
+        if processed_adx_series is None:
+            raise KabutobashiBlockSeriesIsNoneError()
+
+        return ParameterizeAdxBlockInput(series=processed_adx_series, params={})
 
     def _validate(self):
         if self.series is not None:

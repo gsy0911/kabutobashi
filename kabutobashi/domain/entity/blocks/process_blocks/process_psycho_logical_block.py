@@ -43,7 +43,14 @@ class ProcessPsychoLogicalBlockOutput(IProcessBlockOutput):
 @dataclass(frozen=True)
 class ProcessPsychoLogicalBlock(IProcessBlock):
 
-    def _apply(self, df: pd.DataFrame, psycho_term: int, upper_threshold: int, lower_threshold: int) -> pd.DataFrame:
+    def _apply(self, df: pd.DataFrame) -> pd.DataFrame:
+        params = self.block_input.params
+        if params is None:
+            raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
+        psycho_term = params["psycho_term"]
+        upper_threshold = params["upper_threshold"]
+        lower_threshold = params["lower_threshold"]
+
         df_ = df.copy()
         df_["shift_close"] = df_["close"].shift(1)
         df_ = df_.fillna(0)
@@ -66,22 +73,11 @@ class ProcessPsychoLogicalBlock(IProcessBlock):
     def _process(self, block_input: IBlockInput) -> ProcessPsychoLogicalBlockOutput:
         if not isinstance(block_input, ProcessPsychoLogicalBlockInput):
             raise KabutobashiBlockInstanceMismatchError()
-        psycho_term = block_input.params["psycho_term"]
-        upper_threshold = block_input.params["upper_threshold"]
-        lower_threshold = block_input.params["lower_threshold"]
 
-        applied_df = self._apply(
-            df=block_input.series,
-            psycho_term=psycho_term,
-            upper_threshold=upper_threshold,
-            lower_threshold=lower_threshold,
-        )
+        applied_df = self._apply(df=block_input.series)
         signal_df = self._signal(df=applied_df)
         required_columns = ["psycho_line", "bought_too_much", "sold_too_much", "buy_signal", "sell_signal"]
-        return ProcessPsychoLogicalBlockOutput.of(
-            series=signal_df[required_columns],
-            params=block_input.params,
-        )
+        return ProcessPsychoLogicalBlockOutput.of(series=signal_df[required_columns], params=None)
 
     @classmethod
     def _configure(cls, binder: Binder) -> None:

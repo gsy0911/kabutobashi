@@ -18,7 +18,12 @@ class ParameterizeStochasticsBlockInput(IBlockInput):
     @classmethod
     def of(cls, block_glue: "BlockGlue"):
         initial_series = block_glue.series
+        if initial_series is None:
+            raise KabutobashiBlockSeriesIsNoneError()
         processed_stochastics_series = block_glue.block_outputs["process_stochastics"].series
+        if processed_stochastics_series is None:
+            raise KabutobashiBlockSeriesIsNoneError()
+
         return ParameterizeStochasticsBlockInput(
             series=processed_stochastics_series.join(initial_series["close"]), params={}
         )

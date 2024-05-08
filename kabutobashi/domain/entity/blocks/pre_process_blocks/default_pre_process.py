@@ -49,4 +49,4 @@ class DefaultPreProcessBlock(IPreProcessBlock):
 
     @classmethod
     def _configure(cls, binder: Binder) -> None:
-        binder.bind(IPreProcessBlockInput, to=DefaultPreProcessBlockInput)
+        binder.bind(IBlockInput, to=DefaultPreProcessBlockInput)
