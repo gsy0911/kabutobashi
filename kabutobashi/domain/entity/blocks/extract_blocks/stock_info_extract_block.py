@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Dict, List, Union
 
+import pandas as pd
 from bs4 import BeautifulSoup
 from injector import Binder, inject
 
@@ -123,7 +124,9 @@ class StockInfoExtractBlock(IExtractBlock):
             raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
         html_text = params["html_text"]
         result = self._decode(html_text=html_text)
-        return StockInfoExtractBlockOutput.of(series=None, params=result)
+        # to_df
+        df = pd.DataFrame(data=result, index=[result["dt"]])
+        return StockInfoExtractBlockOutput.of(series=df, params=result)
 
     @classmethod
     def _configure(cls, binder: Binder) -> None:

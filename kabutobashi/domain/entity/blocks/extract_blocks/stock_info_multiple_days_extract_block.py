@@ -85,7 +85,10 @@ class StockInfoMultipleDaysExtractBlock(IExtractBlock):
         sub_html_text = params["sub_html_text"]
         code = params["code"]
         result = self._decode(code=code, main_html_text=main_html_text, sub_html_text=sub_html_text)
-        return StockInfoMultipleDaysExtractBlockOutput.of(series=None, params=result)
+        # to_df
+        df = pd.DataFrame(data=result["info_list"])
+        df.index = df["dt"]
+        return StockInfoMultipleDaysExtractBlockOutput.of(series=df, params=result)
 
     @classmethod
     def _configure(cls, binder: Binder) -> None:

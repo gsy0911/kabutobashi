@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 
+import pandas as pd
 from bs4 import BeautifulSoup
 from injector import Binder, inject
 
@@ -65,8 +66,10 @@ class StockIpoExtractBlock(IExtractBlock):
         if params is None:
             raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
         html_text = params["html_text"]
+        # to_df
         result = self._decode(html_text=html_text)
-        return StockIpoExtractBlockOutput.of(series=None, params=result)
+        df = pd.DataFrame(data=result["ipo_list"])
+        return StockIpoExtractBlockOutput.of(series=df, params=result)
 
     @classmethod
     def _configure(cls, binder: Binder) -> None:
