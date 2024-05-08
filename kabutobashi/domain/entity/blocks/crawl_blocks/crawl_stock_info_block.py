@@ -9,42 +9,45 @@ from .abc_crawl_block import ICrawlBlock, ICrawlBlockInput, ICrawlBlockOutput
 
 
 @dataclass(frozen=True)
-class StockInfoCrawlBlockInput(ICrawlBlockInput):
+class CrawlStockInfoBlockInput(ICrawlBlockInput):
 
     @classmethod
     def of(cls, block_glue: "BlockGlue"):
-        params = block_glue.block_outputs["stock_info_crawl"].params
-        return StockInfoCrawlBlockInput(series=None, params=params)
+        if block_glue.params is None:
+            raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
+        params = block_glue.params["crawl_stock_info"]
+        return CrawlStockInfoBlockInput(series=None, params={"code": params["code"]})
 
     def _validate(self):
-        keys = self.params.keys()
-        assert "code" in keys, "StockInfoCrawlBlockInput must have 'code' params"
+        if self.params is not None:
+            keys = self.params.keys()
+            assert "code" in keys, "CrawlStockInfoBlockInput must have 'code' params"
 
 
 @dataclass(frozen=True)
-class StockInfoCrawlBlockOutput(ICrawlBlockOutput):
-    block_name: str = "stock_info_crawl"
+class CrawlStockInfoBlockOutput(ICrawlBlockOutput):
+    block_name: str = "crawl_stock_info"
 
     def _validate(self):
         keys = self.params.keys()
-        assert "code" in keys, "StockInfoCrawlBlockOutput must have 'code' column"
-        assert "html_text" in keys, "StockInfoCrawlBlockOutput must have 'html_text' column"
+        assert "code" in keys, "CrawlStockInfoBlockOutput must have 'code' column"
+        assert "html_text" in keys, "CrawlStockInfoBlockOutput must have 'html_text' column"
 
 
 @inject
 @dataclass(frozen=True)
-class StockInfoCrawlBlock(ICrawlBlock):
+class CrawlStockInfoBlock(ICrawlBlock):
 
-    def _process(self) -> StockInfoCrawlBlockOutput:
-        if not isinstance(self.block_input, StockInfoCrawlBlockInput):
+    def _process(self) -> CrawlStockInfoBlockOutput:
+        if not isinstance(self.block_input, CrawlStockInfoBlockInput):
             raise KabutobashiBlockInstanceMismatchError()
         params = self.block_input.params
         if params is None:
             raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
         code = params["code"]
         html_text = self._from_url(url=f"https://minkabu.jp/stock/{code}")
-        return StockInfoCrawlBlockOutput.of(series=None, params={"code": code, "html_text": html_text})
+        return CrawlStockInfoBlockOutput.of(series=None, params={"code": code, "html_text": html_text})
 
     @classmethod
     def _configure(cls, binder: Binder) -> None:
-        binder.bind(IBlockInput, to=StockInfoCrawlBlockInput)  # type: ignore[type-abstract]
+        binder.bind(ICrawlBlockInput, to=CrawlStockInfoBlockInput)  # type: ignore[type-abstract]

@@ -11,25 +11,24 @@ from .abc_extract_block import IExtractBlock, IExtractBlockInput, IExtractBlockO
 
 
 @dataclass(frozen=True)
-class StockInfoMultipleDaysExtractBlockInput(IExtractBlockInput):
+class ExtractStockInfoMultipleDaysBlockInput(IExtractBlockInput):
 
     @classmethod
     def of(cls, block_glue: "BlockGlue"):
-        params = block_glue.block_outputs["stock_info_crawl"].params
-        return StockInfoMultipleDaysExtractBlockInput(series=None, params=params)
+        params = block_glue.block_outputs["extract_stock_info_multiple_days"].params
+        return ExtractStockInfoMultipleDaysBlockInput(series=None, params=params)
 
     def _validate(self):
-        if self.params is None:
-            raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
-        keys = self.params.keys()
-        assert "code" in keys, "StockInfoMultipleDaysExtractBlockInput must have 'code' params"
-        assert "main_html_text" in keys, "StockInfoMultipleDaysExtractBlockInput must have 'main_html_text' params"
-        assert "sub_html_text" in keys, "StockInfoMultipleDaysExtractBlockInput must have 'sub_html_text' params"
+        if self.params is not None:
+            keys = self.params.keys()
+            assert "code" in keys, "StockInfoMultipleDaysExtractBlockInput must have 'code' params"
+            assert "main_html_text" in keys, "StockInfoMultipleDaysExtractBlockInput must have 'main_html_text' params"
+            assert "sub_html_text" in keys, "StockInfoMultipleDaysExtractBlockInput must have 'sub_html_text' params"
 
 
 @dataclass(frozen=True)
-class StockInfoMultipleDaysExtractBlockOutput(IExtractBlockOutput):
-    block_name: str = "stock_info_crawl"
+class ExtractStockInfoMultipleDaysBlockOutput(IExtractBlockOutput):
+    block_name: str = "extract_stock_info_multiple_days"
 
     def _validate(self):
         keys = self.params.keys()
@@ -38,7 +37,7 @@ class StockInfoMultipleDaysExtractBlockOutput(IExtractBlockOutput):
 
 @inject
 @dataclass(frozen=True)
-class StockInfoMultipleDaysExtractBlock(IExtractBlock):
+class ExtractStockInfoMultipleDaysBlock(IExtractBlock):
 
     def _decode(self, code: str, main_html_text: str, sub_html_text: str) -> dict:
         result_1 = []
@@ -75,8 +74,8 @@ class StockInfoMultipleDaysExtractBlock(IExtractBlock):
         df["code"] = code
         return {"info_list": df.to_dict(orient="records")}
 
-    def _process(self) -> StockInfoMultipleDaysExtractBlockOutput:
-        if not isinstance(self.block_input, StockInfoMultipleDaysExtractBlockInput):
+    def _process(self) -> ExtractStockInfoMultipleDaysBlockOutput:
+        if not isinstance(self.block_input, ExtractStockInfoMultipleDaysBlockInput):
             raise KabutobashiBlockInstanceMismatchError()
         params = self.block_input.params
         if params is None:
@@ -88,8 +87,8 @@ class StockInfoMultipleDaysExtractBlock(IExtractBlock):
         # to_df
         df = pd.DataFrame(data=result["info_list"])
         df.index = df["dt"]
-        return StockInfoMultipleDaysExtractBlockOutput.of(series=df, params=result)
+        return ExtractStockInfoMultipleDaysBlockOutput.of(series=df, params=result)
 
     @classmethod
     def _configure(cls, binder: Binder) -> None:
-        binder.bind(IBlockInput, to=StockInfoMultipleDaysExtractBlockInput)  # type: ignore[type-abstract]
+        binder.bind(IExtractBlockInput, to=ExtractStockInfoMultipleDaysBlockInput)  # type: ignore[type-abstract]

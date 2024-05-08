@@ -20,6 +20,8 @@ class FromJsonBlock(BaseModel):
 
     def get(self) -> Tuple[type[IBlock], dict]:
         # TODO ここのブロックの取得方法をメタプログラミングっぽく
+        from .crawl_blocks import CrawlStockInfoBlock, CrawlStockInfoMultipleDaysBlock, CrawlStockIpoBlock
+        from .extract_blocks import ExtractStockInfoBlock, ExtractStockInfoMultipleDaysBlock, ExtractStockIpoBlock
         from .parameterize_blocks import (
             ParameterizeAdxBlock,
             ParameterizeBollingerBandsBlock,
@@ -73,4 +75,18 @@ class FromJsonBlock(BaseModel):
             return ProcessStochasticsBlock, {self.block_name: self.params}
         elif self.block_name == "parameterize_stochastics":
             return ParameterizeStochasticsBlock, {self.block_name: self.params}
+        # crawl
+        elif self.block_name == "crawl_stock_info":
+            return CrawlStockInfoBlock, {self.block_name: self.params}
+        elif self.block_name == "crawl_stock_info_multiple_days":
+            return CrawlStockInfoMultipleDaysBlock, {self.block_name: self.params}
+        elif self.block_name == "crawl_stock_ipo":
+            return CrawlStockIpoBlock, {self.block_name: self.params}
+        # extract
+        elif self.block_name == "extract_stock_info":
+            return ExtractStockInfoBlock, {self.block_name: self.params}
+        elif self.block_name == "extract_stock_info_multiple_days":
+            return ExtractStockInfoMultipleDaysBlock, {self.block_name: self.params}
+        elif self.block_name == "extract_stock_ipo":
+            return ExtractStockIpoBlock, {self.block_name: self.params}
         raise ValueError()

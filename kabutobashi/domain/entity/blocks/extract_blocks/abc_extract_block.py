@@ -21,4 +21,4 @@ class IExtractBlockOutput(IBlockOutput, ABC):
 @inject
 @dataclass(frozen=True)
 class IExtractBlock(IBlock, ABC):
-    block_input: IBlockInput
+    block_input: IExtractBlockInput

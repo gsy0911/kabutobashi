@@ -25,7 +25,7 @@ class ICrawlBlockOutput(IBlockOutput, ABC):
 @inject
 @dataclass(frozen=True)
 class ICrawlBlock(IBlock, ABC):
-    block_input: IBlockInput
+    block_input: ICrawlBlockInput
 
     @staticmethod
     def _from_url(url: str) -> str:

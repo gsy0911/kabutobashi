@@ -9,21 +9,22 @@ from .abc_crawl_block import ICrawlBlock, ICrawlBlockInput, ICrawlBlockOutput
 
 
 @dataclass(frozen=True)
-class StockIpoCrawlBlockInput(ICrawlBlockInput):
+class CrawlStockIpoBlockInput(ICrawlBlockInput):
 
     @classmethod
     def of(cls, block_glue: "BlockGlue"):
-        params = block_glue.block_outputs["stock_ipo_crawl"].params
-        return StockIpoCrawlBlockInput(series=None, params=params)
+        params = block_glue.block_outputs["crawl_stock_ipo"].params
+        return CrawlStockIpoBlockInput(series=None, params=params)
 
     def _validate(self):
-        keys = self.params.keys()
-        assert "year" in keys, "StockIpoCrawlBlockInput must have 'year' params"
+        if self.params is not None:
+            keys = self.params.keys()
+            assert "year" in keys, "StockIpoCrawlBlockInput must have 'year' params"
 
 
 @dataclass(frozen=True)
-class StockIpoCrawlBlockOutput(ICrawlBlockOutput):
-    block_name: str = "stock_ipo_crawl"
+class CrawlStockIpoBlockOutput(ICrawlBlockOutput):
+    block_name: str = "crawl_stock_ipo"
 
     def _validate(self):
         keys = self.params.keys()
@@ -33,18 +34,18 @@ class StockIpoCrawlBlockOutput(ICrawlBlockOutput):
 
 @inject
 @dataclass(frozen=True)
-class StockIpoCrawlBlock(ICrawlBlock):
+class CrawlStockIpoBlock(ICrawlBlock):
 
-    def _process(self) -> StockIpoCrawlBlockOutput:
-        if not isinstance(self.block_input, StockIpoCrawlBlockInput):
+    def _process(self) -> CrawlStockIpoBlockOutput:
+        if not isinstance(self.block_input, CrawlStockIpoBlockInput):
             raise KabutobashiBlockInstanceMismatchError()
         params = self.block_input.params
         if params is None:
             raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
         year = params["year"]
         html_text = self._from_url(url=f"https://96ut.com/ipo/list.php?year={year}")
-        return StockIpoCrawlBlockOutput.of(series=None, params={"year": year, "html_text": html_text})
+        return CrawlStockIpoBlockOutput.of(series=None, params={"year": year, "html_text": html_text})
 
     @classmethod
     def _configure(cls, binder: Binder) -> None:
-        binder.bind(IBlockInput, to=StockIpoCrawlBlockInput)  # type: ignore[type-abstract]
+        binder.bind(ICrawlBlockInput, to=CrawlStockIpoBlockInput)  # type: ignore[type-abstract]
