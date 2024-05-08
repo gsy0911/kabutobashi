@@ -45,8 +45,10 @@ class FromJsonBlock(BaseModel):
 
         if self.block_name == "read_example":
             return ReadExampleBlock, {self.block_name: self.params}
+        # pre-process
         elif self.block_name == "default_pre_process":
             return DefaultPreProcessBlock, {self.block_name: self.params}
+        # process
         elif self.block_name == "process_sma":
             return ProcessSmaBlock, {self.block_name: self.params}
         elif self.block_name == "parameterize_sma":
