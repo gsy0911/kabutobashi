@@ -16,6 +16,8 @@ class ProcessAdxBlockInput(IProcessBlockInput):
 
     @classmethod
     def of(cls, block_glue: "BlockGlue"):
+        if block_glue.params is None:
+            raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
         input_params = block_glue.params.get("process_macd", {})
         term = input_params.get("term", 14)
         adx_term = input_params.get("adx_term", 14)
@@ -226,4 +228,4 @@ class ProcessAdxBlock(IProcessBlock):
 
     @classmethod
     def _configure(cls, binder: Binder) -> None:
-        binder.bind(IProcessBlockInput, to=ProcessAdxBlockInput)
+        binder.bind(IProcessBlockInput, to=ProcessAdxBlockInput)  # type: ignore[type-abstract]

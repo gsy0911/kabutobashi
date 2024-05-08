@@ -61,4 +61,4 @@ class ParameterizeAdxBlock(IParameterizeBlock):
 
     @classmethod
     def _configure(cls, binder: Binder) -> None:
-        binder.bind(IBlockInput, to=ParameterizeAdxBlockInput)
+        binder.bind(IBlockInput, to=ParameterizeAdxBlockInput)  # type: ignore[type-abstract]

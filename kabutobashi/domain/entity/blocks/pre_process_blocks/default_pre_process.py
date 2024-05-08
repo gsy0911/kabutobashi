@@ -8,7 +8,6 @@ from kabutobashi.domain.errors import (
     KabutobashiBlockSeriesIsNoneError,
 )
 
-
 from ..abc_block import BlockGlue, IBlockInput
 from .abc_pre_process_block import IPreProcessBlock, IPreProcessBlockInput, IPreProcessBlockOutput
 
@@ -55,4 +54,4 @@ class DefaultPreProcessBlock(IPreProcessBlock):
 
     @classmethod
     def _configure(cls, binder: Binder) -> None:
-        binder.bind(IBlockInput, to=DefaultPreProcessBlockInput)
+        binder.bind(IBlockInput, to=DefaultPreProcessBlockInput)  # type: ignore[type-abstract]

@@ -82,4 +82,4 @@ class ProcessSmaBlock(IProcessBlock):
 
     @classmethod
     def _configure(cls, binder: Binder) -> None:
-        binder.bind(IProcessBlockInput, to=ProcessSmaBlockInput)
+        binder.bind(IProcessBlockInput, to=ProcessSmaBlockInput)  # type: ignore[type-abstract]

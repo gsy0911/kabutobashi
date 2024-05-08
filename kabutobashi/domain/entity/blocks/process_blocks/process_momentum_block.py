@@ -14,6 +14,8 @@ class ProcessMomentumBlockInput(IProcessBlockInput):
 
     @classmethod
     def of(cls, block_glue: "BlockGlue"):
+        if block_glue.params is None:
+            raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
         input_params = block_glue.params.get("process_momentum", {})
         term = input_params.get("term", 12)
         return cls(
@@ -70,4 +72,4 @@ class ProcessMomentumBlock(IProcessBlock):
 
     @classmethod
     def _configure(cls, binder: Binder) -> None:
-        binder.bind(IProcessBlockInput, to=ProcessMomentumBlockInput)
+        binder.bind(IProcessBlockInput, to=ProcessMomentumBlockInput)  # type: ignore[type-abstract]

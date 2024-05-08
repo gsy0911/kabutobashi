@@ -65,4 +65,4 @@ class ParameterizeBollingerBandsBlock(IParameterizeBlock):
 
     @classmethod
     def _configure(cls, binder: Binder) -> None:
-        binder.bind(IBlockInput, to=ParameterizeBollingerBandsBlockInput)
+        binder.bind(IBlockInput, to=ParameterizeBollingerBandsBlockInput)  # type: ignore[type-abstract]

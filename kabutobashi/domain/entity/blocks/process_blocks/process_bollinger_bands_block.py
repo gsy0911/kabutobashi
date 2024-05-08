@@ -16,6 +16,8 @@ class ProcessBollingerBandsBlockInput(IProcessBlockInput):
 
     @classmethod
     def of(cls, block_glue: "BlockGlue"):
+        if block_glue.params is None:
+            raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
         input_params = block_glue.params.get("process_bollinger_bands", {})
         band_term = input_params.get("band_term", 12)
         continuity_term = input_params.get("continuity_term", 10)
@@ -100,4 +102,4 @@ class ProcessBollingerBandsBlock(IProcessBlock):
 
     @classmethod
     def _configure(cls, binder: Binder) -> None:
-        binder.bind(IProcessBlockInput, to=ProcessBollingerBandsBlockInput)
+        binder.bind(IProcessBlockInput, to=ProcessBollingerBandsBlockInput)  # type: ignore[type-abstract]

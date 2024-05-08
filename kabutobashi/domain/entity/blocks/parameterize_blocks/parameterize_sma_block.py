@@ -80,4 +80,4 @@ class ParameterizeSmaBlock(IParameterizeBlock):
 
     @classmethod
     def _configure(cls, binder: Binder) -> None:
-        binder.bind(IBlockInput, to=ParameterizeSmaBlockInput)
+        binder.bind(IBlockInput, to=ParameterizeSmaBlockInput)  # type: ignore[type-abstract]

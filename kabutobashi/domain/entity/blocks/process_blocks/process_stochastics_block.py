@@ -137,4 +137,4 @@ class ProcessStochasticsBlock(IProcessBlock):
 
     @classmethod
     def _configure(cls, binder: Binder) -> None:
-        binder.bind(IProcessBlockInput, to=ProcessStochasticsBlockInput)
+        binder.bind(IProcessBlockInput, to=ProcessStochasticsBlockInput)  # type: ignore[type-abstract]

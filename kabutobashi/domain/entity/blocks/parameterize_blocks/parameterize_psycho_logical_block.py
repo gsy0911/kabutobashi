@@ -65,4 +65,4 @@ class ParameterizePsychoLogicalBlock(IParameterizeBlock):
 
     @classmethod
     def _configure(cls, binder: Binder) -> None:
-        binder.bind(IBlockInput, to=ParameterizePsychoLogicalBlockInput)
+        binder.bind(IBlockInput, to=ParameterizePsychoLogicalBlockInput)  # type: ignore[type-abstract]

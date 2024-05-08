@@ -14,6 +14,8 @@ class ProcessPsychoLogicalBlockInput(IProcessBlockInput):
 
     @classmethod
     def of(cls, block_glue: "BlockGlue"):
+        if block_glue.params is None:
+            raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
         input_params = block_glue.params.get("process_macd", {})
         psycho_term = input_params.get("psycho_term", 12)
         upper_threshold = input_params.get("upper_threshold", 0.75)
@@ -81,4 +83,4 @@ class ProcessPsychoLogicalBlock(IProcessBlock):
 
     @classmethod
     def _configure(cls, binder: Binder) -> None:
-        binder.bind(IProcessBlockInput, to=ProcessPsychoLogicalBlockInput)
+        binder.bind(IProcessBlockInput, to=ProcessPsychoLogicalBlockInput)  # type: ignore[type-abstract]

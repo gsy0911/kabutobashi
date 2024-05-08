@@ -51,6 +51,8 @@ class FullyConnectBlockInput(IBlockInput):
                 raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
             stochastics_impact = block_outputs["parameterize_stochastics"].params["stochastics_impact"]
         # ratio
+        if block_glue.params is None:
+            raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
         input_params = block_glue.params.get("fully_connect", {})
         sma_impact_ratio = input_params.get("sma_impact_ratio", 0.1)
         macd_impact_ratio = input_params.get("macd_impact_ratio", 0.1)
@@ -127,4 +129,4 @@ class FullyConnectBlock(IBlock):
 
     @classmethod
     def _configure(cls, binder: Binder) -> None:
-        binder.bind(IBlockInput, to=FullyConnectBlockInput)
+        binder.bind(IBlockInput, to=FullyConnectBlockInput)  # type: ignore[type-abstract]

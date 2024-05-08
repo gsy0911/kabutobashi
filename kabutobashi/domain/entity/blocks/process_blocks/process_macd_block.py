@@ -16,6 +16,8 @@ class ProcessMacdBlockInput(IProcessBlockInput):
 
     @classmethod
     def of(cls, block_glue: "BlockGlue"):
+        if block_glue.params is None:
+            raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
         input_params = block_glue.params.get("process_macd", {})
         short_term = input_params.get("short_term", 12)
         long_term = input_params.get("long_term", 26)
@@ -82,4 +84,4 @@ class ProcessMacdBlock(IProcessBlock):
 
     @classmethod
     def _configure(cls, binder: Binder) -> None:
-        binder.bind(IProcessBlockInput, to=ProcessMacdBlockInput)
+        binder.bind(IProcessBlockInput, to=ProcessMacdBlockInput)  # type: ignore[type-abstract]

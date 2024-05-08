@@ -20,6 +20,8 @@ class ReadExampleBlockInput(IReadBlockInput):
 
     @classmethod
     def of(cls, block_glue: "BlockGlue"):
+        if block_glue.params is None:
+            raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
         input_params = block_glue.params.get("read_example", {})
         code = input_params.get("code")
         return cls(
@@ -60,4 +62,4 @@ class ReadExampleBlock(IReadBlock):
 
     @classmethod
     def _configure(cls, binder: Binder) -> None:
-        binder.bind(IReadBlockInput, to=ReadExampleBlockInput)
+        binder.bind(IReadBlockInput, to=ReadExampleBlockInput)  # type: ignore[type-abstract]

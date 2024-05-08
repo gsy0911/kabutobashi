@@ -71,4 +71,4 @@ class ParameterizeStochasticsBlock(IParameterizeBlock):
 
     @classmethod
     def _configure(cls, binder: Binder) -> None:
-        binder.bind(IBlockInput, to=ParameterizeStochasticsBlockInput)
+        binder.bind(IBlockInput, to=ParameterizeStochasticsBlockInput)  # type: ignore[type-abstract]

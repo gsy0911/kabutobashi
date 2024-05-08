@@ -60,4 +60,4 @@ class ParameterizeMomentumBlock(IParameterizeBlock):
 
     @classmethod
     def _configure(cls, binder: Binder) -> None:
-        binder.bind(IBlockInput, to=ParameterizeMomentumBlockInput)
+        binder.bind(IBlockInput, to=ParameterizeMomentumBlockInput)  # type: ignore[type-abstract]

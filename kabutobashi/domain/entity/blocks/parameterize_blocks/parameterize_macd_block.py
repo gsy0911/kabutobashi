@@ -61,4 +61,4 @@ class ParameterizeMacdBlock(IParameterizeBlock):
 
     @classmethod
     def _configure(cls, binder: Binder) -> None:
-        binder.bind(IBlockInput, to=ParameterizeMacdBlockInput)
+        binder.bind(IBlockInput, to=ParameterizeMacdBlockInput)  # type: ignore[type-abstract]
