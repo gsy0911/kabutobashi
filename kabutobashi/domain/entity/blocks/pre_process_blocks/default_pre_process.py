@@ -2,7 +2,13 @@ from dataclasses import dataclass
 
 from injector import Binder, inject
 
-from ..abc_block import BlockGlue
+from kabutobashi.domain.errors import (
+    KabutobashiBlockInstanceMismatchError,
+    KabutobashiBlockParamsIsNoneError,
+    KabutobashiBlockSeriesIsNoneError,
+)
+
+from ..abc_block import BlockGlue, IBlockInput
 from .abc_pre_process_block import IPreProcessBlock, IPreProcessBlockInput, IPreProcessBlockOutput
 
 
@@ -11,7 +17,6 @@ class DefaultPreProcessBlockInput(IPreProcessBlockInput):
 
     @classmethod
     def of(cls, block_glue: "BlockGlue"):
-        input_params = block_glue.params.get("default_pre_process", {})
         return cls(
             series=block_glue.series,
             params={},
@@ -33,15 +38,20 @@ class DefaultPreProcessBlockOutput(IPreProcessBlockOutput):
 @dataclass(frozen=True)
 class DefaultPreProcessBlock(IPreProcessBlock):
 
-    def _process(self, block_input: DefaultPreProcessBlockInput) -> DefaultPreProcessBlockOutput:
+    def _process(self) -> DefaultPreProcessBlockOutput:
+        if not isinstance(self.block_input, DefaultPreProcessBlockInput):
+            raise KabutobashiBlockInstanceMismatchError()
+
         required_cols = ["open", "high", "low", "close", "code", "volume"]
-        df = block_input.series
+        df = self.block_input.series
+        if df is None:
+            raise KabutobashiBlockSeriesIsNoneError()
         df = df[required_cols]
         return DefaultPreProcessBlockOutput.of(
             series=df,
-            params=block_input.params,
+            params=self.block_input.params,
         )
 
     @classmethod
     def _configure(cls, binder: Binder) -> None:
-        binder.bind(IPreProcessBlockInput, to=DefaultPreProcessBlockInput)
+        binder.bind(IBlockInput, to=DefaultPreProcessBlockInput)  # type: ignore[type-abstract]

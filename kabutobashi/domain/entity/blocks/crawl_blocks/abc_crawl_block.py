@@ -1,7 +1,7 @@
 from abc import ABC
 from dataclasses import dataclass
 
-import requests
+import httpx
 from injector import inject
 
 from kabutobashi.domain.errors import KabutobashiPageError
@@ -30,11 +30,9 @@ class ICrawlBlock(IBlock, ABC):
     @staticmethod
     def _from_url(url: str) -> str:
         user_agent = UserAgent.get_user_agent_header()
-        r = requests.get(url, headers=user_agent)
+        r = httpx.get(url, headers=user_agent)
 
         if r.status_code != 200:
             raise KabutobashiPageError(url=url)
 
-        # 日本語に対応
-        r.encoding = r.apparent_encoding
         return r.text

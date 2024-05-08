@@ -4,6 +4,8 @@ from dataclasses import dataclass
 import pandas as pd
 from injector import Binder, inject
 
+from kabutobashi.domain.errors import KabutobashiBlockInstanceMismatchError, KabutobashiBlockParamsIsNoneError
+
 from ..abc_block import BlockGlue
 from .abc_process_block import IProcessBlock, IProcessBlockInput, IProcessBlockOutput
 
@@ -13,7 +15,6 @@ class ProcessStochasticsBlockInput(IProcessBlockInput):
 
     @classmethod
     def of(cls, block_glue: "BlockGlue"):
-        input_params = block_glue.params.get("process_stochastics", {})
         return cls(
             series=block_glue.series,
             params={},
@@ -123,15 +124,17 @@ class ProcessStochasticsBlock(IProcessBlock):
             math.pow(current_k - 20, 2) / 100 + math.pow(current_d - 20, 2) / 100 + math.pow(current_sd - 20, 2) / 100
         )
 
-    def _process(self, block_input: ProcessStochasticsBlockInput) -> ProcessStochasticsBlockOutput:
-        applied_df = self._apply(df=block_input.series)
+    def _process(self) -> ProcessStochasticsBlockOutput:
+        if not isinstance(self.block_input, ProcessStochasticsBlockInput):
+            raise KabutobashiBlockInstanceMismatchError()
+        applied_df = self._apply(df=self.block_input.series)
         signal_df = self._signal(df=applied_df)
         required_columns = ["K", "D", "SD", "buy_signal", "sell_signal"]
         return ProcessStochasticsBlockOutput.of(
             series=signal_df[required_columns],
-            params=block_input.params,
+            params=self.block_input.params,
         )
 
     @classmethod
     def _configure(cls, binder: Binder) -> None:
-        binder.bind(IProcessBlockInput, to=ProcessStochasticsBlockInput)
+        binder.bind(IProcessBlockInput, to=ProcessStochasticsBlockInput)  # type: ignore[type-abstract]

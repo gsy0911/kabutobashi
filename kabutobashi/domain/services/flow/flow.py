@@ -24,7 +24,7 @@ class Flow:
         glue = BlockGlue(series=None, params=params)
         return Flow(block_glue=glue)
 
-    def then(self, block: Union[IBlock, List[IBlock]]) -> "Flow":
+    def then(self, block: Union[type[IBlock], List[type[IBlock]]]) -> "Flow":
         if type(block) is list:
             flow = self
             glue = self.block_glue

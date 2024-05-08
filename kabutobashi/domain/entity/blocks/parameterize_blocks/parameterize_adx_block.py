@@ -2,6 +2,8 @@ from dataclasses import dataclass
 
 from injector import Binder, inject
 
+from kabutobashi.domain.errors import KabutobashiBlockInstanceMismatchError, KabutobashiBlockSeriesIsNoneError
+
 from ..abc_block import BlockGlue, IBlockInput, IBlockOutput
 from .abc_parameterize_block import IParameterizeBlock
 
@@ -11,8 +13,11 @@ class ParameterizeAdxBlockInput(IBlockInput):
 
     @classmethod
     def of(cls, block_glue: "BlockGlue"):
-        processed_sma_series = block_glue.block_outputs["process_adx"].series
-        return ParameterizeAdxBlockInput(series=processed_sma_series, params={})
+        processed_adx_series = block_glue.block_outputs["process_adx"].series
+        if processed_adx_series is None:
+            raise KabutobashiBlockSeriesIsNoneError()
+
+        return ParameterizeAdxBlockInput(series=processed_adx_series, params={})
 
     def _validate(self):
         if self.series is not None:
@@ -38,8 +43,13 @@ class ParameterizeAdxBlockOutput(IBlockOutput):
 @dataclass(frozen=True)
 class ParameterizeAdxBlock(IParameterizeBlock):
 
-    def _process(self, block_input: ParameterizeAdxBlockInput) -> ParameterizeAdxBlockOutput:
-        df = block_input.series
+    def _process(self) -> ParameterizeAdxBlockOutput:
+        if not isinstance(self.block_input, ParameterizeAdxBlockInput):
+            raise KabutobashiBlockInstanceMismatchError()
+
+        df = self.block_input.series
+        if df is None:
+            raise KabutobashiBlockSeriesIsNoneError()
         params = {
             "adx_dx": df["DX"].tail(3).mean(),
             "adx_adx": df["ADX"].tail(3).mean(),
@@ -51,4 +61,4 @@ class ParameterizeAdxBlock(IParameterizeBlock):
 
     @classmethod
     def _configure(cls, binder: Binder) -> None:
-        binder.bind(IBlockInput, to=ParameterizeAdxBlockInput)
+        binder.bind(IBlockInput, to=ParameterizeAdxBlockInput)  # type: ignore[type-abstract]

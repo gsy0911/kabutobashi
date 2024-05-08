@@ -53,15 +53,17 @@ class IBlock(ABC):
     block_input: Optional[IBlockInput]
 
     def process(self) -> IBlockOutput:
-        return self._process(block_input=self.block_input)
+        return self._process()
 
     @abstractmethod
-    def _process(self, block_input: IBlockInput) -> IBlockOutput:
+    def _process(self) -> IBlockOutput:
         raise NotImplementedError()
 
     @classmethod
     def glue(cls, glue: "BlockGlue") -> "BlockGlue":
         block = Injector(cls._configure).get(cls)
+        if block.block_input is None:
+            raise ValueError("Block inputs cannot be None")
         updated_block = replace(cls(block_input=None), block_input=block.block_input.of(block_glue=glue))
         updated_glue = glue.update(block_output=updated_block.process())
         return updated_glue

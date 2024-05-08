@@ -2,6 +2,12 @@ from dataclasses import dataclass
 
 from injector import Binder, inject
 
+from kabutobashi.domain.errors import (
+    KabutobashiBlockInstanceMismatchError,
+    KabutobashiBlockParamsIsNoneError,
+    KabutobashiBlockSeriesIsNoneError,
+)
+
 from ..abc_block import BlockGlue, IBlockInput, IBlockOutput
 from .abc_parameterize_block import IParameterizeBlock
 
@@ -12,7 +18,12 @@ class ParameterizeMomentumBlockInput(IBlockInput):
     @classmethod
     def of(cls, block_glue: "BlockGlue"):
         initial_series = block_glue.series
+        if initial_series is None:
+            raise KabutobashiBlockSeriesIsNoneError()
         processed_momentum_series = block_glue.block_outputs["process_momentum"].series
+        if processed_momentum_series is None:
+            raise KabutobashiBlockSeriesIsNoneError()
+
         return ParameterizeMomentumBlockInput(series=processed_momentum_series.join(initial_series["close"]), params={})
 
     def _validate(self):
@@ -35,8 +46,12 @@ class ParameterizeMomentumBlockOutput(IBlockOutput):
 @dataclass(frozen=True)
 class ParameterizeMomentumBlock(IParameterizeBlock):
 
-    def _process(self, block_input: ParameterizeMomentumBlockInput) -> ParameterizeMomentumBlockOutput:
-        df = block_input.series
+    def _process(self) -> ParameterizeMomentumBlockOutput:
+        if not isinstance(self.block_input, ParameterizeMomentumBlockInput):
+            raise KabutobashiBlockInstanceMismatchError()
+        df = self.block_input.series
+        if df is None:
+            raise KabutobashiBlockSeriesIsNoneError()
         params = {
             "momentum_impact": self._get_impact(df=df, influence=self.influence, tail=self.tail),
         }
@@ -45,4 +60,4 @@ class ParameterizeMomentumBlock(IParameterizeBlock):
 
     @classmethod
     def _configure(cls, binder: Binder) -> None:
-        binder.bind(IBlockInput, to=ParameterizeMomentumBlockInput)
+        binder.bind(IBlockInput, to=ParameterizeMomentumBlockInput)  # type: ignore[type-abstract]

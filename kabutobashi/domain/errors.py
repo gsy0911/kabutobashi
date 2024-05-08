@@ -37,3 +37,19 @@ class KabutobashiVisualizeError(KabutobashiBaseError):
 
 class KabutobashiEntityError(KabutobashiBaseError):
     pass
+
+
+class KabutobashiBlockError(KabutobashiBaseError):
+    pass
+
+
+class KabutobashiBlockInstanceMismatchError(KabutobashiBlockError):
+    pass
+
+
+class KabutobashiBlockParamsIsNoneError(KabutobashiBlockError):
+    pass
+
+
+class KabutobashiBlockSeriesIsNoneError(KabutobashiBlockError):
+    pass

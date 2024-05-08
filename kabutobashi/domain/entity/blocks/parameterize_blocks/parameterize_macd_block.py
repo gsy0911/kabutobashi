@@ -2,6 +2,12 @@ from dataclasses import dataclass
 
 from injector import Binder, inject
 
+from kabutobashi.domain.errors import (
+    KabutobashiBlockInstanceMismatchError,
+    KabutobashiBlockParamsIsNoneError,
+    KabutobashiBlockSeriesIsNoneError,
+)
+
 from ..abc_block import BlockGlue, IBlockInput, IBlockOutput
 from .abc_parameterize_block import IParameterizeBlock
 
@@ -12,6 +18,9 @@ class ParameterizeMacdBlockInput(IBlockInput):
     @classmethod
     def of(cls, block_glue: "BlockGlue"):
         processed_macd_series = block_glue.block_outputs["process_macd"].series
+        if processed_macd_series is None:
+            raise KabutobashiBlockSeriesIsNoneError()
+
         return ParameterizeMacdBlockInput(series=processed_macd_series, params=block_glue.params)
 
     def _validate(self):
@@ -36,8 +45,12 @@ class ParameterizeMacdBlockOutput(IBlockOutput):
 @dataclass(frozen=True)
 class ParameterizeMacdBlock(IParameterizeBlock):
 
-    def _process(self, block_input: ParameterizeMacdBlockInput) -> ParameterizeMacdBlockOutput:
-        df = block_input.series
+    def _process(self) -> ParameterizeMacdBlockOutput:
+        if not isinstance(self.block_input, ParameterizeMacdBlockInput):
+            raise KabutobashiBlockInstanceMismatchError()
+        df = self.block_input.series
+        if df is None:
+            raise KabutobashiBlockSeriesIsNoneError()
         params = {
             "signal": df["signal"].tail(3).mean(),
             "histogram": df["histogram"].tail(3).mean(),
@@ -48,4 +61,4 @@ class ParameterizeMacdBlock(IParameterizeBlock):
 
     @classmethod
     def _configure(cls, binder: Binder) -> None:
-        binder.bind(IBlockInput, to=ParameterizeMacdBlockInput)
+        binder.bind(IBlockInput, to=ParameterizeMacdBlockInput)  # type: ignore[type-abstract]

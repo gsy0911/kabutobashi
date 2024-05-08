@@ -2,6 +2,8 @@ from dataclasses import dataclass
 
 from injector import Binder, inject
 
+from kabutobashi.domain.errors import KabutobashiBlockInstanceMismatchError, KabutobashiBlockSeriesIsNoneError
+
 from ..abc_block import BlockGlue, IBlockInput, IBlockOutput
 from .abc_parameterize_block import IParameterizeBlock
 
@@ -11,8 +13,11 @@ class ParameterizeBollingerBandsBlockInput(IBlockInput):
 
     @classmethod
     def of(cls, block_glue: "BlockGlue"):
-        processed_sma_series = block_glue.block_outputs["process_bollinger_bands"].series
-        return ParameterizeBollingerBandsBlockInput(series=processed_sma_series, params={})
+        processed_bollinger_bands_series = block_glue.block_outputs["process_bollinger_bands"].series
+        if processed_bollinger_bands_series is None:
+            raise KabutobashiBlockSeriesIsNoneError()
+
+        return ParameterizeBollingerBandsBlockInput(series=processed_bollinger_bands_series, params={})
 
     def _validate(self):
         if self.series is not None:
@@ -42,8 +47,12 @@ class ParameterizeBollingerBandsBlockOutput(IBlockOutput):
 @dataclass(frozen=True)
 class ParameterizeBollingerBandsBlock(IParameterizeBlock):
 
-    def _process(self, block_input: ParameterizeBollingerBandsBlockInput) -> ParameterizeBollingerBandsBlockOutput:
-        df = block_input.series
+    def _process(self) -> ParameterizeBollingerBandsBlockOutput:
+        if not isinstance(self.block_input, ParameterizeBollingerBandsBlockInput):
+            raise KabutobashiBlockInstanceMismatchError()
+        df = self.block_input.series
+        if df is None:
+            raise KabutobashiBlockSeriesIsNoneError()
         params = {
             "upper_1_sigma": df["upper_1_sigma"].tail(3).mean(),
             "lower_1_sigma": df["lower_1_sigma"].tail(3).mean(),
@@ -56,4 +65,4 @@ class ParameterizeBollingerBandsBlock(IParameterizeBlock):
 
     @classmethod
     def _configure(cls, binder: Binder) -> None:
-        binder.bind(IBlockInput, to=ParameterizeBollingerBandsBlockInput)
+        binder.bind(IBlockInput, to=ParameterizeBollingerBandsBlockInput)  # type: ignore[type-abstract]

@@ -3,6 +3,8 @@ from dataclasses import dataclass
 import pandas as pd
 from injector import Binder, inject
 
+from kabutobashi.domain.errors import KabutobashiBlockInstanceMismatchError, KabutobashiBlockParamsIsNoneError
+
 from ..abc_block import BlockGlue
 from .abc_process_block import IProcessBlock, IProcessBlockInput, IProcessBlockOutput
 
@@ -14,6 +16,8 @@ class ProcessAdxBlockInput(IProcessBlockInput):
 
     @classmethod
     def of(cls, block_glue: "BlockGlue"):
+        if block_glue.params is None:
+            raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
         input_params = block_glue.params.get("process_macd", {})
         term = input_params.get("term", 14)
         adx_term = input_params.get("adx_term", 14)
@@ -117,7 +121,14 @@ class ProcessAdxBlock(IProcessBlock):
         else:
             return 0
 
-    def _apply(self, df: pd.DataFrame, term: int, adx_term: int, adxr_term: int) -> pd.DataFrame:
+    def _apply(self, df: pd.DataFrame) -> pd.DataFrame:
+        params = self.block_input.params
+        if params is None:
+            raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
+        term = params["term"]
+        adx_term = params["adx_term"]
+        adxr_term = params["adxr_term"]
+
         # 利用する値をshift
         df = df.assign(shift_high=df["high"].shift(1), shift_low=df["low"].shift(1), shift_close=df["close"].shift(1))
         df = df.assign(
@@ -205,17 +216,16 @@ class ProcessAdxBlock(IProcessBlock):
 
         return df
 
-    def _process(self, block_input: ProcessAdxBlockInput) -> ProcessAdxBlockOutput:
-        term = block_input.params["term"]
-        adx_term = block_input.params["adx_term"]
-        adxr_term = block_input.params["adxr_term"]
-        applied_df = self._apply(df=block_input.series, term=term, adx_term=adx_term, adxr_term=adxr_term)
+    def _process(self) -> ProcessAdxBlockOutput:
+        if not isinstance(self.block_input, ProcessAdxBlockInput):
+            raise KabutobashiBlockInstanceMismatchError()
+        applied_df = self._apply(df=self.block_input.series)
         signal_df = self._signal(df=applied_df)
         return ProcessAdxBlockOutput.of(
             series=signal_df[["plus_di", "minus_di", "DX", "ADX", "ADXR", "buy_signal", "sell_signal"]],
-            params=block_input.params,
+            params=None,
         )
 
     @classmethod
     def _configure(cls, binder: Binder) -> None:
-        binder.bind(IProcessBlockInput, to=ProcessAdxBlockInput)
+        binder.bind(IProcessBlockInput, to=ProcessAdxBlockInput)  # type: ignore[type-abstract]

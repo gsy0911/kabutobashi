@@ -3,6 +3,8 @@ from dataclasses import dataclass
 import pandas as pd
 from injector import Binder, inject
 
+from kabutobashi.domain.errors import KabutobashiBlockInstanceMismatchError, KabutobashiBlockParamsIsNoneError
+
 from ..abc_block import BlockGlue
 from .abc_process_block import IProcessBlock, IProcessBlockInput, IProcessBlockOutput
 
@@ -14,7 +16,10 @@ class ProcessSmaBlockInput(IProcessBlockInput):
 
     @classmethod
     def of(cls, block_glue: "BlockGlue"):
-        input_params = block_glue.params.get("process_macd", {})
+        params = block_glue.params
+        if params is None:
+            raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
+        input_params = params.get("process_macd", {})
         short_term = input_params.get("short_term", 5)
         medium_term = input_params.get("medium_term", 21)
         long_term = input_params.get("long_term", 70)
@@ -45,6 +50,8 @@ class ProcessSmaBlock(IProcessBlock):
 
     def _apply(self, df: pd.DataFrame) -> pd.DataFrame:
         input_params = self.block_input.params
+        if input_params is None:
+            raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
         short_term = input_params["short_term"]
         medium_term = input_params["medium_term"]
         long_term = input_params["long_term"]
@@ -63,14 +70,16 @@ class ProcessSmaBlock(IProcessBlock):
         df = df.rename(columns={"to_plus": "buy_signal", "to_minus": "sell_signal"})
         return df
 
-    def _process(self, block_input: ProcessSmaBlockInput) -> ProcessSmaBlockOutput:
-        applied_df = self._apply(df=block_input.series)
+    def _process(self) -> ProcessSmaBlockOutput:
+        if not isinstance(self.block_input, ProcessSmaBlockInput):
+            raise KabutobashiBlockInstanceMismatchError()
+        applied_df = self._apply(df=self.block_input.series)
         signal_df = self._signal(df=applied_df)
         return ProcessSmaBlockOutput.of(
             series=signal_df[["sma_short", "sma_medium", "sma_long", "buy_signal", "sell_signal"]],
-            params=block_input.params,
+            params=self.block_input.params,
         )
 
     @classmethod
     def _configure(cls, binder: Binder) -> None:
-        binder.bind(IProcessBlockInput, to=ProcessSmaBlockInput)
+        binder.bind(IProcessBlockInput, to=ProcessSmaBlockInput)  # type: ignore[type-abstract]
