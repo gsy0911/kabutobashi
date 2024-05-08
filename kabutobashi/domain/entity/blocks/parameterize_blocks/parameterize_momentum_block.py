@@ -2,6 +2,12 @@ from dataclasses import dataclass
 
 from injector import Binder, inject
 
+from kabutobashi.domain.errors import (
+    KabutobashiBlockInstanceMismatchError,
+    KabutobashiBlockParamsIsNoneError,
+    KabutobashiBlockSeriesIsNoneError,
+)
+
 from ..abc_block import BlockGlue, IBlockInput, IBlockOutput
 from .abc_parameterize_block import IParameterizeBlock
 
@@ -35,8 +41,12 @@ class ParameterizeMomentumBlockOutput(IBlockOutput):
 @dataclass(frozen=True)
 class ParameterizeMomentumBlock(IParameterizeBlock):
 
-    def _process(self, block_input: ParameterizeMomentumBlockInput) -> ParameterizeMomentumBlockOutput:
+    def _process(self, block_input: IBlockInput) -> ParameterizeMomentumBlockOutput:
+        if not isinstance(block_input, ParameterizeMomentumBlockInput):
+            raise KabutobashiBlockInstanceMismatchError()
         df = block_input.series
+        if df is None:
+            raise KabutobashiBlockSeriesIsNoneError()
         params = {
             "momentum_impact": self._get_impact(df=df, influence=self.influence, tail=self.tail),
         }

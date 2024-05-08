@@ -3,9 +3,10 @@ from dataclasses import dataclass
 from bs4 import BeautifulSoup
 from injector import Binder, inject
 
+from kabutobashi.domain.errors import KabutobashiBlockInstanceMismatchError, KabutobashiBlockParamsIsNoneError
 from kabutobashi.domain.values import DecodeHtmlPageStockIpo
 
-from ..abc_block import BlockGlue
+from ..abc_block import BlockGlue, IBlockInput
 from .abc_extract_block import IExtractBlock, IExtractBlockInput, IExtractBlockOutput
 
 
@@ -18,6 +19,8 @@ class StockIpoExtractBlockInput(IExtractBlockInput):
         return StockIpoExtractBlockInput(series=None, params=params)
 
     def _validate(self):
+        if self.params is None:
+            raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
         keys = self.params.keys()
         assert "year" in keys, "StockIpoExtractBlockInput must have 'year' params"
         assert "html_text" in keys, "StockIpoExtractBlockInput must have 'code' params"
@@ -55,8 +58,12 @@ class StockIpoExtractBlock(IExtractBlock):
             whole_result.append(DecodeHtmlPageStockIpo.from_dict(data=table_body_dict).to_dict())
         return {"ipo_list": whole_result}
 
-    def _process(self, block_input: StockIpoExtractBlockInput) -> StockIpoExtractBlockOutput:
+    def _process(self, block_input: IBlockInput) -> StockIpoExtractBlockOutput:
+        if not isinstance(block_input, StockIpoExtractBlockInput):
+            raise KabutobashiBlockInstanceMismatchError()
         params = block_input.params
+        if params is None:
+            raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
         html_text = params["html_text"]
         result = self._decode(html_text=html_text)
         return StockIpoExtractBlockOutput.of(series=None, params=result)

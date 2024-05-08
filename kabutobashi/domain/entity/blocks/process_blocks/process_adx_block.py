@@ -2,8 +2,11 @@ from dataclasses import dataclass
 
 import pandas as pd
 from injector import Binder, inject
+from overrides import override
 
-from ..abc_block import BlockGlue
+from kabutobashi.domain.errors import KabutobashiBlockInstanceMismatchError, KabutobashiBlockParamsIsNoneError
+
+from ..abc_block import BlockGlue, IBlockInput
 from .abc_process_block import IProcessBlock, IProcessBlockInput, IProcessBlockOutput
 
 __all__ = ["ProcessAdxBlock"]
@@ -117,6 +120,7 @@ class ProcessAdxBlock(IProcessBlock):
         else:
             return 0
 
+    @override
     def _apply(self, df: pd.DataFrame, term: int, adx_term: int, adxr_term: int) -> pd.DataFrame:
         # 利用する値をshift
         df = df.assign(shift_high=df["high"].shift(1), shift_low=df["low"].shift(1), shift_close=df["close"].shift(1))
@@ -205,15 +209,20 @@ class ProcessAdxBlock(IProcessBlock):
 
         return df
 
-    def _process(self, block_input: ProcessAdxBlockInput) -> ProcessAdxBlockOutput:
-        term = block_input.params["term"]
-        adx_term = block_input.params["adx_term"]
-        adxr_term = block_input.params["adxr_term"]
+    def _process(self, block_input: IBlockInput) -> ProcessAdxBlockOutput:
+        if not isinstance(block_input, ProcessAdxBlockInput):
+            raise KabutobashiBlockInstanceMismatchError()
+        params = block_input.params
+        if params is None:
+            raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
+        term = params["term"]
+        adx_term = params["adx_term"]
+        adxr_term = params["adxr_term"]
         applied_df = self._apply(df=block_input.series, term=term, adx_term=adx_term, adxr_term=adxr_term)
         signal_df = self._signal(df=applied_df)
         return ProcessAdxBlockOutput.of(
             series=signal_df[["plus_di", "minus_di", "DX", "ADX", "ADXR", "buy_signal", "sell_signal"]],
-            params=block_input.params,
+            params=params,
         )
 
     @classmethod

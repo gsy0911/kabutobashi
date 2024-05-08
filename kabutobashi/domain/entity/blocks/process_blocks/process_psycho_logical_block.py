@@ -3,7 +3,9 @@ from dataclasses import dataclass
 import pandas as pd
 from injector import Binder, inject
 
-from ..abc_block import BlockGlue
+from kabutobashi.domain.errors import KabutobashiBlockInstanceMismatchError, KabutobashiBlockParamsIsNoneError
+
+from ..abc_block import BlockGlue, IBlockInput
 from .abc_process_block import IProcessBlock, IProcessBlockInput, IProcessBlockOutput
 
 
@@ -61,7 +63,9 @@ class ProcessPsychoLogicalBlock(IProcessBlock):
         df["sell_signal"] = df["bought_too_much"]
         return df
 
-    def _process(self, block_input: ProcessPsychoLogicalBlockInput) -> ProcessPsychoLogicalBlockOutput:
+    def _process(self, block_input: IBlockInput) -> ProcessPsychoLogicalBlockOutput:
+        if not isinstance(block_input, ProcessPsychoLogicalBlockInput):
+            raise KabutobashiBlockInstanceMismatchError()
         psycho_term = block_input.params["psycho_term"]
         upper_threshold = block_input.params["upper_threshold"]
         lower_threshold = block_input.params["lower_threshold"]

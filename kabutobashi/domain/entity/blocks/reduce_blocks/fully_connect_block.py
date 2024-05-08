@@ -2,6 +2,8 @@ from dataclasses import dataclass
 
 from injector import Binder, inject
 
+from kabutobashi.domain.errors import KabutobashiBlockInstanceMismatchError, KabutobashiBlockParamsIsNoneError
+
 from ..abc_block import BlockGlue, IBlock, IBlockInput, IBlockOutput
 
 
@@ -11,27 +13,42 @@ class FullyConnectBlockInput(IBlockInput):
     @classmethod
     def of(cls, block_glue: "BlockGlue"):
         block_outputs = block_glue.block_outputs
+        block_outputs_keys = block_outputs.keys()
         # impact
         sma_impact = 0
-        if "parameterize_sma" in block_outputs:
+        if "parameterize_sma" in block_outputs_keys:
+            if block_outputs["parameterize_sma"].params is None:
+                raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
             sma_impact = block_outputs["parameterize_sma"].params["sma_impact"]
         macd_impact = 0
-        if "parameterize_macd" in block_outputs:
+        if "parameterize_macd" in block_outputs_keys:
+            if block_outputs["parameterize_macd"].params is None:
+                raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
             macd_impact = block_outputs["parameterize_macd"].params["macd_impact"]
         adx_impact = 0
-        if "parameterize_adx" in block_outputs:
+        if "parameterize_adx" in block_outputs_keys:
+            if block_outputs["parameterize_adx"].params is None:
+                raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
             adx_impact = block_outputs["parameterize_adx"].params["adx_impact"]
         momentum_impact = 0
-        if "parameterize_momentum" in block_outputs:
+        if "parameterize_momentum" in block_outputs_keys:
+            if block_outputs["parameterize_momentum"].params is None:
+                raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
             momentum_impact = block_outputs["parameterize_momentum"].params["momentum_impact"]
         bollinger_bands_impact = 0
-        if "parameterize_bollinger_bands" in block_outputs:
+        if "parameterize_bollinger_bands" in block_outputs_keys:
+            if block_outputs["parameterize_bollinger_bands"].params is None:
+                raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
             bollinger_bands_impact = block_outputs["parameterize_bollinger_bands"].params["bollinger_bands_impact"]
         psycho_logical_impact = 0
-        if "parameterize_psycho_logical" in block_outputs:
+        if "parameterize_psycho_logical" in block_outputs_keys:
+            if block_outputs["parameterize_psycho_logical"].params is None:
+                raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
             psycho_logical_impact = block_outputs["parameterize_psycho_logical"].params["psycho_logical_impact"]
         stochastics_impact = 0
-        if "parameterize_stochastics" in block_outputs:
+        if "parameterize_stochastics" in block_outputs_keys:
+            if block_outputs["parameterize_stochastics"].params is None:
+                raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
             stochastics_impact = block_outputs["parameterize_stochastics"].params["stochastics_impact"]
         # ratio
         input_params = block_glue.params.get("fully_connect", {})
@@ -88,8 +105,12 @@ class FullyConnectBlockOutput(IBlockOutput):
 @dataclass(frozen=True)
 class FullyConnectBlock(IBlock):
 
-    def _process(self, block_input: FullyConnectBlockInput) -> FullyConnectBlockOutput:
+    def _process(self, block_input: IBlockInput) -> FullyConnectBlockOutput:
+        if not isinstance(block_input, FullyConnectBlockInput):
+            raise KabutobashiBlockInstanceMismatchError()
         params = block_input.params
+        if params is None:
+            raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
         reduced_params = {
             "impact": params["sma_impact"] * params["sma_impact_ratio"]
             + params["macd_impact"] * params["macd_impact_ratio"]

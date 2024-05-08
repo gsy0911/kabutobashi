@@ -2,7 +2,9 @@ from dataclasses import dataclass
 
 from injector import Binder, inject
 
-from ..abc_block import BlockGlue
+from kabutobashi.domain.errors import KabutobashiBlockInstanceMismatchError, KabutobashiBlockParamsIsNoneError
+
+from ..abc_block import BlockGlue, IBlockInput
 from .abc_pre_process_block import IPreProcessBlock, IPreProcessBlockInput, IPreProcessBlockOutput
 
 
@@ -33,7 +35,10 @@ class DefaultPreProcessBlockOutput(IPreProcessBlockOutput):
 @dataclass(frozen=True)
 class DefaultPreProcessBlock(IPreProcessBlock):
 
-    def _process(self, block_input: DefaultPreProcessBlockInput) -> DefaultPreProcessBlockOutput:
+    def _process(self, block_input: IBlockInput) -> DefaultPreProcessBlockOutput:
+        if not isinstance(block_input, DefaultPreProcessBlockInput):
+            raise KabutobashiBlockInstanceMismatchError()
+
         required_cols = ["open", "high", "low", "close", "code", "volume"]
         df = block_input.series
         df = df[required_cols]

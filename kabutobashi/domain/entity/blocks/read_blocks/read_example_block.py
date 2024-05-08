@@ -5,7 +5,9 @@ from pathlib import Path
 import pandas as pd
 from injector import Binder, inject
 
-from ..abc_block import BlockGlue, IBlockOutput
+from kabutobashi.domain.errors import KabutobashiBlockInstanceMismatchError, KabutobashiBlockParamsIsNoneError
+
+from ..abc_block import BlockGlue, IBlockInput, IBlockOutput
 from .abc_read_block import IReadBlock, IReadBlockInput
 
 PARENT_PATH = os.path.abspath(os.path.dirname(__file__))
@@ -44,7 +46,9 @@ class ReadExampleBlockOutput(IBlockOutput):
 @inject
 @dataclass(frozen=True)
 class ReadExampleBlock(IReadBlock):
-    def _process(self, block_input: ReadExampleBlockInput) -> ReadExampleBlockOutput:
+    def _process(self, block_input: IBlockInput) -> ReadExampleBlockOutput:
+        if not isinstance(block_input, ReadExampleBlockInput):
+            raise KabutobashiBlockInstanceMismatchError()
         file_name = "example.csv.gz"
         df = pd.read_csv(f"{DATA_PATH}/{file_name}")
         df = df[df["code"] == block_input.params["code"]]

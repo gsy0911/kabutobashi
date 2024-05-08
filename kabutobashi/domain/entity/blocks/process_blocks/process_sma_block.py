@@ -3,7 +3,9 @@ from dataclasses import dataclass
 import pandas as pd
 from injector import Binder, inject
 
-from ..abc_block import BlockGlue
+from kabutobashi.domain.errors import KabutobashiBlockInstanceMismatchError, KabutobashiBlockParamsIsNoneError
+
+from ..abc_block import BlockGlue, IBlockInput
 from .abc_process_block import IProcessBlock, IProcessBlockInput, IProcessBlockOutput
 
 __all__ = ["ProcessSmaBlock"]
@@ -63,7 +65,9 @@ class ProcessSmaBlock(IProcessBlock):
         df = df.rename(columns={"to_plus": "buy_signal", "to_minus": "sell_signal"})
         return df
 
-    def _process(self, block_input: ProcessSmaBlockInput) -> ProcessSmaBlockOutput:
+    def _process(self, block_input: IBlockInput) -> ProcessSmaBlockOutput:
+        if not isinstance(block_input, ProcessSmaBlockInput):
+            raise KabutobashiBlockInstanceMismatchError()
         applied_df = self._apply(df=block_input.series)
         signal_df = self._signal(df=applied_df)
         return ProcessSmaBlockOutput.of(

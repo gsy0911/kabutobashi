@@ -4,7 +4,9 @@ from dataclasses import dataclass
 import pandas as pd
 from injector import Binder, inject
 
-from ..abc_block import BlockGlue
+from kabutobashi.domain.errors import KabutobashiBlockInstanceMismatchError, KabutobashiBlockParamsIsNoneError
+
+from ..abc_block import BlockGlue, IBlockInput
 from .abc_process_block import IProcessBlock, IProcessBlockInput, IProcessBlockOutput
 
 
@@ -123,7 +125,9 @@ class ProcessStochasticsBlock(IProcessBlock):
             math.pow(current_k - 20, 2) / 100 + math.pow(current_d - 20, 2) / 100 + math.pow(current_sd - 20, 2) / 100
         )
 
-    def _process(self, block_input: ProcessStochasticsBlockInput) -> ProcessStochasticsBlockOutput:
+    def _process(self, block_input: IBlockInput) -> ProcessStochasticsBlockOutput:
+        if not isinstance(block_input, ProcessStochasticsBlockInput):
+            raise KabutobashiBlockInstanceMismatchError()
         applied_df = self._apply(df=block_input.series)
         signal_df = self._signal(df=applied_df)
         required_columns = ["K", "D", "SD", "buy_signal", "sell_signal"]

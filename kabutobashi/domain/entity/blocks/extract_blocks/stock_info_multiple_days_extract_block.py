@@ -4,7 +4,9 @@ import pandas as pd
 from bs4 import BeautifulSoup
 from injector import Binder, inject
 
-from ..abc_block import BlockGlue
+from kabutobashi.domain.errors import KabutobashiBlockInstanceMismatchError, KabutobashiBlockParamsIsNoneError
+
+from ..abc_block import BlockGlue, IBlockInput
 from .abc_extract_block import IExtractBlock, IExtractBlockInput, IExtractBlockOutput
 
 
@@ -17,6 +19,8 @@ class StockInfoMultipleDaysExtractBlockInput(IExtractBlockInput):
         return StockInfoMultipleDaysExtractBlockInput(series=None, params=params)
 
     def _validate(self):
+        if self.params is None:
+            raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
         keys = self.params.keys()
         assert "code" in keys, "StockInfoMultipleDaysExtractBlockInput must have 'code' params"
         assert "main_html_text" in keys, "StockInfoMultipleDaysExtractBlockInput must have 'main_html_text' params"
@@ -71,8 +75,12 @@ class StockInfoMultipleDaysExtractBlock(IExtractBlock):
         df["code"] = code
         return {"info_list": df.to_dict(orient="records")}
 
-    def _process(self, block_input: StockInfoMultipleDaysExtractBlockInput) -> StockInfoMultipleDaysExtractBlockOutput:
+    def _process(self, block_input: IBlockInput) -> StockInfoMultipleDaysExtractBlockOutput:
+        if not isinstance(block_input, StockInfoMultipleDaysExtractBlockInput):
+            raise KabutobashiBlockInstanceMismatchError()
         params = block_input.params
+        if params is None:
+            raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
         main_html_text = params["main_html_text"]
         sub_html_text = params["sub_html_text"]
         code = params["code"]

@@ -2,8 +2,11 @@ from dataclasses import dataclass
 
 import pandas as pd
 from injector import Binder, inject
+from overrides import override
 
-from ..abc_block import BlockGlue
+from kabutobashi.domain.errors import KabutobashiBlockInstanceMismatchError, KabutobashiBlockParamsIsNoneError
+
+from ..abc_block import BlockGlue, IBlockInput
 from .abc_process_block import IProcessBlock, IProcessBlockInput, IProcessBlockOutput
 
 
@@ -37,6 +40,7 @@ class ProcessMomentumBlockOutput(IProcessBlockOutput):
 @dataclass(frozen=True)
 class ProcessMomentumBlock(IProcessBlock):
 
+    @override
     def _apply(self, df: pd.DataFrame, term: int) -> pd.DataFrame:
         df = df.assign(
             momentum=df["close"].shift(10),
@@ -49,8 +53,14 @@ class ProcessMomentumBlock(IProcessBlock):
         df = df.rename(columns={"to_plus": "buy_signal", "to_minus": "sell_signal"})
         return df
 
-    def _process(self, block_input: ProcessMomentumBlockInput) -> ProcessMomentumBlockOutput:
+    def _process(self, block_input: IBlockInput) -> ProcessMomentumBlockOutput:
+        if not isinstance(block_input, ProcessMomentumBlockInput):
+            raise KabutobashiBlockInstanceMismatchError()
         term = block_input.params["term"]
+        params = block_input.params
+        if params is None:
+            raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
+
         applied_df = self._apply(df=block_input.series, term=term)
         signal_df = self._signal(df=applied_df)
         required_columns = ["momentum", "sma_momentum", "buy_signal", "sell_signal"]

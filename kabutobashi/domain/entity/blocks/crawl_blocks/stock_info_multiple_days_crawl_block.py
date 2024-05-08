@@ -2,7 +2,9 @@ from dataclasses import dataclass
 
 from injector import Binder, inject
 
-from ..abc_block import BlockGlue
+from kabutobashi.domain.errors import KabutobashiBlockInstanceMismatchError, KabutobashiBlockParamsIsNoneError
+
+from ..abc_block import BlockGlue, IBlockInput
 from .abc_crawl_block import ICrawlBlock, ICrawlBlockInput, ICrawlBlockOutput
 
 
@@ -34,10 +36,13 @@ class StockInfoMultipleDaysCrawlBlockOutput(ICrawlBlockOutput):
 @dataclass(frozen=True)
 class StockInfoMultipleDaysCrawlBlock(ICrawlBlock):
 
-    def _process(self, block_input: StockInfoMultipleDaysCrawlBlockInput) -> StockInfoMultipleDaysCrawlBlockOutput:
+    def _process(self, block_input: IBlockInput) -> StockInfoMultipleDaysCrawlBlockOutput:
+        if not isinstance(block_input, StockInfoMultipleDaysCrawlBlockInput):
+            raise KabutobashiBlockInstanceMismatchError()
         params = block_input.params
+        if params is None:
+            raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
         code = params["code"]
-
         main_html_text = self._from_url(url=f"https://minkabu.jp/stock/{code}/daily_bar")
         sub_html_text = self._from_url(url=f"https://minkabu.jp/stock/{code}/daily_valuation")
         return StockInfoMultipleDaysCrawlBlockOutput.of(

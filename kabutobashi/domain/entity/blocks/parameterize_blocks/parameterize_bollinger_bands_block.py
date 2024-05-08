@@ -2,6 +2,8 @@ from dataclasses import dataclass
 
 from injector import Binder, inject
 
+from kabutobashi.domain.errors import KabutobashiBlockInstanceMismatchError, KabutobashiBlockSeriesIsNoneError
+
 from ..abc_block import BlockGlue, IBlockInput, IBlockOutput
 from .abc_parameterize_block import IParameterizeBlock
 
@@ -42,8 +44,12 @@ class ParameterizeBollingerBandsBlockOutput(IBlockOutput):
 @dataclass(frozen=True)
 class ParameterizeBollingerBandsBlock(IParameterizeBlock):
 
-    def _process(self, block_input: ParameterizeBollingerBandsBlockInput) -> ParameterizeBollingerBandsBlockOutput:
+    def _process(self, block_input: IBlockInput) -> ParameterizeBollingerBandsBlockOutput:
+        if not isinstance(block_input, ParameterizeBollingerBandsBlockInput):
+            raise KabutobashiBlockInstanceMismatchError()
         df = block_input.series
+        if df is None:
+            raise KabutobashiBlockSeriesIsNoneError()
         params = {
             "upper_1_sigma": df["upper_1_sigma"].tail(3).mean(),
             "lower_1_sigma": df["lower_1_sigma"].tail(3).mean(),

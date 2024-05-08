@@ -2,6 +2,12 @@ from dataclasses import dataclass
 
 from injector import Binder, inject
 
+from kabutobashi.domain.errors import (
+    KabutobashiBlockInstanceMismatchError,
+    KabutobashiBlockParamsIsNoneError,
+    KabutobashiBlockSeriesIsNoneError,
+)
+
 from ..abc_block import BlockGlue, IBlockInput, IBlockOutput
 from .abc_parameterize_block import IParameterizeBlock
 
@@ -44,8 +50,12 @@ class ParameterizeSmaBlockOutput(IBlockOutput):
 @dataclass(frozen=True)
 class ParameterizeSmaBlock(IParameterizeBlock):
 
-    def _process(self, block_input: ParameterizeSmaBlockInput) -> ParameterizeSmaBlockOutput:
+    def _process(self, block_input: IBlockInput) -> ParameterizeSmaBlockOutput:
+        if not isinstance(block_input, ParameterizeSmaBlockInput):
+            raise KabutobashiBlockInstanceMismatchError()
         df = block_input.series
+        if df is None:
+            raise KabutobashiBlockSeriesIsNoneError()
         df["sma_short_diff"] = (df["sma_short"] - df["close"]) / df["sma_short"]
         df["sma_medium_diff"] = (df["sma_medium"] - df["close"]) / df["sma_medium"]
         df["sma_long_diff"] = (df["sma_long"] - df["close"]) / df["sma_long"]

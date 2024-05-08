@@ -18,7 +18,7 @@ class FromJsonBlock(BaseModel):
             id_=params["id"], block_name=block_name, sequence_no=params["sequence_no"], params=params.get("params", {})
         )
 
-    def get(self) -> Tuple[IBlock, dict]:
+    def get(self) -> Tuple[type[IBlock], dict]:
         # TODO ここのブロックの取得方法をメタプログラミングっぽく
         from .parameterize_blocks import (
             ParameterizeAdxBlock,

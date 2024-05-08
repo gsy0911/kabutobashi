@@ -6,9 +6,10 @@ from typing import Dict, List, Union
 from bs4 import BeautifulSoup
 from injector import Binder, inject
 
+from kabutobashi.domain.errors import KabutobashiBlockInstanceMismatchError, KabutobashiBlockParamsIsNoneError
 from kabutobashi.domain.services.decode_html.utils import PageDecoder
 
-from ..abc_block import BlockGlue
+from ..abc_block import BlockGlue, IBlockInput
 from .abc_extract_block import IExtractBlock, IExtractBlockInput, IExtractBlockOutput
 
 
@@ -21,6 +22,8 @@ class StockInfoExtractBlockInput(IExtractBlockInput):
         return StockInfoExtractBlockInput(series=None, params=params)
 
     def _validate(self):
+        if self.params is None:
+            raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
         keys = self.params.keys()
         assert "code" in keys, "StockInfoExtractBlockInput must have 'code' params"
         assert "html_text" in keys, "StockInfoExtractBlockInput must have 'code' params"
@@ -62,8 +65,10 @@ class StockInfoExtractBlock(IExtractBlock):
         stock_board_tag = "md_stockBoard"
 
         raw_dt = PageDecoder(tag1="span", class1="fsm").decode(bs=soup)
+        if isinstance(raw_dt, list):
+            raise ValueError()
         pattern = r"\((?P<month>[0-9]+)/(?P<day>[0-9]+)\)|\((?P<hour>[0-9]+):(?P<minute>[0-9]+)\)"
-        match_result = re.match(pattern, raw_dt)
+        match_result = re.match(pattern=pattern, string=raw_dt)
         dt = datetime.now()
         if match_result:
             rep = match_result.groupdict()
@@ -110,8 +115,12 @@ class StockInfoExtractBlock(IExtractBlock):
 
         return result
 
-    def _process(self, block_input: StockInfoExtractBlockInput) -> StockInfoExtractBlockOutput:
+    def _process(self, block_input: IBlockInput) -> StockInfoExtractBlockOutput:
+        if not isinstance(block_input, StockInfoExtractBlockInput):
+            raise KabutobashiBlockInstanceMismatchError()
         params = block_input.params
+        if params is None:
+            raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
         html_text = params["html_text"]
         result = self._decode(html_text=html_text)
         return StockInfoExtractBlockOutput.of(series=None, params=result)

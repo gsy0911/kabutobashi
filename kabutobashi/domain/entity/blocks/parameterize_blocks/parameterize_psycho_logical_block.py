@@ -2,6 +2,12 @@ from dataclasses import dataclass
 
 from injector import Binder, inject
 
+from kabutobashi.domain.errors import (
+    KabutobashiBlockInstanceMismatchError,
+    KabutobashiBlockParamsIsNoneError,
+    KabutobashiBlockSeriesIsNoneError,
+)
+
 from ..abc_block import BlockGlue, IBlockInput, IBlockOutput
 from .abc_parameterize_block import IParameterizeBlock
 
@@ -39,8 +45,12 @@ class ParameterizePsychoLogicalBlockOutput(IBlockOutput):
 @dataclass(frozen=True)
 class ParameterizePsychoLogicalBlock(IParameterizeBlock):
 
-    def _process(self, block_input: ParameterizePsychoLogicalBlockInput) -> ParameterizePsychoLogicalBlockOutput:
+    def _process(self, block_input: IBlockInput) -> ParameterizePsychoLogicalBlockOutput:
+        if not isinstance(block_input, ParameterizePsychoLogicalBlockInput):
+            raise KabutobashiBlockInstanceMismatchError()
         df = block_input.series
+        if df is None:
+            raise KabutobashiBlockSeriesIsNoneError()
         params = {
             "psycho_line": df["psycho_line"].tail(3).mean(),
             "psycho_logical_impact": self._get_impact(df=df, influence=self.influence, tail=self.tail),

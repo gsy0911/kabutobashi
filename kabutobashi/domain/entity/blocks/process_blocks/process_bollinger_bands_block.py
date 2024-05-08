@@ -2,8 +2,11 @@ from dataclasses import dataclass
 
 import pandas as pd
 from injector import Binder, inject
+from overrides import override
 
-from ..abc_block import BlockGlue
+from kabutobashi.domain.errors import KabutobashiBlockInstanceMismatchError, KabutobashiBlockParamsIsNoneError
+
+from ..abc_block import BlockGlue, IBlockInput
 from .abc_process_block import IProcessBlock, IProcessBlockInput, IProcessBlockOutput
 
 __all__ = ["ProcessBollingerBandsBlock"]
@@ -41,6 +44,7 @@ class ProcessBollingerBandsBlockOutput(IProcessBlockOutput):
 @dataclass(frozen=True)
 class ProcessBollingerBandsBlock(IProcessBlock):
 
+    @override
     def _apply(self, df: pd.DataFrame, band_term: int) -> pd.DataFrame:
         df = df.assign(mean=df["close"].rolling(band_term).mean(), std=df["close"].rolling(band_term).std())
         df = df.assign(
@@ -53,6 +57,7 @@ class ProcessBollingerBandsBlock(IProcessBlock):
         )
         return df
 
+    @override
     def _signal(self, df: pd.DataFrame, continuity_term: int) -> pd.DataFrame:
         df = df.assign(
             over_upper=df.apply(lambda x: 1 if x["close"] > x["upper_2_sigma"] else 0, axis=1),
@@ -65,9 +70,14 @@ class ProcessBollingerBandsBlock(IProcessBlock):
         df["sell_signal"] = df["over_lower"].apply(lambda x: 1 if x > 0 else 0)
         return df
 
-    def _process(self, block_input: ProcessBollingerBandsBlockInput) -> ProcessBollingerBandsBlockOutput:
-        band_term = block_input.params["band_term"]
-        continuity_term = block_input.params["continuity_term"]
+    def _process(self, block_input: IBlockInput) -> ProcessBollingerBandsBlockOutput:
+        if not isinstance(block_input, ProcessBollingerBandsBlockInput):
+            raise KabutobashiBlockInstanceMismatchError()
+        params = block_input.params
+        if params is None:
+            raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
+        band_term = params["band_term"]
+        continuity_term = params["continuity_term"]
 
         applied_df = self._apply(df=block_input.series, band_term=band_term)
         signal_df = self._signal(df=applied_df, continuity_term=continuity_term)
@@ -83,7 +93,7 @@ class ProcessBollingerBandsBlock(IProcessBlock):
         ]
         return ProcessBollingerBandsBlockOutput.of(
             series=signal_df[required_columns],
-            params=block_input.params,
+            params=params,
         )
 
     @classmethod

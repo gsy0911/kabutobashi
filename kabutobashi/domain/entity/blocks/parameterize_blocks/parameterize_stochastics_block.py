@@ -2,6 +2,12 @@ from dataclasses import dataclass
 
 from injector import Binder, inject
 
+from kabutobashi.domain.errors import (
+    KabutobashiBlockInstanceMismatchError,
+    KabutobashiBlockParamsIsNoneError,
+    KabutobashiBlockSeriesIsNoneError,
+)
+
 from ..abc_block import BlockGlue, IBlockInput, IBlockOutput
 from .abc_parameterize_block import IParameterizeBlock
 
@@ -43,8 +49,12 @@ class ParameterizeStochasticsBlockOutput(IBlockOutput):
 @dataclass(frozen=True)
 class ParameterizeStochasticsBlock(IParameterizeBlock):
 
-    def _process(self, block_input: ParameterizeStochasticsBlockInput) -> ParameterizeStochasticsBlockOutput:
+    def _process(self, block_input: IBlockInput) -> ParameterizeStochasticsBlockOutput:
+        if not isinstance(block_input, ParameterizeStochasticsBlockInput):
+            raise KabutobashiBlockInstanceMismatchError()
         df = block_input.series
+        if df is None:
+            raise KabutobashiBlockSeriesIsNoneError()
         params = {
             "stochastics_k": df["K"].tail(3).mean(),
             "stochastics_d": df["D"].tail(3).mean(),
