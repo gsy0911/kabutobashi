@@ -13,7 +13,9 @@ class CrawlStockIpoBlockInput(ICrawlBlockInput):
 
     @classmethod
     def of(cls, block_glue: "BlockGlue"):
-        params = block_glue.block_outputs["crawl_stock_ipo"].params
+        if block_glue.params is None:
+            raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
+        params = block_glue.params["crawl_stock_ipo"]
         return CrawlStockIpoBlockInput(series=None, params=params)
 
     def _validate(self):

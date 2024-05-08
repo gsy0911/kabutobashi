@@ -13,7 +13,9 @@ class CrawlStockInfoMultipleDaysBlockInput(ICrawlBlockInput):
 
     @classmethod
     def of(cls, block_glue: "BlockGlue"):
-        params = block_glue.block_outputs["crawl_stock_info_multiple_days"].params
+        if block_glue.params is None:
+            raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
+        params = block_glue.params["crawl_stock_info_multiple_days"]
         return CrawlStockInfoMultipleDaysBlockInput(series=None, params=params)
 
     def _validate(self):

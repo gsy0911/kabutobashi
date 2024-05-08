@@ -6,7 +6,7 @@ from injector import Binder, inject
 
 from kabutobashi.domain.errors import KabutobashiBlockInstanceMismatchError, KabutobashiBlockParamsIsNoneError
 
-from ..abc_block import BlockGlue, IBlockInput
+from ..abc_block import BlockGlue
 from .abc_extract_block import IExtractBlock, IExtractBlockInput, IExtractBlockOutput
 
 
@@ -15,7 +15,7 @@ class ExtractStockInfoMultipleDaysBlockInput(IExtractBlockInput):
 
     @classmethod
     def of(cls, block_glue: "BlockGlue"):
-        params = block_glue.block_outputs["extract_stock_info_multiple_days"].params
+        params = block_glue.block_outputs["crawl_stock_info_multiple_days"].params
         return ExtractStockInfoMultipleDaysBlockInput(series=None, params=params)
 
     def _validate(self):

@@ -7,7 +7,7 @@ from injector import Binder, inject
 from kabutobashi.domain.errors import KabutobashiBlockInstanceMismatchError, KabutobashiBlockParamsIsNoneError
 from kabutobashi.domain.values import DecodeHtmlPageStockIpo
 
-from ..abc_block import BlockGlue, IBlockInput
+from ..abc_block import BlockGlue
 from .abc_extract_block import IExtractBlock, IExtractBlockInput, IExtractBlockOutput
 
 
@@ -16,7 +16,7 @@ class ExtractStockIpoBlockInput(IExtractBlockInput):
 
     @classmethod
     def of(cls, block_glue: "BlockGlue"):
-        params = block_glue.block_outputs["extract_stock_ipo"].params
+        params = block_glue.block_outputs["crawl_stock_ipo"].params
         return ExtractStockIpoBlockInput(series=None, params=params)
 
     def _validate(self):
