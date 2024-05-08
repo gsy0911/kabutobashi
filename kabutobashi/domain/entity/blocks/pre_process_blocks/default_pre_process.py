@@ -2,7 +2,12 @@ from dataclasses import dataclass
 
 from injector import Binder, inject
 
-from kabutobashi.domain.errors import KabutobashiBlockInstanceMismatchError, KabutobashiBlockParamsIsNoneError
+from kabutobashi.domain.errors import (
+    KabutobashiBlockInstanceMismatchError,
+    KabutobashiBlockParamsIsNoneError,
+    KabutobashiBlockSeriesIsNoneError,
+)
+
 
 from ..abc_block import BlockGlue, IBlockInput
 from .abc_pre_process_block import IPreProcessBlock, IPreProcessBlockInput, IPreProcessBlockOutput
@@ -13,7 +18,6 @@ class DefaultPreProcessBlockInput(IPreProcessBlockInput):
 
     @classmethod
     def of(cls, block_glue: "BlockGlue"):
-        input_params = block_glue.params.get("default_pre_process", {})
         return cls(
             series=block_glue.series,
             params={},
@@ -41,6 +45,8 @@ class DefaultPreProcessBlock(IPreProcessBlock):
 
         required_cols = ["open", "high", "low", "close", "code", "volume"]
         df = self.block_input.series
+        if df is None:
+            raise KabutobashiBlockSeriesIsNoneError()
         df = df[required_cols]
         return DefaultPreProcessBlockOutput.of(
             series=df,

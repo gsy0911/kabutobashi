@@ -47,6 +47,8 @@ class ProcessMacdBlock(IProcessBlock):
 
     def _apply(self, df: pd.DataFrame) -> pd.DataFrame:
         input_params = self.block_input.params
+        if input_params is None:
+            raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
         short_term = input_params["short_term"]
         long_term = input_params["long_term"]
         macd_span = input_params["macd_span"]
@@ -71,9 +73,6 @@ class ProcessMacdBlock(IProcessBlock):
     def _process(self) -> ProcessMacdBlockOutput:
         if not isinstance(self.block_input, ProcessMacdBlockInput):
             raise KabutobashiBlockInstanceMismatchError()
-        params = self.block_input.params
-        if params is None:
-            raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
         applied_df = self._apply(df=self.block_input.series)
         signal_df = self._signal(df=applied_df)
         return ProcessMacdBlockOutput.of(

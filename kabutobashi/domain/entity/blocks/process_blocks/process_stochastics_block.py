@@ -6,7 +6,7 @@ from injector import Binder, inject
 
 from kabutobashi.domain.errors import KabutobashiBlockInstanceMismatchError, KabutobashiBlockParamsIsNoneError
 
-from ..abc_block import BlockGlue, IBlockInput
+from ..abc_block import BlockGlue
 from .abc_process_block import IProcessBlock, IProcessBlockInput, IProcessBlockOutput
 
 
@@ -15,7 +15,6 @@ class ProcessStochasticsBlockInput(IProcessBlockInput):
 
     @classmethod
     def of(cls, block_glue: "BlockGlue"):
-        input_params = block_glue.params.get("process_stochastics", {})
         return cls(
             series=block_glue.series,
             params={},

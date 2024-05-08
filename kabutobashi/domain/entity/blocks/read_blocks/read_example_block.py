@@ -7,7 +7,7 @@ from injector import Binder, inject
 
 from kabutobashi.domain.errors import KabutobashiBlockInstanceMismatchError, KabutobashiBlockParamsIsNoneError
 
-from ..abc_block import BlockGlue, IBlockInput, IBlockOutput
+from ..abc_block import BlockGlue, IBlockOutput
 from .abc_read_block import IReadBlock, IReadBlockInput
 
 PARENT_PATH = os.path.abspath(os.path.dirname(__file__))
@@ -49,11 +49,14 @@ class ReadExampleBlock(IReadBlock):
     def _process(self) -> ReadExampleBlockOutput:
         if not isinstance(self.block_input, ReadExampleBlockInput):
             raise KabutobashiBlockInstanceMismatchError()
+        input_params = self.block_input.params
+        if input_params is None:
+            raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
         file_name = "example.csv.gz"
         df = pd.read_csv(f"{DATA_PATH}/{file_name}")
-        df = df[df["code"] == self.block_input.params["code"]]
+        df = df[df["code"] == input_params["code"]]
         df.index = df["dt"]
-        return ReadExampleBlockOutput.of(series=df, params=self.block_input.params)
+        return ReadExampleBlockOutput.of(series=df, params=input_params)
 
     @classmethod
     def _configure(cls, binder: Binder) -> None:
