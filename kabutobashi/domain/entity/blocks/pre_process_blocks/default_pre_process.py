@@ -35,16 +35,16 @@ class DefaultPreProcessBlockOutput(IPreProcessBlockOutput):
 @dataclass(frozen=True)
 class DefaultPreProcessBlock(IPreProcessBlock):
 
-    def _process(self, block_input: IBlockInput) -> DefaultPreProcessBlockOutput:
-        if not isinstance(block_input, DefaultPreProcessBlockInput):
+    def _process(self) -> DefaultPreProcessBlockOutput:
+        if not isinstance(self.block_input, DefaultPreProcessBlockInput):
             raise KabutobashiBlockInstanceMismatchError()
 
         required_cols = ["open", "high", "low", "close", "code", "volume"]
-        df = block_input.series
+        df = self.block_input.series
         df = df[required_cols]
         return DefaultPreProcessBlockOutput.of(
             series=df,
-            params=block_input.params,
+            params=self.block_input.params,
         )
 
     @classmethod

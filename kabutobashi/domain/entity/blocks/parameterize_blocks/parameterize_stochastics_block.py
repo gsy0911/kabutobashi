@@ -54,10 +54,10 @@ class ParameterizeStochasticsBlockOutput(IBlockOutput):
 @dataclass(frozen=True)
 class ParameterizeStochasticsBlock(IParameterizeBlock):
 
-    def _process(self, block_input: IBlockInput) -> ParameterizeStochasticsBlockOutput:
-        if not isinstance(block_input, ParameterizeStochasticsBlockInput):
+    def _process(self) -> ParameterizeStochasticsBlockOutput:
+        if not isinstance(self.block_input, ParameterizeStochasticsBlockInput):
             raise KabutobashiBlockInstanceMismatchError()
-        df = block_input.series
+        df = self.block_input.series
         if df is None:
             raise KabutobashiBlockSeriesIsNoneError()
         params = {

@@ -214,10 +214,10 @@ class ProcessAdxBlock(IProcessBlock):
 
         return df
 
-    def _process(self, block_input: IBlockInput) -> ProcessAdxBlockOutput:
-        if not isinstance(block_input, ProcessAdxBlockInput):
+    def _process(self) -> ProcessAdxBlockOutput:
+        if not isinstance(self.block_input, ProcessAdxBlockInput):
             raise KabutobashiBlockInstanceMismatchError()
-        applied_df = self._apply(df=block_input.series)
+        applied_df = self._apply(df=self.block_input.series)
         signal_df = self._signal(df=applied_df)
         return ProcessAdxBlockOutput.of(
             series=signal_df[["plus_di", "minus_di", "DX", "ADX", "ADXR", "buy_signal", "sell_signal"]],

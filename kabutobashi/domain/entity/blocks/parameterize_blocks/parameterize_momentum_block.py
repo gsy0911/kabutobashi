@@ -46,10 +46,10 @@ class ParameterizeMomentumBlockOutput(IBlockOutput):
 @dataclass(frozen=True)
 class ParameterizeMomentumBlock(IParameterizeBlock):
 
-    def _process(self, block_input: IBlockInput) -> ParameterizeMomentumBlockOutput:
-        if not isinstance(block_input, ParameterizeMomentumBlockInput):
+    def _process(self) -> ParameterizeMomentumBlockOutput:
+        if not isinstance(self.block_input, ParameterizeMomentumBlockInput):
             raise KabutobashiBlockInstanceMismatchError()
-        df = block_input.series
+        df = self.block_input.series
         if df is None:
             raise KabutobashiBlockSeriesIsNoneError()
         params = {

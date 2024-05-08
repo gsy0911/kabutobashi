@@ -35,10 +35,10 @@ class StockIpoCrawlBlockOutput(ICrawlBlockOutput):
 @dataclass(frozen=True)
 class StockIpoCrawlBlock(ICrawlBlock):
 
-    def _process(self, block_input: IBlockInput) -> StockIpoCrawlBlockOutput:
-        if not isinstance(block_input, StockIpoCrawlBlockInput):
+    def _process(self) -> StockIpoCrawlBlockOutput:
+        if not isinstance(self.block_input, StockIpoCrawlBlockInput):
             raise KabutobashiBlockInstanceMismatchError()
-        params = block_input.params
+        params = self.block_input.params
         if params is None:
             raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
         year = params["year"]

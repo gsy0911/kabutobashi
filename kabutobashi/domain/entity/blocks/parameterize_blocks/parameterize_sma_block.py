@@ -55,10 +55,10 @@ class ParameterizeSmaBlockOutput(IBlockOutput):
 @dataclass(frozen=True)
 class ParameterizeSmaBlock(IParameterizeBlock):
 
-    def _process(self, block_input: IBlockInput) -> ParameterizeSmaBlockOutput:
-        if not isinstance(block_input, ParameterizeSmaBlockInput):
+    def _process(self) -> ParameterizeSmaBlockOutput:
+        if not isinstance(self.block_input, ParameterizeSmaBlockInput):
             raise KabutobashiBlockInstanceMismatchError()
-        df = block_input.series
+        df = self.block_input.series
         if df is None:
             raise KabutobashiBlockSeriesIsNoneError()
         df["sma_short_diff"] = (df["sma_short"] - df["close"]) / df["sma_short"]

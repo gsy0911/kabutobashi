@@ -47,10 +47,10 @@ class ParameterizeBollingerBandsBlockOutput(IBlockOutput):
 @dataclass(frozen=True)
 class ParameterizeBollingerBandsBlock(IParameterizeBlock):
 
-    def _process(self, block_input: IBlockInput) -> ParameterizeBollingerBandsBlockOutput:
-        if not isinstance(block_input, ParameterizeBollingerBandsBlockInput):
+    def _process(self) -> ParameterizeBollingerBandsBlockOutput:
+        if not isinstance(self.block_input, ParameterizeBollingerBandsBlockInput):
             raise KabutobashiBlockInstanceMismatchError()
-        df = block_input.series
+        df = self.block_input.series
         if df is None:
             raise KabutobashiBlockSeriesIsNoneError()
         params = {

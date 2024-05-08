@@ -53,10 +53,10 @@ class IBlock(ABC):
     block_input: Optional[IBlockInput]
 
     def process(self) -> IBlockOutput:
-        return self._process(block_input=self.block_input)
+        return self._process()
 
     @abstractmethod
-    def _process(self, block_input: IBlockInput) -> IBlockOutput:
+    def _process(self) -> IBlockOutput:
         raise NotImplementedError()
 
     @classmethod

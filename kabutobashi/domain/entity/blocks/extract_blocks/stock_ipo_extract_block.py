@@ -58,10 +58,10 @@ class StockIpoExtractBlock(IExtractBlock):
             whole_result.append(DecodeHtmlPageStockIpo.from_dict(data=table_body_dict).to_dict())
         return {"ipo_list": whole_result}
 
-    def _process(self, block_input: IBlockInput) -> StockIpoExtractBlockOutput:
-        if not isinstance(block_input, StockIpoExtractBlockInput):
+    def _process(self) -> StockIpoExtractBlockOutput:
+        if not isinstance(self.block_input, StockIpoExtractBlockInput):
             raise KabutobashiBlockInstanceMismatchError()
-        params = block_input.params
+        params = self.block_input.params
         if params is None:
             raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
         html_text = params["html_text"]

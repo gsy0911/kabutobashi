@@ -43,11 +43,11 @@ class ParameterizeAdxBlockOutput(IBlockOutput):
 @dataclass(frozen=True)
 class ParameterizeAdxBlock(IParameterizeBlock):
 
-    def _process(self, block_input: IBlockInput) -> ParameterizeAdxBlockOutput:
-        if not isinstance(block_input, ParameterizeAdxBlockInput):
+    def _process(self) -> ParameterizeAdxBlockOutput:
+        if not isinstance(self.block_input, ParameterizeAdxBlockInput):
             raise KabutobashiBlockInstanceMismatchError()
 
-        df = block_input.series
+        df = self.block_input.series
         if df is None:
             raise KabutobashiBlockSeriesIsNoneError()
         params = {

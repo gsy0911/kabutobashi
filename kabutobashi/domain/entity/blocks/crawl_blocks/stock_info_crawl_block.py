@@ -35,10 +35,10 @@ class StockInfoCrawlBlockOutput(ICrawlBlockOutput):
 @dataclass(frozen=True)
 class StockInfoCrawlBlock(ICrawlBlock):
 
-    def _process(self, block_input: IBlockInput) -> StockInfoCrawlBlockOutput:
-        if not isinstance(block_input, StockInfoCrawlBlockInput):
+    def _process(self) -> StockInfoCrawlBlockOutput:
+        if not isinstance(self.block_input, StockInfoCrawlBlockInput):
             raise KabutobashiBlockInstanceMismatchError()
-        params = block_input.params
+        params = self.block_input.params
         if params is None:
             raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
         code = params["code"]

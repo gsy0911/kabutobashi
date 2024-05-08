@@ -45,10 +45,10 @@ class ParameterizeMacdBlockOutput(IBlockOutput):
 @dataclass(frozen=True)
 class ParameterizeMacdBlock(IParameterizeBlock):
 
-    def _process(self, block_input: IBlockInput) -> ParameterizeMacdBlockOutput:
-        if not isinstance(block_input, ParameterizeMacdBlockInput):
+    def _process(self) -> ParameterizeMacdBlockOutput:
+        if not isinstance(self.block_input, ParameterizeMacdBlockInput):
             raise KabutobashiBlockInstanceMismatchError()
-        df = block_input.series
+        df = self.block_input.series
         if df is None:
             raise KabutobashiBlockSeriesIsNoneError()
         params = {

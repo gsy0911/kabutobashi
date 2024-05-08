@@ -46,14 +46,14 @@ class ReadExampleBlockOutput(IBlockOutput):
 @inject
 @dataclass(frozen=True)
 class ReadExampleBlock(IReadBlock):
-    def _process(self, block_input: IBlockInput) -> ReadExampleBlockOutput:
-        if not isinstance(block_input, ReadExampleBlockInput):
+    def _process(self) -> ReadExampleBlockOutput:
+        if not isinstance(self.block_input, ReadExampleBlockInput):
             raise KabutobashiBlockInstanceMismatchError()
         file_name = "example.csv.gz"
         df = pd.read_csv(f"{DATA_PATH}/{file_name}")
-        df = df[df["code"] == block_input.params["code"]]
+        df = df[df["code"] == self.block_input.params["code"]]
         df.index = df["dt"]
-        return ReadExampleBlockOutput.of(series=df, params=block_input.params)
+        return ReadExampleBlockOutput.of(series=df, params=self.block_input.params)
 
     @classmethod
     def _configure(cls, binder: Binder) -> None:

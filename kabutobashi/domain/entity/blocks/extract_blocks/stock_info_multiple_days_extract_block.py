@@ -75,10 +75,10 @@ class StockInfoMultipleDaysExtractBlock(IExtractBlock):
         df["code"] = code
         return {"info_list": df.to_dict(orient="records")}
 
-    def _process(self, block_input: IBlockInput) -> StockInfoMultipleDaysExtractBlockOutput:
-        if not isinstance(block_input, StockInfoMultipleDaysExtractBlockInput):
+    def _process(self) -> StockInfoMultipleDaysExtractBlockOutput:
+        if not isinstance(self.block_input, StockInfoMultipleDaysExtractBlockInput):
             raise KabutobashiBlockInstanceMismatchError()
-        params = block_input.params
+        params = self.block_input.params
         if params is None:
             raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
         main_html_text = params["main_html_text"]

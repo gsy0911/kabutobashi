@@ -105,10 +105,10 @@ class FullyConnectBlockOutput(IBlockOutput):
 @dataclass(frozen=True)
 class FullyConnectBlock(IBlock):
 
-    def _process(self, block_input: IBlockInput) -> FullyConnectBlockOutput:
-        if not isinstance(block_input, FullyConnectBlockInput):
+    def _process(self) -> FullyConnectBlockOutput:
+        if not isinstance(self.block_input, FullyConnectBlockInput):
             raise KabutobashiBlockInstanceMismatchError()
-        params = block_input.params
+        params = self.block_input.params
         if params is None:
             raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
         reduced_params = {

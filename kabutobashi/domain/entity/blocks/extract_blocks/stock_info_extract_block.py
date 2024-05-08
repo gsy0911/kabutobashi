@@ -115,10 +115,10 @@ class StockInfoExtractBlock(IExtractBlock):
 
         return result
 
-    def _process(self, block_input: IBlockInput) -> StockInfoExtractBlockOutput:
-        if not isinstance(block_input, StockInfoExtractBlockInput):
+    def _process(self) -> StockInfoExtractBlockOutput:
+        if not isinstance(self.block_input, StockInfoExtractBlockInput):
             raise KabutobashiBlockInstanceMismatchError()
-        params = block_input.params
+        params = self.block_input.params
         if params is None:
             raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
         html_text = params["html_text"]

@@ -50,10 +50,10 @@ class ParameterizePsychoLogicalBlockOutput(IBlockOutput):
 @dataclass(frozen=True)
 class ParameterizePsychoLogicalBlock(IParameterizeBlock):
 
-    def _process(self, block_input: IBlockInput) -> ParameterizePsychoLogicalBlockOutput:
-        if not isinstance(block_input, ParameterizePsychoLogicalBlockInput):
+    def _process(self) -> ParameterizePsychoLogicalBlockOutput:
+        if not isinstance(self.block_input, ParameterizePsychoLogicalBlockInput):
             raise KabutobashiBlockInstanceMismatchError()
-        df = block_input.series
+        df = self.block_input.series
         if df is None:
             raise KabutobashiBlockSeriesIsNoneError()
         params = {

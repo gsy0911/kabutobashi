@@ -70,14 +70,14 @@ class ProcessSmaBlock(IProcessBlock):
         df = df.rename(columns={"to_plus": "buy_signal", "to_minus": "sell_signal"})
         return df
 
-    def _process(self, block_input: IBlockInput) -> ProcessSmaBlockOutput:
-        if not isinstance(block_input, ProcessSmaBlockInput):
+    def _process(self) -> ProcessSmaBlockOutput:
+        if not isinstance(self.block_input, ProcessSmaBlockInput):
             raise KabutobashiBlockInstanceMismatchError()
-        applied_df = self._apply(df=block_input.series)
+        applied_df = self._apply(df=self.block_input.series)
         signal_df = self._signal(df=applied_df)
         return ProcessSmaBlockOutput.of(
             series=signal_df[["sma_short", "sma_medium", "sma_long", "buy_signal", "sell_signal"]],
-            params=block_input.params,
+            params=self.block_input.params,
         )
 
     @classmethod

@@ -70,11 +70,11 @@ class ProcessPsychoLogicalBlock(IProcessBlock):
         df["sell_signal"] = df["bought_too_much"]
         return df
 
-    def _process(self, block_input: IBlockInput) -> ProcessPsychoLogicalBlockOutput:
-        if not isinstance(block_input, ProcessPsychoLogicalBlockInput):
+    def _process(self) -> ProcessPsychoLogicalBlockOutput:
+        if not isinstance(self.block_input, ProcessPsychoLogicalBlockInput):
             raise KabutobashiBlockInstanceMismatchError()
 
-        applied_df = self._apply(df=block_input.series)
+        applied_df = self._apply(df=self.block_input.series)
         signal_df = self._signal(df=applied_df)
         required_columns = ["psycho_line", "bought_too_much", "sold_too_much", "buy_signal", "sell_signal"]
         return ProcessPsychoLogicalBlockOutput.of(series=signal_df[required_columns], params=None)
