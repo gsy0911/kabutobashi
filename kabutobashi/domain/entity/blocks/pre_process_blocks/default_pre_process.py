@@ -8,7 +8,7 @@ from kabutobashi.domain.errors import (
     KabutobashiBlockSeriesIsNoneError,
 )
 
-from ..abc_block import BlockGlue, IBlockInput
+from ..abc_block import BlockGlue
 from .abc_pre_process_block import IPreProcessBlock, IPreProcessBlockInput, IPreProcessBlockOutput
 
 
@@ -17,9 +17,12 @@ class DefaultPreProcessBlockInput(IPreProcessBlockInput):
 
     @classmethod
     def of(cls, block_glue: "BlockGlue"):
+        if block_glue.params is None:
+            raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
+        params = block_glue.params.get("default_pre_process", {})
         return cls(
             series=block_glue.series,
-            params={},
+            params={"for_analysis": params.get("for_analysis", False)},
         )
 
     def _validate(self):
@@ -42,11 +45,17 @@ class DefaultPreProcessBlock(IPreProcessBlock):
         if not isinstance(self.block_input, DefaultPreProcessBlockInput):
             raise KabutobashiBlockInstanceMismatchError()
 
-        required_cols = ["open", "high", "low", "close", "code", "volume"]
+        params = self.block_input.params
+        if params is None:
+            raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
+
         df = self.block_input.series
-        if df is None:
-            raise KabutobashiBlockSeriesIsNoneError()
-        df = df[required_cols]
+        for_analysis: bool = params["for_analysis"]
+        if for_analysis:
+            required_cols = ["open", "high", "low", "close", "code", "volume"]
+            if df is None:
+                raise KabutobashiBlockSeriesIsNoneError()
+            df = df[required_cols]
         return DefaultPreProcessBlockOutput.of(
             series=df,
             params=self.block_input.params,
@@ -54,4 +63,4 @@ class DefaultPreProcessBlock(IPreProcessBlock):
 
     @classmethod
     def _configure(cls, binder: Binder) -> None:
-        binder.bind(IBlockInput, to=DefaultPreProcessBlockInput)  # type: ignore[type-abstract]
+        binder.bind(IPreProcessBlockInput, to=DefaultPreProcessBlockInput)  # type: ignore[type-abstract]

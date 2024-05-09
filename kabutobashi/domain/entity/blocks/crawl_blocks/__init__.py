@@ -1,3 +1,3 @@
-from .stock_info_crawl_block import StockInfoCrawlBlock
-from .stock_info_multiple_days_crawl_block import StockInfoMultipleDaysCrawlBlock
-from .stock_ipo_crawl_block import StockIpoCrawlBlock
+from .crawl_stock_info_block import CrawlStockInfoBlock
+from .crawl_stock_info_multiple_days_block import CrawlStockInfoMultipleDaysBlock
+from .crawl_stock_ipo_block import CrawlStockIpoBlock

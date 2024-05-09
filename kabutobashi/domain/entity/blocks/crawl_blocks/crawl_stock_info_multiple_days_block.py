@@ -9,21 +9,24 @@ from .abc_crawl_block import ICrawlBlock, ICrawlBlockInput, ICrawlBlockOutput
 
 
 @dataclass(frozen=True)
-class StockInfoMultipleDaysCrawlBlockInput(ICrawlBlockInput):
+class CrawlStockInfoMultipleDaysBlockInput(ICrawlBlockInput):
 
     @classmethod
     def of(cls, block_glue: "BlockGlue"):
-        params = block_glue.block_outputs["stock_info_multiple_days_crawl"].params
-        return StockInfoMultipleDaysCrawlBlockInput(series=None, params=params)
+        if block_glue.params is None:
+            raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
+        params = block_glue.params["crawl_stock_info_multiple_days"]
+        return CrawlStockInfoMultipleDaysBlockInput(series=None, params=params)
 
     def _validate(self):
-        keys = self.params.keys()
-        assert "code" in keys, "StockInfoMultipleDaysCrawlBlockInput must have 'code' params"
+        if self.params is not None:
+            keys = self.params.keys()
+            assert "code" in keys, "StockInfoMultipleDaysCrawlBlockInput must have 'code' params"
 
 
 @dataclass(frozen=True)
-class StockInfoMultipleDaysCrawlBlockOutput(ICrawlBlockOutput):
-    block_name: str = "stock_info_multiple_days_crawl"
+class CrawlStockInfoMultipleDaysBlockOutput(ICrawlBlockOutput):
+    block_name: str = "crawl_stock_info_multiple_days"
 
     def _validate(self):
         keys = self.params.keys()
@@ -34,10 +37,10 @@ class StockInfoMultipleDaysCrawlBlockOutput(ICrawlBlockOutput):
 
 @inject
 @dataclass(frozen=True)
-class StockInfoMultipleDaysCrawlBlock(ICrawlBlock):
+class CrawlStockInfoMultipleDaysBlock(ICrawlBlock):
 
-    def _process(self) -> StockInfoMultipleDaysCrawlBlockOutput:
-        if not isinstance(self.block_input, StockInfoMultipleDaysCrawlBlockInput):
+    def _process(self) -> CrawlStockInfoMultipleDaysBlockOutput:
+        if not isinstance(self.block_input, CrawlStockInfoMultipleDaysBlockInput):
             raise KabutobashiBlockInstanceMismatchError()
         params = self.block_input.params
         if params is None:
@@ -45,10 +48,10 @@ class StockInfoMultipleDaysCrawlBlock(ICrawlBlock):
         code = params["code"]
         main_html_text = self._from_url(url=f"https://minkabu.jp/stock/{code}/daily_bar")
         sub_html_text = self._from_url(url=f"https://minkabu.jp/stock/{code}/daily_valuation")
-        return StockInfoMultipleDaysCrawlBlockOutput.of(
+        return CrawlStockInfoMultipleDaysBlockOutput.of(
             series=None, params={"code": code, "main_html_text": main_html_text, "sub_html_text": sub_html_text}
         )
 
     @classmethod
     def _configure(cls, binder: Binder) -> None:
-        binder.bind(IBlockInput, to=StockInfoMultipleDaysCrawlBlockInput)  # type: ignore[type-abstract]
+        binder.bind(ICrawlBlockInput, to=CrawlStockInfoMultipleDaysBlockInput)  # type: ignore[type-abstract]

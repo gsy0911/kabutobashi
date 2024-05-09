@@ -7,29 +7,28 @@ from injector import Binder, inject
 from kabutobashi.domain.errors import KabutobashiBlockInstanceMismatchError, KabutobashiBlockParamsIsNoneError
 from kabutobashi.domain.values import DecodeHtmlPageStockIpo
 
-from ..abc_block import BlockGlue, IBlockInput
+from ..abc_block import BlockGlue
 from .abc_extract_block import IExtractBlock, IExtractBlockInput, IExtractBlockOutput
 
 
 @dataclass(frozen=True)
-class StockIpoExtractBlockInput(IExtractBlockInput):
+class ExtractStockIpoBlockInput(IExtractBlockInput):
 
     @classmethod
     def of(cls, block_glue: "BlockGlue"):
-        params = block_glue.block_outputs["stock_info_crawl"].params
-        return StockIpoExtractBlockInput(series=None, params=params)
+        params = block_glue.block_outputs["crawl_stock_ipo"].params
+        return ExtractStockIpoBlockInput(series=None, params=params)
 
     def _validate(self):
-        if self.params is None:
-            raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
-        keys = self.params.keys()
-        assert "year" in keys, "StockIpoExtractBlockInput must have 'year' params"
-        assert "html_text" in keys, "StockIpoExtractBlockInput must have 'code' params"
+        if self.params is not None:
+            keys = self.params.keys()
+            assert "year" in keys, "StockIpoExtractBlockInput must have 'year' params"
+            assert "html_text" in keys, "StockIpoExtractBlockInput must have 'code' params"
 
 
 @dataclass(frozen=True)
-class StockIpoExtractBlockOutput(IExtractBlockOutput):
-    block_name: str = "stock_info_crawl"
+class ExtractStockIpoBlockOutput(IExtractBlockOutput):
+    block_name: str = "extract_stock_ipo"
 
     def _validate(self):
         keys = self.params.keys()
@@ -38,7 +37,7 @@ class StockIpoExtractBlockOutput(IExtractBlockOutput):
 
 @inject
 @dataclass(frozen=True)
-class StockIpoExtractBlock(IExtractBlock):
+class ExtractStockIpoBlock(IExtractBlock):
 
     def _decode(self, html_text: str) -> dict:
         soup = BeautifulSoup(html_text, features="lxml")
@@ -59,8 +58,8 @@ class StockIpoExtractBlock(IExtractBlock):
             whole_result.append(DecodeHtmlPageStockIpo.from_dict(data=table_body_dict).to_dict())
         return {"ipo_list": whole_result}
 
-    def _process(self) -> StockIpoExtractBlockOutput:
-        if not isinstance(self.block_input, StockIpoExtractBlockInput):
+    def _process(self) -> ExtractStockIpoBlockOutput:
+        if not isinstance(self.block_input, ExtractStockIpoBlockInput):
             raise KabutobashiBlockInstanceMismatchError()
         params = self.block_input.params
         if params is None:
@@ -69,8 +68,8 @@ class StockIpoExtractBlock(IExtractBlock):
         # to_df
         result = self._decode(html_text=html_text)
         df = pd.DataFrame(data=result["ipo_list"])
-        return StockIpoExtractBlockOutput.of(series=df, params=result)
+        return ExtractStockIpoBlockOutput.of(series=df, params=result)
 
     @classmethod
     def _configure(cls, binder: Binder) -> None:
-        binder.bind(IBlockInput, to=StockIpoExtractBlockInput)  # type: ignore[type-abstract]
+        binder.bind(IExtractBlockInput, to=ExtractStockIpoBlockInput)  # type: ignore[type-abstract]
