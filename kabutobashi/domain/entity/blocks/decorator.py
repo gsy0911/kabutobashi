@@ -1,5 +1,7 @@
+import re
+from dataclasses import dataclass
 from types import FunctionType
-from typing import Tuple, Union
+from typing import Iterator, Tuple, Union
 
 import pandas as pd
 
@@ -8,6 +10,33 @@ from .abc_block import BlockGlue
 __all__ = ["block"]
 
 blocks_dict = {}
+
+
+@dataclass(frozen=True)
+class BlockInput:
+    series: pd.DataFrame
+    params: dict
+
+
+@dataclass(frozen=True)
+class BlockOutput:
+    series: pd.DataFrame
+    params: dict
+    block_name: str
+
+
+def _to_snake_case(string: str) -> str:
+    # see: https://qiita.com/munepi0713/items/82ce7a56aa1b8233fd30
+    _PARSE_BY_SEP_PATTERN = re.compile(r"[ _-]+")
+    _PARSE_PATTERN = re.compile(r"[A-Za-z][^A-Z]+")
+
+    def _parse_words(_string: str) -> Iterator[str]:
+        for block in re.split(_PARSE_BY_SEP_PATTERN, _string):
+            for m in re.finditer(_PARSE_PATTERN, block):
+                yield m.group(0)
+
+    word_iter = _parse_words(string)
+    return "_".join(word.lower() for word in word_iter)
 
 
 def _set_qualname(cls, value):
@@ -49,13 +78,33 @@ def _inner_func_process(self) -> BlockGlue:
 
 
 def _inner_class_func_factory(cls, glue: BlockGlue):
+    """
+    Returns:
+        cls()
+    """
     return cls._factory(glue)
 
 
+def _inner_class_default_private_func_factory(cls, glue: BlockGlue):
+    """
+    Default _factory() method.
+    The method is intended to override by users.
+
+    Returns:
+        cls()
+    """
+    return cls(series=glue.series, params=glue.params)
+
+
 def _inner_class_func_operate(cls, glue: BlockGlue) -> BlockGlue:
-    instance = cls._factory(glue)
-    new_glue = instance.process()
+    block_instance = cls.factory(glue=glue)
+    new_glue = block_instance.process()
     return new_glue
+
+
+def _inner_init(self, series: pd.DataFrame, params: dict):
+    self.series = series
+    self.params = params
 
 
 def _inner_repr(self):
@@ -64,32 +113,38 @@ def _inner_repr(self):
     """.strip()
 
 
-def _process_class(cls, block_name: str, factory: bool, process: bool):
+def _process_class(cls, block_name: str, pre_condition_block_name: str, factory: bool, process: bool):
     cls_params = {}
     cls_annotations = cls.__dict__.get("__annotations__", {})
 
     cls_keys = cls.__dict__.keys()
     # check _process
-    if "_process" not in cls_keys:
-        raise KeyError()
-    if not isinstance((cls.__dict__["_process"]), FunctionType):
-        raise ValueError()
-    _process_annotation_candidates = [Tuple[dict, pd.DataFrame], Tuple[pd.DataFrame, dict], dict, pd.DataFrame]
-    if "return" in cls.__dict__["_process"].__annotations__:
-        if not any([cls.__dict__["_process"].__annotations__["return"] is t for t in _process_annotation_candidates]):
-            print(f"{cls.__dict__['_process'].__annotations__['return']} is not compatible")
+    if process:
+        if "_process" not in cls_keys:
+            raise KeyError()
+        if not isinstance((cls.__dict__["_process"]), FunctionType):
+            raise ValueError()
+        _process_annotation_candidates = [Tuple[dict, pd.DataFrame], Tuple[pd.DataFrame, dict], dict, pd.DataFrame]
+        if "return" in cls.__dict__["_process"].__annotations__:
+            if not any(
+                [cls.__dict__["_process"].__annotations__["return"] is t for t in _process_annotation_candidates]
+            ):
+                print(f"{cls.__dict__['_process'].__annotations__['return']} is not compatible")
 
     # check _factory
-    if "_factory" not in cls_keys:
-        raise KeyError()
-    if not type(cls.__dict__["_factory"]) is classmethod:
-        raise ValueError()
+    if factory:
+        if "_factory" not in cls_keys:
+            raise KeyError()
+        if not type(cls.__dict__["_factory"]) is classmethod:
+            raise ValueError()
 
-    for name, value in cls.__dict__.items():
-        if name in cls_annotations:
-            cls_params[name] = value
+        for name, value in cls.__dict__.items():
+            if name in cls_annotations:
+                cls_params[name] = value
 
     # set-block-name
+    if block_name is None:
+        block_name = _to_snake_case(cls.__name__)
     setattr(cls, "block_name", block_name)
     # set-params
     setattr(cls, "params", cls_params)
@@ -97,20 +152,65 @@ def _process_class(cls, block_name: str, factory: bool, process: bool):
     _set_new_attribute(cls=cls, name="process", value=_inner_func_process)
     # factory function
     _set_new_attribute(cls=cls, name="factory", value=classmethod(_inner_class_func_factory))
+    if not factory:
+        _set_new_attribute(cls=cls, name="_factory", value=classmethod(_inner_class_default_private_func_factory))
     # operate function
     _set_new_attribute(cls=cls, name="operate", value=classmethod(_inner_class_func_operate))
     # validation functions
     _set_new_attribute(cls=cls, name="validate_block_input", value=_inner_func_process)
     _set_new_attribute(cls=cls, name="validate_block_output", value=_inner_func_process)
     # dunder-method
+    _set_new_attribute(cls=cls, name="__init__", value=_inner_init)
     _set_new_attribute(cls=cls, name="__repr__", value=_inner_repr)
     blocks_dict.update({block_name: cls})
     return cls
 
 
-def block(cls=None, /, *, block_name: str = None, factory: bool = False, process: bool = True):
+def block(
+    cls=None,
+    /,
+    *,
+    block_name: str = None,
+    pre_condition_block_name: str = None,
+    factory: bool = False,
+    process: bool = True,
+):
+    """
+
+    Args:
+        cls: class to decorate
+        block_name: BlockName
+        pre_condition_block_name:
+        factory: True if _factory() method is required to implement.
+        process: True if _process() method is required to implement.
+
+    Returns:
+        decorator
+
+    Examples:
+        >>> # basic example
+        >>> from kabutobashi.domain.entity.blocks import BlockGlue
+        >>> @block()
+        >>> class SampleBlock:
+        >>>     term: int = 10
+        >>>
+        >>>     @classmethod
+        >>>     def _factory(cls, glue: BlockGlue) -> "SampleBlock":
+        >>>         return SampleBlock()
+        >>>
+        >>>     def _process(self):
+        >>>         params = self
+        >>>         return SampleBlock()
+    """
+
     def wrap(_cls):
-        return _process_class(_cls, block_name=block_name, factory=factory, process=process)
+        return _process_class(
+            _cls,
+            block_name=block_name,
+            pre_condition_block_name=pre_condition_block_name,
+            factory=factory,
+            process=process,
+        )
 
     # See if we're being called as @dataclass or @dataclass().
     if cls is None:
