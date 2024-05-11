@@ -21,8 +21,8 @@ class BlockInput:
 
 @dataclass(frozen=True)
 class BlockOutput:
-    series: pd.DataFrame
-    params: dict
+    series: Optional[pd.DataFrame]
+    params: Optional[dict]
     block_name: str
 
 
@@ -59,30 +59,45 @@ def _set_new_attribute(cls, name, value):
 
 
 def _inner_func_process(self) -> BlockGlue:
+    """
+    The method is NOT intended to override by users.
+
+    Returns:
+        BlockGlue
+    """
     res: Union[dict, pd.DataFrame, Tuple[dict, pd.DataFrame], Tuple[pd.DataFrame, dict]] = self._process()
+    block_name = self.block_name
+    res_glue = BlockGlue()
+    if self._glue:
+        res_glue = self._glue
+
     if type(res) is tuple:
         if len(res) == 2:
             if type(res[0]) is dict and type(res[1]) is pd.DataFrame:
-                return BlockGlue(series=res[1], params=res[0], block_outputs={})
+                block_output = BlockOutput(series=res[1], params=res[0], block_name=block_name)
             elif type(res[1]) is dict and type(res[0]) is pd.DataFrame:
-                return BlockGlue(series=res[0], params=res[1], block_outputs={})
+                block_output = BlockOutput(series=res[0], params=res[1], block_name=block_name)
             else:
                 raise ValueError()
         else:
             raise ValueError()
     elif type(res) is dict:
-        return BlockGlue(series=None, params=res, block_outputs={})
+        block_output = BlockOutput(series=None, params=res, block_name=block_name)
     elif type(res) is pd.DataFrame:
-        return BlockGlue(series=res, params=None, block_outputs={})
+        block_output = BlockOutput(series=res, params=None, block_name=block_name)
     else:
         raise ValueError()
+    return BlockGlue(series=res_glue.series, params=res_glue.series, block_outputs={block_name: block_output})
 
 
 def _inner_class_func_factory(cls, glue: BlockGlue):
     """
+    The method is NOT intended to override by users.
+
     Returns:
         cls()
     """
+    setattr(cls, "_glue", glue)
     # to set parameters to cls() from glue.params
     block_name = cls().block_name
     params = glue.params.get(block_name, {})
@@ -103,17 +118,29 @@ def _inner_class_default_private_func_factory(cls, glue: BlockGlue):
 
 
 def _inner_class_func_glue(cls, glue: BlockGlue) -> BlockGlue:
+    """
+    The method is NOT intended to override by users.
+
+    Returns:
+        BlockGlue()
+    """
     block_instance = cls.factory(glue=glue)
     new_glue = block_instance.process()
     return new_glue
 
 
 def _inner_init(self, series: Optional[pd.DataFrame] = None, params: Optional[dict] = None):
+    """
+    The method is NOT intended to override by users.
+    """
     self.series = series
     self.params = params
 
 
 def _inner_repr(self):
+    """
+    The method is NOT intended to override by users.
+    """
     # block name
     repr = ["# block_name: {self.block_name}"]
     # attributes
