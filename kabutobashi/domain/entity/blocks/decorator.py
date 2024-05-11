@@ -2,7 +2,7 @@ import re
 import warnings
 from dataclasses import dataclass
 from types import FunctionType
-from typing import Iterator, Optional, Tuple, Union
+from typing import Iterator, NoReturn, Optional, Tuple, TypeAlias, Union
 
 import pandas as pd
 
@@ -17,6 +17,9 @@ from .abc_block import BlockGlue
 __all__ = ["block"]
 
 blocks_dict = {}
+
+# type candidates of `UdfBlock._process()` return
+BlockProcessResultType: TypeAlias = Union[dict, pd.DataFrame, Tuple[dict, pd.DataFrame], Tuple[pd.DataFrame, dict]]
 
 
 @dataclass(frozen=True)
@@ -64,6 +67,36 @@ def _set_new_attribute(cls, name, value):
     return False
 
 
+def _inner_func_validate_input(self) -> NoReturn:
+    """
+    The method is NOT intended to override by users.
+    """
+    self._validate_input(series=self.series, params=self.params)
+
+
+def _inner_func_private_validate_input(self, series: pd.DataFrame, params: dict) -> NoReturn:
+    """
+    Default _validate_input() method.
+    The method is intended to override by users.
+    """
+    pass
+
+
+def _inner_func_validate_output(self, series: Optional[pd.DataFrame], params: Optional[dict]) -> NoReturn:
+    """
+    The method is NOT intended to override by users.
+    """
+    self._validate_output(series=series, params=params)
+
+
+def _inner_func_private_validate_output(self, series: Optional[pd.DataFrame], params: Optional[dict]) -> NoReturn:
+    """
+    Default _validate_output() method.
+    The method is intended to override by users.
+    """
+    pass
+
+
 def _inner_func_process(self) -> BlockGlue:
     """
     The method is NOT intended to override by users.
@@ -71,17 +104,23 @@ def _inner_func_process(self) -> BlockGlue:
     Returns:
         BlockGlue
     """
-    res: Union[dict, pd.DataFrame, Tuple[dict, pd.DataFrame], Tuple[pd.DataFrame, dict]] = self._process()
+    # initialize
     block_name = self.block_name
     res_glue = BlockGlue()
     if self._glue:
         res_glue = self._glue
+    # validate_input
+    self.validate_input()
+    # process()
+    res: BlockProcessResultType = self._process()
 
     if type(res) is tuple:
         if len(res) == 2:
             if type(res[0]) is dict and type(res[1]) is pd.DataFrame:
+                self.validate_output(series=res[1], params=res[0])
                 block_output = BlockOutput(series=res[1], params=res[0], block_name=block_name)
             elif type(res[1]) is dict and type(res[0]) is pd.DataFrame:
+                self.validate_output(series=res[0], params=res[1])
                 block_output = BlockOutput(series=res[0], params=res[1], block_name=block_name)
             else:
                 raise KabutobashiBlockDecoratorReturnError(
@@ -90,8 +129,10 @@ def _inner_func_process(self) -> BlockGlue:
         else:
             raise KabutobashiBlockDecoratorReturnError("Please limit the number of return values to two or fewer.")
     elif type(res) is dict:
+        self.validate_output(series=None, params=res)
         block_output = BlockOutput(series=None, params=res, block_name=block_name)
     elif type(res) is pd.DataFrame:
+        self.validate_output(series=res, params=None)
         block_output = BlockOutput(series=res, params=None, block_name=block_name)
     else:
         raise KabutobashiBlockDecoratorReturnError("An unexpected return type was returned.")
@@ -207,8 +248,12 @@ def _process_class(cls, block_name: str, pre_condition_block_name: str, factory:
     # operate function
     _set_new_attribute(cls=cls, name="glue", value=classmethod(_inner_class_func_glue))
     # validation functions
-    _set_new_attribute(cls=cls, name="validate_block_input", value=_inner_func_process)
-    _set_new_attribute(cls=cls, name="validate_block_output", value=_inner_func_process)
+    _set_new_attribute(cls=cls, name="validate_input", value=_inner_func_validate_input)
+    if "_validate_input" not in cls.__dict__:
+        _set_new_attribute(cls=cls, name="_validate_input", value=_inner_func_private_validate_input)
+    _set_new_attribute(cls=cls, name="validate_output", value=_inner_func_validate_output)
+    if "_validate_output" not in cls.__dict__:
+        _set_new_attribute(cls=cls, name="_validate_output", value=_inner_func_private_validate_output)
     # dunder-method
     _set_new_attribute(cls=cls, name="__init__", value=_inner_init)
     _set_new_attribute(cls=cls, name="__repr__", value=_inner_repr)

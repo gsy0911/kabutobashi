@@ -23,6 +23,37 @@ def test_udf_block_decorator_basics():
     assert udf_block._factory is not None
     assert udf_block.factory is not None
     assert udf_block.glue is not None
+    assert udf_block.validate_input is not None
+    assert udf_block._validate_input is not None
+    assert udf_block.validate_output is not None
+    assert udf_block._validate_output is not None
+    assert udf_block.__init__ is not None
+    assert udf_block.__repr__ is not None
+
+
+def test_udf_block_decorator_basics_2():
+
+    @block(block_name="udf")
+    class UdfBlock:
+        term: int = 10
+
+        def _process(self):
+            pass
+
+    udf_block = UdfBlock()
+    assert "series" in udf_block.__dict__
+    assert "params" in udf_block.__dict__
+    assert udf_block.block_name == "udf"
+    assert udf_block.term == 10
+    assert udf_block._process is not None
+    assert udf_block.process is not None
+    assert udf_block._factory is not None
+    assert udf_block.factory is not None
+    assert udf_block.glue is not None
+    assert udf_block.validate_input is not None
+    assert udf_block._validate_input is not None
+    assert udf_block.validate_output is not None
+    assert udf_block._validate_output is not None
     assert udf_block.__init__ is not None
     assert udf_block.__repr__ is not None
 
