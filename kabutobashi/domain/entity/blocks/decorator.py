@@ -6,6 +6,8 @@ from typing import Iterator, Optional, Tuple, Union
 
 import pandas as pd
 
+from kabutobashi.domain.errors import KabutobashiBlockDecoratorNameError
+
 from .abc_block import BlockGlue
 
 __all__ = ["block"]
@@ -153,6 +155,8 @@ def _inner_repr(self):
 def _process_class(cls, block_name: str, pre_condition_block_name: str, factory: bool, process: bool):
     cls_params = {}
     cls_annotations = cls.__dict__.get("__annotations__", {})
+    if not cls.__name__.endswith("Block"):
+        raise KabutobashiBlockDecoratorNameError(f"class name must end with 'Block', {cls.__name__} is not allowed.")
 
     cls_keys = cls.__dict__.keys()
     # check _process

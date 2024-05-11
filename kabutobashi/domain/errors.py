@@ -53,3 +53,19 @@ class KabutobashiBlockParamsIsNoneError(KabutobashiBlockError):
 
 class KabutobashiBlockSeriesIsNoneError(KabutobashiBlockError):
     pass
+
+
+class KabutobashiBlockDecoratorError(KabutobashiBaseError):
+    """
+    KabutobashiBlockDecoratorError is base error for `@block` decorator.
+    """
+
+    pass
+
+
+class KabutobashiBlockDecoratorNameError(KabutobashiBlockDecoratorError):
+    """
+    KabutobashiBlockDecoratorError is base error for `@block` decorator.
+    """
+
+    pass
