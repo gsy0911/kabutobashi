@@ -6,7 +6,11 @@ from typing import Iterator, Optional, Tuple, Union
 
 import pandas as pd
 
-from kabutobashi.domain.errors import KabutobashiBlockDecoratorNameError, KabutobashiBlockDecoratorReturnError
+from kabutobashi.domain.errors import (
+    KabutobashiBlockDecoratorNameError,
+    KabutobashiBlockDecoratorNotImplementedError,
+    KabutobashiBlockDecoratorReturnError,
+)
 
 from .abc_block import BlockGlue
 
@@ -80,7 +84,9 @@ def _inner_func_process(self) -> BlockGlue:
             elif type(res[1]) is dict and type(res[0]) is pd.DataFrame:
                 block_output = BlockOutput(series=res[0], params=res[1], block_name=block_name)
             else:
-                raise KabutobashiBlockDecoratorReturnError("The return values are limited to combinations of `dict` and `pd.DataFrame`.")
+                raise KabutobashiBlockDecoratorReturnError(
+                    "The return values are limited to combinations of `dict` and `pd.DataFrame`."
+                )
         else:
             raise KabutobashiBlockDecoratorReturnError("Please limit the number of return values to two or fewer.")
     elif type(res) is dict:
@@ -162,7 +168,7 @@ def _process_class(cls, block_name: str, pre_condition_block_name: str, factory:
     # check _process
     if process:
         if "_process" not in cls_keys:
-            raise KeyError()
+            raise KabutobashiBlockDecoratorNotImplementedError("_process method is not implemented.")
         if not isinstance((cls.__dict__["_process"]), FunctionType):
             raise ValueError()
         _process_annotation_candidates = [Tuple[dict, pd.DataFrame], Tuple[pd.DataFrame, dict], dict, pd.DataFrame]
@@ -176,7 +182,7 @@ def _process_class(cls, block_name: str, pre_condition_block_name: str, factory:
     # check _factory
     if factory:
         if "_factory" not in cls_keys:
-            raise KeyError()
+            raise KabutobashiBlockDecoratorNotImplementedError("_factory method is not implemented.")
         if not type(cls.__dict__["_factory"]) is classmethod:
             raise ValueError()
 

@@ -77,3 +77,11 @@ class KabutobashiBlockDecoratorReturnError(KabutobashiBlockDecoratorError):
     """
 
     pass
+
+
+class KabutobashiBlockDecoratorNotImplementedError(KabutobashiBlockDecoratorError):
+    """
+    The function that was intended to be implemented has not been implemented.
+    """
+
+    pass
