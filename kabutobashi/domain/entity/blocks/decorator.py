@@ -1,7 +1,8 @@
 import re
+import warnings
 from dataclasses import dataclass
 from types import FunctionType
-from typing import Iterator, Tuple, Union
+from typing import Iterator, Optional, Tuple, Union
 
 import pandas as pd
 
@@ -82,6 +83,11 @@ def _inner_class_func_factory(cls, glue: BlockGlue):
     Returns:
         cls()
     """
+    # to set parameters to cls() from glue.params
+    block_name = cls().block_name
+    params = glue.params.get(block_name, {})
+    for k, v in params.items():
+        setattr(cls, k, v)
     return cls._factory(glue)
 
 
@@ -96,21 +102,25 @@ def _inner_class_default_private_func_factory(cls, glue: BlockGlue):
     return cls(series=glue.series, params=glue.params)
 
 
-def _inner_class_func_operate(cls, glue: BlockGlue) -> BlockGlue:
+def _inner_class_func_glue(cls, glue: BlockGlue) -> BlockGlue:
     block_instance = cls.factory(glue=glue)
     new_glue = block_instance.process()
     return new_glue
 
 
-def _inner_init(self, series: pd.DataFrame, params: dict):
+def _inner_init(self, series: Optional[pd.DataFrame] = None, params: Optional[dict] = None):
     self.series = series
     self.params = params
 
 
 def _inner_repr(self):
-    return f"""
-    block_name: {self.block_name}
-    """.strip()
+    # block name
+    repr = ["# block_name: {self.block_name}"]
+    # attributes
+    repr.extend([f"+ {name}: {value}" for name, value in self.__dict__.items()])
+    # repr.extend([f"+ {name}: {getattr(self, name)}" for name in self.__annotations__.keys()])
+
+    return "\n".join(repr)
 
 
 def _process_class(cls, block_name: str, pre_condition_block_name: str, factory: bool, process: bool):
@@ -125,11 +135,12 @@ def _process_class(cls, block_name: str, pre_condition_block_name: str, factory:
         if not isinstance((cls.__dict__["_process"]), FunctionType):
             raise ValueError()
         _process_annotation_candidates = [Tuple[dict, pd.DataFrame], Tuple[pd.DataFrame, dict], dict, pd.DataFrame]
-        if "return" in cls.__dict__["_process"].__annotations__:
-            if not any(
-                [cls.__dict__["_process"].__annotations__["return"] is t for t in _process_annotation_candidates]
-            ):
-                print(f"{cls.__dict__['_process'].__annotations__['return']} is not compatible")
+        # check annotation types
+        _process_annotations = cls.__dict__["_process"].__annotations__
+        if "return" in _process_annotations:
+            if not any([_process_annotations["return"] is t for t in _process_annotation_candidates]):
+                warn_msg = f"{_process_annotations['return']} is not compatible. Use `dict`, `pd.DataFrame`, or `Tuple[dict, pd.DataFrame]`"
+                warnings.warn(warn_msg, category=SyntaxWarning)
 
     # check _factory
     if factory:
@@ -138,9 +149,11 @@ def _process_class(cls, block_name: str, pre_condition_block_name: str, factory:
         if not type(cls.__dict__["_factory"]) is classmethod:
             raise ValueError()
 
-        for name, value in cls.__dict__.items():
-            if name in cls_annotations:
-                cls_params[name] = value
+    for name in cls_annotations:
+        if name in cls.__dict__.keys():
+            cls_params[name] = cls.__dict__[name]
+        else:
+            cls_params[name] = None
 
     # set-block-name
     if block_name is None:
@@ -155,13 +168,14 @@ def _process_class(cls, block_name: str, pre_condition_block_name: str, factory:
     if not factory:
         _set_new_attribute(cls=cls, name="_factory", value=classmethod(_inner_class_default_private_func_factory))
     # operate function
-    _set_new_attribute(cls=cls, name="operate", value=classmethod(_inner_class_func_operate))
+    _set_new_attribute(cls=cls, name="glue", value=classmethod(_inner_class_func_glue))
     # validation functions
     _set_new_attribute(cls=cls, name="validate_block_input", value=_inner_func_process)
     _set_new_attribute(cls=cls, name="validate_block_output", value=_inner_func_process)
     # dunder-method
     _set_new_attribute(cls=cls, name="__init__", value=_inner_init)
     _set_new_attribute(cls=cls, name="__repr__", value=_inner_repr)
+    # register global dict
     blocks_dict.update({block_name: cls})
     return cls
 
