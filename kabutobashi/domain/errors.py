@@ -65,7 +65,15 @@ class KabutobashiBlockDecoratorError(KabutobashiBaseError):
 
 class KabutobashiBlockDecoratorNameError(KabutobashiBlockDecoratorError):
     """
-    KabutobashiBlockDecoratorError is base error for `@block` decorator.
+    class must end with `Block`.
+    """
+
+    pass
+
+
+class KabutobashiBlockDecoratorReturnError(KabutobashiBlockDecoratorError):
+    """
+    function-return-type is not matched.
     """
 
     pass

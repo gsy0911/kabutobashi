@@ -6,7 +6,7 @@ from typing import Iterator, Optional, Tuple, Union
 
 import pandas as pd
 
-from kabutobashi.domain.errors import KabutobashiBlockDecoratorNameError
+from kabutobashi.domain.errors import KabutobashiBlockDecoratorNameError, KabutobashiBlockDecoratorReturnError
 
 from .abc_block import BlockGlue
 
@@ -80,15 +80,15 @@ def _inner_func_process(self) -> BlockGlue:
             elif type(res[1]) is dict and type(res[0]) is pd.DataFrame:
                 block_output = BlockOutput(series=res[0], params=res[1], block_name=block_name)
             else:
-                raise ValueError()
+                raise KabutobashiBlockDecoratorReturnError("The return values are limited to combinations of `dict` and `pd.DataFrame`.")
         else:
-            raise ValueError()
+            raise KabutobashiBlockDecoratorReturnError("Please limit the number of return values to two or fewer.")
     elif type(res) is dict:
         block_output = BlockOutput(series=None, params=res, block_name=block_name)
     elif type(res) is pd.DataFrame:
         block_output = BlockOutput(series=res, params=None, block_name=block_name)
     else:
-        raise ValueError()
+        raise KabutobashiBlockDecoratorReturnError("An unexpected return type was returned.")
     return BlockGlue(series=res_glue.series, params=res_glue.series, block_outputs={block_name: block_output})
 
 
