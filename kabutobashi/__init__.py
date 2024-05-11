@@ -2,6 +2,7 @@ from .application import crawl_info, crawl_info_multiple, crawl_ipo, decode_bran
 from .domain import errors
 from .domain.aggregates import StockCodeSingleAggregate
 from .domain.entity import Stock
+from .domain.entity.blocks import block
 from .domain.services import SaFundamental, SaVolume, StockAnalysis
 
 # methods to analysis
