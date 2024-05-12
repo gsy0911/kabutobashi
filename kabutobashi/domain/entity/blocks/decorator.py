@@ -3,6 +3,7 @@ import warnings
 from dataclasses import dataclass
 from types import FunctionType
 from typing import Iterator, NoReturn, Optional, Tuple, TypeAlias, Union
+from inspect import getmembers
 
 import pandas as pd
 
