@@ -1,9 +1,11 @@
 import re
 import warnings
 from dataclasses import dataclass
+from functools import partial
+from inspect import signature
+from logging import getLogger
 from types import FunctionType
-from typing import Iterator, NoReturn, Optional, Tuple, TypeAlias, Union
-from inspect import getmembers
+from typing import Iterator, List, NoReturn, Optional, Tuple, TypeAlias, Union
 
 import pandas as pd
 
@@ -18,6 +20,7 @@ from .abc_block import BlockGlue
 __all__ = ["block"]
 
 blocks_dict = {}
+logger = getLogger(__name__)
 
 # type candidates of `UdfBlock._process()` return
 BlockProcessResultType: TypeAlias = Union[dict, pd.DataFrame, Tuple[dict, pd.DataFrame], Tuple[pd.DataFrame, dict]]
@@ -68,19 +71,17 @@ def _set_new_attribute(cls, name, value):
     return False
 
 
-def _inner_func_validate_input(self) -> NoReturn:
+def _inner_func_validate_input(self, *, functions: List[callable] = None) -> NoReturn:
     """
     The method is NOT intended to override by users.
     """
-    self._validate_input(series=self.series, params=self.params)
-
-
-def _inner_func_private_validate_input(self, series: pd.DataFrame, params: dict) -> NoReturn:
-    """
-    Default _validate_input() method.
-    The method is intended to override by users.
-    """
-    pass
+    logger.debug(f"{self.params=}")
+    for f in functions:
+        sig = signature(f)
+        function_required_args = sig.parameters.keys()
+        function_args = {k: v for k, v in self.__dict__.items() if (k in function_required_args)}
+        logger.debug(f"{f} <= {function_args=}")
+        f(self, **function_args)
 
 
 def _inner_func_validate_output(self, series: Optional[pd.DataFrame], params: Optional[dict]) -> NoReturn:
@@ -203,6 +204,7 @@ def _inner_repr(self):
 def _process_class(cls, block_name: str, pre_condition_block_name: str, factory: bool, process: bool):
     cls_params = {}
     cls_annotations = cls.__dict__.get("__annotations__", {})
+    logger.debug(f"{cls_annotations=}")
     if not cls.__name__.endswith("Block"):
         raise KabutobashiBlockDecoratorNameError(f"class name must end with 'Block', {cls.__name__} is not allowed.")
 
@@ -249,9 +251,12 @@ def _process_class(cls, block_name: str, pre_condition_block_name: str, factory:
     # operate function
     _set_new_attribute(cls=cls, name="glue", value=classmethod(_inner_class_func_glue))
     # validation functions
-    _set_new_attribute(cls=cls, name="validate_input", value=_inner_func_validate_input)
-    if "_validate_input" not in cls.__dict__:
-        _set_new_attribute(cls=cls, name="_validate_input", value=_inner_func_private_validate_input)
+    _inner_func_validate_input_partial = partial(
+        _inner_func_validate_input,
+        self=cls,
+        functions=[v for k, v in cls.__dict__.items() if k.startswith("_validate")],
+    )
+    _set_new_attribute(cls=cls, name="validate_input", value=_inner_func_validate_input_partial)
     _set_new_attribute(cls=cls, name="validate_output", value=_inner_func_validate_output)
     if "_validate_output" not in cls.__dict__:
         _set_new_attribute(cls=cls, name="_validate_output", value=_inner_func_private_validate_output)
