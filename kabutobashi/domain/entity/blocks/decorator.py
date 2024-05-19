@@ -13,6 +13,7 @@ from kabutobashi.domain.errors import (
     KabutobashiBlockDecoratorNameError,
     KabutobashiBlockDecoratorNotImplementedError,
     KabutobashiBlockDecoratorReturnError,
+    KabutobashiBlockDecoratorTypeError,
 )
 
 from .abc_block import BlockGlue
@@ -306,6 +307,8 @@ def block(
     """
 
     def wrap(_cls):
+        if type(_cls) is not type:
+            raise KabutobashiBlockDecoratorTypeError(f"first argument of @block must be a class, not a {type(_cls)}")
         return _process_class(
             _cls,
             block_name=block_name,

@@ -71,6 +71,14 @@ class KabutobashiBlockDecoratorNameError(KabutobashiBlockDecoratorError):
     pass
 
 
+class KabutobashiBlockDecoratorTypeError(KabutobashiBlockDecoratorError):
+    """
+    fist argument of @block() must be type
+    """
+
+    pass
+
+
 class KabutobashiBlockDecoratorReturnError(KabutobashiBlockDecoratorError):
     """
     function-return-type is not matched.

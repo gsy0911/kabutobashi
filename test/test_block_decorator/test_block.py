@@ -1,7 +1,11 @@
 import pytest
 
 from kabutobashi import block
-from kabutobashi.domain.errors import KabutobashiBlockDecoratorNameError, KabutobashiBlockDecoratorNotImplementedError
+from kabutobashi.domain.errors import (
+    KabutobashiBlockDecoratorNameError,
+    KabutobashiBlockDecoratorNotImplementedError,
+    KabutobashiBlockDecoratorTypeError,
+)
 
 
 def test_udf_block_decorator_basics():
@@ -92,3 +96,13 @@ def test_udf_block_decorator_method_not_implemented_error():
             pass
 
     assert str(factory_e.value) == "_factory method is not implemented."
+
+
+def test_udf_block_decorator_first_argument_error():
+    with pytest.raises(KabutobashiBlockDecoratorTypeError) as process_e:
+
+        @block("udf")
+        class UdfBlock:
+            pass
+
+    assert str(process_e.value) == f"first argument of @block must be a class, not a {type('udf')}"
