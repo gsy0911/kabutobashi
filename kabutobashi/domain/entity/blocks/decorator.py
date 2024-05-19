@@ -139,7 +139,7 @@ def _inner_func_process(self) -> BlockGlue:
         block_output = BlockOutput(series=res, params=None, block_name=block_name)
     else:
         raise KabutobashiBlockDecoratorReturnError("An unexpected return type was returned.")
-    return BlockGlue(series=res_glue.series, params=res_glue.series, block_outputs={block_name: block_output})
+    return BlockGlue(series=res_glue.series, params=res_glue.params, block_outputs={block_name: block_output})
 
 
 def _inner_class_func_factory(cls, glue: BlockGlue):
