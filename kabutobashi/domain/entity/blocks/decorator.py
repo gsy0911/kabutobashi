@@ -166,7 +166,8 @@ def _inner_class_default_private_func_factory(cls, glue: BlockGlue):
     Returns:
         cls()
     """
-    return cls(series=glue.series, params=glue.params)
+    block_name = cls().block_name
+    return cls(series=glue.series, params=glue.params.get(block_name, {}))
 
 
 def _inner_class_func_glue(cls, glue: BlockGlue) -> BlockGlue:
@@ -241,6 +242,7 @@ def _process_class(cls, block_name: str, pre_condition_block_name: str, factory:
     if block_name is None:
         block_name = _to_snake_case(cls.__name__)
     setattr(cls, "block_name", block_name)
+    setattr(cls, "pre_condition_block_name", pre_condition_block_name)
     # set-params
     setattr(cls, "params", cls_params)
     # process function
