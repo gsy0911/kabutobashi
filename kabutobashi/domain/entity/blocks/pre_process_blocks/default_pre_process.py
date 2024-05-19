@@ -1,15 +1,12 @@
 from dataclasses import dataclass
 
-from injector import Binder, inject
+import pandas as pd
 
-from kabutobashi.domain.errors import (
-    KabutobashiBlockInstanceMismatchError,
-    KabutobashiBlockParamsIsNoneError,
-    KabutobashiBlockSeriesIsNoneError,
-)
+from kabutobashi.domain.errors import KabutobashiBlockParamsIsNoneError, KabutobashiBlockSeriesIsNoneError
 
 from ..abc_block import BlockGlue
-from .abc_pre_process_block import IPreProcessBlock, IPreProcessBlockInput, IPreProcessBlockOutput
+from ..decorator import block
+from .abc_pre_process_block import IPreProcessBlockInput, IPreProcessBlockOutput
 
 
 @dataclass(frozen=True)
@@ -37,30 +34,17 @@ class DefaultPreProcessBlockOutput(IPreProcessBlockOutput):
         pass
 
 
-@inject
-@dataclass(frozen=True)
-class DefaultPreProcessBlock(IPreProcessBlock):
+@block(block_name="default_pre_process", pre_condition_block_name="extract_stock_info")
+class DefaultPreProcessBlock:
+    for_analysis: bool
+    series: pd.DataFrame
 
-    def _process(self) -> DefaultPreProcessBlockOutput:
-        if not isinstance(self.block_input, DefaultPreProcessBlockInput):
-            raise KabutobashiBlockInstanceMismatchError()
+    def _process(self) -> pd.DataFrame:
 
-        params = self.block_input.params
-        if params is None:
-            raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
-
-        df = self.block_input.series
-        for_analysis: bool = params["for_analysis"]
-        if for_analysis:
+        df = self.series
+        if self.for_analysis:
             required_cols = ["open", "high", "low", "close", "code", "volume"]
             if df is None:
                 raise KabutobashiBlockSeriesIsNoneError()
             df = df[required_cols]
-        return DefaultPreProcessBlockOutput.of(
-            series=df,
-            params=self.block_input.params,
-        )
-
-    @classmethod
-    def _configure(cls, binder: Binder) -> None:
-        binder.bind(IPreProcessBlockInput, to=DefaultPreProcessBlockInput)  # type: ignore[type-abstract]
+        return df

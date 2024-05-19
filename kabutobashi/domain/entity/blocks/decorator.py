@@ -138,7 +138,7 @@ def _inner_func_process(self) -> BlockGlue:
         self.validate_output(series=res, params=None)
         block_output = BlockOutput(series=res, params=None, block_name=block_name)
     else:
-        raise KabutobashiBlockDecoratorReturnError("An unexpected return type was returned.")
+        raise KabutobashiBlockDecoratorReturnError(f"An unexpected return type {type(res)} was returned.")
     return BlockGlue(series=res_glue.series, params=res_glue.params, block_outputs={block_name: block_output})
 
 
@@ -151,8 +151,18 @@ def _inner_class_func_factory(cls, glue: BlockGlue):
     """
     setattr(cls, "_glue", glue)
     # to set parameters to cls() from glue.params
-    block_name = cls().block_name
-    params = glue.params.get(block_name, {})
+    logger.debug(f"{cls.__name__}")
+    params = {}
+    if glue.params is not None:
+        params.update(glue.params.get(cls().block_name, {}))
+    # get params from other block-output
+    pre_condition_block_name = cls().pre_condition_block_name
+    if pre_condition_block_name is not None:
+        block_output: Optional[BlockOutput] = glue.block_outputs.get(pre_condition_block_name)
+        if block_output is not None:
+            if block_output.params is not None:
+                params.update(block_output.params)
+    logger.debug(f"{cls.__name__}: {params.keys()}")
     for k, v in params.items():
         setattr(cls, k, v)
     return cls._factory(glue)
@@ -167,7 +177,26 @@ def _inner_class_default_private_func_factory(cls, glue: BlockGlue):
         cls()
     """
     block_name = cls().block_name
-    return cls(series=glue.series, params=glue.params.get(block_name, {}))
+    pre_condition_block_name = cls().pre_condition_block_name
+
+    # glue
+    if glue.params is not None:
+        params = glue.params.get(block_name, {})
+    elif glue.block_outputs is not None:
+        params = glue.block_outputs.get(block_name, {})
+    else:
+        params = {}
+
+    # series
+    if glue.series is not None:
+        series = glue.series
+    elif glue.block_outputs is not None:
+        series = glue.block_outputs.get(pre_condition_block_name, None)
+        if series is not None:
+            series = series.series
+    else:
+        series = None
+    return cls(series=series, params=params)
 
 
 def _inner_class_func_glue(cls, glue: BlockGlue) -> BlockGlue:

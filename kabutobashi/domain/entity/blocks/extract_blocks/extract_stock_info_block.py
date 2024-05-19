@@ -5,13 +5,12 @@ from typing import Dict, List, Union
 
 import pandas as pd
 from bs4 import BeautifulSoup
-from injector import Binder, inject
 
-from kabutobashi.domain.errors import KabutobashiBlockInstanceMismatchError, KabutobashiBlockParamsIsNoneError
 from kabutobashi.domain.services.decode_html.utils import PageDecoder
 
 from ..abc_block import BlockGlue
-from .abc_extract_block import IExtractBlock, IExtractBlockInput, IExtractBlockOutput
+from ..decorator import block
+from .abc_extract_block import IExtractBlockInput, IExtractBlockOutput
 
 
 @dataclass(frozen=True)
@@ -54,9 +53,9 @@ class ExtractStockInfoBlockOutput(IExtractBlockOutput):
         assert "issued_shares" in keys, "StockInfoExtractBlockOutput must have 'issued_shares' column"
 
 
-@inject
-@dataclass(frozen=True)
-class ExtractStockInfoBlock(IExtractBlock):
+@block(block_name="extract_stock_info", pre_condition_block_name="crawl_stock_info")
+class ExtractStockInfoBlock:
+    html_text: str
 
     def _decode(self, html_text: str) -> dict:
         soup = BeautifulSoup(html_text, features="lxml")
@@ -115,18 +114,8 @@ class ExtractStockInfoBlock(IExtractBlock):
 
         return result
 
-    def _process(self) -> ExtractStockInfoBlockOutput:
-        if not isinstance(self.block_input, ExtractStockInfoBlockInput):
-            raise KabutobashiBlockInstanceMismatchError()
-        params = self.block_input.params
-        if params is None:
-            raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
-        html_text = params["html_text"]
-        result = self._decode(html_text=html_text)
+    def _process(self) -> pd.DataFrame:
+        result = self._decode(html_text=self.html_text)
         # to_df
         df = pd.DataFrame(data=result, index=[result["dt"]])
-        return ExtractStockInfoBlockOutput.of(series=df, params=result)
-
-    @classmethod
-    def _configure(cls, binder: Binder) -> None:
-        binder.bind(IExtractBlockInput, to=ExtractStockInfoBlockInput)  # type: ignore[type-abstract]
+        return df

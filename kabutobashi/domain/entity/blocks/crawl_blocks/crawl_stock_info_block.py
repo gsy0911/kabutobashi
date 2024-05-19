@@ -1,11 +1,10 @@
 from dataclasses import dataclass
 
-from injector import Binder, inject
+from kabutobashi.domain.errors import KabutobashiBlockParamsIsNoneError
 
-from kabutobashi.domain.errors import KabutobashiBlockInstanceMismatchError, KabutobashiBlockParamsIsNoneError
-
-from ..abc_block import BlockGlue, IBlockInput
-from .abc_crawl_block import ICrawlBlock, ICrawlBlockInput, ICrawlBlockOutput
+from ..abc_block import BlockGlue
+from ..decorator import block
+from .abc_crawl_block import ICrawlBlockInput, ICrawlBlockOutput, from_url
 
 
 @dataclass(frozen=True)
@@ -34,20 +33,14 @@ class CrawlStockInfoBlockOutput(ICrawlBlockOutput):
         assert "html_text" in keys, "CrawlStockInfoBlockOutput must have 'html_text' column"
 
 
-@inject
-@dataclass(frozen=True)
-class CrawlStockInfoBlock(ICrawlBlock):
+@block(block_name="crawl_stock_info")
+class CrawlStockInfoBlock:
+    code: str
 
-    def _process(self) -> CrawlStockInfoBlockOutput:
-        if not isinstance(self.block_input, CrawlStockInfoBlockInput):
-            raise KabutobashiBlockInstanceMismatchError()
-        params = self.block_input.params
-        if params is None:
-            raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
-        code = params["code"]
-        html_text = self._from_url(url=f"https://minkabu.jp/stock/{code}")
-        return CrawlStockInfoBlockOutput.of(series=None, params={"code": code, "html_text": html_text})
+    def _process(self) -> dict:
+        html_text = from_url(url=f"https://minkabu.jp/stock/{self.code}")
+        return {"code": self.code, "html_text": html_text}
 
-    @classmethod
-    def _configure(cls, binder: Binder) -> None:
-        binder.bind(ICrawlBlockInput, to=CrawlStockInfoBlockInput)  # type: ignore[type-abstract]
+    def _validate_code(self, code: str):
+        if code is None:
+            raise ValueError()
