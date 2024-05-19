@@ -139,7 +139,9 @@ def _inner_func_process(self) -> BlockGlue:
         block_output = BlockOutput(series=res, params=None, block_name=block_name)
     else:
         raise KabutobashiBlockDecoratorReturnError(f"An unexpected return type {type(res)} was returned.")
-    return BlockGlue(series=res_glue.series, params=res_glue.params, block_outputs={block_name: block_output})
+    block_outputs = res_glue.block_outputs if res_glue.block_outputs else {}
+    block_outputs.update({block_name: block_output})
+    return BlockGlue(series=res_glue.series, params=res_glue.params, block_outputs=block_outputs)
 
 
 def _inner_class_func_factory(cls, glue: BlockGlue):
@@ -286,7 +288,9 @@ def _process_class(cls, block_name: str, pre_condition_block_name: str, factory:
     _inner_func_validate_input_partial = partial(
         _inner_func_validate_input,
         self=cls,
-        functions=[v for k, v in cls.__dict__.items() if k.startswith("_validate")],
+        functions=[
+            v for k, v in cls.__dict__.items() if k.startswith("_validate") and not k.startswith("_validate_output")
+        ],
     )
     _set_new_attribute(cls=cls, name="validate_input", value=_inner_func_validate_input_partial)
     _set_new_attribute(cls=cls, name="validate_output", value=_inner_func_validate_output)

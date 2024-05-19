@@ -77,8 +77,8 @@ class ExtractStockInfoBlock:
         df = pd.DataFrame(data=result, index=[result["dt"]])
         return df
 
-    def _validate_output(self, _: Optional[pd.DataFrame], params: Optional[dict]):
-        keys = params.keys()
+    def _validate_output(self, series: Optional[pd.DataFrame], params: Optional[dict]):
+        keys = series.keys()
         assert "code" in keys, "StockInfoExtractBlockOutput must have 'code' column"
         assert "stock_label" in keys, "StockInfoExtractBlockOutput must have 'stock_label' column"
         assert "name" in keys, "StockInfoExtractBlockOutput must have 'name' column"

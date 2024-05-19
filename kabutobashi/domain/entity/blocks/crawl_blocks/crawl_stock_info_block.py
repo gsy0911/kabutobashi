@@ -18,7 +18,7 @@ class CrawlStockInfoBlock:
         if code is None:
             raise ValueError()
 
-    def _validate_output(self, _: Optional[pd.DataFrame], params: Optional[dict]):
+    def _validate_output(self, series: Optional[pd.DataFrame], params: Optional[dict]):
         keys = params.keys()
         assert "code" in keys, "CrawlStockInfoBlockOutput must have 'code' column"
         assert "html_text" in keys, "CrawlStockInfoBlockOutput must have 'html_text' column"
