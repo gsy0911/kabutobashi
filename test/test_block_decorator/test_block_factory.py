@@ -1,4 +1,6 @@
-from kabutobashi import block
+import pandas as pd
+
+from kabutobashi import Flow, block
 from kabutobashi.domain.entity.blocks import BlockGlue
 
 
@@ -10,12 +12,21 @@ class UdfBlock:
         return {"udf_term": 1000}
 
 
-@block(block_name="post_udf", pre_condition_block_name="udf")
-class PostUdfBlock:
+@block(block_name="post_1_udf", pre_condition_block_name="udf")
+class Post1UdfBlock:
     post_term: int = 10
 
-    def _process(self) -> dict:
-        return {"post_udf_term": 1000}
+    def _process(self) -> pd.DataFrame:
+        return pd.DataFrame([{"post_1_udf_term": 100}])
+
+
+@block(block_name="post_2_udf", pre_condition_block_name="post_1_udf")
+class Post2UdfBlock:
+    post_term: int = 10
+    series: pd.DataFrame
+
+    def _process(self) -> pd.DataFrame:
+        return pd.DataFrame([{"post_2_udf_term": 1000}])
 
 
 def test_udf_block_decorator_factory_and_glue():
@@ -35,3 +46,16 @@ def test_udf_block_decorator_factory_and_glue():
     assert udf_glue.block_outputs is not None
     assert udf_glue.block_outputs["udf"] is not None
     assert udf_glue.block_outputs["udf"].params["udf_term"] == 1000
+
+
+def test_udf_block_with_flow():
+    blocks = [
+        UdfBlock,
+        Post1UdfBlock,
+        Post2UdfBlock,
+    ]
+
+    res = Flow.initialize(params={"udf": {"term": 1000}}).then(blocks)
+    res_2_series = res.block_glue.block_outputs["post_2_udf"].series
+    assert res_2_series is not None
+    assert "post_2_udf_term" in res_2_series.columns

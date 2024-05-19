@@ -4,6 +4,7 @@ from .domain.aggregates import StockCodeSingleAggregate
 from .domain.entity import Stock
 from .domain.entity.blocks import block
 from .domain.services import SaFundamental, SaVolume, StockAnalysis
+from .domain.services.flow import Flow
 
 # methods to analysis
 from .domain.services.method import (
