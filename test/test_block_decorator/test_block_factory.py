@@ -62,3 +62,12 @@ def test_udf_block_with_flow():
     res_2_series = res.block_glue.block_outputs["post_2_udf"].series
     assert res_2_series is not None
     assert "post_2_udf_term" in res_2_series.columns
+    # check BlockGlue
+    assert "post_1_udf" in res.block_glue
+    res_1_series = res.block_glue["post_1_udf"].series
+    assert "post_1_udf_term" in res_1_series.columns
+    assert "post_2_udf" in res.block_glue
+    res_2_series = res.block_glue["post_2_udf"].series
+    assert "post_2_udf_term" in res_2_series.columns
+    # check __len__
+    assert len(res.block_glue) == 3
