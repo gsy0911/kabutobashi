@@ -1,12 +1,12 @@
 from dataclasses import dataclass
 
 import pandas as pd
-from injector import Binder, inject
 
-from kabutobashi.domain.errors import KabutobashiBlockInstanceMismatchError, KabutobashiBlockParamsIsNoneError
+from kabutobashi.domain.errors import KabutobashiBlockParamsIsNoneError
 
 from ..abc_block import BlockGlue
-from .abc_process_block import IProcessBlock, IProcessBlockInput, IProcessBlockOutput
+from ..decorator import block
+from .abc_process_block import IProcessBlockInput
 
 
 @dataclass(frozen=True)
@@ -33,26 +33,14 @@ class ProcessPsychoLogicalBlockInput(IProcessBlockInput):
         pass
 
 
-@dataclass(frozen=True)
-class ProcessPsychoLogicalBlockOutput(IProcessBlockOutput):
-    block_name: str = "process_psycho_logical"
-
-    def _validate(self):
-        pass
-
-
-@inject
-@dataclass(frozen=True)
-class ProcessPsychoLogicalBlock(IProcessBlock):
+@block(block_name="process_psycho_logical", pre_condition_block_name="read_example")
+class ProcessPsychoLogicalBlock:
+    series: pd.DataFrame
+    psycho_term: int = 12
+    upper_threshold: float = 0.75
+    lower_threshold: float = 0.25
 
     def _apply(self, df: pd.DataFrame) -> pd.DataFrame:
-        params = self.block_input.params
-        if params is None:
-            raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
-        psycho_term = params["psycho_term"]
-        upper_threshold = params["upper_threshold"]
-        lower_threshold = params["lower_threshold"]
-
         df_ = df.copy()
         df_["shift_close"] = df_["close"].shift(1)
         df_ = df_.fillna(0)
@@ -60,11 +48,11 @@ class ProcessPsychoLogicalBlock(IProcessBlock):
 
         df_["is_raise"] = df_["diff"].apply(lambda x: 1 if x > 0 else 0)
 
-        df_["psycho_sum"] = df_["is_raise"].rolling(psycho_term).sum()
-        df_["psycho_line"] = df_["psycho_sum"].apply(lambda x: x / psycho_term)
+        df_["psycho_sum"] = df_["is_raise"].rolling(self.psycho_term).sum()
+        df_["psycho_line"] = df_["psycho_sum"].apply(lambda x: x / self.psycho_term)
 
-        df_["bought_too_much"] = df_["psycho_line"].apply(lambda x: 1 if x > upper_threshold else 0)
-        df_["sold_too_much"] = df_["psycho_line"].apply(lambda x: 1 if x < lower_threshold else 0)
+        df_["bought_too_much"] = df_["psycho_line"].apply(lambda x: 1 if x > self.upper_threshold else 0)
+        df_["sold_too_much"] = df_["psycho_line"].apply(lambda x: 1 if x < self.lower_threshold else 0)
         return df_
 
     def _signal(self, df: pd.DataFrame) -> pd.DataFrame:
@@ -72,15 +60,9 @@ class ProcessPsychoLogicalBlock(IProcessBlock):
         df["sell_signal"] = df["bought_too_much"]
         return df
 
-    def _process(self) -> ProcessPsychoLogicalBlockOutput:
-        if not isinstance(self.block_input, ProcessPsychoLogicalBlockInput):
-            raise KabutobashiBlockInstanceMismatchError()
+    def _process(self) -> pd.DataFrame:
 
-        applied_df = self._apply(df=self.block_input.series)
+        applied_df = self._apply(df=self.series)
         signal_df = self._signal(df=applied_df)
         required_columns = ["psycho_line", "bought_too_much", "sold_too_much", "buy_signal", "sell_signal"]
-        return ProcessPsychoLogicalBlockOutput.of(series=signal_df[required_columns], params=None)
-
-    @classmethod
-    def _configure(cls, binder: Binder) -> None:
-        binder.bind(IProcessBlockInput, to=ProcessPsychoLogicalBlockInput)  # type: ignore[type-abstract]
+        return signal_df[required_columns]

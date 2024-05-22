@@ -1,51 +1,13 @@
-from dataclasses import dataclass
-
 import pandas as pd
-from injector import Binder, inject
 
-from kabutobashi.domain.errors import KabutobashiBlockInstanceMismatchError, KabutobashiBlockParamsIsNoneError
-
-from ..abc_block import BlockGlue
-from .abc_process_block import IProcessBlock, IProcessBlockInput, IProcessBlockOutput
+from ..decorator import block
+from .abc_process_block import cross
 
 __all__ = ["ProcessAdxBlock"]
 
 
-@dataclass(frozen=True)
-class ProcessAdxBlockInput(IProcessBlockInput):
-
-    @classmethod
-    def of(cls, block_glue: "BlockGlue"):
-        if block_glue.params is None:
-            raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
-        input_params = block_glue.params.get("process_macd", {})
-        term = input_params.get("term", 14)
-        adx_term = input_params.get("adx_term", 14)
-        adxr_term = input_params.get("adxr_term", 28)
-        return cls(
-            series=block_glue.series,
-            params={
-                "term": term,
-                "adx_term": adx_term,
-                "adxr_term": adxr_term,
-            },
-        )
-
-    def _validate(self):
-        pass
-
-
-@dataclass(frozen=True)
-class ProcessAdxBlockOutput(IProcessBlockOutput):
-    block_name: str = "process_adx"
-
-    def _validate(self):
-        pass
-
-
-@inject
-@dataclass(frozen=True)
-class ProcessAdxBlock(IProcessBlock):
+@block(block_name="process_adx", pre_condition_block_name="read_example")
+class ProcessAdxBlock:
     """
     相場のトレンドの強さを見るための指標である`ADX`を計算するクラス。
 
@@ -66,6 +28,11 @@ class ProcessAdxBlock(IProcessBlock):
         * https://www.sevendata.co.jp/shihyou/technical/adx.html
 
     """
+
+    series: pd.DataFrame
+    term: int = 14
+    adx_term: int = 14
+    adxr_term: int = 28
 
     @staticmethod
     def _true_range(x: pd.DataFrame):
@@ -122,13 +89,6 @@ class ProcessAdxBlock(IProcessBlock):
             return 0
 
     def _apply(self, df: pd.DataFrame) -> pd.DataFrame:
-        params = self.block_input.params
-        if params is None:
-            raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
-        term = params["term"]
-        adx_term = params["adx_term"]
-        adxr_term = params["adxr_term"]
-
         # 利用する値をshift
         df = df.assign(shift_high=df["high"].shift(1), shift_low=df["low"].shift(1), shift_close=df["close"].shift(1))
         df = df.assign(
@@ -141,9 +101,9 @@ class ProcessAdxBlock(IProcessBlock):
         )
         df = df.assign(
             true_range=df.apply(lambda x: self._true_range(x), axis=1),
-            sum_tr=lambda x: x["true_range"].rolling(term).sum(),
-            sum_plus_dm=lambda x: x["fixed_plus_dm"].rolling(term).sum(),
-            sum_minus_dm=lambda x: x["fixed_minus_dm"].rolling(term).sum(),
+            sum_tr=lambda x: x["true_range"].rolling(self.term).sum(),
+            sum_plus_dm=lambda x: x["fixed_plus_dm"].rolling(self.term).sum(),
+            sum_minus_dm=lambda x: x["fixed_minus_dm"].rolling(self.term).sum(),
         )
 
         df = df.dropna()
@@ -154,8 +114,8 @@ class ProcessAdxBlock(IProcessBlock):
         )
         df = df.assign(
             DX=df.apply(self._compute_dx, axis=1),
-            ADX=lambda x: x["DX"].rolling(adx_term).mean(),
-            ADXR=lambda x: x["DX"].rolling(adxr_term).mean(),
+            ADX=lambda x: x["DX"].rolling(self.adx_term).mean(),
+            ADXR=lambda x: x["DX"].rolling(self.adxr_term).mean(),
         )
         return df
 
@@ -209,23 +169,14 @@ class ProcessAdxBlock(IProcessBlock):
         """
         df["ADX_trend"] = self._trend(df["ADX"])
         df["diff"] = df["plus_di"] - df["minus_di"]
-        df = df.join(self._cross(df["diff"]))
+        df = df.join(cross(df["diff"]))
 
         df["buy_signal"] = df.apply(lambda x: self._buy_signal)
         df["sell_signal"] = df.apply(lambda x: self._sell_signal)
 
         return df
 
-    def _process(self) -> ProcessAdxBlockOutput:
-        if not isinstance(self.block_input, ProcessAdxBlockInput):
-            raise KabutobashiBlockInstanceMismatchError()
-        applied_df = self._apply(df=self.block_input.series)
+    def _process(self) -> pd.DataFrame:
+        applied_df = self._apply(df=self.series)
         signal_df = self._signal(df=applied_df)
-        return ProcessAdxBlockOutput.of(
-            series=signal_df[["plus_di", "minus_di", "DX", "ADX", "ADXR", "buy_signal", "sell_signal"]],
-            params=None,
-        )
-
-    @classmethod
-    def _configure(cls, binder: Binder) -> None:
-        binder.bind(IProcessBlockInput, to=ProcessAdxBlockInput)  # type: ignore[type-abstract]
+        return signal_df[["plus_di", "minus_di", "DX", "ADX", "ADXR", "buy_signal", "sell_signal"]]

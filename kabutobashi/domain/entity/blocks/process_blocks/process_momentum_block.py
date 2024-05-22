@@ -1,12 +1,12 @@
 from dataclasses import dataclass
 
 import pandas as pd
-from injector import Binder, inject
 
-from kabutobashi.domain.errors import KabutobashiBlockInstanceMismatchError, KabutobashiBlockParamsIsNoneError
+from kabutobashi.domain.errors import KabutobashiBlockParamsIsNoneError
 
 from ..abc_block import BlockGlue
-from .abc_process_block import IProcessBlock, IProcessBlockInput, IProcessBlockOutput
+from ..decorator import block
+from .abc_process_block import IProcessBlockInput, IProcessBlockOutput, cross
 
 
 @dataclass(frozen=True)
@@ -37,39 +37,27 @@ class ProcessMomentumBlockOutput(IProcessBlockOutput):
         pass
 
 
-@inject
-@dataclass(frozen=True)
-class ProcessMomentumBlock(IProcessBlock):
+@block(block_name="process_momentum", pre_condition_block_name="read_example")
+class ProcessMomentumBlock:
+    series: pd.DataFrame
+    term: int = 12
 
     def _apply(self, df: pd.DataFrame) -> pd.DataFrame:
-        params = self.block_input.params
-        if params is None:
-            raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
-        term = params["term"]
 
         df = df.assign(
             momentum=df["close"].shift(10),
         ).fillna(0)
-        df = df.assign(sma_momentum=lambda x: x["momentum"].rolling(term).mean())
+        df = df.assign(sma_momentum=lambda x: x["momentum"].rolling(self.term).mean())
         return df
 
     def _signal(self, df: pd.DataFrame) -> pd.DataFrame:
-        df = df.join(self._cross(df["sma_momentum"]))
+        df = df.join(cross(df["sma_momentum"]))
         df = df.rename(columns={"to_plus": "buy_signal", "to_minus": "sell_signal"})
         return df
 
-    def _process(self) -> ProcessMomentumBlockOutput:
-        if not isinstance(self.block_input, ProcessMomentumBlockInput):
-            raise KabutobashiBlockInstanceMismatchError()
+    def _process(self) -> pd.DataFrame:
 
-        applied_df = self._apply(df=self.block_input.series)
+        applied_df = self._apply(df=self.series)
         signal_df = self._signal(df=applied_df)
         required_columns = ["momentum", "sma_momentum", "buy_signal", "sell_signal"]
-        return ProcessMomentumBlockOutput.of(
-            series=signal_df[required_columns],
-            params=self.block_input.params,
-        )
-
-    @classmethod
-    def _configure(cls, binder: Binder) -> None:
-        binder.bind(IProcessBlockInput, to=ProcessMomentumBlockInput)  # type: ignore[type-abstract]
+        return signal_df[required_columns]
