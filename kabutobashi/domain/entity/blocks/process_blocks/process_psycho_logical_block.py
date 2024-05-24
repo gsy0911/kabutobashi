@@ -6,31 +6,29 @@ from kabutobashi.domain.errors import KabutobashiBlockParamsIsNoneError
 
 from ..abc_block import BlockGlue
 from ..decorator import block
-from .abc_process_block import IProcessBlockInput
 
-
-@dataclass(frozen=True)
-class ProcessPsychoLogicalBlockInput(IProcessBlockInput):
-
-    @classmethod
-    def of(cls, block_glue: "BlockGlue"):
-        if block_glue.params is None:
-            raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
-        input_params = block_glue.params.get("process_macd", {})
-        psycho_term = input_params.get("psycho_term", 12)
-        upper_threshold = input_params.get("upper_threshold", 0.75)
-        lower_threshold = input_params.get("lower_threshold", 0.25)
-        return cls(
-            series=block_glue.series,
-            params={
-                "psycho_term": psycho_term,
-                "upper_threshold": upper_threshold,
-                "lower_threshold": lower_threshold,
-            },
-        )
-
-    def _validate(self):
-        pass
+# @dataclass(frozen=True)
+# class ProcessPsychoLogicalBlockInput(IProcessBlockInput):
+#
+#     @classmethod
+#     def of(cls, block_glue: "BlockGlue"):
+#         if block_glue.params is None:
+#             raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
+#         input_params = block_glue.params.get("process_macd", {})
+#         psycho_term = input_params.get("psycho_term", 12)
+#         upper_threshold = input_params.get("upper_threshold", 0.75)
+#         lower_threshold = input_params.get("lower_threshold", 0.25)
+#         return cls(
+#             series=block_glue.series,
+#             params={
+#                 "psycho_term": psycho_term,
+#                 "upper_threshold": upper_threshold,
+#                 "lower_threshold": lower_threshold,
+#             },
+#         )
+#
+#     def _validate(self):
+#         pass
 
 
 @block(block_name="process_psycho_logical", pre_condition_block_name="read_example")

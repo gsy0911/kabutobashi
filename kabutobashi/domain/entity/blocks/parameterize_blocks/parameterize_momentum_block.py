@@ -1,15 +1,12 @@
 from dataclasses import dataclass
 
-from injector import Binder, inject
+import pandas as pd
 
-from kabutobashi.domain.errors import (
-    KabutobashiBlockInstanceMismatchError,
-    KabutobashiBlockParamsIsNoneError,
-    KabutobashiBlockSeriesIsNoneError,
-)
+from kabutobashi.domain.errors import KabutobashiBlockSeriesIsNoneError
 
 from ..abc_block import BlockGlue, IBlockInput, IBlockOutput
-from .abc_parameterize_block import IParameterizeBlock
+from ..decorator import block
+from .abc_parameterize_block import get_impact
 
 
 @dataclass(frozen=True)
@@ -42,22 +39,18 @@ class ParameterizeMomentumBlockOutput(IBlockOutput):
         assert "momentum_impact" in keys, "ParameterizeMomentumBlockOutput must have 'momentum_impact' column"
 
 
-@inject
-@dataclass(frozen=True)
-class ParameterizeMomentumBlock(IParameterizeBlock):
+@block(block_name="parameterize_momentum", pre_condition_block_name="process_momentum")
+class ParameterizeMomentumBlock:
+    series: pd.DataFrame
+    influence: int = 2
+    tail: int = 5
 
-    def _process(self) -> ParameterizeMomentumBlockOutput:
-        if not isinstance(self.block_input, ParameterizeMomentumBlockInput):
-            raise KabutobashiBlockInstanceMismatchError()
-        df = self.block_input.series
+    def _process(self) -> dict:
+        df = self.series
         if df is None:
             raise KabutobashiBlockSeriesIsNoneError()
         params = {
-            "momentum_impact": self._get_impact(df=df, influence=self.influence, tail=self.tail),
+            "momentum_impact": get_impact(df=df, influence=self.influence, tail=self.tail),
         }
 
-        return ParameterizeMomentumBlockOutput.of(series=None, params=params)
-
-    @classmethod
-    def _configure(cls, binder: Binder) -> None:
-        binder.bind(IBlockInput, to=ParameterizeMomentumBlockInput)  # type: ignore[type-abstract]
+        return params

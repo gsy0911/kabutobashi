@@ -1,15 +1,12 @@
 from dataclasses import dataclass
 
-from injector import Binder, inject
+import pandas as pd
 
-from kabutobashi.domain.errors import (
-    KabutobashiBlockInstanceMismatchError,
-    KabutobashiBlockParamsIsNoneError,
-    KabutobashiBlockSeriesIsNoneError,
-)
+from kabutobashi.domain.errors import KabutobashiBlockSeriesIsNoneError
 
 from ..abc_block import BlockGlue, IBlockInput, IBlockOutput
-from .abc_parameterize_block import IParameterizeBlock
+from ..decorator import block
+from .abc_parameterize_block import get_impact
 
 
 @dataclass(frozen=True)
@@ -50,25 +47,21 @@ class ParameterizeStochasticsBlockOutput(IBlockOutput):
         assert "stochastics_impact" in keys, "ParameterizeStochasticsBlockOutput must have 'stochastics_impact' column"
 
 
-@inject
-@dataclass(frozen=True)
-class ParameterizeStochasticsBlock(IParameterizeBlock):
+@block(block_name="parameterize_stochastics", pre_condition_block_name="process_stochastics")
+class ParameterizeStochasticsBlock:
+    series: pd.DataFrame
+    influence: int = 2
+    tail: int = 5
 
-    def _process(self) -> ParameterizeStochasticsBlockOutput:
-        if not isinstance(self.block_input, ParameterizeStochasticsBlockInput):
-            raise KabutobashiBlockInstanceMismatchError()
-        df = self.block_input.series
+    def _process(self) -> dict:
+        df = self.series
         if df is None:
             raise KabutobashiBlockSeriesIsNoneError()
         params = {
             "stochastics_k": df["K"].tail(3).mean(),
             "stochastics_d": df["D"].tail(3).mean(),
             "stochastics_sd": df["SD"].tail(3).mean(),
-            "stochastics_impact": self._get_impact(df=df, influence=self.influence, tail=self.tail),
+            "stochastics_impact": get_impact(df=df, influence=self.influence, tail=self.tail),
         }
 
-        return ParameterizeStochasticsBlockOutput.of(series=None, params=params)
-
-    @classmethod
-    def _configure(cls, binder: Binder) -> None:
-        binder.bind(IBlockInput, to=ParameterizeStochasticsBlockInput)  # type: ignore[type-abstract]
+        return params

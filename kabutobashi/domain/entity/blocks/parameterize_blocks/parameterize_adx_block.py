@@ -1,11 +1,12 @@
 from dataclasses import dataclass
 
-from injector import Binder, inject
+import pandas as pd
 
-from kabutobashi.domain.errors import KabutobashiBlockInstanceMismatchError, KabutobashiBlockSeriesIsNoneError
+from kabutobashi.domain.errors import KabutobashiBlockSeriesIsNoneError
 
 from ..abc_block import BlockGlue, IBlockInput, IBlockOutput
-from .abc_parameterize_block import IParameterizeBlock
+from ..decorator import block
+from .abc_parameterize_block import get_impact
 
 
 @dataclass(frozen=True)
@@ -39,26 +40,21 @@ class ParameterizeAdxBlockOutput(IBlockOutput):
         assert "adx_impact" in keys, "ParameterizeAdxBlockOutput must have 'adx_impact' column"
 
 
-@inject
-@dataclass(frozen=True)
-class ParameterizeAdxBlock(IParameterizeBlock):
+@block(block_name="parameterize_adx", pre_condition_block_name="process_adx")
+class ParameterizeAdxBlock:
+    series: pd.DataFrame
+    influence: int = 2
+    tail: int = 5
 
-    def _process(self) -> ParameterizeAdxBlockOutput:
-        if not isinstance(self.block_input, ParameterizeAdxBlockInput):
-            raise KabutobashiBlockInstanceMismatchError()
-
-        df = self.block_input.series
+    def _process(self) -> dict:
+        df = self.series
         if df is None:
             raise KabutobashiBlockSeriesIsNoneError()
         params = {
             "adx_dx": df["DX"].tail(3).mean(),
             "adx_adx": df["ADX"].tail(3).mean(),
             "adx_adxr": df["ADXR"].tail(3).mean(),
-            "adx_impact": self._get_impact(df=df, influence=self.influence, tail=self.tail),
+            "adx_impact": get_impact(df=df, influence=self.influence, tail=self.tail),
         }
 
-        return ParameterizeAdxBlockOutput.of(series=None, params=params)
-
-    @classmethod
-    def _configure(cls, binder: Binder) -> None:
-        binder.bind(IBlockInput, to=ParameterizeAdxBlockInput)  # type: ignore[type-abstract]
+        return params
