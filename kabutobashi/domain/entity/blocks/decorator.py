@@ -40,6 +40,20 @@ class BlockOutput:
     block_name: str
 
 
+@dataclass(frozen=True)
+class SeriesRequiredColumn:
+    block_name: str
+    keys: List[str]
+    priority: int
+
+
+@dataclass(frozen=True)
+class ParamsRequiredKey:
+    block_name: str
+    keys: List[str]
+    priority: int
+
+
 def _to_snake_case(string: str) -> str:
     # see: https://qiita.com/munepi0713/items/82ce7a56aa1b8233fd30
     _PARSE_BY_SEP_PATTERN = re.compile(r"[ _-]+")
@@ -234,7 +248,15 @@ def _inner_repr(self):
     return "\n".join(repr)
 
 
-def _process_class(cls, block_name: str, pre_condition_block_name: str, factory: bool, process: bool):
+def _process_class(
+    cls,
+    block_name: str,
+    pre_condition_block_name: str,
+    factory: bool,
+    process: bool,
+    series_required_columns: List[str | SeriesRequiredColumn],
+    params_required_keys: List[str | ParamsRequiredKey],
+):
     cls_params = {}
     cls_annotations = cls.__dict__.get("__annotations__", {})
     logger.debug(f"{cls_annotations=}")
@@ -274,6 +296,8 @@ def _process_class(cls, block_name: str, pre_condition_block_name: str, factory:
         block_name = _to_snake_case(cls.__name__)
     setattr(cls, "block_name", block_name)
     setattr(cls, "pre_condition_block_name", pre_condition_block_name)
+    setattr(cls, "series_required_columns", series_required_columns)
+    setattr(cls, "params_required_keys", params_required_keys)
     # set-params
     setattr(cls, "params", cls_params)
     # process function
@@ -312,6 +336,8 @@ def block(
     pre_condition_block_name: str = None,
     factory: bool = False,
     process: bool = True,
+    series_required_columns: List[str | SeriesRequiredColumn] = None,
+    params_required_keys: List[str | ParamsRequiredKey] = None,
 ):
     """
 
@@ -321,6 +347,8 @@ def block(
         pre_condition_block_name:
         factory: True if _factory() method is required to implement.
         process: True if _process() method is required to implement.
+        series_required_columns:
+        params_required_keys:
 
     Returns:
         decorator
@@ -350,6 +378,8 @@ def block(
             pre_condition_block_name=pre_condition_block_name,
             factory=factory,
             process=process,
+            series_required_columns=series_required_columns,
+            params_required_keys=params_required_keys,
         )
 
     # See if we're being called as @dataclass or @dataclass().
