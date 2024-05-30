@@ -44,7 +44,10 @@ from .abc_parameterize_block import get_impact
 #         assert "sma_impact" in keys, "ParameterizeSmaBlockOutput must have 'sma_impact' column"
 
 
-@block(block_name="parameterize_sma", pre_condition_block_name="process_sma")
+@block(
+    block_name="parameterize_sma",
+    series_required_columns=["sma_short", "sma_medium", "sma_long", "close"],
+)
 class ParameterizeSmaBlock:
     series: pd.DataFrame
     influence: int = 2
@@ -52,7 +55,6 @@ class ParameterizeSmaBlock:
 
     def _process(self) -> dict:
         df = self.series
-        print(f"{df=}")
         if df is None:
             raise KabutobashiBlockSeriesIsNoneError()
         df["sma_short_diff"] = (df["sma_short"] - df["close"]) / df["sma_short"]

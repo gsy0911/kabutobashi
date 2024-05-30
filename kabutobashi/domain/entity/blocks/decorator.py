@@ -172,7 +172,8 @@ def _inner_class_func_factory(cls, glue: BlockGlue):
     if glue.params is not None:
         params.update(glue.params.get(cls().block_name, {}))
     # get params from other block-output
-    pre_condition_block_name = cls().pre_condition_block_name
+    cls_instance = cls()
+    pre_condition_block_name = cls_instance.pre_condition_block_name
     if pre_condition_block_name is not None:
         block_output: Optional[BlockOutput] = glue.block_outputs.get(pre_condition_block_name)
         if block_output is not None:
@@ -192,8 +193,10 @@ def _inner_class_default_private_func_factory(cls, glue: BlockGlue):
     Returns:
         cls()
     """
-    block_name = cls().block_name
-    pre_condition_block_name = cls().pre_condition_block_name
+    cls_instance = cls()
+    block_name = cls_instance.block_name
+    pre_condition_block_name = cls_instance.pre_condition_block_name
+    series_required_columns = cls_instance.series_required_columns
 
     # glue
     if glue.params is not None:
@@ -206,6 +209,12 @@ def _inner_class_default_private_func_factory(cls, glue: BlockGlue):
     # series
     if glue.series is not None:
         series = glue.series
+    elif series_required_columns is not None and type(series_required_columns) is list:
+        logger.debug(f"{series_required_columns=}")
+        series_list = [v.series for _, v in glue]
+        initial_series = series_list[0]
+        series = initial_series.join(series_list[1:])
+        series = series[series_required_columns]
     elif glue.block_outputs is not None:
         series = glue.block_outputs.get(pre_condition_block_name, None)
         if series is not None:
