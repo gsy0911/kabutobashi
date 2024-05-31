@@ -1,46 +1,12 @@
-from dataclasses import dataclass
-
 import pandas as pd
 
 from kabutobashi.domain.errors import KabutobashiBlockSeriesIsNoneError
 
-from ..abc_block import BlockGlue, IBlockInput, IBlockOutput
 from ..decorator import block
 from .abc_parameterize_block import get_impact
 
 
-@dataclass(frozen=True)
-class ParameterizeAdxBlockInput(IBlockInput):
-
-    @classmethod
-    def of(cls, block_glue: "BlockGlue"):
-        processed_adx_series = block_glue.block_outputs["process_adx"].series
-        if processed_adx_series is None:
-            raise KabutobashiBlockSeriesIsNoneError()
-
-        return ParameterizeAdxBlockInput(series=processed_adx_series, params={})
-
-    def _validate(self):
-        if self.series is not None:
-            columns = self.series.columns
-            assert "DX" in columns, "ParameterizeAdxBlockInput must have 'DX' column"
-            assert "ADX" in columns, "ParameterizeAdxBlockInput must have 'ADX' column"
-            assert "ADXR" in columns, "ParameterizeAdxBlockInput must have 'ADXR' column"
-
-
-@dataclass(frozen=True)
-class ParameterizeAdxBlockOutput(IBlockOutput):
-    block_name: str = "parameterize_adx"
-
-    def _validate(self):
-        keys = self.params.keys()
-        assert "adx_dx" in keys, "ParameterizeAdxBlockOutput must have 'adx_dx' column"
-        assert "adx_adx" in keys, "ParameterizeAdxBlockOutput must have 'adx_adx' column"
-        assert "adx_adxr" in keys, "ParameterizeAdxBlockOutput must have 'adx_adxr' column"
-        assert "adx_impact" in keys, "ParameterizeAdxBlockOutput must have 'adx_impact' column"
-
-
-@block(block_name="parameterize_adx", pre_condition_block_name="process_adx")
+@block(block_name="parameterize_adx", series_required_columns=["DX", "ADX", "ADXR"])
 class ParameterizeAdxBlock:
     series: pd.DataFrame
     influence: int = 2

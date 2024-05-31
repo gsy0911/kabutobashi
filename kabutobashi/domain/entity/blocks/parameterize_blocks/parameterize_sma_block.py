@@ -5,44 +5,6 @@ from kabutobashi.domain.errors import KabutobashiBlockSeriesIsNoneError
 from ..decorator import block
 from .abc_parameterize_block import get_impact
 
-# @dataclass(frozen=True)
-# class ParameterizeSmaBlockInput(IBlockInput):
-#
-#     @classmethod
-#     def of(cls, block_glue: "BlockGlue"):
-#         initial_series = block_glue.series
-#         if initial_series is None:
-#             raise KabutobashiBlockSeriesIsNoneError()
-#         processed_sma_series = block_glue.block_outputs["process_sma"].series
-#         if processed_sma_series is None:
-#             raise KabutobashiBlockSeriesIsNoneError()
-#
-#         return ParameterizeSmaBlockInput(series=processed_sma_series.join(initial_series["close"]), params={})
-#
-#     def _validate(self):
-#         if self.series is not None:
-#             columns = self.series.columns
-#             assert "close" in columns, "ParameterizeSmaBlockInput must have 'close' column"
-#             assert "sma_short" in columns, "ParameterizeSmaBlockInput must have 'sma_short' column"
-#             assert "sma_medium" in columns, "ParameterizeSmaBlockInput must have 'sma_medium' column"
-#             assert "sma_long" in columns, "ParameterizeSmaBlockInput must have 'sma_long' column"
-#             assert "buy_signal" in columns, "ParameterizeSmaBlockInput must have 'buy_signal' column"
-#             assert "sell_signal" in columns, "ParameterizeSmaBlockInput must have 'sell_signal' column"
-#
-#
-# @dataclass(frozen=True)
-# class ParameterizeSmaBlockOutput(IBlockOutput):
-#     block_name: str = "parameterize_sma"
-#
-#     def _validate(self):
-#         keys = self.params.keys()
-#         assert "sma_short_diff" in keys, "ParameterizeSmaBlockOutput must have 'sma_short_diff' column"
-#         assert "sma_medium_diff" in keys, "ParameterizeSmaBlockOutput must have 'sma_medium_diff' column"
-#         assert "sma_long_diff" in keys, "ParameterizeSmaBlockOutput must have 'sma_long_diff' column"
-#         assert "sma_long_short" in keys, "ParameterizeSmaBlockOutput must have 'sma_long_short' column"
-#         assert "sma_long_medium" in keys, "ParameterizeSmaBlockOutput must have 'sma_long_medium' column"
-#         assert "sma_impact" in keys, "ParameterizeSmaBlockOutput must have 'sma_impact' column"
-
 
 @block(
     block_name="parameterize_sma",
