@@ -1,10 +1,7 @@
-from dataclasses import dataclass
+from ..decorator import block
 
-from injector import Binder, inject
 
-from kabutobashi.domain.errors import KabutobashiBlockInstanceMismatchError, KabutobashiBlockParamsIsNoneError
 
-from ..abc_block import BlockGlue, IBlock, IBlockInput, IBlockOutput
 
 
 @dataclass(frozen=True)
@@ -102,31 +99,17 @@ class FullyConnectBlockOutput(IBlockOutput):
     def _validate(self):
         pass
 
+@block(block_name="fully_connect")
+class FullyConnectBlock:
 
-@inject
-@dataclass(frozen=True)
-class FullyConnectBlock(IBlock):
-
-    def _process(self) -> FullyConnectBlockOutput:
-        if not isinstance(self.block_input, FullyConnectBlockInput):
-            raise KabutobashiBlockInstanceMismatchError()
-        params = self.block_input.params
-        if params is None:
-            raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
+    def _process(self) -> dict:
         reduced_params = {
-            "impact": params["sma_impact"] * params["sma_impact_ratio"]
-            + params["macd_impact"] * params["macd_impact_ratio"]
-            + params["adx_impact"] * params["adx_impact_ratio"]
-            + params["bollinger_bands_impact"] * params["bollinger_bands_impact_ratio"]
-            + params["momentum_impact"] * params["momentum_impact_ratio"]
-            + params["psycho_logical_impact"] * params["psycho_logical_impact_ratio"]
-            + params["stochastics_impact"] * params["stochastics_impact_ratio"]
+            "impact": self.params["sma_impact"] * self.params["sma_impact_ratio"]
+            + self.params["macd_impact"] * self.params["macd_impact_ratio"]
+            + self.params["adx_impact"] * self.params["adx_impact_ratio"]
+            + self.params["bollinger_bands_impact"] * self.params["bollinger_bands_impact_ratio"]
+            + self.params["momentum_impact"] * self.params["momentum_impact_ratio"]
+            + self.params["psycho_logical_impact"] * self.params["psycho_logical_impact_ratio"]
+            + self.params["stochastics_impact"] * self.params["stochastics_impact_ratio"]
         }
-        return FullyConnectBlockOutput.of(
-            series=None,
-            params=reduced_params,
-        )
-
-    @classmethod
-    def _configure(cls, binder: Binder) -> None:
-        binder.bind(IBlockInput, to=FullyConnectBlockInput)  # type: ignore[type-abstract]
+        return reduced_params
