@@ -1,8 +1,9 @@
 # Release Note
 
-## 0.7.3
+## 0.8.0
 
 - ENHANCEMENT: add Block and Flow classes ([#184](https://github.com/gsy0911/kabutobashi/issues/184))
+- ENHANCEMENT: add `@block`-decorator ([#194](https://github.com/gsy0911/kabutobashi/issues/194))
 
 ## 0.7.2
 
