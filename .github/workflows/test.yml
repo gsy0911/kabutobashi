@@ -20,17 +20,17 @@ jobs:
     # 複数の Python のバージョンでテストするために `strategy.matrix` を設定する
     strategy:
       matrix:
-        python-version: ["3.9", "3.10", "3.11", "3.12"]
+        python-version: ["3.10", "3.11", "3.12"]
     steps:
       # リポジトリをチェックアウトする
       # See: https://github.com/actions/checkout
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       # Python のランタイムをセットアップする
       # バージョンは `strategy.matrix` に並べたものを指定する
       # See: https://github.com/actions/setup-python
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
       # Poetry そのものをインストールする
@@ -46,8 +46,8 @@ jobs:
         run: poetry run pytest test --cov=./kabutobashi --cov-report=xml
       - name: Upload coverage to Codecov
         # 上記のstepsが全て完了した場合にcodecovへupload
-        if: ${{ matrix.python-version==3.8 }}
-        uses: codecov/codecov-action@v3
+        if: ${{ matrix.python-version==3.10 }}
+        uses: codecov/codecov-action@v4
         with:
           file: ./coverage.xml
           flags: unittests
