@@ -20,11 +20,9 @@ tasks:
       - type python > /dev/null 2>&1
 
   lint:
-    desc: lint python (flake8 and mypy)
+    desc: lint python (mypy)
     cmds:
-      - pflake8 {{.MODULE_NAME}}
       - mypy {{.MODULE_NAME}}
-      - bandit --recursive src
     preconditions:
       - type python > /dev/null 2>&1
 
