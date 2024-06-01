@@ -1,64 +1,28 @@
-from dataclasses import dataclass
+import pandas as pd
 
-from injector import Binder, inject
+from kabutobashi.domain.errors import KabutobashiBlockSeriesIsNoneError
 
-from kabutobashi.domain.errors import (
-    KabutobashiBlockInstanceMismatchError,
-    KabutobashiBlockParamsIsNoneError,
-    KabutobashiBlockSeriesIsNoneError,
+from ..decorator import block
+from .abc_parameterize_block import get_impact
+
+
+@block(
+    block_name="parameterize_macd",
+    series_required_columns=["signal", "histogram", "macd_buy_signal", "macd_sell_signal"],
 )
+class ParameterizeMacdBlock:
+    series: pd.DataFrame
+    influence: int = 2
+    tail: int = 5
 
-from ..abc_block import BlockGlue, IBlockInput, IBlockOutput
-from .abc_parameterize_block import IParameterizeBlock
-
-
-@dataclass(frozen=True)
-class ParameterizeMacdBlockInput(IBlockInput):
-
-    @classmethod
-    def of(cls, block_glue: "BlockGlue"):
-        processed_macd_series = block_glue.block_outputs["process_macd"].series
-        if processed_macd_series is None:
-            raise KabutobashiBlockSeriesIsNoneError()
-
-        return ParameterizeMacdBlockInput(series=processed_macd_series, params=block_glue.params)
-
-    def _validate(self):
-        if self.series is not None:
-            columns = self.series.columns
-            assert "signal" in columns, "ParameterizeMacdBlockInput must have 'signal' column"
-            assert "histogram" in columns, "ParameterizeMacdBlockInput must have 'histogram' column"
-
-
-@dataclass(frozen=True)
-class ParameterizeMacdBlockOutput(IBlockOutput):
-    block_name: str = "parameterize_macd"
-
-    def _validate(self):
-        keys = self.params.keys()
-        assert "signal" in keys, "ParameterizeMacdBlockOutput must have 'signal' column"
-        assert "histogram" in keys, "ParameterizeMacdBlockOutput must have 'histogram' column"
-        assert "macd_impact" in keys, "ParameterizeMacdBlockOutput must have 'macd_impact' column"
-
-
-@inject
-@dataclass(frozen=True)
-class ParameterizeMacdBlock(IParameterizeBlock):
-
-    def _process(self) -> ParameterizeMacdBlockOutput:
-        if not isinstance(self.block_input, ParameterizeMacdBlockInput):
-            raise KabutobashiBlockInstanceMismatchError()
-        df = self.block_input.series
+    def _process(self) -> dict:
+        df = self.series
         if df is None:
             raise KabutobashiBlockSeriesIsNoneError()
         params = {
             "signal": df["signal"].tail(3).mean(),
             "histogram": df["histogram"].tail(3).mean(),
-            "macd_impact": self._get_impact(df=df, influence=self.influence, tail=self.tail),
+            "macd_impact": get_impact(df=df, influence=self.influence, tail=self.tail, prefix="macd"),
         }
 
-        return ParameterizeMacdBlockOutput.of(series=None, params=params)
-
-    @classmethod
-    def _configure(cls, binder: Binder) -> None:
-        binder.bind(IBlockInput, to=ParameterizeMacdBlockInput)  # type: ignore[type-abstract]
+        return params

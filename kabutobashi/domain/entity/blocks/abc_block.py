@@ -92,3 +92,22 @@ class BlockGlue:
         else:
             params = self.params
         return replace(self, series=series, params=params, block_outputs=self.block_outputs)
+
+    def __len__(self):
+        return len(self.block_outputs.keys())
+
+    def __getitem__(self, key: str):
+        if type(key) is str:
+            return self.block_outputs[key]
+        else:
+            raise KeyError(f"Key {key} is not a str")
+
+    def __iter__(self):
+        for k, v in self.block_outputs.items():
+            yield k, v
+
+    def __contains__(self, item: str):
+        if type(item) is str:
+            return item in self.block_outputs.keys()
+        else:
+            raise KeyError(f"Key {item} is not a str")

@@ -53,3 +53,43 @@ class KabutobashiBlockParamsIsNoneError(KabutobashiBlockError):
 
 class KabutobashiBlockSeriesIsNoneError(KabutobashiBlockError):
     pass
+
+
+class KabutobashiBlockDecoratorError(KabutobashiBaseError):
+    """
+    KabutobashiBlockDecoratorError is base error for `@block` decorator.
+    """
+
+    pass
+
+
+class KabutobashiBlockDecoratorNameError(KabutobashiBlockDecoratorError):
+    """
+    class must end with `Block`.
+    """
+
+    pass
+
+
+class KabutobashiBlockDecoratorTypeError(KabutobashiBlockDecoratorError):
+    """
+    fist argument of @block() must be type
+    """
+
+    pass
+
+
+class KabutobashiBlockDecoratorReturnError(KabutobashiBlockDecoratorError):
+    """
+    function-return-type is not matched.
+    """
+
+    pass
+
+
+class KabutobashiBlockDecoratorNotImplementedError(KabutobashiBlockDecoratorError):
+    """
+    The function that was intended to be implemented has not been implemented.
+    """
+
+    pass

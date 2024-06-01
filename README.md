@@ -81,59 +81,89 @@ date_list = kb.get_past_n_days(target_date, n=40)
 
 ```
 
-## concept: Blocks
 
-### Block
+# Core Concept
 
-Abstract classes are `BlockInput`, `Block`, and `BlockOutput`.
-`BlockGlue` is concrete class to connect two-Blocks.
+`@block`-decorator and `Flow`-class is important.
+`@block` automatically generates input and output functions, allowing you to focus solely on the processing.
+`Flow` allows you to focus solely on the process flow and input parameters.
 
-```mermaid
-classDiagram
-  class BlockInput{
-    series: pd.Pandas
-    params: dict
-    +of()
-  }
-  class Block{
-    series: pd.Pandas
-    params: dict
-    +glue(BlockGlue)BlockGlue
-    +process(BlockInput)
-  }
-  class BlockOutput{
-    series: pd.Pandas
-    params: dict
-    +of()
-  }
-  class BlockGlue{
-    series: pd.Pandas
-    params: dict
-    outpus: List[dict]
-    +update(BlockOutput)
-  }
+## About `@block`-decorator
+
+simple decorator is like below.
+
+```python
+def simple_decorator(func):
+    def wrap_func() -> str:
+        res = func()
+        return f"Hello, {res}"
+    return wrap_func
+
+
+@simple_decorator
+def world() -> str:
+    return "world"
+
+
+world()  # => "Hello, world"
 ```
 
-Relationships and data-flow between classes.
+A `decorator` is something that dynamically generates and adds processes to functions or classes, similar to its name.
 
-```mermaid
-graph LR
-    glue1[BlockGlue.prev]
-    glue2[BlockGlue.next]
+
+First, prepare a function as follows and decorate it with `@block`.
+
+```python
+from kabutobashi import block
+
+@block()
+class UdfBlock:
+    term: int = 10
+
+    def _process(self):
+        return {"doubled_term": self.term * 2}
+```
+
+The classes above is equivalent to the following class definition.
+
+```python
+import pandas as pd
+from kabutobashi.domain.entity.blocks import BlockGlue
+
+class UdfBlock:
+    series: pd.DataFrame = None
+    params: dict = None
+    term: int = 10
+    block_name: str = "udf_block"
+
+    def _process(self):
+        return {"doubled_term": self.term * 2}
     
-    subgraph Block
-        i[BlockInput]
-        b[Block]
-        out[BlockOutput]
-    end
-    plus([+])
-    glue1-->i
-    i-->b
-    b-->out
-    out-->plus
-    glue1-->plus
-    plus--|update()|-->glue2
+    def process(self):
+        return self._process()
+
+    def factory(self, glue: BlockGlue) -> "UdfBlock":
+        # Omitted. In reality, processes are described.
+        ...
+
+    def _factory(self, glue: BlockGlue) -> "UdfBlock":
+        # Omitted. In reality, processes are described.
+        ...
+
+    def glue(self, glue: BlockGlue) -> BlockGlue:
+        # Omitted. In reality, processes are described.
+        ...
+
 ```
+
+In classes decorated with `@block`, it is not recommended to execute the `__init__()` method. Instead, it is recommended to use the `factory()` class-method.
+
+`factory()` method description.
+`process()` method description.
+`glue()` method description.
+
+
+Up to this point, the use of the `@block` decorator with classes such as UdfClass has described, but using the Block class on its own is not intended. Please read the following explanation of the `Flow` class for more details.
 
 ### Read-Block
 
@@ -187,3 +217,12 @@ graph LR
   - params
 - output
   - params
+
+## About `Flow`-class
+
+> Blocks are meant to be combined.
+
+Processes always consist of combinations of multiple simple operations. And the only tedious part is aligning their inputs and outputs.
+
+Therefore, in `Flow`-class, it automatically resolves the sequence of those processes for users, as long as you provide the initial values.
+

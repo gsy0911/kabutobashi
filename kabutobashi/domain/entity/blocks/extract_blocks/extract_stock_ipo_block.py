@@ -1,43 +1,16 @@
-from dataclasses import dataclass
+from typing import Optional, Tuple
 
 import pandas as pd
 from bs4 import BeautifulSoup
-from injector import Binder, inject
 
-from kabutobashi.domain.errors import KabutobashiBlockInstanceMismatchError, KabutobashiBlockParamsIsNoneError
 from kabutobashi.domain.values import DecodeHtmlPageStockIpo
 
-from ..abc_block import BlockGlue
-from .abc_extract_block import IExtractBlock, IExtractBlockInput, IExtractBlockOutput
+from ..decorator import block
 
 
-@dataclass(frozen=True)
-class ExtractStockIpoBlockInput(IExtractBlockInput):
-
-    @classmethod
-    def of(cls, block_glue: "BlockGlue"):
-        params = block_glue.block_outputs["crawl_stock_ipo"].params
-        return ExtractStockIpoBlockInput(series=None, params=params)
-
-    def _validate(self):
-        if self.params is not None:
-            keys = self.params.keys()
-            assert "year" in keys, "StockIpoExtractBlockInput must have 'year' params"
-            assert "html_text" in keys, "StockIpoExtractBlockInput must have 'code' params"
-
-
-@dataclass(frozen=True)
-class ExtractStockIpoBlockOutput(IExtractBlockOutput):
-    block_name: str = "extract_stock_ipo"
-
-    def _validate(self):
-        keys = self.params.keys()
-        assert "ipo_list" in keys, "StockIpoExtractBlockOutput must have 'ipo_list' column"
-
-
-@inject
-@dataclass(frozen=True)
-class ExtractStockIpoBlock(IExtractBlock):
+@block(block_name="extract_stock_ipo", pre_condition_block_name="crawl_stock_ipo")
+class ExtractStockIpoBlock:
+    html_text: str
 
     def _decode(self, html_text: str) -> dict:
         soup = BeautifulSoup(html_text, features="lxml")
@@ -58,18 +31,12 @@ class ExtractStockIpoBlock(IExtractBlock):
             whole_result.append(DecodeHtmlPageStockIpo.from_dict(data=table_body_dict).to_dict())
         return {"ipo_list": whole_result}
 
-    def _process(self) -> ExtractStockIpoBlockOutput:
-        if not isinstance(self.block_input, ExtractStockIpoBlockInput):
-            raise KabutobashiBlockInstanceMismatchError()
-        params = self.block_input.params
-        if params is None:
-            raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
-        html_text = params["html_text"]
+    def _process(self) -> Tuple[pd.DataFrame, dict]:
         # to_df
-        result = self._decode(html_text=html_text)
+        result = self._decode(html_text=self.html_text)
         df = pd.DataFrame(data=result["ipo_list"])
-        return ExtractStockIpoBlockOutput.of(series=df, params=result)
+        return df, result
 
-    @classmethod
-    def _configure(cls, binder: Binder) -> None:
-        binder.bind(IExtractBlockInput, to=ExtractStockIpoBlockInput)  # type: ignore[type-abstract]
+    def _validate_output(self, series: Optional[pd.DataFrame], params: Optional[dict]):
+        keys = series.keys()
+        # assert "ipo_list" in keys, "StockIpoExtractBlockOutput must have 'ipo_list' column"

@@ -1,62 +1,18 @@
 import re
-from dataclasses import dataclass
 from datetime import datetime
-from typing import Dict, List, Union
+from typing import Dict, List, Optional, Union
 
 import pandas as pd
 from bs4 import BeautifulSoup
-from injector import Binder, inject
 
-from kabutobashi.domain.errors import KabutobashiBlockInstanceMismatchError, KabutobashiBlockParamsIsNoneError
 from kabutobashi.domain.services.decode_html.utils import PageDecoder
 
-from ..abc_block import BlockGlue
-from .abc_extract_block import IExtractBlock, IExtractBlockInput, IExtractBlockOutput
+from ..decorator import block
 
 
-@dataclass(frozen=True)
-class ExtractStockInfoBlockInput(IExtractBlockInput):
-
-    @classmethod
-    def of(cls, block_glue: "BlockGlue"):
-        params = block_glue.block_outputs["crawl_stock_info"].params
-        return ExtractStockInfoBlockInput(series=None, params=params)
-
-    def _validate(self):
-        if self.params is not None:
-            keys = self.params.keys()
-            assert "code" in keys, "StockInfoExtractBlockInput must have 'code' params"
-            assert "html_text" in keys, "StockInfoExtractBlockInput must have 'code' params"
-
-
-@dataclass(frozen=True)
-class ExtractStockInfoBlockOutput(IExtractBlockOutput):
-    block_name: str = "extract_stock_info"
-
-    def _validate(self):
-        keys = self.params.keys()
-        assert "code" in keys, "StockInfoExtractBlockOutput must have 'code' column"
-        assert "stock_label" in keys, "StockInfoExtractBlockOutput must have 'stock_label' column"
-        assert "name" in keys, "StockInfoExtractBlockOutput must have 'name' column"
-        assert "dt" in keys, "StockInfoExtractBlockOutput must have 'dt' column"
-        assert "industry_type" in keys, "StockInfoExtractBlockOutput must have 'industry_type' column"
-        assert "close" in keys, "StockInfoExtractBlockOutput must have 'close' column"
-        assert "market" in keys, "StockInfoExtractBlockOutput must have 'market' column"
-        assert "open" in keys, "StockInfoExtractBlockOutput must have 'open' column"
-        assert "high" in keys, "StockInfoExtractBlockOutput must have 'high' column"
-        assert "low" in keys, "StockInfoExtractBlockOutput must have 'low' column"
-        assert "unit" in keys, "StockInfoExtractBlockOutput must have 'unit' column"
-        assert "per" in keys, "StockInfoExtractBlockOutput must have 'per' column"
-        assert "psr" in keys, "StockInfoExtractBlockOutput must have 'psr' column"
-        assert "pbr" in keys, "StockInfoExtractBlockOutput must have 'pbr' column"
-        assert "volume" in keys, "StockInfoExtractBlockOutput must have 'volume' column"
-        assert "market_capitalization" in keys, "StockInfoExtractBlockOutput must have 'market_capitalization' column"
-        assert "issued_shares" in keys, "StockInfoExtractBlockOutput must have 'issued_shares' column"
-
-
-@inject
-@dataclass(frozen=True)
-class ExtractStockInfoBlock(IExtractBlock):
+@block(block_name="extract_stock_info", pre_condition_block_name="crawl_stock_info")
+class ExtractStockInfoBlock:
+    html_text: str
 
     def _decode(self, html_text: str) -> dict:
         soup = BeautifulSoup(html_text, features="lxml")
@@ -115,18 +71,28 @@ class ExtractStockInfoBlock(IExtractBlock):
 
         return result
 
-    def _process(self) -> ExtractStockInfoBlockOutput:
-        if not isinstance(self.block_input, ExtractStockInfoBlockInput):
-            raise KabutobashiBlockInstanceMismatchError()
-        params = self.block_input.params
-        if params is None:
-            raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
-        html_text = params["html_text"]
-        result = self._decode(html_text=html_text)
+    def _process(self) -> pd.DataFrame:
+        result = self._decode(html_text=self.html_text)
         # to_df
         df = pd.DataFrame(data=result, index=[result["dt"]])
-        return ExtractStockInfoBlockOutput.of(series=df, params=result)
+        return df
 
-    @classmethod
-    def _configure(cls, binder: Binder) -> None:
-        binder.bind(IExtractBlockInput, to=ExtractStockInfoBlockInput)  # type: ignore[type-abstract]
+    def _validate_output(self, series: Optional[pd.DataFrame], params: Optional[dict]):
+        keys = series.keys()
+        assert "code" in keys, "StockInfoExtractBlockOutput must have 'code' column"
+        assert "stock_label" in keys, "StockInfoExtractBlockOutput must have 'stock_label' column"
+        assert "name" in keys, "StockInfoExtractBlockOutput must have 'name' column"
+        assert "dt" in keys, "StockInfoExtractBlockOutput must have 'dt' column"
+        assert "industry_type" in keys, "StockInfoExtractBlockOutput must have 'industry_type' column"
+        assert "close" in keys, "StockInfoExtractBlockOutput must have 'close' column"
+        assert "market" in keys, "StockInfoExtractBlockOutput must have 'market' column"
+        assert "open" in keys, "StockInfoExtractBlockOutput must have 'open' column"
+        assert "high" in keys, "StockInfoExtractBlockOutput must have 'high' column"
+        assert "low" in keys, "StockInfoExtractBlockOutput must have 'low' column"
+        assert "unit" in keys, "StockInfoExtractBlockOutput must have 'unit' column"
+        assert "per" in keys, "StockInfoExtractBlockOutput must have 'per' column"
+        assert "psr" in keys, "StockInfoExtractBlockOutput must have 'psr' column"
+        assert "pbr" in keys, "StockInfoExtractBlockOutput must have 'pbr' column"
+        assert "volume" in keys, "StockInfoExtractBlockOutput must have 'volume' column"
+        assert "market_capitalization" in keys, "StockInfoExtractBlockOutput must have 'market_capitalization' column"
+        assert "issued_shares" in keys, "StockInfoExtractBlockOutput must have 'issued_shares' column"
