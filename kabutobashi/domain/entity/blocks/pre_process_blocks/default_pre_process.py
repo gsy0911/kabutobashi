@@ -5,7 +5,7 @@ from kabutobashi.domain.errors import KabutobashiBlockSeriesIsNoneError
 from ..decorator import block
 
 
-@block(block_name="default_pre_process", pre_condition_block_name="extract_stock_info")
+@block(block_name="default_pre_process", series_required_columns=["open", "high", "low", "close", "code", "volume"])
 class DefaultPreProcessBlock:
     for_analysis: bool
     series: pd.DataFrame

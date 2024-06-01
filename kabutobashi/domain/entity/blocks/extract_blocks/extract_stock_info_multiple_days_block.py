@@ -1,43 +1,16 @@
-from dataclasses import dataclass
+from typing import Optional, Tuple
 
 import pandas as pd
 from bs4 import BeautifulSoup
-from injector import Binder, inject
 
-from kabutobashi.domain.errors import KabutobashiBlockInstanceMismatchError, KabutobashiBlockParamsIsNoneError
-
-from ..abc_block import BlockGlue
-from .abc_extract_block import IExtractBlock, IExtractBlockInput, IExtractBlockOutput
+from ..decorator import block
 
 
-@dataclass(frozen=True)
-class ExtractStockInfoMultipleDaysBlockInput(IExtractBlockInput):
-
-    @classmethod
-    def of(cls, block_glue: "BlockGlue"):
-        params = block_glue.block_outputs["crawl_stock_info_multiple_days"].params
-        return ExtractStockInfoMultipleDaysBlockInput(series=None, params=params)
-
-    def _validate(self):
-        if self.params is not None:
-            keys = self.params.keys()
-            assert "code" in keys, "StockInfoMultipleDaysExtractBlockInput must have 'code' params"
-            assert "main_html_text" in keys, "StockInfoMultipleDaysExtractBlockInput must have 'main_html_text' params"
-            assert "sub_html_text" in keys, "StockInfoMultipleDaysExtractBlockInput must have 'sub_html_text' params"
-
-
-@dataclass(frozen=True)
-class ExtractStockInfoMultipleDaysBlockOutput(IExtractBlockOutput):
-    block_name: str = "extract_stock_info_multiple_days"
-
-    def _validate(self):
-        keys = self.params.keys()
-        assert "info_list" in keys, "StockInfoMultipleDaysExtractBlockOutput must have 'info_list' column"
-
-
-@inject
-@dataclass(frozen=True)
-class ExtractStockInfoMultipleDaysBlock(IExtractBlock):
+@block(block_name="extract_stock_info_multiple_days", pre_condition_block_name="crawl_stock_info_multiple_days")
+class ExtractStockInfoMultipleDaysBlock:
+    main_html_text: str
+    sub_html_text: str
+    code: str
 
     def _decode(self, code: str, main_html_text: str, sub_html_text: str) -> dict:
         result_1 = []
@@ -74,21 +47,13 @@ class ExtractStockInfoMultipleDaysBlock(IExtractBlock):
         df["code"] = code
         return {"info_list": df.to_dict(orient="records")}
 
-    def _process(self) -> ExtractStockInfoMultipleDaysBlockOutput:
-        if not isinstance(self.block_input, ExtractStockInfoMultipleDaysBlockInput):
-            raise KabutobashiBlockInstanceMismatchError()
-        params = self.block_input.params
-        if params is None:
-            raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
-        main_html_text = params["main_html_text"]
-        sub_html_text = params["sub_html_text"]
-        code = params["code"]
-        result = self._decode(code=code, main_html_text=main_html_text, sub_html_text=sub_html_text)
+    def _process(self) -> Tuple[pd.DataFrame, dict]:
+        result = self._decode(code=self.code, main_html_text=self.main_html_text, sub_html_text=self.sub_html_text)
         # to_df
         df = pd.DataFrame(data=result["info_list"])
         df.index = df["dt"]
-        return ExtractStockInfoMultipleDaysBlockOutput.of(series=df, params=result)
+        return df, result
 
-    @classmethod
-    def _configure(cls, binder: Binder) -> None:
-        binder.bind(IExtractBlockInput, to=ExtractStockInfoMultipleDaysBlockInput)  # type: ignore[type-abstract]
+    def _validate_output(self, series: Optional[pd.DataFrame], params: Optional[dict]):
+        keys = series.keys()
+        assert "info_list" in keys, "StockInfoMultipleDaysExtractBlockOutput must have 'info_list' column"
