@@ -81,115 +81,8 @@ date_list = kb.get_past_n_days(target_date, n=40)
 
 ```
 
-## concept: Blocks
 
-### Block
-
-Abstract classes are `BlockInput`, `Block`, and `BlockOutput`.
-`BlockGlue` is concrete class to connect two-Blocks.
-
-```mermaid
-classDiagram
-  class BlockInput{
-    series: pd.Pandas
-    params: dict
-    +of()
-  }
-  class Block{
-    series: pd.Pandas
-    params: dict
-    +glue(BlockGlue)BlockGlue
-    +process(BlockInput)
-  }
-  class BlockOutput{
-    series: pd.Pandas
-    params: dict
-    +of()
-  }
-  class BlockGlue{
-    series: pd.Pandas
-    params: dict
-    outpus: List[dict]
-    +update(BlockOutput)
-  }
-```
-
-Relationships and data-flow between classes.
-
-```mermaid
-graph LR
-    glue1[BlockGlue.prev]
-    glue2[BlockGlue.next]
-    
-    subgraph Block
-        i[BlockInput]
-        b[Block]
-        out[BlockOutput]
-    end
-    plus([+])
-    glue1-->i
-    i-->b
-    b-->out
-    out-->plus
-    glue1-->plus
-    plus--|update()|-->glue2
-```
-
-### Read-Block
-
-- input
-  - params
-- output
-  - series
-
-### Crawl-Block
-
-- input
-  - params
-- output
-  - output.params
-
-### Extract-Block
-
-- input
-  - params
-- output
-  - output.params
-
-### PreProcess-Block
-
-- input
-  - series
-  - params
-- output
-  - series
-
-### Process-Block
-
-- input
-  - series
-  - params
-- output
-  - output.series
-
-### Parameterize-Block
-
-- input
-  - series
-  - params
-- output
-  - output.params
-
-### Reduce-Block
-
-- input
-  - series
-  - params
-- output
-  - params
-
-
-# core concept
+# Core Concept
 
 `@block`-decorator and `Flow`-class is important.
 `@block` automatically generates input and output functions, allowing you to focus solely on the processing.
@@ -271,6 +164,59 @@ In classes decorated with `@block`, it is not recommended to execute the `__init
 
 
 Up to this point, the use of the `@block` decorator with classes such as UdfClass has described, but using the Block class on its own is not intended. Please read the following explanation of the `Flow` class for more details.
+
+### Read-Block
+
+- input
+  - params
+- output
+  - series
+
+### Crawl-Block
+
+- input
+  - params
+- output
+  - output.params
+
+### Extract-Block
+
+- input
+  - params
+- output
+  - output.params
+
+### PreProcess-Block
+
+- input
+  - series
+  - params
+- output
+  - series
+
+### Process-Block
+
+- input
+  - series
+  - params
+- output
+  - output.series
+
+### Parameterize-Block
+
+- input
+  - series
+  - params
+- output
+  - output.params
+
+### Reduce-Block
+
+- input
+  - series
+  - params
+- output
+  - params
 
 ## About `Flow`-class
 
