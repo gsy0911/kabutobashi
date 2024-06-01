@@ -8,7 +8,7 @@ from .abc_parameterize_block import get_impact
 
 @block(
     block_name="parameterize_stochastics",
-    series_required_columns=["stochastics_k", "stochastics_d", "stochastics_sd", "stochastics_impact"],
+    series_required_columns=["K", "D", "SD", "stochastics_buy_signal", "stochastics_sell_signal"],
 )
 class ParameterizeStochasticsBlock:
     series: pd.DataFrame
@@ -23,7 +23,7 @@ class ParameterizeStochasticsBlock:
             "stochastics_k": df["K"].tail(3).mean(),
             "stochastics_d": df["D"].tail(3).mean(),
             "stochastics_sd": df["SD"].tail(3).mean(),
-            "stochastics_impact": get_impact(df=df, influence=self.influence, tail=self.tail),
+            "stochastics_impact": get_impact(df=df, influence=self.influence, tail=self.tail, prefix="stochastics"),
         }
 
         return params

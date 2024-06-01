@@ -197,10 +197,18 @@ def _inner_class_default_private_func_factory(cls, glue: BlockGlue):
     block_name = cls_instance.block_name
     pre_condition_block_name = cls_instance.pre_condition_block_name
     series_required_columns = cls_instance.series_required_columns
+    params_required_keys = cls_instance.params_required_keys
 
     # glue
     if glue.params is not None:
         params = glue.params.get(block_name, {})
+    elif params_required_keys is not None and type(params_required_keys) is list:
+        logger.debug(f"{params_required_keys=}")
+        params = {}
+        for _, v in glue:
+            if v.params is None:
+                continue
+            params.update(v.params)
     elif glue.block_outputs is not None:
         params = glue.block_outputs.get(block_name, {})
     else:

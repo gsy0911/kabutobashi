@@ -6,7 +6,7 @@ from ..decorator import block
 from .abc_parameterize_block import get_impact
 
 
-@block(block_name="parameterize_momentum", series_required_columns=["buy_signal", "sell_signal"])
+@block(block_name="parameterize_momentum", series_required_columns=["momentum_buy_signal", "momentum_sell_signal"])
 class ParameterizeMomentumBlock:
     series: pd.DataFrame
     influence: int = 2
@@ -17,7 +17,7 @@ class ParameterizeMomentumBlock:
         if df is None:
             raise KabutobashiBlockSeriesIsNoneError()
         params = {
-            "momentum_impact": get_impact(df=df, influence=self.influence, tail=self.tail),
+            "momentum_impact": get_impact(df=df, influence=self.influence, tail=self.tail, prefix="momentum"),
         }
 
         return params

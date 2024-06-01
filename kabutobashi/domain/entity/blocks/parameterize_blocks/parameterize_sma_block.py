@@ -8,7 +8,7 @@ from .abc_parameterize_block import get_impact
 
 @block(
     block_name="parameterize_sma",
-    series_required_columns=["sma_short", "sma_medium", "sma_long", "close"],
+    series_required_columns=["sma_short", "sma_medium", "sma_long", "close", "sma_buy_signal", "sma_sell_signal"],
 )
 class ParameterizeSmaBlock:
     series: pd.DataFrame
@@ -31,7 +31,7 @@ class ParameterizeSmaBlock:
             "sma_long_diff": df["sma_long_diff"].tail(3).mean(),
             "sma_long_short": df["sma_long_short"].tail(3).mean(),
             "sma_long_medium": df["sma_long_medium"].tail(3).mean(),
-            "sma_impact": get_impact(df=df, influence=self.influence, tail=self.tail),
+            "sma_impact": get_impact(df=df, influence=self.influence, tail=self.tail, prefix="sma"),
         }
 
         return params

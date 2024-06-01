@@ -6,7 +6,9 @@ from ..decorator import block
 from .abc_parameterize_block import get_impact
 
 
-@block(block_name="parameterize_adx", series_required_columns=["DX", "ADX", "ADXR"])
+@block(
+    block_name="parameterize_adx", series_required_columns=["DX", "ADX", "ADXR", "adx_buy_signal", "adx_sell_signal"]
+)
 class ParameterizeAdxBlock:
     series: pd.DataFrame
     influence: int = 2
@@ -20,7 +22,7 @@ class ParameterizeAdxBlock:
             "adx_dx": df["DX"].tail(3).mean(),
             "adx_adx": df["ADX"].tail(3).mean(),
             "adx_adxr": df["ADXR"].tail(3).mean(),
-            "adx_impact": get_impact(df=df, influence=self.influence, tail=self.tail),
+            "adx_impact": get_impact(df=df, influence=self.influence, tail=self.tail, prefix="adx"),
         }
 
         return params
