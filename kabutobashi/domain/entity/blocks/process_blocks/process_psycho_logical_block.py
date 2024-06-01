@@ -1,37 +1,9 @@
-from dataclasses import dataclass
-
 import pandas as pd
 
-from kabutobashi.domain.errors import KabutobashiBlockParamsIsNoneError
-
-from ..abc_block import BlockGlue
 from ..decorator import block
 
-# @dataclass(frozen=True)
-# class ProcessPsychoLogicalBlockInput(IProcessBlockInput):
-#
-#     @classmethod
-#     def of(cls, block_glue: "BlockGlue"):
-#         if block_glue.params is None:
-#             raise KabutobashiBlockParamsIsNoneError("Block inputs must have 'params' params")
-#         input_params = block_glue.params.get("process_macd", {})
-#         psycho_term = input_params.get("psycho_term", 12)
-#         upper_threshold = input_params.get("upper_threshold", 0.75)
-#         lower_threshold = input_params.get("lower_threshold", 0.25)
-#         return cls(
-#             series=block_glue.series,
-#             params={
-#                 "psycho_term": psycho_term,
-#                 "upper_threshold": upper_threshold,
-#                 "lower_threshold": lower_threshold,
-#             },
-#         )
-#
-#     def _validate(self):
-#         pass
 
-
-@block(block_name="process_psycho_logical", pre_condition_block_name="read_example")
+@block(block_name="process_psycho_logical", series_required_columns=["close"])
 class ProcessPsychoLogicalBlock:
     series: pd.DataFrame
     psycho_term: int = 12
@@ -54,13 +26,19 @@ class ProcessPsychoLogicalBlock:
         return df_
 
     def _signal(self, df: pd.DataFrame) -> pd.DataFrame:
-        df["buy_signal"] = df["sold_too_much"]
-        df["sell_signal"] = df["bought_too_much"]
+        df["psycho_logical_buy_signal"] = df["sold_too_much"]
+        df["psycho_logical_sell_signal"] = df["bought_too_much"]
         return df
 
     def _process(self) -> pd.DataFrame:
 
         applied_df = self._apply(df=self.series)
         signal_df = self._signal(df=applied_df)
-        required_columns = ["psycho_line", "bought_too_much", "sold_too_much", "buy_signal", "sell_signal"]
+        required_columns = [
+            "psycho_line",
+            "bought_too_much",
+            "sold_too_much",
+            "psycho_logical_buy_signal",
+            "psycho_logical_sell_signal",
+        ]
         return signal_df[required_columns]

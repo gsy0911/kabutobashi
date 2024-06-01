@@ -5,7 +5,7 @@ from ..decorator import block
 __all__ = ["ProcessBollingerBandsBlock"]
 
 
-@block(block_name="process_bollinger_bands", pre_condition_block_name="read_example")
+@block(block_name="process_bollinger_bands", series_required_columns=["close"])
 class ProcessBollingerBandsBlock:
     series: pd.DataFrame
     band_term: int = 12
@@ -31,8 +31,8 @@ class ProcessBollingerBandsBlock:
             over_lower_continuity=lambda x: x["over_lower"].rolling(self.continuity_term).sum(),
         )
 
-        df["buy_signal"] = df["over_upper"].apply(lambda x: 1 if x > 0 else 0)
-        df["sell_signal"] = df["over_lower"].apply(lambda x: 1 if x > 0 else 0)
+        df["bollinger_bands_buy_signal"] = df["over_upper"].apply(lambda x: 1 if x > 0 else 0)
+        df["bollinger_bands_sell_signal"] = df["over_lower"].apply(lambda x: 1 if x > 0 else 0)
         return df
 
     def _process(self) -> pd.DataFrame:
@@ -48,5 +48,7 @@ class ProcessBollingerBandsBlock:
             "lower_3_sigma",
             "over_upper_continuity",
             "over_lower_continuity",
+            "bollinger_bands_buy_signal",
+            "bollinger_bands_sell_signal",
         ]
         return signal_df[required_columns]

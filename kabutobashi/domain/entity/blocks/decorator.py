@@ -211,7 +211,7 @@ def _inner_class_default_private_func_factory(cls, glue: BlockGlue):
         series = glue.series
     elif series_required_columns is not None and type(series_required_columns) is list:
         logger.debug(f"{series_required_columns=}")
-        series_list = [v.series for _, v in glue]
+        series_list = [v.series for _, v in glue if v.series is not None]
         initial_series = series_list[0]
         series = initial_series.join(series_list[1:])
         series = series[series_required_columns]

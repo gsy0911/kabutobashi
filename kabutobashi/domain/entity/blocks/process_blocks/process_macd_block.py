@@ -6,7 +6,7 @@ from .abc_process_block import cross
 __all__ = ["ProcessMacdBlock"]
 
 
-@block(block_name="process_macd", pre_condition_block_name="read_example")
+@block(block_name="process_macd", series_required_columns=["close"])
 class ProcessMacdBlock:
     series: pd.DataFrame
     short_term: int = 12
@@ -28,10 +28,12 @@ class ProcessMacdBlock:
     def _signal(self, df: pd.DataFrame) -> pd.DataFrame:
         # 正負が交差した点
         df = df.join(cross(df["histogram"]))
-        df = df.rename(columns={"to_plus": "buy_signal", "to_minus": "sell_signal"})
+        df = df.rename(columns={"to_plus": "macd_buy_signal", "to_minus": "macd_sell_signal"})
         return df
 
     def _process(self) -> pd.DataFrame:
         applied_df = self._apply(df=self.series)
         signal_df = self._signal(df=applied_df)
-        return signal_df[["ema_short", "ema_long", "macd", "signal", "histogram", "buy_signal", "sell_signal"]]
+        return signal_df[
+            ["ema_short", "ema_long", "macd", "signal", "histogram", "macd_buy_signal", "macd_sell_signal"]
+        ]

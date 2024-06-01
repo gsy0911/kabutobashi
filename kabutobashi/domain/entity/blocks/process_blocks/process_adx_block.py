@@ -6,7 +6,7 @@ from .abc_process_block import cross
 __all__ = ["ProcessAdxBlock"]
 
 
-@block(block_name="process_adx", pre_condition_block_name="read_example")
+@block(block_name="process_adx", series_required_columns=["high", "low", "close"])
 class ProcessAdxBlock:
     """
     相場のトレンドの強さを見るための指標である`ADX`を計算するクラス。
@@ -171,12 +171,12 @@ class ProcessAdxBlock:
         df["diff"] = df["plus_di"] - df["minus_di"]
         df = df.join(cross(df["diff"]))
 
-        df["buy_signal"] = df.apply(lambda x: self._buy_signal)
-        df["sell_signal"] = df.apply(lambda x: self._sell_signal)
+        df["adx_buy_signal"] = df.apply(lambda x: self._buy_signal)
+        df["adx_sell_signal"] = df.apply(lambda x: self._sell_signal)
 
         return df
 
     def _process(self) -> pd.DataFrame:
         applied_df = self._apply(df=self.series)
         signal_df = self._signal(df=applied_df)
-        return signal_df[["plus_di", "minus_di", "DX", "ADX", "ADXR", "buy_signal", "sell_signal"]]
+        return signal_df[["plus_di", "minus_di", "DX", "ADX", "ADXR", "adx_buy_signal", "adx_sell_signal"]]

@@ -27,8 +27,8 @@ class ProcessStochasticsBlock:
         ).fillna(0)
 
         # 複数引数は関数を利用することで吸収
-        df["buy_signal"] = df.apply(self._buy_signal_index_internal, axis=1)
-        df["sell_signal"] = df.apply(self._sell_signal_index_internal, axis=1)
+        df["stochastics_buy_signal"] = df.apply(self._buy_signal_index_internal, axis=1)
+        df["stochastics_sell_signal"] = df.apply(self._sell_signal_index_internal, axis=1)
         return df
 
     @staticmethod
@@ -100,5 +100,5 @@ class ProcessStochasticsBlock:
     def _process(self) -> pd.DataFrame:
         applied_df = self._apply(df=self.series)
         signal_df = self._signal(df=applied_df)
-        required_columns = ["K", "D", "SD", "buy_signal", "sell_signal"]
+        required_columns = ["K", "D", "SD", "stochastics_buy_signal", "stochastics_sell_signal"]
         return signal_df[required_columns]

@@ -6,7 +6,7 @@ from .abc_process_block import cross
 __all__ = ["ProcessSmaBlock"]
 
 
-@block(block_name="process_sma", pre_condition_block_name="read_example")
+@block(block_name="process_sma", series_required_columns=["close"])
 class ProcessSmaBlock:
     series: pd.DataFrame
     short_term: int = 5
@@ -26,10 +26,10 @@ class ProcessSmaBlock:
         df["diff"] = df.apply(lambda x: x["sma_long"] - x["sma_short"], axis=1)
         # 正負が交差した点
         df = df.join(cross(df["diff"]))
-        df = df.rename(columns={"to_plus": "buy_signal", "to_minus": "sell_signal"})
+        df = df.rename(columns={"to_plus": "sma_buy_signal", "to_minus": "sma_sell_signal"})
         return df
 
     def _process(self) -> pd.DataFrame:
         applied_df = self._apply(df=self.series)
         signal_df = self._signal(df=applied_df)
-        return signal_df[["sma_short", "sma_medium", "sma_long", "buy_signal", "sell_signal"]]
+        return signal_df[["sma_short", "sma_medium", "sma_long", "sma_buy_signal", "sma_sell_signal"]]
