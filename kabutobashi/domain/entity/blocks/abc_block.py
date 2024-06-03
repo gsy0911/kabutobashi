@@ -79,6 +79,7 @@ class BlockGlue:
     series: Optional[pd.DataFrame] = None
     params: Optional[dict] = None
     block_outputs: Dict[str, IBlockOutput] = field(default_factory=dict, repr=False)
+    execution_order: int = 1
 
     def update(self, block_output: IBlockOutput) -> "BlockGlue":
         self.block_outputs[block_output.block_name] = block_output
