@@ -3,27 +3,6 @@ from dataclasses import dataclass, field, replace
 from typing import Dict, Optional
 
 import pandas as pd
-from injector import Binder, Injector, inject
-
-
-@dataclass(frozen=True)
-class IBlockInput(ABC):
-    series: Optional[pd.DataFrame] = None
-    params: Optional[dict] = None
-
-    @classmethod
-    def of(cls, block_glue: "BlockGlue"):
-        return cls(series=block_glue.series, params=block_glue.params)
-
-    def __post_init__(self):
-        self.validate()
-
-    def validate(self):
-        self._validate()
-
-    @abstractmethod
-    def _validate(self):
-        raise NotImplementedError()
 
 
 @dataclass(frozen=True)
@@ -47,31 +26,9 @@ class IBlockOutput(ABC):
         raise NotImplementedError()
 
 
-@inject
 @dataclass(frozen=True)
-class IBlock(ABC):
-    block_input: Optional[IBlockInput]
-
-    def process(self) -> IBlockOutput:
-        return self._process()
-
-    @abstractmethod
-    def _process(self) -> IBlockOutput:
-        raise NotImplementedError()
-
-    @classmethod
-    def glue(cls, glue: "BlockGlue") -> "BlockGlue":
-        block = Injector(cls._configure).get(cls)
-        if block.block_input is None:
-            raise ValueError("Block inputs cannot be None")
-        updated_block = replace(cls(block_input=None), block_input=block.block_input.of(block_glue=glue))
-        updated_glue = glue.update(block_output=updated_block.process())
-        return updated_glue
-
-    @classmethod
-    @abstractmethod
-    def _configure(cls, binder: Binder) -> None:
-        raise NotImplementedError()
+class IBlock:
+    pass
 
 
 @dataclass(frozen=True)

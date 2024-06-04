@@ -1,8 +1,4 @@
-from typing import Tuple
-
 from pydantic import BaseModel
-
-from .abc_block import IBlock
 
 
 class FromJsonBlock(BaseModel):
@@ -18,7 +14,7 @@ class FromJsonBlock(BaseModel):
             id_=params["id"], block_name=block_name, sequence_no=params["sequence_no"], params=params.get("params", {})
         )
 
-    def get(self) -> Tuple[type[IBlock], dict]:
+    def get(self):
         # TODO ここのブロックの取得方法をメタプログラミングっぽく
         from .crawl_blocks import CrawlStockInfoBlock, CrawlStockInfoMultipleDaysBlock, CrawlStockIpoBlock
         from .extract_blocks import ExtractStockInfoBlock, ExtractStockInfoMultipleDaysBlock, ExtractStockIpoBlock

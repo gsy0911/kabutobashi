@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field, replace
 from typing import List, Union
 
-from kabutobashi.domain.entity.blocks.abc_block import BlockGlue, IBlock
+from kabutobashi.domain.entity.blocks.basis_blocks import BlockGlue, IBlock
 from kabutobashi.domain.entity.blocks.hub_block import FromJsonBlock
 
 

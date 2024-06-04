@@ -16,7 +16,7 @@ from kabutobashi.domain.errors import (
     KabutobashiBlockDecoratorTypeError,
 )
 
-from .abc_block import BlockGlue
+from .basis_blocks import BlockGlue
 
 __all__ = ["block"]
 
