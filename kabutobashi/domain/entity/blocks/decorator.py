@@ -54,29 +54,6 @@ class ParamsRequiredKey:
     priority: int
 
 
-@dataclass(frozen=True)
-class SeriesColumns:
-    block_name: str
-    columns: List[str]
-    execution_order: int
-
-    def __lt__(self, other: "SeriesColumns") -> bool:
-        if not isinstance(other, SeriesColumns):
-            raise ValueError
-        return self.execution_order > other.execution_order
-
-    @staticmethod
-    def fix(series_columns_list: List["SeriesColumns"]) -> List["SeriesColumns"]:
-        res_list = []
-        _existed_columns = []
-        sorted_list = sorted(series_columns_list)
-        for sc in sorted_list:
-            unique_elements = list(set(sc.columns).symmetric_difference(set(_existed_columns)) & set(sc.columns))
-            _existed_columns.extend(sc.columns)
-            res_list.append(replace(sc, columns=unique_elements))
-        return res_list
-
-
 def _to_snake_case(string: str) -> str:
     # see: https://qiita.com/munepi0713/items/82ce7a56aa1b8233fd30
     _PARSE_BY_SEP_PATTERN = re.compile(r"[ _-]+")
@@ -246,17 +223,7 @@ def _inner_class_default_private_func_factory(cls, glue: BlockGlue):
     if glue.series is not None:
         series = glue.series
     elif series_required_columns is not None and type(series_required_columns) is list:
-        logger.debug(f"{series_required_columns=}")
-        series_columns_list = [
-            SeriesColumns(block_name=v.block_name, columns=v.series.columns, execution_order=idx)
-            for idx, (_, v) in enumerate(glue)
-            if v.series is not None
-        ]
-        fixed_series_columns_list = SeriesColumns.fix(series_columns_list)
-        initial_series = glue[fixed_series_columns_list[0].block_name].series[fixed_series_columns_list[0].columns]
-        rest_series = [glue[v.block_name].series[v.columns] for v in fixed_series_columns_list[1:]]
-        series = initial_series.join(rest_series)
-        series = series[series_required_columns]
+        series = glue.get_series_from_required_columns(required_columns=series_required_columns)
     elif glue.block_outputs is not None:
         series = glue.block_outputs.get(pre_condition_block_name, None)
         if series is not None:
