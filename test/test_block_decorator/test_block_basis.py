@@ -1,6 +1,8 @@
 import pandas as pd
+import pytest
 
 from kabutobashi.domain.entity.blocks import BlockGlue, BlockOutput
+from kabutobashi.domain.errors import KabutobashiBlockGlueError
 
 
 def test_block_glue():
@@ -34,3 +36,19 @@ def test_block_glue():
     fixed_df = block_glue.get_series_from_required_columns(required_columns=["col1", "col2", "col3", "col4"])
     assert3_df = pd.DataFrame.from_dict({"col1": [7, 8], "col2": [3, 4], "col3": [3, 4], "col4": ["a", "b"]})
     assert fixed_df.equals(assert3_df)
+
+
+def test_block_glue_error():
+    # check1
+    df1 = pd.DataFrame.from_dict({"col1": [1, 2], "col2": [3, 4]})
+    df2 = pd.DataFrame.from_dict({"col1": [5, 6], "col3": [3, 4]})
+    output1 = BlockOutput(series=df1, params=None, block_name="output1", execution_order=1)
+    output2 = BlockOutput(series=df2, params=None, block_name="output2", execution_order=1)
+    block_glue = BlockGlue(
+        series=None, params=None, block_outputs={"output1": output1, "output2": output2}, execution_order=1
+    )
+
+    # assert df
+    with pytest.raises(KabutobashiBlockGlueError) as block_e:
+        _ = block_glue.get_series_from_required_columns(required_columns=["col1", "col2", "col3"])
+    assert str(block_e.value) == "orders=[1, 1] must be unique."

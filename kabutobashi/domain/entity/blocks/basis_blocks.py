@@ -4,6 +4,8 @@ from typing import Dict, List, Optional
 
 import pandas as pd
 
+from kabutobashi.domain.errors import KabutobashiBlockGlueError
+
 logger = getLogger(__name__)
 
 __all__ = ["BlockGlue", "BlockOutput"]
@@ -73,6 +75,9 @@ class BlockGlue:
 
     def get_series_from_required_columns(self, required_columns: List[str]) -> pd.DataFrame:
         logger.debug(f"{required_columns=}")
+        orders = [v.execution_order for _, v in self if v.series is not None]
+        if len(orders) != len(set(orders)):
+            raise KabutobashiBlockGlueError(f"{orders=} must be unique.")
         series_columns_list = [
             SeriesColumns(block_name=v.block_name, columns=v.series.columns, execution_order=v.execution_order)
             for _, v in self

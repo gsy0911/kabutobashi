@@ -55,7 +55,15 @@ class KabutobashiBlockSeriesIsNoneError(KabutobashiBlockError):
     pass
 
 
-class KabutobashiBlockDecoratorError(KabutobashiBaseError):
+class KabutobashiBlockGlueError(KabutobashiBlockError):
+    """
+    KabutobashiBlockGlueError is base error for `BlockGlue`.
+    """
+
+    pass
+
+
+class KabutobashiBlockDecoratorError(KabutobashiBlockError):
     """
     KabutobashiBlockDecoratorError is base error for `@block` decorator.
     """
