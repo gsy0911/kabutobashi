@@ -117,15 +117,20 @@ def _inner_func_process(self) -> BlockGlue:
     self.validate_input()
     # process()
     res: BlockProcessResultType = self._process()
+    execution_order = res_glue.get_max_execution_order() + 1
 
     if type(res) is tuple:
         if len(res) == 2:
             if type(res[0]) is dict and type(res[1]) is pd.DataFrame:
                 self.validate_output(series=res[1], params=res[0])
-                block_output = BlockOutput(series=res[1], params=res[0], block_name=block_name)
+                block_output = BlockOutput(
+                    series=res[1], params=res[0], block_name=block_name, execution_order=execution_order
+                )
             elif type(res[1]) is dict and type(res[0]) is pd.DataFrame:
                 self.validate_output(series=res[0], params=res[1])
-                block_output = BlockOutput(series=res[0], params=res[1], block_name=block_name)
+                block_output = BlockOutput(
+                    series=res[0], params=res[1], block_name=block_name, execution_order=execution_order
+                )
             else:
                 raise KabutobashiBlockDecoratorReturnError(
                     "The return values are limited to combinations of `dict` and `pd.DataFrame`."
@@ -134,10 +139,10 @@ def _inner_func_process(self) -> BlockGlue:
             raise KabutobashiBlockDecoratorReturnError("Please limit the number of return values to two or fewer.")
     elif type(res) is dict:
         self.validate_output(series=None, params=res)
-        block_output = BlockOutput(series=None, params=res, block_name=block_name)
+        block_output = BlockOutput(series=None, params=res, block_name=block_name, execution_order=execution_order)
     elif type(res) is pd.DataFrame:
         self.validate_output(series=res, params=None)
-        block_output = BlockOutput(series=res, params=None, block_name=block_name)
+        block_output = BlockOutput(series=res, params=None, block_name=block_name, execution_order=execution_order)
     else:
         raise KabutobashiBlockDecoratorReturnError(f"An unexpected return type {type(res)} was returned.")
     block_outputs = res_glue.block_outputs if res_glue.block_outputs else {}

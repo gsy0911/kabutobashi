@@ -89,6 +89,11 @@ class BlockGlue:
         series = initial_series.join(rest_series)
         return series[required_columns]
 
+    def get_max_execution_order(self) -> int:
+        execution_order = [0]
+        execution_order.extend([v.execution_order for _, v in self.block_outputs.items()])
+        return max(execution_order)
+
     def __len__(self):
         return len(self.block_outputs.keys())
 
