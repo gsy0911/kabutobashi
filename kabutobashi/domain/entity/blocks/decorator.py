@@ -1,6 +1,6 @@
 import re
 import warnings
-from dataclasses import dataclass, replace
+from dataclasses import dataclass
 from functools import partial
 from inspect import signature
 from logging import getLogger
@@ -16,7 +16,7 @@ from kabutobashi.domain.errors import (
     KabutobashiBlockDecoratorTypeError,
 )
 
-from .basis_blocks import BlockGlue
+from .basis_blocks import BlockGlue, BlockOutput
 
 __all__ = ["block"]
 
@@ -25,19 +25,6 @@ logger = getLogger(__name__)
 
 # type candidates of `UdfBlock._process()` return
 BlockProcessResultType: TypeAlias = Union[dict, pd.DataFrame, Tuple[dict, pd.DataFrame], Tuple[pd.DataFrame, dict]]
-
-
-@dataclass(frozen=True)
-class BlockInput:
-    series: pd.DataFrame
-    params: dict
-
-
-@dataclass(frozen=True)
-class BlockOutput:
-    series: Optional[pd.DataFrame]
-    params: Optional[dict]
-    block_name: str
 
 
 @dataclass(frozen=True)

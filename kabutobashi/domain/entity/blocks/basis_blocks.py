@@ -1,4 +1,3 @@
-from abc import ABC, abstractmethod
 from dataclasses import dataclass, field, replace
 from logging import getLogger
 from typing import Dict, List, Optional
@@ -7,26 +6,21 @@ import pandas as pd
 
 logger = getLogger(__name__)
 
+__all__ = ["BlockGlue", "BlockOutput"]
+
 
 @dataclass(frozen=True)
-class IBlockOutput(ABC):
+class BlockInput:
+    series: pd.DataFrame
+    params: dict
+
+
+@dataclass(frozen=True)
+class BlockOutput:
     series: Optional[pd.DataFrame]
     params: Optional[dict]
-    block_name: str = "block"
-
-    def __post_init__(self):
-        self.validate()
-
-    @classmethod
-    def of(cls, series: Optional[pd.DataFrame], params: Optional[dict]):
-        return cls(series, params)
-
-    def validate(self):
-        self._validate()
-
-    @abstractmethod
-    def _validate(self):
-        raise NotImplementedError()
+    block_name: str
+    execution_order: int = 1
 
 
 @dataclass(frozen=True)
@@ -61,10 +55,10 @@ class SeriesColumns:
 class BlockGlue:
     series: Optional[pd.DataFrame] = None
     params: Optional[dict] = None
-    block_outputs: Dict[str, IBlockOutput] = field(default_factory=dict, repr=False)
+    block_outputs: Dict[str, BlockOutput] = field(default_factory=dict, repr=False)
     execution_order: int = 1
 
-    def update(self, block_output: IBlockOutput) -> "BlockGlue":
+    def update(self, block_output: BlockOutput) -> "BlockGlue":
         self.block_outputs[block_output.block_name] = block_output
         if self.series is None:
             series = block_output.series
@@ -80,8 +74,8 @@ class BlockGlue:
     def get_series_from_required_columns(self, required_columns: List[str]) -> pd.DataFrame:
         logger.debug(f"{required_columns=}")
         series_columns_list = [
-            SeriesColumns(block_name=v.block_name, columns=v.series.columns, execution_order=idx)
-            for idx, (_, v) in enumerate(self)
+            SeriesColumns(block_name=v.block_name, columns=v.series.columns, execution_order=v.execution_order)
+            for _, v in self
             if v.series is not None
         ]
         fixed_series_columns_list = SeriesColumns.fix(series_columns_list)
