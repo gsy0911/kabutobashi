@@ -1,9 +1,7 @@
 from .application import crawl_info, crawl_info_multiple, crawl_ipo, decode_brand_list
 from .domain import errors
-from .domain.aggregates import StockCodeSingleAggregate
 from .domain.entity import Stock
 from .domain.entity.blocks import block
-from .domain.services import SaFundamental, SaVolume, StockAnalysis
 from .domain.services.flow import Flow
 
 # methods to analysis
@@ -32,12 +30,6 @@ from .example_data import example
 from .utilities import get_past_n_days
 
 methods = [fitting, basic]
-
-# estimate filters
-sa_fundamental = SaFundamental()
-sa_volume = SaVolume()
-
-stock_analysis = [sa_fundamental, sa_volume]
 
 # comparable tuple
 VERSION = (0, 8, 0)

@@ -390,19 +390,3 @@ class TestStock:
         stock3 = kb.Stock.from_df(data=filtered_entity)
 
         assert len(kb.Stock.reduce(stocks=[stock1, stock2]).daily_price_records) == len(stock3.daily_price_records)
-
-
-class TestStockSingleAggregate:
-    def test_pass_init(self, entity: pd.DataFrame):
-        stock = kb.Stock.from_df(data=entity[entity["code"] == 1375])
-        _ = kb.StockCodeSingleAggregate.of(entity=stock)
-
-    def test_error_init(self):
-        with pytest.raises(KabutobashiEntityError):
-            _ = kb.StockCodeSingleAggregate.of(entity="")
-
-    def test_error_methods(self, entity: pd.DataFrame):
-        methods = kb.methods + [kb.basic, kb.pct_change, kb.volatility]
-        agg = kb.StockCodeSingleAggregate.of(entity=entity, code="1375")
-        with pytest.raises(KabutobashiEntityError):
-            _ = agg.with_processed(methods=[""])
