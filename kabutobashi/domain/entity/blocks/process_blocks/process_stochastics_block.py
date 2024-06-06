@@ -5,7 +5,7 @@ import pandas as pd
 from ..decorator import block
 
 
-@block(block_name="process_stochastics", pre_condition_block_name="read_example")
+@block(block_name="process_stochastics", series_required_columns=["close", "low", "high"])
 class ProcessStochasticsBlock:
     series: pd.DataFrame
 
