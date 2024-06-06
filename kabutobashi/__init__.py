@@ -5,7 +5,6 @@ from .domain.entity.blocks import block
 from .domain.services.flow import Flow
 
 # methods to analysis
-from .domain.services.method import Method, basic, fitting, ichimoku, industry_categories
 from .domain.values import (
     DecodeHtmlPageStockIpo,
     RawHtmlPageStockInfo,
@@ -20,8 +19,6 @@ from .example_data import example
 
 # n営業日前までの日付のリストを返す関数
 from .utilities import get_past_n_days
-
-methods = [fitting, basic]
 
 # comparable tuple
 VERSION = (0, 8, 0)
