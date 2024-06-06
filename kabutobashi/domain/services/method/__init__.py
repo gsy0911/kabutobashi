@@ -24,4 +24,3 @@ from .fitting import FittingProcess, fitting
 from .ichimoku import IchimokuProcess, ichimoku
 from .industry_cat import IndustryCategoriesProcess, industry_categories
 from .method import Method, ProcessMethod
-from .pct_change import PctChangeProcess, pct_change

@@ -119,3 +119,18 @@ def test_block_parameterize_volatility():
     params = res.block_glue["parameterize_volatility"].params
     assert params["volatility"] == 0.015477474132778526
     assert params["close_volatility"] == 1188.063003315964
+
+
+def test_block_parameterize_pct_change():
+    blocks = [
+        ReadExampleBlock,
+        DefaultPreProcessBlock,
+        ParameterizePctChangeBlock,
+    ]
+    res = Flow.initialize(params=PARAMS).then(blocks)
+    params = res.block_glue["parameterize_pct_change"].params
+    assert params["pct_05"] == -0.004500275483459349
+    assert params["pct_10"] == -0.009220390832081973
+    assert params["pct_20"] == -0.01581898346743425
+    assert params["pct_30"] == -0.010848218441679503
+    assert params["pct_40"] == -0.0048062684235296756
