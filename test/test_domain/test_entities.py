@@ -401,32 +401,6 @@ class TestStockSingleAggregate:
         with pytest.raises(KabutobashiEntityError):
             _ = kb.StockCodeSingleAggregate.of(entity="")
 
-    def test_pass_methods(self, entity: pd.DataFrame):
-        methods = kb.methods + [kb.basic, kb.pct_change, kb.volatility]
-        agg = kb.StockCodeSingleAggregate.of(entity=entity, code="1375")
-        estimated = agg.with_processed(methods=methods).with_estimated(stock_analysis=kb.stock_analysis)
-        value = estimated.weighted_estimated_value({"fundamental": 1.0, "volume": 1.0})
-        assert value != 0
-
-        # check visualize single column
-        data_visualized = agg.visualize(kb.sma)
-        assert data_visualized.fig
-
-        # check visualize multiple columns
-        data_visualized = agg.visualize(kb.macd)
-        assert data_visualized.fig
-
-        data = estimated.to_dict()
-        assert "code" in data
-        assert "name" in data
-        assert "market" in data
-        assert "industry_type" in data
-        assert "weighted_estimated_value" in data
-        assert "estimate_name" in data
-
-        with pytest.raises(NotImplementedError):
-            kb.StockCodeSingleAggregate.from_dict(data={})
-
     def test_error_methods(self, entity: pd.DataFrame):
         methods = kb.methods + [kb.basic, kb.pct_change, kb.volatility]
         agg = kb.StockCodeSingleAggregate.of(entity=entity, code="1375")

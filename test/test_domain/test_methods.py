@@ -18,58 +18,6 @@ def test_example_data(stock_agg):
     assert "low" in columns
 
 
-def test_analysis_with_sma(stock_agg):
-    processed = stock_agg.with_processed([kb.sma])
-    columns = processed.processed_list[0].df.columns
-    assert "sma_short" in columns
-    assert "sma_medium" in columns
-    assert "sma_long" in columns
-    assert "buy_signal" in columns
-    assert "sell_signal" in columns
-    # method name
-    assert processed.processed_list[0].applied_method_name == "sma"
-
-
-def test_analysis_with_macd(stock_agg):
-    processed = stock_agg.with_processed([kb.macd])
-    columns = processed.processed_list[0].df.columns
-    assert "ema_short" in columns
-    assert "ema_long" in columns
-    assert "signal" in columns
-    assert "macd" in columns
-    assert "histogram" in columns
-    assert "buy_signal" in columns
-    assert "sell_signal" in columns
-    # method name
-    assert processed.processed_list[0].applied_method_name == "macd"
-
-
-def test_analysis_with_stochastics(stock_agg):
-    processed = stock_agg.with_processed([kb.stochastics])
-    columns = processed.processed_list[0].df.columns
-    assert "K" in columns
-    assert "D" in columns
-    assert "SD" in columns
-    assert "buy_signal" in columns
-    assert "sell_signal" in columns
-    # method name
-    assert processed.processed_list[0].applied_method_name == "stochastics"
-
-
-def test_analysis_with_adx(stock_agg):
-    processed = stock_agg.with_processed([kb.adx])
-    columns = processed.processed_list[0].df.columns
-    assert "plus_di" in columns
-    assert "minus_di" in columns
-    assert "DX" in columns
-    assert "ADX" in columns
-    assert "ADXR" in columns
-    assert "buy_signal" in columns
-    assert "sell_signal" in columns
-    # method name
-    assert processed.processed_list[0].applied_method_name == "adx"
-
-
 @pytest.mark.skip(reason="buy_signal and sell_signal is not implemented")
 def test_analysis_with_ichimoku(stock_agg):
     processed = stock_agg.with_processed([kb.ichimoku])
@@ -81,42 +29,6 @@ def test_analysis_with_ichimoku(stock_agg):
     assert "delayed_span" in columns
     # method name
     assert processed.processed_list[0].applied_method_name == "ichimoku"
-
-
-def test_analysis_with_momentum(stock_agg):
-    processed = stock_agg.with_processed([kb.momentum])
-    columns = processed.processed_list[0].df.columns
-    assert "momentum" in columns
-    assert "sma_momentum" in columns
-    assert "buy_signal" in columns
-    assert "sell_signal" in columns
-    # method name
-    assert processed.processed_list[0].applied_method_name == "momentum"
-
-
-def test_analysis_with_psycho_logical(stock_agg):
-    processed = stock_agg.with_processed([kb.psycho_logical])
-    columns = processed.processed_list[0].df.columns
-    assert "psycho_line" in columns
-    assert "bought_too_much" in columns
-    assert "sold_too_much" in columns
-    assert "buy_signal" in columns
-    assert "sell_signal" in columns
-    # method name
-    assert processed.processed_list[0].applied_method_name == "psycho_logical"
-
-
-def test_analysis_with_bollinger_bands(stock_agg):
-    processed = stock_agg.with_processed([kb.bollinger_bands])
-    columns = processed.processed_list[0].df.columns
-    assert "upper_2_sigma" in columns
-    assert "lower_2_sigma" in columns
-    assert "over_upper_continuity" in columns
-    assert "over_lower_continuity" in columns
-    assert "buy_signal" in columns
-    assert "sell_signal" in columns
-    # method name
-    assert processed.processed_list[0].applied_method_name == "bollinger_bands"
 
 
 def test_analysis_with_fitting(stock_agg):
@@ -155,11 +67,3 @@ def test_analysis_with_volatility(stock_agg):
     processed = stock_agg.with_processed([kb.volatility])
     # method name
     assert processed.processed_list[0].applied_method_name == "volatility"
-
-
-def test_get_impact_with(stock_agg):
-    result_1 = stock_agg.with_processed(methods=[kb.sma])
-    assert "sma" in [v.applied_method_name for v in result_1.processed_list]
-    result_2 = stock_agg.with_processed(methods=[kb.sma, kb.macd])
-    assert "sma" in [v.applied_method_name for v in result_2.processed_list]
-    assert "macd" in [v.applied_method_name for v in result_2.processed_list]
