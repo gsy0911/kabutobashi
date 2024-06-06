@@ -1,20 +1,22 @@
 import pandas as pd
 
-from .method import Method, MethodType, ProcessMethod, VisualizeMethod
+from ..decorator import block
+
+__all__ = ["ProcessIchimokuBlock"]
 
 
-class IchimokuProcess(ProcessMethod):
+@block(block_name="process_ichimoku", series_required_columns=["high", "low", "close"])
+class ProcessIchimokuBlock:
     """
 
     See Also:
         https://kabu.com/investment/guide/technical/04.html
     """
 
+    series: pd.DataFrame
     short_term: int = 12
     medium_term: int = 26
     long_term: int = 52
-    method_name: str = "ichimoku"
-    method_type: MethodType = MethodType.TECHNICAL_ANALYSIS
 
     def _apply(self, df: pd.DataFrame) -> pd.DataFrame:
         df = df.assign(
@@ -49,27 +51,7 @@ class IchimokuProcess(ProcessMethod):
     def _signal(self, df: pd.DataFrame) -> pd.DataFrame:
         return df
 
-    def _processed_columns(self) -> list:
-        return ["line_change", "line_base", "proceeding_span_1", "proceeding_span_2", "delayed_span"]
-
-    def _parameterize(self, df_x: pd.DataFrame, df_p: pd.DataFrame) -> dict:
-        return {}
-
-
-class IchimokuVisualize(VisualizeMethod):
-    """
-
-    See Also:
-        https://kabu.com/investment/guide/technical/04.html
-    """
-
-    def _color_mapping(self) -> list:
-        return [
-            {"df_key": "", "color": "", "label": ""},
-        ]
-
-    def _visualize_option(self) -> dict:
-        return {"position": "in"}
-
-
-ichimoku = Method.of(process_method=IchimokuProcess(), visualize_method=IchimokuVisualize())
+    def _process(self) -> pd.DataFrame:
+        applied_df = self._apply(df=self.series)
+        signal_df = self._signal(df=applied_df)
+        return signal_df[["line_change", "line_base", "proceeding_span_1", "proceeding_span_2", "delayed_span"]]
