@@ -5,15 +5,7 @@ from .domain.entity.blocks import block
 from .domain.services.flow import Flow
 
 # methods to analysis
-from .domain.services.method import (
-    Method,
-    basic,
-    fitting,
-    ichimoku,
-    industry_categories,
-    pct_change,
-    volatility,
-)
+from .domain.services.method import Method, basic, fitting, ichimoku, industry_categories, pct_change
 from .domain.values import (
     DecodeHtmlPageStockIpo,
     RawHtmlPageStockInfo,

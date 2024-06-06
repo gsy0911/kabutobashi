@@ -5,3 +5,4 @@ from .parameterize_momentum_block import ParameterizeMomentumBlock
 from .parameterize_psycho_logical_block import ParameterizePsychoLogicalBlock
 from .parameterize_sma_block import ParameterizeSmaBlock
 from .parameterize_stochastics_block import ParameterizeStochasticsBlock
+from .parameterize_volatility import ParameterizeVolatilityBlock

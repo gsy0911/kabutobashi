@@ -107,3 +107,15 @@ def test_block_parameterize_stochastics():
     assert params["stochastics_d"] == 93.9153439153439
     assert params["stochastics_sd"] == 84.23330813807003
     assert params["stochastics_impact"] == -0.48406
+
+
+def test_block_parameterize_volatility():
+    blocks = [
+        ReadExampleBlock,
+        DefaultPreProcessBlock,
+        ParameterizeVolatilityBlock,
+    ]
+    res = Flow.initialize(params=PARAMS).then(blocks)
+    params = res.block_glue["parameterize_volatility"].params
+    assert params["volatility"] == 0.015477474132778526
+    assert params["close_volatility"] == 1188.063003315964
