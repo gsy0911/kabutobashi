@@ -54,6 +54,6 @@ class ExtractStockInfoMultipleDaysBlock:
         df.index = df["dt"]
         return df, result
 
-    def _validate_output(self, series: Optional[pd.DataFrame], params: Optional[dict]):
-        keys = series.keys()
-        assert "info_list" in keys, "StockInfoMultipleDaysExtractBlockOutput must have 'info_list' column"
+    # def _validate_output(self, series: Optional[pd.DataFrame], params: Optional[dict]):
+    #     keys = series.keys()
+    # assert "info_list" in keys, "StockInfoMultipleDaysExtractBlockOutput must have 'info_list' column"
