@@ -39,4 +39,4 @@ def crawl_ipo(year: str):
     ]
 
     res = Flow.initialize(params={"crawl_stock_ipo": {"year": year}}).then(blocks)
-    return res
+    return res.block_glue["extract_stock_ipo"].series
