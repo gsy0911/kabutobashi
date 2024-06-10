@@ -18,7 +18,7 @@ from kabutobashi.domain.errors import (
 
 from .basis_blocks import BlockGlue, BlockOutput
 
-__all__ = ["block"]
+__all__ = ["block", "block_from"]
 
 blocks_dict = {}
 logger = getLogger(__name__)
@@ -397,3 +397,7 @@ def block(
         # We're called with parens.
         return wrap
     return wrap(cls)
+
+
+def block_from(key: str):
+    return blocks_dict[key]

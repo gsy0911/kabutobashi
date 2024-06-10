@@ -2,7 +2,7 @@ from dataclasses import dataclass, field, replace
 from typing import List, Union
 
 from kabutobashi.domain.entity.blocks.basis_blocks import BlockGlue, IBlock
-from kabutobashi.domain.entity.blocks.hub_block import FromJsonBlock
+from kabutobashi.domain.entity.blocks.decorator import block_from
 
 
 @dataclass(frozen=True)
@@ -14,7 +14,7 @@ class Flow:
         flow_params = {}
         block_list = []
         for params in params_list:
-            block, block_params = FromJsonBlock.from_json(params).get()
+            block, block_params = block_from(params["block_name"]).get()
             block_list.append(block)
             flow_params.update(block_params)
         return Flow.initialize(params=flow_params).then(block=block_list)
