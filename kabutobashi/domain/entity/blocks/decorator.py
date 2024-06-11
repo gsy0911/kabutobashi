@@ -16,9 +16,9 @@ from kabutobashi.domain.errors import (
     KabutobashiBlockDecoratorTypeError,
 )
 
-from .basis_blocks import BlockGlue, BlockOutput
+from .basis_blocks import BlockGlue, BlockOutput, SeriesRequiredColumnsMode
 
-__all__ = ["block"]
+__all__ = ["block", "block_from"]
 
 blocks_dict = {}
 logger = getLogger(__name__)
@@ -195,6 +195,7 @@ def _inner_class_default_private_func_factory(cls, glue: BlockGlue):
     pre_condition_block_name = cls_instance.pre_condition_block_name
     series_required_columns = cls_instance.series_required_columns
     params_required_keys = cls_instance.params_required_keys
+    series_required_columns_mode = cls_instance.series_required_columns_mode
 
     # glue
     if glue.params is not None:
@@ -215,7 +216,9 @@ def _inner_class_default_private_func_factory(cls, glue: BlockGlue):
     if glue.series is not None:
         series = glue.series
     elif series_required_columns is not None and type(series_required_columns) is list:
-        series = glue.get_series_from_required_columns(required_columns=series_required_columns)
+        series = glue.get_series_from_required_columns(
+            required_columns=series_required_columns, series_required_columns_mode=series_required_columns_mode
+        )
     elif glue.block_outputs is not None:
         series = glue.block_outputs.get(pre_condition_block_name, None)
         if series is not None:
@@ -265,6 +268,7 @@ def _process_class(
     factory: bool,
     process: bool,
     series_required_columns: List[str | SeriesRequiredColumn],
+    series_required_columns_mode: SeriesRequiredColumnsMode,
     params_required_keys: List[str | ParamsRequiredKey],
 ):
     cls_params = {}
@@ -308,6 +312,7 @@ def _process_class(
     setattr(cls, "pre_condition_block_name", pre_condition_block_name)
     setattr(cls, "series_required_columns", series_required_columns)
     setattr(cls, "params_required_keys", params_required_keys)
+    setattr(cls, "series_required_columns_mode", series_required_columns_mode)
     # set-params
     setattr(cls, "params", cls_params)
     # process function
@@ -347,6 +352,7 @@ def block(
     factory: bool = False,
     process: bool = True,
     series_required_columns: List[str | SeriesRequiredColumn] = None,
+    series_required_columns_mode: SeriesRequiredColumnsMode = "strict",
     params_required_keys: List[str | ParamsRequiredKey] = None,
 ):
     """
@@ -358,6 +364,7 @@ def block(
         factory: True if _factory() method is required to implement.
         process: True if _process() method is required to implement.
         series_required_columns:
+        series_required_columns_mode:
         params_required_keys:
 
     Returns:
@@ -389,6 +396,7 @@ def block(
             factory=factory,
             process=process,
             series_required_columns=series_required_columns,
+            series_required_columns_mode=series_required_columns_mode,
             params_required_keys=params_required_keys,
         )
 
@@ -397,3 +405,7 @@ def block(
         # We're called with parens.
         return wrap
     return wrap(cls)
+
+
+def block_from(key: str):
+    return blocks_dict[key]
