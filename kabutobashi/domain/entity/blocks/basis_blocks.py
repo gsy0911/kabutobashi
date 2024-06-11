@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field, replace
 from logging import getLogger
-from typing import Dict, List, Optional
+from typing import Dict, List, Literal, Optional, TypeAlias
 
 import pandas as pd
 
@@ -8,7 +8,8 @@ from kabutobashi.domain.errors import KabutobashiBlockGlueError
 
 logger = getLogger(__name__)
 
-__all__ = ["BlockGlue", "BlockOutput"]
+__all__ = ["BlockGlue", "BlockOutput", "SeriesRequiredColumnsMode"]
+SeriesRequiredColumnsMode: TypeAlias = Literal["strict", "all"]
 
 
 @dataclass(frozen=True)
@@ -73,7 +74,9 @@ class BlockGlue:
             params = self.params
         return replace(self, series=series, params=params, block_outputs=self.block_outputs)
 
-    def get_series_from_required_columns(self, required_columns: List[str]) -> pd.DataFrame:
+    def get_series_from_required_columns(
+        self, required_columns: List[str], series_required_columns_mode: SeriesRequiredColumnsMode = "strict"
+    ) -> pd.DataFrame:
         logger.debug(f"{required_columns=}")
         orders = [v.execution_order for _, v in self if v.series is not None]
         if len(orders) != len(set(orders)):
@@ -83,11 +86,16 @@ class BlockGlue:
             for _, v in self
             if v.series is not None
         ]
-        fixed_series_columns_list = SeriesColumns.fix(series_columns_list)
+        fixed_series_columns_list = SeriesColumns.fix(series_columns_list=series_columns_list)
         initial_series = self[fixed_series_columns_list[0].block_name].series[fixed_series_columns_list[0].columns]
         rest_series = [self[v.block_name].series[v.columns] for v in fixed_series_columns_list[1:]]
         series = initial_series.join(rest_series)
-        return series[required_columns]
+        if series_required_columns_mode == "strict":
+            return series[required_columns]
+        elif series_required_columns_mode == "all":
+            return series
+        else:
+            raise ValueError()
 
     def get_max_execution_order(self) -> int:
         execution_order = [0]

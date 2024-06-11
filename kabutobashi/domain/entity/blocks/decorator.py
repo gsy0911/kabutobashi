@@ -16,7 +16,7 @@ from kabutobashi.domain.errors import (
     KabutobashiBlockDecoratorTypeError,
 )
 
-from .basis_blocks import BlockGlue, BlockOutput
+from .basis_blocks import BlockGlue, BlockOutput, SeriesRequiredColumnsMode
 
 __all__ = ["block", "block_from"]
 
@@ -265,6 +265,7 @@ def _process_class(
     factory: bool,
     process: bool,
     series_required_columns: List[str | SeriesRequiredColumn],
+    series_required_columns_mode: SeriesRequiredColumnsMode,
     params_required_keys: List[str | ParamsRequiredKey],
 ):
     cls_params = {}
@@ -347,6 +348,7 @@ def block(
     factory: bool = False,
     process: bool = True,
     series_required_columns: List[str | SeriesRequiredColumn] = None,
+    series_required_columns_mode: SeriesRequiredColumnsMode = "strict",
     params_required_keys: List[str | ParamsRequiredKey] = None,
 ):
     """
@@ -358,6 +360,7 @@ def block(
         factory: True if _factory() method is required to implement.
         process: True if _process() method is required to implement.
         series_required_columns:
+        series_required_columns_mode:
         params_required_keys:
 
     Returns:
@@ -389,6 +392,7 @@ def block(
             factory=factory,
             process=process,
             series_required_columns=series_required_columns,
+            series_required_columns_mode=series_required_columns_mode,
             params_required_keys=params_required_keys,
         )
 
