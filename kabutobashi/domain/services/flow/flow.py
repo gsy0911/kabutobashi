@@ -14,9 +14,9 @@ class Flow:
         flow_params = {}
         block_list = []
         for params in params_list:
-            block, block_params = block_from(params["block_name"]).get()
+            block = block_from(params["block_name"])
             block_list.append(block)
-            flow_params.update(block_params)
+            flow_params.update({params["block_name"]: params.get("params", {})})
         return Flow.initialize(params=flow_params).then(block=block_list)
 
     @staticmethod
@@ -162,6 +162,32 @@ class FlowPath:
         }
         flow_params_list.extend([process, parameterize])
         return replace(self, next_sequence_no=next_sequence_no + 2, flow_params_list=flow_params_list)
+
+    def volatility(self) -> "FlowPath":
+        next_sequence_no = self.next_sequence_no
+        flow_params_list = self.flow_params_list
+
+        parameterize = {
+            "id": "parameterize_volatility",
+            "block_name": "parameterize_volatility",
+            "sequence_no": next_sequence_no + 1,
+            "params": {},
+        }
+        flow_params_list.extend([parameterize])
+        return replace(self, next_sequence_no=next_sequence_no + 1, flow_params_list=flow_params_list)
+
+    def pct_change(self) -> "FlowPath":
+        next_sequence_no = self.next_sequence_no
+        flow_params_list = self.flow_params_list
+
+        parameterize = {
+            "id": "parameterize_pct_change",
+            "block_name": "parameterize_pct_change",
+            "sequence_no": next_sequence_no + 1,
+            "params": {},
+        }
+        flow_params_list.extend([parameterize])
+        return replace(self, next_sequence_no=next_sequence_no + 1, flow_params_list=flow_params_list)
 
     def read_example(self, code: int) -> "FlowPath":
         next_sequence_no = self.next_sequence_no
