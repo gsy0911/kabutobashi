@@ -3,10 +3,16 @@ from datetime import datetime
 import jpholiday
 import pandas as pd
 
+from kabutobashi.utilities import convert_float, convert_int
+
 from ..decorator import block
 
 
-@block(block_name="default_pre_process", series_required_columns=["open", "high", "low", "close", "code", "volume"])
+@block(
+    block_name="default_pre_process",
+    series_required_columns=["open", "high", "low", "close", "code", "volume"],
+    series_required_columns_mode="all",
+)
 class DefaultPreProcessBlock:
     series: pd.DataFrame
     for_analysis: bool
@@ -44,10 +50,22 @@ class DefaultPreProcessBlock:
         #         raise KabutobashiBlockSeriesIsNoneError()
         #     df = df[required_cols]
 
+        columns = df.columns
         df["dt"] = df.index
         df["dt"] = df["dt"].apply(self._fix_dt)
         df["passing"] = df["dt"].apply(self._is_holiday)
+        df["open"] = df["open"].apply(convert_float)
+        df["high"] = df["high"].apply(convert_float)
+        df["low"] = df["low"].apply(convert_float)
+        df["close"] = df["close"].apply(convert_float)
+        df["volume"] = df["volume"].apply(convert_int)
+        if "pbr" in columns:
+            df["pbr"] = df["pbr"].apply(convert_float)
+        if "psr" in columns:
+            df["psr"] = df["psr"].apply(convert_float)
+        if "per" in columns:
+            df["per"] = df["per"].apply(convert_float)
         df = df[~df["passing"]]
         df.index = df["dt"]
-        df = df.drop(["passing", "dt"], axis=1)
+        df = df.drop(["passing"], axis=1)
         return df
