@@ -1,7 +1,11 @@
 import sqlite3
+from logging import INFO, getLogger
 from pathlib import Path
 
 import pandas as pd
+
+logger = getLogger(__name__)
+logger.setLevel(INFO)
 
 ROOT_PATH = Path(__file__).parent.parent.parent.parent
 
@@ -23,9 +27,8 @@ class KabutobashiDatabase:
     def initialize(self) -> "KabutobashiDatabase":
         create_statement = """
             CREATE TABLE IF NOT EXISTS stock(
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                code INTEGER,
-                dt TEXT,
+                code INTEGER NOT NULL,
+                dt TEXT NOT NULL,
                 name TEXT,
                 open REAL,
                 high REAL,
@@ -34,7 +37,9 @@ class KabutobashiDatabase:
                 volume REAL,
                 per REAL,
                 psr REAL,
-                pbr REAL)
+                pbr REAL,
+                PRIMARY KEY (code, dt)
+            )
             """
         create_index_statement = "CREATE INDEX IF NOT EXISTS stock_code_dt_idx ON stock (code, dt)"
         with self as conn:
@@ -47,7 +52,11 @@ class KabutobashiDatabase:
         stock_table_columns = ["code", "dt", "name", "open", "close", "high", "low", "volume", "per", "psr", "pbr"]
         stock_table_name = "stock"
         with self as conn:
-            df[stock_table_columns].to_sql(stock_table_name, conn, if_exists="replace")
+            df = df.reset_index(drop=True)
+            try:
+                df[stock_table_columns].to_sql(stock_table_name, conn, if_exists="append", index=False)
+            except sqlite3.IntegrityError:
+                logger.warning(f"Stock data (stock.code, stock.dt) already exists")
         return self
 
     def select_stock_df(self, code: str):
