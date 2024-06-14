@@ -91,3 +91,20 @@ class KabutobashiDatabase:
         with self as conn:
             df = pd.read_sql(f"SELECT * FROM stock WHERE code = {code}", conn)
             return df[stock_table_columns]
+
+    def insert_impact_df(self, df: pd.DataFrame) -> "KabutobashiDatabase":
+        impact_table_columns = ["code", "dt", "impact"]
+        stock_table_name = "impact"
+        with self as conn:
+            df = df.reset_index(drop=True)
+            try:
+                df[impact_table_columns].to_sql(stock_table_name, conn, if_exists="append", index=False)
+            except sqlite3.IntegrityError:
+                logger.warning(f"Stock data (stock.code, stock.dt) already exists")
+        return self
+
+    def select_impact_df(self, dt: str):
+        impact_table_columns = ["code", "dt", "impact"]
+        with self as conn:
+            df = pd.read_sql(f"SELECT * FROM stock WHERE dt = {dt} ORDER BY impact", conn)
+            return df[impact_table_columns]
