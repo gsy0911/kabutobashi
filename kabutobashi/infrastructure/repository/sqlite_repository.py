@@ -25,7 +25,8 @@ class KabutobashiDatabase:
         self.con.close()
 
     def initialize(self) -> "KabutobashiDatabase":
-        create_statement = """
+        # stock daily record
+        create_stock_statement = """
             CREATE TABLE IF NOT EXISTS stock(
                 code INTEGER NOT NULL,
                 dt TEXT NOT NULL,
@@ -41,11 +42,37 @@ class KabutobashiDatabase:
                 PRIMARY KEY (code, dt)
             )
             """
-        create_index_statement = "CREATE INDEX IF NOT EXISTS stock_code_dt_idx ON stock (code, dt)"
+        create_stock_index_statement = "CREATE INDEX IF NOT EXISTS stock_code_dt_idx ON stock (code, dt)"
+
+        # evaluate
+        create_impact_statement = """
+            CREATE TABLE IF NOT EXISTS impact(
+                code INTEGER NOT NULL,
+                dt TEXT NOT NULL,
+                value REAL,
+                PRIMARY KEY (code, dt)
+            )
+            """
+        create_impact_index_statement = "CREATE INDEX IF NOT EXISTS impact_code_dt_idx ON evaluate (code, dt)"
+
+        # brand
+        create_brand_statement = """
+            CREATE TABLE IF NOT EXISTS brand(
+                code INTEGER NOT NULL,
+                name TEXT,
+                value REAL,
+                PRIMARY KEY (code)
+            )
+            """
+        create_brand_index_statement = "CREATE INDEX IF NOT EXISTS brand_code_dt_idx ON evaluate (code)"
         with self as conn:
             cur = conn.cursor()
-            cur.execute(create_statement)
-            cur.execute(create_index_statement)
+            cur.execute(create_stock_statement)
+            cur.execute(create_stock_index_statement)
+            cur.execute(create_impact_statement)
+            cur.execute(create_impact_index_statement)
+            cur.execute(create_brand_statement)
+            cur.execute(create_brand_index_statement)
         return self
 
     def insert_stock_df(self, df: pd.DataFrame) -> "KabutobashiDatabase":
