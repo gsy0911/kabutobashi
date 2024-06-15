@@ -1,6 +1,7 @@
 import sqlite3
 from logging import INFO, getLogger
 from pathlib import Path
+from typing import Optional
 
 import pandas as pd
 
@@ -109,8 +110,11 @@ class KabutobashiDatabase:
                 logger.warning(f"Stock data (stock.code, stock.dt) already exists")
         return self
 
-    def select_impact_df(self, dt: str):
+    def select_impact_df(self, dt: str) -> Optional[pd.DataFrame]:
         impact_table_columns = ["code", "dt", "impact"]
         with self as conn:
-            df = pd.read_sql(f"SELECT * FROM stock WHERE dt = {dt} ORDER BY impact", conn)
-            return df[impact_table_columns]
+            try:
+                df = pd.read_sql(f"SELECT * FROM impact WHERE dt = '{dt}' ORDER BY impact", conn)
+                return df[impact_table_columns]
+            except sqlite3.DatabaseError:
+                return None
