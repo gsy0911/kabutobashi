@@ -10,78 +10,6 @@
 [![PiPY](https://img.shields.io/pypi/v/kabutobashi.svg)](https://pypi.org/project/kabutobashi/)
 [![Documentation Status](https://readthedocs.org/projects/kabutobashi/badge/?version=latest)](https://kabutobashi.readthedocs.io/en/latest/?badge=latest)
 
-## concept
-
-class-relationship.
-
-- `E`: Entity
-- `VO`: ValueObject
-- `S`: Service
-- `A`: Aggregate
-
-```mermaid
-graph TD;
-  
-  subgraph Stock
-    stock[Stock:E]
-    brand[StockBrand:E]
-    record[StockRecord:E]
-    indicator[StockIndicator:E]
-    
-    stock --> brand
-    stock --> record
-    stock --> indicator
-  end
-
-  subgraph Stock-to-Analysis
-    aggregate[StockCodeSingleAggregate:A]
-    processed[StockDataProcessed:VO]
-    estimated[StockDataEstimated:VO]
-    
-    aggregate --- |Info| stock
-    aggregate --- |Method| processed
-    aggregate --- |Analysis| estimated
-  end
-
-  subgraph Repositories/Storage
-    repositories[(Storage/Database)] --- | read/write | stock
-  end
-
-  subgraph Pages
-    raw_html[RawHtml:VO]
-    decoder[Decoder:S]
-    decoded_html[DecodedHtml:VO]
-
-    raw_html --> decoder
-    decoder --> decoded_html
-    decoded_html --> repositories
-    decoded_html --> stock
-  end
-
-  subgraph Repositories/Web
-    web[[Web]] --> | crawl | raw_html
-  end
-```
-
-
-## usage
-
-```python
-import kabutobashi as kb
-
-df = kb.example()
-methods = kb.methods + [kb.basic, kb.pct_change, kb.volatility]
-analysis = kb.stock_analysis
-agg = kb.StockCodeSingleAggregate.of(entity=df, code="1234").with_processed(methods).with_estimated(stock_analysis=analysis)
-print(agg)
-
-# n日前までの営業日の日付リストを取得する関数
-target_date = "2020-01-01"
-date_list = kb.get_past_n_days(target_date, n=40)
-
-```
-
-
 # Core Concept
 
 `@block`-decorator and `Flow`-class is important.
@@ -226,3 +154,12 @@ Processes always consist of combinations of multiple simple operations. And the 
 
 Therefore, in `Flow`-class, it automatically resolves the sequence of those processes for users, as long as you provide the initial values.
 
+## usage
+
+```python
+import kabutobashi as kb
+
+# n日前までの営業日の日付リストを取得する関数
+target_date = "2020-01-01"
+date_list = kb.get_past_n_days(target_date, n=40)
+```
