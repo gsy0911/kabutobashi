@@ -1,3 +1,5 @@
+import pandas as pd
+
 from kabutobashi.domain.entity.blocks.parameterize_blocks import *
 from kabutobashi.domain.entity.blocks.pre_process_blocks import *
 from kabutobashi.domain.entity.blocks.process_blocks import *
@@ -23,7 +25,7 @@ PARAMS_LIST = (
 )
 
 
-def test_block_parameterize_sma():
+def test_block_impact():
     blocks = [
         ReadSqlite3Block,
         DefaultPreProcessBlock,
@@ -48,3 +50,7 @@ def test_block_parameterize_sma():
     res = Flow.initialize(params=PARAMS).then(blocks)
     params = res.block_glue["fully_connect"].params
     assert params["impact"] == 0.151225
+
+    series = res.block_glue["fully_connect"].series
+    assert_df = pd.DataFrame.from_dict({"code": [1439], "dt": ["2021-11-26"], "impact": [0.151225]})
+    assert series.equals(assert_df)

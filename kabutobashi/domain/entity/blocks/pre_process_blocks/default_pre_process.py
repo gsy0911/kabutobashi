@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Tuple
 
 import jpholiday
 import pandas as pd
@@ -41,7 +42,7 @@ class DefaultPreProcessBlock:
         except ValueError:
             return False
 
-    def _process(self) -> pd.DataFrame:
+    def _process(self) -> Tuple[pd.DataFrame, dict]:
 
         df = self.series
         # if self.for_analysis:
@@ -68,4 +69,4 @@ class DefaultPreProcessBlock:
         df = df[~df["passing"]]
         df.index = df["dt"]
         df = df.drop(["passing"], axis=1)
-        return df
+        return df, {"dt": max(df["dt"])}
