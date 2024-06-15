@@ -26,6 +26,7 @@ class KabutobashiDatabase:
 
     def initialize(self) -> "KabutobashiDatabase":
         # stock daily record
+        drop_stock_table = "DROP TABLE IF EXISTS stock"
         create_stock_statement = """
             CREATE TABLE IF NOT EXISTS stock(
                 code INTEGER NOT NULL,
@@ -45,6 +46,7 @@ class KabutobashiDatabase:
         create_stock_index_statement = "CREATE INDEX IF NOT EXISTS stock_code_dt_idx ON stock (code, dt)"
 
         # evaluate
+        drop_impact_table = "DROP TABLE IF EXISTS impact"
         create_impact_statement = """
             CREATE TABLE IF NOT EXISTS impact(
                 code INTEGER NOT NULL,
@@ -56,6 +58,7 @@ class KabutobashiDatabase:
         create_impact_index_statement = "CREATE INDEX IF NOT EXISTS impact_code_dt_idx ON impact (code, dt)"
 
         # brand
+        drop_brand_table = "DROP TABLE IF EXISTS brand"
         create_brand_statement = """
             CREATE TABLE IF NOT EXISTS brand(
                 code INTEGER NOT NULL,
@@ -67,10 +70,13 @@ class KabutobashiDatabase:
         create_brand_index_statement = "CREATE INDEX IF NOT EXISTS brand_code_dt_idx ON brand (code)"
         with self as conn:
             cur = conn.cursor()
+            cur.execute(drop_stock_table)
             cur.execute(create_stock_statement)
             cur.execute(create_stock_index_statement)
+            cur.execute(drop_impact_table)
             cur.execute(create_impact_statement)
             cur.execute(create_impact_index_statement)
+            cur.execute(drop_brand_table)
             cur.execute(create_brand_statement)
             cur.execute(create_brand_index_statement)
         return self
