@@ -1,5 +1,6 @@
 from .process_adx_block import ProcessAdxBlock
 from .process_bollinger_bands_block import ProcessBollingerBandsBlock
+from .process_ichimoku import ProcessIchimokuBlock
 from .process_macd_block import ProcessMacdBlock
 from .process_momentum_block import ProcessMomentumBlock
 from .process_psycho_logical_block import ProcessPsychoLogicalBlock
