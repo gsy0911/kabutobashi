@@ -49,11 +49,11 @@ class KabutobashiDatabase:
             CREATE TABLE IF NOT EXISTS impact(
                 code INTEGER NOT NULL,
                 dt TEXT NOT NULL,
-                value REAL,
+                impact REAL,
                 PRIMARY KEY (code, dt)
             )
             """
-        create_impact_index_statement = "CREATE INDEX IF NOT EXISTS impact_code_dt_idx ON evaluate (code, dt)"
+        create_impact_index_statement = "CREATE INDEX IF NOT EXISTS impact_code_dt_idx ON impact (code, dt)"
 
         # brand
         create_brand_statement = """
@@ -64,7 +64,7 @@ class KabutobashiDatabase:
                 PRIMARY KEY (code)
             )
             """
-        create_brand_index_statement = "CREATE INDEX IF NOT EXISTS brand_code_dt_idx ON evaluate (code)"
+        create_brand_index_statement = "CREATE INDEX IF NOT EXISTS brand_code_dt_idx ON brand (code)"
         with self as conn:
             cur = conn.cursor()
             cur.execute(create_stock_statement)

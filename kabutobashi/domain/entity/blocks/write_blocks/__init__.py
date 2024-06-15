@@ -1,1 +1,1 @@
-from .write_sqlite3_block import WriteStockSqlite3Block
+from .write_sqlite3_block import WriteImpactSqlite3Block, WriteStockSqlite3Block
