@@ -18,7 +18,7 @@ from .example_data import example
 from .utilities import get_past_n_days
 
 # comparable tuple
-VERSION = (0, 8, 0)
+VERSION = (0, 8, 1)
 # generate __version__ via VERSION tuple
 __version__ = ".".join(map(str, VERSION))
 

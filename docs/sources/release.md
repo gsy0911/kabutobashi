@@ -1,5 +1,12 @@
 # Release Note
 
+## 0.8.1
+
+- ENHANCEMENT: using sqlite3 ([#201](https://github.com/gsy0911/kabutobashi/issues/201))
+- ENHANCEMENT: add ReadBlock and WriteBlock ([#199](https://github.com/gsy0911/kabutobashi/issues/199))
+- ENHANCEMENT: add test ([#196](https://github.com/gsy0911/kabutobashi/issues/196))
+- ENHANCEMENT: remove `Method`-classes ([#195](https://github.com/gsy0911/kabutobashi/issues/195))
+
 ## 0.8.0
 
 - ENHANCEMENT: add Block and Flow classes ([#184](https://github.com/gsy0911/kabutobashi/issues/184))
