@@ -16,28 +16,15 @@ from kabutobashi.domain.errors import (
     KabutobashiBlockDecoratorTypeError,
 )
 
-from .abc_block import BlockGlue
+from .basis_blocks import BlockGlue, BlockOutput, SeriesRequiredColumnsMode
 
-__all__ = ["block"]
+__all__ = ["block", "block_from"]
 
 blocks_dict = {}
 logger = getLogger(__name__)
 
 # type candidates of `UdfBlock._process()` return
 BlockProcessResultType: TypeAlias = Union[dict, pd.DataFrame, Tuple[dict, pd.DataFrame], Tuple[pd.DataFrame, dict]]
-
-
-@dataclass(frozen=True)
-class BlockInput:
-    series: pd.DataFrame
-    params: dict
-
-
-@dataclass(frozen=True)
-class BlockOutput:
-    series: Optional[pd.DataFrame]
-    params: Optional[dict]
-    block_name: str
 
 
 @dataclass(frozen=True)
@@ -130,15 +117,20 @@ def _inner_func_process(self) -> BlockGlue:
     self.validate_input()
     # process()
     res: BlockProcessResultType = self._process()
+    execution_order = res_glue.get_max_execution_order() + 1
 
     if type(res) is tuple:
         if len(res) == 2:
             if type(res[0]) is dict and type(res[1]) is pd.DataFrame:
                 self.validate_output(series=res[1], params=res[0])
-                block_output = BlockOutput(series=res[1], params=res[0], block_name=block_name)
+                block_output = BlockOutput(
+                    series=res[1], params=res[0], block_name=block_name, execution_order=execution_order
+                )
             elif type(res[1]) is dict and type(res[0]) is pd.DataFrame:
                 self.validate_output(series=res[0], params=res[1])
-                block_output = BlockOutput(series=res[0], params=res[1], block_name=block_name)
+                block_output = BlockOutput(
+                    series=res[0], params=res[1], block_name=block_name, execution_order=execution_order
+                )
             else:
                 raise KabutobashiBlockDecoratorReturnError(
                     "The return values are limited to combinations of `dict` and `pd.DataFrame`."
@@ -147,15 +139,20 @@ def _inner_func_process(self) -> BlockGlue:
             raise KabutobashiBlockDecoratorReturnError("Please limit the number of return values to two or fewer.")
     elif type(res) is dict:
         self.validate_output(series=None, params=res)
-        block_output = BlockOutput(series=None, params=res, block_name=block_name)
+        block_output = BlockOutput(series=None, params=res, block_name=block_name, execution_order=execution_order)
     elif type(res) is pd.DataFrame:
         self.validate_output(series=res, params=None)
-        block_output = BlockOutput(series=res, params=None, block_name=block_name)
+        block_output = BlockOutput(series=res, params=None, block_name=block_name, execution_order=execution_order)
     else:
         raise KabutobashiBlockDecoratorReturnError(f"An unexpected return type {type(res)} was returned.")
     block_outputs = res_glue.block_outputs if res_glue.block_outputs else {}
     block_outputs.update({block_name: block_output})
-    return BlockGlue(series=res_glue.series, params=res_glue.params, block_outputs=block_outputs)
+    return BlockGlue(
+        series=res_glue.series,
+        params=res_glue.params,
+        block_outputs=block_outputs,
+        execution_order=res_glue.execution_order + 1,
+    )
 
 
 def _inner_class_func_factory(cls, glue: BlockGlue):
@@ -198,6 +195,7 @@ def _inner_class_default_private_func_factory(cls, glue: BlockGlue):
     pre_condition_block_name = cls_instance.pre_condition_block_name
     series_required_columns = cls_instance.series_required_columns
     params_required_keys = cls_instance.params_required_keys
+    series_required_columns_mode = cls_instance.series_required_columns_mode
 
     # glue
     if glue.params is not None:
@@ -218,11 +216,9 @@ def _inner_class_default_private_func_factory(cls, glue: BlockGlue):
     if glue.series is not None:
         series = glue.series
     elif series_required_columns is not None and type(series_required_columns) is list:
-        logger.debug(f"{series_required_columns=}")
-        series_list = [v.series for _, v in glue if v.series is not None]
-        initial_series = series_list[0]
-        series = initial_series.join(series_list[1:])
-        series = series[series_required_columns]
+        series = glue.get_series_from_required_columns(
+            required_columns=series_required_columns, series_required_columns_mode=series_required_columns_mode
+        )
     elif glue.block_outputs is not None:
         series = glue.block_outputs.get(pre_condition_block_name, None)
         if series is not None:
@@ -272,6 +268,7 @@ def _process_class(
     factory: bool,
     process: bool,
     series_required_columns: List[str | SeriesRequiredColumn],
+    series_required_columns_mode: SeriesRequiredColumnsMode,
     params_required_keys: List[str | ParamsRequiredKey],
 ):
     cls_params = {}
@@ -315,6 +312,7 @@ def _process_class(
     setattr(cls, "pre_condition_block_name", pre_condition_block_name)
     setattr(cls, "series_required_columns", series_required_columns)
     setattr(cls, "params_required_keys", params_required_keys)
+    setattr(cls, "series_required_columns_mode", series_required_columns_mode)
     # set-params
     setattr(cls, "params", cls_params)
     # process function
@@ -354,6 +352,7 @@ def block(
     factory: bool = False,
     process: bool = True,
     series_required_columns: List[str | SeriesRequiredColumn] = None,
+    series_required_columns_mode: SeriesRequiredColumnsMode = "strict",
     params_required_keys: List[str | ParamsRequiredKey] = None,
 ):
     """
@@ -365,6 +364,7 @@ def block(
         factory: True if _factory() method is required to implement.
         process: True if _process() method is required to implement.
         series_required_columns:
+        series_required_columns_mode:
         params_required_keys:
 
     Returns:
@@ -396,6 +396,7 @@ def block(
             factory=factory,
             process=process,
             series_required_columns=series_required_columns,
+            series_required_columns_mode=series_required_columns_mode,
             params_required_keys=params_required_keys,
         )
 
@@ -404,3 +405,7 @@ def block(
         # We're called with parens.
         return wrap
     return wrap(cls)
+
+
+def block_from(key: str):
+    return blocks_dict[key]

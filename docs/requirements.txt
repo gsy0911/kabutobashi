@@ -7,3 +7,12 @@ kabutobashi
 myst_parser
 sphinxcontrib-mermaid
 injector
+sphinx_rtd_theme
+scipy
+pydantic
+injector
+xlrd
+httpx
+myst-parser
+sphinx
+guzzle_sphinx_theme

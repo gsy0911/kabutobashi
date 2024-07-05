@@ -14,27 +14,6 @@ class KabutobashiPageError(KabutobashiBaseError):
         return f"error occurred when crawling [{self.url}]"
 
 
-class TagNotFoundError(KabutobashiPageError):
-    """
-    crawlしたいページに対象のtagがない場合に返すエラー
-    """
-
-    def __init__(self, tag):
-        super().__init__(url="")
-        self.tag = tag
-
-    def __str__(self):
-        return f"tag [{self.tag}] not found"
-
-
-class KabutobashiMethodError(KabutobashiBaseError):
-    pass
-
-
-class KabutobashiVisualizeError(KabutobashiBaseError):
-    pass
-
-
 class KabutobashiEntityError(KabutobashiBaseError):
     pass
 
@@ -55,7 +34,15 @@ class KabutobashiBlockSeriesIsNoneError(KabutobashiBlockError):
     pass
 
 
-class KabutobashiBlockDecoratorError(KabutobashiBaseError):
+class KabutobashiBlockGlueError(KabutobashiBlockError):
+    """
+    KabutobashiBlockGlueError is base error for `BlockGlue`.
+    """
+
+    pass
+
+
+class KabutobashiBlockDecoratorError(KabutobashiBlockError):
     """
     KabutobashiBlockDecoratorError is base error for `@block` decorator.
     """

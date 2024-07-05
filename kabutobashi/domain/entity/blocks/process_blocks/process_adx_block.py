@@ -106,7 +106,6 @@ class ProcessAdxBlock:
             sum_minus_dm=lambda x: x["fixed_minus_dm"].rolling(self.term).sum(),
         )
 
-        df = df.dropna()
         # +DI, -DI
         df = df.assign(
             plus_di=df.apply(lambda x: x["sum_plus_dm"] / x["sum_tr"] * 100, axis=1),
@@ -179,4 +178,4 @@ class ProcessAdxBlock:
     def _process(self) -> pd.DataFrame:
         applied_df = self._apply(df=self.series)
         signal_df = self._signal(df=applied_df)
-        return signal_df[["plus_di", "minus_di", "DX", "ADX", "ADXR", "adx_buy_signal", "adx_sell_signal"]]
+        return signal_df[["DX", "ADX", "ADXR", "adx_buy_signal", "adx_sell_signal"]]

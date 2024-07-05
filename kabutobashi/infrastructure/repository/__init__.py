@@ -4,3 +4,4 @@ from .html_page_repository import (
     StockInfoMultipleDaysHtmlPageRepository,
     StockIpoHtmlPageRepository,
 )
+from .sqlite_repository import KabutobashiDatabase
