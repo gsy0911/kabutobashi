@@ -38,9 +38,6 @@ class KabutobashiDatabase:
                 low REAL,
                 close REAL,
                 volume REAL,
-                per REAL,
-                psr REAL,
-                pbr REAL,
                 PRIMARY KEY (code, dt)
             )
             """
@@ -83,7 +80,7 @@ class KabutobashiDatabase:
         return self
 
     def insert_stock_df(self, df: pd.DataFrame) -> "KabutobashiDatabase":
-        stock_table_columns = ["code", "dt", "name", "open", "close", "high", "low", "volume", "per", "psr", "pbr"]
+        stock_table_columns = ["code", "dt", "name", "open", "close", "high", "low", "volume"]
         stock_table_name = "stock"
         with self as conn:
             df = df.reset_index(drop=True)
@@ -94,7 +91,7 @@ class KabutobashiDatabase:
         return self
 
     def select_stock_df(self, code: str):
-        stock_table_columns = ["code", "dt", "name", "open", "close", "high", "low", "volume", "per", "psr", "pbr"]
+        stock_table_columns = ["code", "dt", "name", "open", "close", "high", "low", "volume"]
         with self as conn:
             df = pd.read_sql(f"SELECT * FROM stock WHERE code = {code}", conn)
             return df[stock_table_columns]

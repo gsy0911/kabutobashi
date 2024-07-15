@@ -3,6 +3,7 @@ import pandas as pd
 from kabutobashi.domain.entity.blocks.crawl_blocks import *
 from kabutobashi.domain.entity.blocks.extract_blocks import *
 from kabutobashi.domain.entity.blocks.pre_process_blocks import *
+from kabutobashi.domain.entity.blocks.write_blocks import *
 from kabutobashi.domain.services.flow import Flow
 
 
@@ -24,6 +25,7 @@ def crawl_info_multiple(code: str, page: str) -> pd.DataFrame:
         CrawlStockInfoMultipleDays2Block,
         ExtractStockInfoMultipleDays2Block,
         DefaultPreProcessBlock,
+        WriteStockSqlite3Block,
     ]
 
     res = Flow.initialize(
