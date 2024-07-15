@@ -19,15 +19,18 @@ def crawl_info(code: str):
     return res.block_glue["default_pre_process"].series
 
 
-def crawl_info_multiple(code: str) -> pd.DataFrame:
+def crawl_info_multiple(code: str, page: str) -> pd.DataFrame:
     blocks = [
-        CrawlStockInfoMultipleDaysBlock,
-        ExtractStockInfoMultipleDaysBlock,
+        CrawlStockInfoMultipleDays2Block,
+        ExtractStockInfoMultipleDays2Block,
         DefaultPreProcessBlock,
     ]
 
     res = Flow.initialize(
-        params={"crawl_stock_info_multiple_days": {"code": code}, "default_pre_process": {"for_analysis": False}}
+        params={
+            "crawl_stock_info_multiple_days_2": {"code": code, "page": page},
+            "default_pre_process": {"for_analysis": False},
+        }
     ).then(blocks)
     return res.block_glue["default_pre_process"].series
 

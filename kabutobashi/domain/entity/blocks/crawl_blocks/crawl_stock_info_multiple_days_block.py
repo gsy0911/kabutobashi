@@ -20,3 +20,18 @@ class CrawlStockInfoMultipleDaysBlock:
         assert "code" in keys, "StockInfoMultipleDaysCrawlBlockOutput must have 'code' column"
         assert "main_html_text" in keys, "StockInfoMultipleDaysCrawlBlockOutput must have 'main_html_text' column"
         assert "sub_html_text" in keys, "StockInfoMultipleDaysCrawlBlockOutput must have 'sub_html_text' column"
+
+
+@block(block_name="crawl_stock_info_multiple_days_2")
+class CrawlStockInfoMultipleDays2Block:
+    code: str
+    page: int
+
+    def _process(self) -> dict:
+        main_text = from_url(url=f"https://kabutan.jp/stock/kabuka?code={self.code}&ashi=day&page={self.page}")
+        return {"code": self.code, "main_html_text": main_text}
+
+    def _validate_output(self, series: Optional[pd.DataFrame], params: Optional[dict]):
+        keys = params.keys()
+        assert "code" in keys, "StockInfoMultipleDaysCrawlBlockOutput must have 'code' column"
+        assert "main_html_text" in keys, "StockInfoMultipleDaysCrawlBlockOutput must have 'main_html_text' column"
