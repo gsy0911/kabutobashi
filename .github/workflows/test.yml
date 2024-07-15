@@ -7,10 +7,6 @@ on:
   pull_request:
     branches:
       - develop
-  workflow_dispatch:
-    branches:
-      - main
-      - develop
 
 jobs:
   pytest:
