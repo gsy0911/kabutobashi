@@ -11,7 +11,7 @@ class TestStockInfo:
 
 class TestStockInfoMultiple:
     def test_pass(self):
-        res = crawl_info_multiple(code="9101")
+        res = crawl_info_multiple(code="9101", page="1")
         assert type(res) is pd.DataFrame
 
 

@@ -32,6 +32,7 @@ class ParameterizeSmaBlock:
             "sma_long_short": df["sma_long_short"].tail(3).mean(),
             "sma_long_medium": df["sma_long_medium"].tail(3).mean(),
             "sma_impact": get_impact(df=df, influence=self.influence, tail=self.tail, prefix="sma"),
+            "dt": max(df.index.to_list()),
         }
 
         return params

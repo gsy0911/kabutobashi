@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Optional, Tuple
 
 import pandas as pd
@@ -57,3 +58,43 @@ class ExtractStockInfoMultipleDaysBlock:
     # def _validate_output(self, series: Optional[pd.DataFrame], params: Optional[dict]):
     #     keys = series.keys()
     # assert "info_list" in keys, "StockInfoMultipleDaysExtractBlockOutput must have 'info_list' column"
+
+
+@block(block_name="extract_stock_info_multiple_days_2", pre_condition_block_name="crawl_stock_info_multiple_days_2")
+class ExtractStockInfoMultipleDays2Block:
+    main_html_text: str
+    code: str
+
+    def _decode(self, code: str, main_html_text: str) -> dict:
+        main_soup = BeautifulSoup(main_html_text, features="lxml")
+
+        # 名前取得
+        code_and_name = main_soup.find("div", {"class": "si_i1_1"}).find("h2")
+        code_and_name.find("span").extract()
+        name = code_and_name.get_text()
+        # ページの情報を取得
+        stock_recordset = main_soup.find("table", {"class": "stock_kabuka_dwm"})
+        result_1 = []
+        mapping = {0: "open", 1: "high", 2: "low", 3: "close", 4: "diff", 5: "ratio", 6: "volume"}
+        for tr in stock_recordset.find_all("tr"):
+            tmp = {}
+            dt = tr.find("time")
+            if dt:
+                dt = datetime.strptime(dt.get_text(), "%y/%m/%d").strftime("%Y-%m-%d")
+                tmp.update({"dt": dt})
+            for idx, td in enumerate(tr.find_all("td")):
+                tmp.update({mapping[idx]: td.get_text()})
+            result_1.append(tmp)
+        df = pd.DataFrame(result_1).dropna()
+        df = df[["dt", "open", "high", "low", "close", "volume"]]
+
+        df["code"] = code
+        df["name"] = name
+        return {"info_list": df.to_dict(orient="records")}
+
+    def _process(self) -> Tuple[pd.DataFrame, dict]:
+        result = self._decode(code=self.code, main_html_text=self.main_html_text)
+        # to_df
+        df = pd.DataFrame(data=result["info_list"])
+        df.index = df["dt"]
+        return df, result
