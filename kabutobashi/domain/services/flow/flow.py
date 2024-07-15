@@ -27,9 +27,9 @@ class Flow:
     def then(self, block: Union[type[IBlock], List[type[IBlock]]]) -> "Flow":
         if type(block) is list:
             flow = self
-            glue = self.block_glue
-            for v in block:
-                glue = v.glue(glue=glue)
+            glue: BlockGlue = self.block_glue
+            for b in block:
+                glue = b.glue(glue=glue)
                 flow = replace(flow, block_glue=glue)
             return flow
         else:

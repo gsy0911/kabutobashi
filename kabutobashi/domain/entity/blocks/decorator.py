@@ -104,6 +104,7 @@ def _inner_func_private_validate_output(self, series: Optional[pd.DataFrame], pa
 def _inner_func_process(self) -> BlockGlue:
     """
     The method is NOT intended to override by users.
+    The method can be called by `cls.process()`
 
     Returns:
         BlockGlue
@@ -158,6 +159,7 @@ def _inner_func_process(self) -> BlockGlue:
 def _inner_class_func_factory(cls, glue: BlockGlue):
     """
     The method is NOT intended to override by users.
+    The method can be called by `cls.factory()`
 
     Returns:
         cls()
@@ -185,7 +187,8 @@ def _inner_class_func_factory(cls, glue: BlockGlue):
 def _inner_class_default_private_func_factory(cls, glue: BlockGlue):
     """
     Default _factory() method.
-    The method is intended to override by users.
+    Although the method is intended to override by users, usually the method is not overridden.
+    The method can be called by `cls._factory()`
 
     Returns:
         cls()
@@ -197,7 +200,7 @@ def _inner_class_default_private_func_factory(cls, glue: BlockGlue):
     params_required_keys = cls_instance.params_required_keys
     series_required_columns_mode = cls_instance.series_required_columns_mode
 
-    # glue
+    # params
     if glue.params is not None:
         params = glue.params.get(block_name, {})
     elif params_required_keys is not None and type(params_required_keys) is list:

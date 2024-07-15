@@ -64,11 +64,13 @@ class UdfBlock:
     term: int = 10
     block_name: str = "udf_block"
 
-    def _process(self):
+    def _process(self) -> dict:
         return {"doubled_term": self.term * 2}
     
-    def process(self):
-        return self._process()
+    def process(self) -> BlockGlue:
+        # _process() method can be Tuple[Optional[dict], Optional[pd.DataFrame]]
+        res = self._process()
+        return BlockGlue(params=res, series=None, block_outputs={})
 
     def factory(self, glue: BlockGlue) -> "UdfBlock":
         # Omitted. In reality, processes are described.
@@ -89,6 +91,22 @@ In classes decorated with `@block`, it is not recommended to execute the `__init
 `factory()` method description.
 `process()` method description.
 `glue()` method description.
+
+```mermaid
+sequenceDiagram
+  autonumber
+  participant G as glue()
+  participant S1 as factory()
+  participant S2 as _factory()
+  participant P1 as process()
+  participant P2 as _process()
+  G->>+S1: Request
+  S1-->>-G: udf_block_instance
+  G->>+P1: udf_block_instance.process()
+  P1->>P2: Request
+  P2-->>P1: params or series
+  P1-->>-G: BlockGlue(params=params, series=series)
+```
 
 
 Up to this point, the use of the `@block` decorator with classes such as UdfClass has described, but using the Block class on its own is not intended. Please read the following explanation of the `Flow` class for more details.
