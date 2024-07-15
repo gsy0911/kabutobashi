@@ -12,6 +12,7 @@ def crawl_info(code: str):
         CrawlStockInfoBlock,
         ExtractStockInfoBlock,
         DefaultPreProcessBlock,
+        WriteStockSqlite3Block,
     ]
 
     res = Flow.initialize(
