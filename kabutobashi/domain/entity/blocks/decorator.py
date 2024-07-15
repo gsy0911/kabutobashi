@@ -167,17 +167,18 @@ def _inner_class_func_factory(cls, glue: BlockGlue):
     setattr(cls, "_glue", glue)
     # to set parameters to cls() from glue.params
     logger.debug(f"{cls.__name__}")
-    params = {}
-    if glue.params is not None:
-        params.update(glue.params.get(cls().block_name, {}))
-    # get params from other block-output
     cls_instance = cls()
+    block_name = cls_instance.block_name
     pre_condition_block_name = cls_instance.pre_condition_block_name
-    if pre_condition_block_name is not None:
-        block_output: Optional[BlockOutput] = glue.block_outputs.get(pre_condition_block_name)
-        if block_output is not None:
-            if block_output.params is not None:
-                params.update(block_output.params)
+    # series_required_columns = cls_instance.series_required_columns
+    params_required_keys = cls_instance.params_required_keys
+    # series_required_columns_mode = cls_instance.series_required_columns_mode
+
+    params = glue.get_params(
+        block_name=block_name,
+        pre_condition_block_name=pre_condition_block_name,
+        params_required_keys=params_required_keys,
+    )
     logger.debug(f"{cls.__name__}: {params.keys()}")
     for k, v in params.items():
         setattr(cls, k, v)
@@ -201,33 +202,18 @@ def _inner_class_default_private_func_factory(cls, glue: BlockGlue):
     series_required_columns_mode = cls_instance.series_required_columns_mode
 
     # params
-    if glue.params is not None:
-        params = glue.params.get(block_name, {})
-    elif params_required_keys is not None and type(params_required_keys) is list:
-        logger.debug(f"{params_required_keys=}")
-        params = {}
-        for _, v in glue:
-            if v.params is None:
-                continue
-            params.update(v.params)
-    elif glue.block_outputs is not None:
-        params = glue.block_outputs.get(block_name, {})
-    else:
-        params = {}
+    params = glue.get_params(
+        block_name=block_name,
+        pre_condition_block_name=pre_condition_block_name,
+        params_required_keys=params_required_keys,
+    )
 
     # series
-    if glue.series is not None:
-        series = glue.series
-    elif series_required_columns is not None and type(series_required_columns) is list:
-        series = glue.get_series_from_required_columns(
-            required_columns=series_required_columns, series_required_columns_mode=series_required_columns_mode
-        )
-    elif glue.block_outputs is not None:
-        series = glue.block_outputs.get(pre_condition_block_name, None)
-        if series is not None:
-            series = series.series
-    else:
-        series = None
+    series = glue.get_series(
+        pre_condition_block_name=pre_condition_block_name,
+        series_required_columns=series_required_columns,
+        series_required_columns_mode=series_required_columns_mode,
+    )
     return cls(series=series, params=params)
 
 

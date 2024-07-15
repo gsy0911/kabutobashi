@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field, replace
 from logging import getLogger
-from typing import Dict, List, Literal, Optional, TypeAlias
+from typing import Dict, List, Literal, Optional, TypeAlias, Union
 
 import pandas as pd
 
@@ -96,6 +96,46 @@ class BlockGlue:
             return series
         else:
             raise ValueError()
+
+    def get_series(
+        self,
+        pre_condition_block_name: str,
+        series_required_columns: Optional[list],
+        series_required_columns_mode: SeriesRequiredColumnsMode,
+    ) -> Optional[pd.DataFrame]:
+        if self.series is not None:
+            series = self.series
+        elif series_required_columns is not None and type(series_required_columns) is list:
+            series = self.get_series_from_required_columns(
+                required_columns=series_required_columns, series_required_columns_mode=series_required_columns_mode
+            )
+        elif self.block_outputs is not None:
+            series = self.block_outputs.get(pre_condition_block_name, None)
+            if series is not None:
+                series = series.series
+        else:
+            series = None
+        return series
+
+    def get_params(
+        self, block_name: str, pre_condition_block_name: Optional[str], params_required_keys: Optional[Union[str, list]]
+    ) -> dict:
+        params = {}
+        if self.params is not None:
+            params.update(self.params.get(block_name, {}))
+        if pre_condition_block_name is not None:
+            block_output: Optional[BlockOutput] = self.block_outputs.get(pre_condition_block_name)
+            if block_output is not None:
+                if block_output.params is not None:
+                    params.update(block_output.params)
+        if params_required_keys is not None and type(params_required_keys) is list:
+            logger.debug(f"{params_required_keys=}")
+            params = {}
+            for _, v in self:
+                if v.params is None:
+                    continue
+                params.update(v.params)
+        return params
 
     def get_max_execution_order(self) -> int:
         execution_order = [0]
