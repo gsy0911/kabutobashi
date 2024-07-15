@@ -24,6 +24,7 @@ class ParameterizeStochasticsBlock:
             "stochastics_d": df["D"].tail(3).mean(),
             "stochastics_sd": df["SD"].tail(3).mean(),
             "stochastics_impact": get_impact(df=df, influence=self.influence, tail=self.tail, prefix="stochastics"),
+            "dt": max(df.index.to_list()),
         }
 
         return params

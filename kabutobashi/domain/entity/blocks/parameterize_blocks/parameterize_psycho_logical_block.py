@@ -24,6 +24,7 @@ class ParameterizePsychoLogicalBlock:
             "psycho_logical_impact": get_impact(
                 df=df, influence=self.influence, tail=self.tail, prefix="psycho_logical"
             ),
+            "dt": max(df.index.to_list()),
         }
 
         return params

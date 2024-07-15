@@ -23,6 +23,6 @@ class ParameterizeAdxBlock:
             "adx_adx": df["ADX"].tail(3).mean(),
             "adx_adxr": df["ADXR"].tail(3).mean(),
             "adx_impact": get_impact(df=df, influence=self.influence, tail=self.tail, prefix="adx"),
+            "dt": max(df.index.to_list()),
         }
-
         return params
