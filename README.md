@@ -163,3 +163,21 @@ import kabutobashi as kb
 target_date = "2020-01-01"
 date_list = kb.get_past_n_days(target_date, n=40)
 ```
+
+## initialize Database
+
+```python
+import kabutobashi as kb
+kb.KabutobashiDatabase().initialize()
+
+# add data
+kb.crawl_info_multiple(code="1375", page="1")
+kb.crawl_info_multiple(code="1375", page="2")
+kb.crawl_info_multiple(code="1375", page="etc...")
+
+# add data daily
+kb.crawl_info(code="1375")
+
+# analysis and add data
+kb.analysis(code="1375")
+```

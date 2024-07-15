@@ -7,7 +7,7 @@ from ..decorator import block
 
 @block(
     block_name="write_stock_sqlite3",
-    series_required_columns=["code", "dt", "name", "open", "close", "high", "low", "volume", "per", "psr", "pbr"],
+    series_required_columns=["code", "dt", "name", "open", "close", "high", "low", "volume"],
     series_required_columns_mode="all",
 )
 class WriteStockSqlite3Block:

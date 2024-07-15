@@ -34,6 +34,7 @@ class ParameterizeBollingerBandsBlock:
             "bollinger_bands_impact": get_impact(
                 df=df, influence=self.influence, tail=self.tail, prefix="bollinger_bands"
             ),
+            "dt": max(df.index.to_list()),
         }
 
         return params

@@ -18,6 +18,7 @@ class ParameterizeMomentumBlock:
             raise KabutobashiBlockSeriesIsNoneError()
         params = {
             "momentum_impact": get_impact(df=df, influence=self.influence, tail=self.tail, prefix="momentum"),
+            "dt": max(df.index.to_list()),
         }
 
         return params

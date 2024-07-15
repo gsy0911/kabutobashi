@@ -23,6 +23,7 @@ class ParameterizeMacdBlock:
             "signal": df["signal"].tail(3).mean(),
             "histogram": df["histogram"].tail(3).mean(),
             "macd_impact": get_impact(df=df, influence=self.influence, tail=self.tail, prefix="macd"),
+            "dt": max(df.index.to_list()),
         }
 
         return params

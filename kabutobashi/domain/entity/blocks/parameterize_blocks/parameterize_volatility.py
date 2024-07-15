@@ -22,4 +22,8 @@ class ParameterizeVolatilityBlock:
         df["volatility"] = (df["high"] - df["low"]) / df["close"]
         volatility_ = df["volatility"].mean()
         close_volatility = max(df["close"]) - min(df["close"]) / df["close"].median()
-        return {"volatility": volatility_, "close_volatility": close_volatility}
+        return {
+            "volatility": volatility_,
+            "close_volatility": close_volatility,
+            "dt": max(df.index.to_list()),
+        }

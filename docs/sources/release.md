@@ -1,5 +1,9 @@
 # Release Note
 
+## 0.8.2
+
+- ENHANCEMENT: using sqlite3 when crawl and analysis ([#207](https://github.com/gsy0911/kabutobashi/issues/207))
+
 ## 0.8.1
 
 - ENHANCEMENT: using sqlite3 ([#201](https://github.com/gsy0911/kabutobashi/issues/201))

@@ -25,4 +25,11 @@ class ParameterizePctChangeBlock:
         pct_20 = df["close"].pct_change(20).mean()
         pct_30 = df["close"].pct_change(30).mean()
         pct_40 = df["close"].pct_change(40).mean()
-        return {"pct_05": pct_05, "pct_10": pct_10, "pct_20": pct_20, "pct_30": pct_30, "pct_40": pct_40}
+        return {
+            "pct_05": pct_05,
+            "pct_10": pct_10,
+            "pct_20": pct_20,
+            "pct_30": pct_30,
+            "pct_40": pct_40,
+            "dt": max(df.index.to_list()),
+        }
