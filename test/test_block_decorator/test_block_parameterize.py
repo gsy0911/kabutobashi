@@ -1,11 +1,13 @@
+from test.conftest import DATABASE_DIR
+
 from kabutobashi.domain.entity.blocks.parameterize_blocks import *
 from kabutobashi.domain.entity.blocks.pre_process_blocks import *
 from kabutobashi.domain.entity.blocks.process_blocks import *
 from kabutobashi.domain.entity.blocks.read_blocks import *
 from kabutobashi.domain.services.flow import Flow, FlowPath
 
-PARAMS = {"read_example": {"code": 1439}, "default_pre_process": {"for_analysis": True}}
-PARAMS2 = {"read_sqlite3": {"code": 1439}, "default_pre_process": {"for_analysis": True}}
+PARAMS = {"read_example": {"code": 1439, "database_dir": DATABASE_DIR}, "default_pre_process": {"for_analysis": True}}
+PARAMS2 = {"read_sqlite3": {"code": 1439, "database_dir": DATABASE_DIR}, "default_pre_process": {"for_analysis": True}}
 PARAMS_LIST = (
     FlowPath()
     .read_example(code=1439)
