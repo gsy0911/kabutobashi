@@ -4,15 +4,10 @@ from datetime import datetime
 from logging import getLogger
 from typing import Dict, List, Union
 
-import pandas as pd
-
 from kabutobashi.domain.values import (
     DecodeHtmlPageStockInfoMinkabuTop,
-    DecodeHtmlPageStockInfoMultipleDays,
     DecodeHtmlPageStockIpo,
     RawHtmlPageStockInfo,
-    RawHtmlPageStockInfoMultipleDaysMain,
-    RawHtmlPageStockInfoMultipleDaysSub,
     RawHtmlPageStockIpo,
 )
 
@@ -122,64 +117,4 @@ class StockIpoHtmlDecoder(IHtmlDecoder):
         result_list = []
         for v in ipo_list:
             result_list.append(DecodeHtmlPageStockIpo.from_dict(data=v))
-        return result_list
-
-
-@dataclass(frozen=True)
-class StockInfoMultipleDaysHtmlDecoder(IHtmlDecoder):
-    """
-    Model: Service(Implemented)
-
-    Examples:
-        >>> from kabutobashi.infrastructure.repository import StockInfoMultipleDaysHtmlPageRepository
-        >>> from kabutobashi.domain.services import StockInfoMultipleDaysHtmlDecoder
-        >>> import kabutobashi as kb
-        >>> html_page_list = StockInfoMultipleDaysHtmlPageRepository(code=1375).read()
-        >>> data = StockInfoMultipleDaysHtmlDecoder().decode_to_dict(html_page=html_page_list)
-        >>> df = pd.DataFrame(data)
-        >>> records = kb.Stock.from_df(df)
-    """
-
-    def _decode(
-        self, html_page: List[Union[RawHtmlPageStockInfoMultipleDaysMain, RawHtmlPageStockInfoMultipleDaysSub]]
-    ) -> dict:
-        result_1 = []
-        result_2 = []
-        main_soup = html_page[0].get_as_soup()
-        sub_soup = html_page[1].get_as_soup()
-        stock_recordset_tag = "md_card md_box"
-
-        # ページの情報を取得
-        stock_recordset = main_soup.find("div", {"class": stock_recordset_tag})
-        mapping = {0: "dt", 1: "open", 2: "high", 3: "low", 4: "close", 5: "調整後終値", 6: "volume"}
-        for tr in stock_recordset.find_all("tr"):
-            tmp = {}
-            for idx, td in enumerate(tr.find_all("td")):
-                tmp.update({mapping[idx]: td.get_text()})
-            result_1.append(tmp)
-
-        # そのほかの情報
-        stock_board = sub_soup.find("div", {"class": "md_card md_box mzp"})
-        mapping2 = {0: "dt", 1: "psr", 2: "per", 3: "pbr", 4: "配当利回り(%)", 5: "close", 6: "調整後終値", 7: "volume"}
-        for tr in stock_board.find_all("tr"):
-            tmp = {}
-            for idx, td in enumerate(tr.find_all("td")):
-                tmp.update({mapping2[idx]: td.get_text()})
-            result_2.append(tmp)
-
-        df1 = pd.DataFrame(result_1).dropna()
-        df2 = pd.DataFrame(result_2).dropna()
-
-        df1 = df1[["dt", "open", "high", "low", "close"]]
-        df2 = df2[["dt", "psr", "per", "pbr", "volume"]]
-
-        df = pd.merge(df1, df2, on="dt")
-        df["code"] = html_page[0].code
-        return {"info_list": df.to_dict(orient="records")}
-
-    def _decode_to_object_hook(self, data: dict) -> List["DecodeHtmlPageStockInfoMultipleDays"]:
-        info_list = data["info_list"]
-        result_list = []
-        for v in info_list:
-            result_list.append(DecodeHtmlPageStockInfoMultipleDays.from_dict(data=v))
         return result_list

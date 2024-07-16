@@ -7,8 +7,6 @@ from kabutobashi.domain.values import (
     IHtmlPageRepository,
     RawHtmlPage,
     RawHtmlPageStockInfo,
-    RawHtmlPageStockInfoMultipleDaysMain,
-    RawHtmlPageStockInfoMultipleDaysSub,
     RawHtmlPageStockIpo,
     UserAgent,
 )
@@ -17,7 +15,6 @@ __all__ = [
     "HtmlPageBasicRepository",
     "StockInfoHtmlPageRepository",
     "StockIpoHtmlPageRepository",
-    "StockInfoMultipleDaysHtmlPageRepository",
 ]
 
 
@@ -80,27 +77,3 @@ class StockIpoHtmlPageRepository(HtmlPageBasicRepository):
         return RawHtmlPageStockIpo(
             html=html_page_list[0].html, page_type=self.page_type, url=self.urls[0], year=self.year
         )
-
-
-class StockInfoMultipleDaysHtmlPageRepository(HtmlPageBasicRepository):
-    """
-    Model: Repository(Implemented)
-    """
-
-    def __init__(self, code: Union[int, str]):
-        main_html = f"https://minkabu.jp/stock/{code}/daily_bar"
-        sub_html = f"https://minkabu.jp/stock/{code}/daily_valuation"
-        super().__init__(page_type="info_multiple", urls=[main_html, sub_html])
-        self.code = code
-
-    def _read_hook(
-        self, html_page_list: List[RawHtmlPage]
-    ) -> List[Union[RawHtmlPageStockInfoMultipleDaysMain, RawHtmlPageStockInfoMultipleDaysSub]]:
-        return [
-            RawHtmlPageStockInfoMultipleDaysMain(
-                html=html_page_list[0].html, page_type=self.page_type, url=self.urls[0], code=self.code
-            ),
-            RawHtmlPageStockInfoMultipleDaysSub(
-                html=html_page_list[1].html, page_type=self.page_type, url=self.urls[1], code=self.code
-            ),
-        ]

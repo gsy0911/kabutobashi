@@ -61,19 +61,6 @@ class BlockGlue:
     block_outputs: Dict[str, BlockOutput] = field(default_factory=dict, repr=False)
     execution_order: int = 1
 
-    def update(self, block_output: BlockOutput) -> "BlockGlue":
-        self.block_outputs[block_output.block_name] = block_output
-        if self.series is None:
-            series = block_output.series
-        else:
-            series = self.series
-
-        if self.params is None:
-            params = block_output.params
-        else:
-            params = self.params
-        return replace(self, series=series, params=params, block_outputs=self.block_outputs)
-
     def get_series_from_required_columns(
         self, required_columns: List[str], series_required_columns_mode: SeriesRequiredColumnsMode = "strict"
     ) -> pd.DataFrame:

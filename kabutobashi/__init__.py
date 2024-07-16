@@ -5,13 +5,7 @@ from .domain.entity.blocks import block
 from .domain.services.flow import Flow
 
 # methods to analysis
-from .domain.values import (
-    DecodeHtmlPageStockIpo,
-    RawHtmlPageStockInfo,
-    RawHtmlPageStockInfoMultipleDaysMain,
-    RawHtmlPageStockInfoMultipleDaysSub,
-    RawHtmlPageStockIpo,
-)
+from .domain.values import DecodeHtmlPageStockIpo, RawHtmlPageStockInfo, RawHtmlPageStockIpo
 from .example_data import example
 from .infrastructure.repository import KabutobashiDatabase
 
