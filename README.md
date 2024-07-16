@@ -96,23 +96,30 @@ In classes decorated with `@block`, it is not recommended to execute the `__init
 sequenceDiagram
   autonumber
   participant G as glue()
-  participant S1 as factory()
-  participant S2 as _factory()
-  participant P1 as process()
-  participant P2 as _process()
+  participant UC as UdfBlock::class
+  create participant S1 as factory()
+  UC->>S1: create
+  create participant S2 as _factory()
+  UC->>S2: create
   Note over S1: Generate udf_block_instance
   G->>+S1: Request
   S1->>+S2: Request
   Note over S2: User can modify _factory()
+  S2-->>S2: get params from glue
+  S2-->>S2: get series from glue
   S2-->>-S1: params and series
-  S1->>S1: setattr
-  S1-->>-G: UdfBlock(series, params)
-  Note over P1: execute process()
+  S1->>S1: set attribute params
+  create participant UI as UdfBlock::instance
+  S1->>UI: UdfBlock(params, series)
+  S1-->>-G: udf_block_instance
+  create participant P1 as process()
   G->>+P1: udf_block_instance.process()
+  Note over P1: execute process()
+  create participant P2 as _process()
   P1->>P2: Request
   Note over P2: execute user defined function
   P2-->>P1: params or series
-  P1-->>-G: BlockGlue(params=params, series=series)
+  P1-->>-G: BlockGlue(params, series)
 ```
 
 
