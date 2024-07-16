@@ -2,10 +2,8 @@ from typing import List
 
 import pandas as pd
 
-from kabutobashi.domain.entity.stock import Stock, StockBrand
 
-
-def decode_brand_list(path: str) -> List[Stock]:
+def decode_brand_list(path: str) -> pd.DataFrame:
     """
     See Also: https://www.jpx.co.jp/markets/statistics-equities/misc/01.html
     """
@@ -25,10 +23,4 @@ def decode_brand_list(path: str) -> List[Stock]:
     growth_df = df[df["market"] == "グロース"]
     merged_df = pd.concat([prime_df, standard_df, growth_df]).reset_index()
 
-    stock_list = []
-    for idx, row in merged_df.iterrows():
-        brand = StockBrand.from_dict(dict(row))
-        stock = Stock(code=brand.code, brand=brand, daily_price_records=[], reference_indicator=None)
-        stock_list.append(stock)
-
-    return stock_list
+    return merged_df
