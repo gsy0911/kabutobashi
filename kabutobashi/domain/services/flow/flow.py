@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field, replace
 from typing import List, Union
 
-from kabutobashi.domain.entity.blocks.basis_blocks import BlockGlue, IBlock
+from kabutobashi.domain.entity.blocks.basis_blocks import BlockGlue, BlockOutput, IBlock
 from kabutobashi.domain.entity.blocks.decorator import block_from
 
 
@@ -21,7 +21,8 @@ class Flow:
 
     @staticmethod
     def initialize(params: dict) -> "Flow":
-        glue = BlockGlue(series=None, params=params)
+        initial_output = BlockOutput(series=None, params=params, block_name="initial_output", execution_order=1)
+        glue = BlockGlue(series=None, params=params, block_outputs={"FLOW_INITIAL": initial_output})
         return Flow(block_glue=glue)
 
     def then(self, block: Union[type[IBlock], List[type[IBlock]]]) -> "Flow":

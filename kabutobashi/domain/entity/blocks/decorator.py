@@ -169,7 +169,7 @@ def _inner_class_func_factory(cls, glue: BlockGlue):
     series, params = cls._factory(glue)
 
     # set attributes
-    logger.debug(f"{cls.__name__}: {params.keys()}")
+    logger.debug(f"@block._factory(): {cls.__name__}: {params.keys()}")
     for k, v in params.items():
         setattr(cls, k, v)
     return cls(series=series, params=params)

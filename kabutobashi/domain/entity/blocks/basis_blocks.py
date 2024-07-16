@@ -131,10 +131,14 @@ class BlockGlue:
         if params_required_keys is not None and type(params_required_keys) is list:
             logger.debug(f"{params_required_keys=}")
             params = {}
-            for _, v in self:
+            for k, v in self:
                 if v.params is None:
                     continue
-                params.update(v.params)
+                if k == "FLOW_INITIAL":
+                    # specific parameters when using Flow.initialize()
+                    params.update(v.params.get(block_name, {}))
+                else:
+                    params.update(v.params)
         return params
 
     def get_max_execution_order(self) -> int:
