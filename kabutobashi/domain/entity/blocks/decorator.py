@@ -104,6 +104,7 @@ def _inner_func_private_validate_output(self, series: Optional[pd.DataFrame], pa
 def _inner_func_process(self) -> BlockGlue:
     """
     The method is NOT intended to override by users.
+    The method can be called by `cls.process()`
 
     Returns:
         BlockGlue
@@ -158,34 +159,27 @@ def _inner_func_process(self) -> BlockGlue:
 def _inner_class_func_factory(cls, glue: BlockGlue):
     """
     The method is NOT intended to override by users.
+    The method can be called by `cls.factory()`
 
     Returns:
         cls()
     """
     setattr(cls, "_glue", glue)
-    # to set parameters to cls() from glue.params
-    logger.debug(f"{cls.__name__}")
-    params = {}
-    if glue.params is not None:
-        params.update(glue.params.get(cls().block_name, {}))
-    # get params from other block-output
-    cls_instance = cls()
-    pre_condition_block_name = cls_instance.pre_condition_block_name
-    if pre_condition_block_name is not None:
-        block_output: Optional[BlockOutput] = glue.block_outputs.get(pre_condition_block_name)
-        if block_output is not None:
-            if block_output.params is not None:
-                params.update(block_output.params)
-    logger.debug(f"{cls.__name__}: {params.keys()}")
+    # get parameters from glue
+    series, params = cls._factory(glue)
+
+    # set attributes
+    logger.debug(f"@block._factory(): {cls.__name__}: {params.keys()}")
     for k, v in params.items():
         setattr(cls, k, v)
-    return cls._factory(glue)
+    return cls(series=series, params=params)
 
 
-def _inner_class_default_private_func_factory(cls, glue: BlockGlue):
+def _inner_class_default_private_func_factory(cls, glue: BlockGlue) -> Tuple[pd.DataFrame, dict]:
     """
     Default _factory() method.
-    The method is intended to override by users.
+    Although the method is intended to override by users, usually the method is not overridden.
+    The method can be called by `cls._factory()`
 
     Returns:
         cls()
@@ -197,35 +191,20 @@ def _inner_class_default_private_func_factory(cls, glue: BlockGlue):
     params_required_keys = cls_instance.params_required_keys
     series_required_columns_mode = cls_instance.series_required_columns_mode
 
-    # glue
-    if glue.params is not None:
-        params = glue.params.get(block_name, {})
-    elif params_required_keys is not None and type(params_required_keys) is list:
-        logger.debug(f"{params_required_keys=}")
-        params = {}
-        for _, v in glue:
-            if v.params is None:
-                continue
-            params.update(v.params)
-    elif glue.block_outputs is not None:
-        params = glue.block_outputs.get(block_name, {})
-    else:
-        params = {}
+    # params
+    params = glue.get_params(
+        block_name=block_name,
+        pre_condition_block_name=pre_condition_block_name,
+        params_required_keys=params_required_keys,
+    )
 
     # series
-    if glue.series is not None:
-        series = glue.series
-    elif series_required_columns is not None and type(series_required_columns) is list:
-        series = glue.get_series_from_required_columns(
-            required_columns=series_required_columns, series_required_columns_mode=series_required_columns_mode
-        )
-    elif glue.block_outputs is not None:
-        series = glue.block_outputs.get(pre_condition_block_name, None)
-        if series is not None:
-            series = series.series
-    else:
-        series = None
-    return cls(series=series, params=params)
+    series = glue.get_series(
+        pre_condition_block_name=pre_condition_block_name,
+        series_required_columns=series_required_columns,
+        series_required_columns_mode=series_required_columns_mode,
+    )
+    return series, params
 
 
 def _inner_class_func_glue(cls, glue: BlockGlue) -> BlockGlue:

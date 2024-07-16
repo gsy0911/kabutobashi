@@ -22,7 +22,7 @@ from kabutobashi.domain.entity.blocks.write_blocks import WriteImpactSqlite3Bloc
 from kabutobashi.domain.services.flow import Flow
 
 
-def analysis(code: str):
+def analysis(code: str, database_dir: str):
     blocks = [
         ReadSqlite3Block,
         ProcessSmaBlock,
@@ -43,4 +43,4 @@ def analysis(code: str):
         WriteImpactSqlite3Block,
     ]
 
-    return Flow.initialize(params={"read_sqlite3": {"code": code}}).then(blocks)
+    return Flow.initialize(params={"read_sqlite3": {"code": code, "database_dir": database_dir}}).then(blocks)

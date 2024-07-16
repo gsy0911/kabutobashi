@@ -70,4 +70,4 @@ def test_udf_block_with_flow():
     res_2_series = res.block_glue["post_2_udf"].series
     assert "post_2_udf_term" in res_2_series.columns
     # check __len__
-    assert len(res.block_glue) == 3
+    assert len(res.block_glue) == 4
