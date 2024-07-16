@@ -129,59 +129,6 @@ sequenceDiagram
 
 Up to this point, the use of the `@block` decorator with classes such as UdfClass has described, but using the Block class on its own is not intended. Please read the following explanation of the `Flow` class for more details.
 
-### Read-Block
-
-- input
-  - params
-- output
-  - series
-
-### Crawl-Block
-
-- input
-  - params
-- output
-  - output.params
-
-### Extract-Block
-
-- input
-  - params
-- output
-  - output.params
-
-### PreProcess-Block
-
-- input
-  - series
-  - params
-- output
-  - series
-
-### Process-Block
-
-- input
-  - series
-  - params
-- output
-  - output.series
-
-### Parameterize-Block
-
-- input
-  - series
-  - params
-- output
-  - output.params
-
-### Reduce-Block
-
-- input
-  - series
-  - params
-- output
-  - params
-
 ## About `Flow`-class
 
 > Blocks are meant to be combined.
