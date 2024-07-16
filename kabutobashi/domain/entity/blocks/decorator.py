@@ -166,7 +166,28 @@ def _inner_class_func_factory(cls, glue: BlockGlue):
     """
     setattr(cls, "_glue", glue)
     # get parameters from glue
-    series, params = cls._factory(glue)
+    params = {}
+    series = None
+
+    res = cls._factory(glue)
+    if type(res) is tuple:
+        if len(res) == 2:
+            if type(res[0]) is dict:
+                params, series = res
+            elif type(res[1]) is dict:
+                series, params = res
+            else:
+                raise KabutobashiBlockDecoratorReturnError(
+                    "The return values are limited to combinations of `dict` and `pd.DataFrame`."
+                )
+        else:
+            raise KabutobashiBlockDecoratorReturnError("Please limit the number of return values to two or fewer.")
+    elif type(res) is dict:
+        params = res
+    elif type(res) is pd.DataFrame:
+        series = res
+    else:
+        raise KabutobashiBlockDecoratorReturnError(f"An unexpected return type {type(res)} was returned.")
 
     # set attributes
     logger.debug(f"@block._factory(): {cls.__name__}: {params.keys()}")
