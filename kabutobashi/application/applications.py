@@ -1,15 +1,14 @@
-from typing import List
-
 import pandas as pd
 
+from kabutobashi.infrastructure.repository import KabutobashiDatabase
 
-def decode_brand_list(path: str) -> pd.DataFrame:
+
+def decode_brand_list(path: str, database_dir: str) -> pd.DataFrame:
     """
     See Also: https://www.jpx.co.jp/markets/statistics-equities/misc/01.html
     """
     df = pd.read_excel(path)
     column_renames = {
-        "日付": "dt",
         "コード": "code",
         "銘柄名": "name",
         "市場・商品区分": "market",
@@ -23,4 +22,5 @@ def decode_brand_list(path: str) -> pd.DataFrame:
     growth_df = df[df["market"] == "グロース"]
     merged_df = pd.concat([prime_df, standard_df, growth_df]).reset_index()
 
+    KabutobashiDatabase(database_dir=database_dir).insert_brand_df(df=merged_df)
     return merged_df

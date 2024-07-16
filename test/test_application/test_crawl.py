@@ -16,6 +16,6 @@ class TestStockInfoMultiple:
 
 
 class TestIpo:
-    def test_pass(self):
-        res = crawl_ipo(year="2022")
+    def test_pass(self, database_dir: str):
+        res = crawl_ipo(year="2022", database_dir=database_dir)
         assert type(res) is pd.DataFrame

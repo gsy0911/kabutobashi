@@ -43,11 +43,17 @@ def crawl_info_multiple(code: str, page: str, database_dir: str) -> pd.DataFrame
     return res.block_glue["default_pre_process"].series
 
 
-def crawl_ipo(year: str):
+def crawl_ipo(year: str, database_dir: str):
     blocks = [
         CrawlStockIpoBlock,
         ExtractStockIpoBlock,
+        WriteBrandSqlite3Block,
     ]
 
-    res = Flow.initialize(params={"crawl_stock_ipo": {"year": year}}).then(blocks)
+    res = Flow.initialize(
+        params={
+            "crawl_stock_ipo": {"year": year},
+            "write_brand_sqlite3": {"database_dir": database_dir},
+        }
+    ).then(blocks)
     return res.block_glue["extract_stock_ipo"].series
