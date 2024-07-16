@@ -76,7 +76,7 @@ class UdfBlock:
         # Omitted. In reality, processes are described.
         ...
 
-    def _factory(self, glue: BlockGlue) -> "UdfBlock":
+    def _factory(self, glue: BlockGlue) -> dict:
         # Omitted. In reality, processes are described.
         ...
 
@@ -100,10 +100,17 @@ sequenceDiagram
   participant S2 as _factory()
   participant P1 as process()
   participant P2 as _process()
+  Note over S1: Generate udf_block_instance
   G->>+S1: Request
-  S1-->>-G: udf_block_instance
+  S1->>+S2: Request
+  Note over S2: User can modify _factory()
+  S2-->>-S1: params and series
+  S1->>S1: setattr
+  S1-->>-G: UdfBlock(series, params)
+  Note over P1: execute process()
   G->>+P1: udf_block_instance.process()
   P1->>P2: Request
+  Note over P2: execute user defined function
   P2-->>P1: params or series
   P1-->>-G: BlockGlue(params=params, series=series)
 ```

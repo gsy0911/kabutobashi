@@ -165,27 +165,17 @@ def _inner_class_func_factory(cls, glue: BlockGlue):
         cls()
     """
     setattr(cls, "_glue", glue)
-    # to set parameters to cls() from glue.params
-    logger.debug(f"{cls.__name__}")
-    cls_instance = cls()
-    block_name = cls_instance.block_name
-    pre_condition_block_name = cls_instance.pre_condition_block_name
-    # series_required_columns = cls_instance.series_required_columns
-    params_required_keys = cls_instance.params_required_keys
-    # series_required_columns_mode = cls_instance.series_required_columns_mode
+    # get parameters from glue
+    series, params = cls._factory(glue)
 
-    params = glue.get_params(
-        block_name=block_name,
-        pre_condition_block_name=pre_condition_block_name,
-        params_required_keys=params_required_keys,
-    )
+    # set attributes
     logger.debug(f"{cls.__name__}: {params.keys()}")
     for k, v in params.items():
         setattr(cls, k, v)
-    return cls._factory(glue)
+    return cls(series=series, params=params)
 
 
-def _inner_class_default_private_func_factory(cls, glue: BlockGlue):
+def _inner_class_default_private_func_factory(cls, glue: BlockGlue) -> Tuple[pd.DataFrame, dict]:
     """
     Default _factory() method.
     Although the method is intended to override by users, usually the method is not overridden.
@@ -214,7 +204,7 @@ def _inner_class_default_private_func_factory(cls, glue: BlockGlue):
         series_required_columns=series_required_columns,
         series_required_columns_mode=series_required_columns_mode,
     )
-    return cls(series=series, params=params)
+    return series, params
 
 
 def _inner_class_func_glue(cls, glue: BlockGlue) -> BlockGlue:
