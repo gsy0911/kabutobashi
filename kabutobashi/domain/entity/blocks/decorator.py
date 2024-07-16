@@ -186,7 +186,6 @@ def _inner_class_default_private_func_factory(cls, glue: BlockGlue) -> Tuple[pd.
     """
     cls_instance = cls()
     block_name = cls_instance.block_name
-    pre_condition_block_name = cls_instance.pre_condition_block_name
     series_required_columns = cls_instance.series_required_columns
     params_required_keys = cls_instance.params_required_keys
     series_required_columns_mode = cls_instance.series_required_columns_mode
@@ -194,13 +193,11 @@ def _inner_class_default_private_func_factory(cls, glue: BlockGlue) -> Tuple[pd.
     # params
     params = glue.get_params(
         block_name=block_name,
-        pre_condition_block_name=pre_condition_block_name,
         params_required_keys=params_required_keys,
     )
 
     # series
     series = glue.get_series(
-        pre_condition_block_name=pre_condition_block_name,
         series_required_columns=series_required_columns,
         series_required_columns_mode=series_required_columns_mode,
     )
@@ -243,7 +240,6 @@ def _inner_repr(self):
 def _process_class(
     cls,
     block_name: str,
-    pre_condition_block_name: str,
     factory: bool,
     process: bool,
     series_required_columns: List[str | SeriesRequiredColumn],
@@ -288,7 +284,6 @@ def _process_class(
     if block_name is None:
         block_name = _to_snake_case(cls.__name__)
     setattr(cls, "block_name", block_name)
-    setattr(cls, "pre_condition_block_name", pre_condition_block_name)
     setattr(cls, "series_required_columns", series_required_columns)
     setattr(cls, "params_required_keys", params_required_keys)
     setattr(cls, "series_required_columns_mode", series_required_columns_mode)
@@ -327,7 +322,6 @@ def block(
     /,
     *,
     block_name: str = None,
-    pre_condition_block_name: str = None,
     factory: bool = False,
     process: bool = True,
     series_required_columns: List[str | SeriesRequiredColumn] = None,
@@ -339,7 +333,6 @@ def block(
     Args:
         cls: class to decorate
         block_name: BlockName
-        pre_condition_block_name:
         factory: True if _factory() method is required to implement.
         process: True if _process() method is required to implement.
         series_required_columns:
@@ -371,7 +364,6 @@ def block(
         return _process_class(
             _cls,
             block_name=block_name,
-            pre_condition_block_name=pre_condition_block_name,
             factory=factory,
             process=process,
             series_required_columns=series_required_columns,

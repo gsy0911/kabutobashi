@@ -12,7 +12,7 @@ class UdfBlock:
         return {"udf_term": 1000}
 
 
-@block(block_name="post_1_udf", pre_condition_block_name="udf")
+@block(block_name="post_1_udf")
 class Post1UdfBlock:
     post_term: int = 10
 
@@ -20,7 +20,7 @@ class Post1UdfBlock:
         return pd.DataFrame([{"post_1_udf_term": 100}])
 
 
-@block(block_name="post_2_udf", pre_condition_block_name="post_1_udf")
+@block(block_name="post_2_udf")
 class Post2UdfBlock:
     post_term: int = 10
     series: pd.DataFrame

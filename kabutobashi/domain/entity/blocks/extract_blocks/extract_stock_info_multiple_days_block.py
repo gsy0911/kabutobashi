@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 from ..decorator import block
 
 
-@block(block_name="extract_stock_info_multiple_days", pre_condition_block_name="crawl_stock_info_multiple_days")
+@block(block_name="extract_stock_info_multiple_days", params_required_keys=["html_text"])
 class ExtractStockInfoMultipleDaysBlock:
     main_html_text: str
     sub_html_text: str
@@ -60,7 +60,7 @@ class ExtractStockInfoMultipleDaysBlock:
     # assert "info_list" in keys, "StockInfoMultipleDaysExtractBlockOutput must have 'info_list' column"
 
 
-@block(block_name="extract_stock_info_multiple_days_2", pre_condition_block_name="crawl_stock_info_multiple_days_2")
+@block(block_name="extract_stock_info_multiple_days_2", params_required_keys=["main_html_text", "code"])
 class ExtractStockInfoMultipleDays2Block:
     main_html_text: str
     code: str

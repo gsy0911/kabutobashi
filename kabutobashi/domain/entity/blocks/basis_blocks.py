@@ -86,7 +86,6 @@ class BlockGlue:
 
     def get_series(
         self,
-        pre_condition_block_name: str,
         series_required_columns: Optional[list],
         series_required_columns_mode: SeriesRequiredColumnsMode,
     ) -> Optional[pd.DataFrame]:
@@ -96,25 +95,14 @@ class BlockGlue:
             series = self.get_series_from_required_columns(
                 required_columns=series_required_columns, series_required_columns_mode=series_required_columns_mode
             )
-        elif self.block_outputs is not None:
-            series = self.block_outputs.get(pre_condition_block_name, None)
-            if series is not None:
-                series = series.series
         else:
             series = None
         return series
 
-    def get_params(
-        self, block_name: str, pre_condition_block_name: Optional[str], params_required_keys: Optional[Union[str, list]]
-    ) -> dict:
+    def get_params(self, block_name: str, params_required_keys: Optional[Union[str, list]]) -> dict:
         params = {}
         if self.params is not None:
             params.update(self.params.get(block_name, {}))
-        if pre_condition_block_name is not None:
-            block_output: Optional[BlockOutput] = self.block_outputs.get(pre_condition_block_name)
-            if block_output is not None:
-                if block_output.params is not None:
-                    params.update(block_output.params)
         if params_required_keys is not None and type(params_required_keys) is list:
             logger.debug(f"{params_required_keys=}")
             params = {}

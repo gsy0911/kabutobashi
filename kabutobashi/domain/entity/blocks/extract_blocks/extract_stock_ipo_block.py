@@ -8,7 +8,7 @@ from kabutobashi.domain.values import DecodeHtmlPageStockIpo
 from ..decorator import block
 
 
-@block(block_name="extract_stock_ipo", pre_condition_block_name="crawl_stock_ipo")
+@block(block_name="extract_stock_ipo", params_required_keys=["html_text"])
 class ExtractStockIpoBlock:
     html_text: str
 
