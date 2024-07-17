@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field, replace
 from logging import getLogger
-from typing import Dict, List, Literal, Optional, TypeAlias
+from typing import Dict, List, Literal, Optional, TypeAlias, Union
 
 import pandas as pd
 
@@ -61,19 +61,6 @@ class BlockGlue:
     block_outputs: Dict[str, BlockOutput] = field(default_factory=dict, repr=False)
     execution_order: int = 1
 
-    def update(self, block_output: BlockOutput) -> "BlockGlue":
-        self.block_outputs[block_output.block_name] = block_output
-        if self.series is None:
-            series = block_output.series
-        else:
-            series = self.series
-
-        if self.params is None:
-            params = block_output.params
-        else:
-            params = self.params
-        return replace(self, series=series, params=params, block_outputs=self.block_outputs)
-
     def get_series_from_required_columns(
         self, required_columns: List[str], series_required_columns_mode: SeriesRequiredColumnsMode = "strict"
     ) -> pd.DataFrame:
@@ -96,6 +83,38 @@ class BlockGlue:
             return series
         else:
             raise ValueError()
+
+    def get_series(
+        self,
+        series_required_columns: Optional[list],
+        series_required_columns_mode: SeriesRequiredColumnsMode,
+    ) -> Optional[pd.DataFrame]:
+        if self.series is not None:
+            series = self.series
+        elif series_required_columns is not None and type(series_required_columns) is list:
+            series = self.get_series_from_required_columns(
+                required_columns=series_required_columns, series_required_columns_mode=series_required_columns_mode
+            )
+        else:
+            series = None
+        return series
+
+    def get_params(self, block_name: str, params_required_keys: Optional[Union[str, list]]) -> dict:
+        params = {}
+        if self.params is not None:
+            params.update(self.params.get(block_name, {}))
+        if params_required_keys is not None and type(params_required_keys) is list:
+            logger.debug(f"{params_required_keys=}")
+            params = {}
+            for k, v in self:
+                if v.params is None:
+                    continue
+                if k == "FLOW_INITIAL":
+                    # specific parameters when using Flow.initialize()
+                    params.update(v.params.get(block_name, {}))
+                else:
+                    params.update(v.params)
+        return params
 
     def get_max_execution_order(self) -> int:
         execution_order = [0]

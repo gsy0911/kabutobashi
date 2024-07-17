@@ -1,2 +1,2 @@
-from .html_info import StockInfoMinkabuTopHtmlDecoder, StockInfoMultipleDaysHtmlDecoder, StockIpoHtmlDecoder
+from .html_info import StockInfoMinkabuTopHtmlDecoder, StockIpoHtmlDecoder
 from .utils import IHtmlDecoder

@@ -1,17 +1,10 @@
 from .application import analysis, crawl_info, crawl_info_multiple, crawl_ipo, decode_brand_list
 from .domain import errors
-from .domain.entity import Stock
 from .domain.entity.blocks import block
 from .domain.services.flow import Flow
 
 # methods to analysis
-from .domain.values import (
-    DecodeHtmlPageStockIpo,
-    RawHtmlPageStockInfo,
-    RawHtmlPageStockInfoMultipleDaysMain,
-    RawHtmlPageStockInfoMultipleDaysSub,
-    RawHtmlPageStockIpo,
-)
+from .domain.values import DecodeHtmlPageStockIpo, RawHtmlPageStockInfo, RawHtmlPageStockIpo
 from .example_data import example
 from .infrastructure.repository import KabutobashiDatabase
 
@@ -19,7 +12,7 @@ from .infrastructure.repository import KabutobashiDatabase
 from .utilities import get_past_n_days
 
 # comparable tuple
-VERSION = (0, 8, 2)
+VERSION = (0, 8, 3)
 # generate __version__ via VERSION tuple
 __version__ = ".".join(map(str, VERSION))
 

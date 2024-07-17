@@ -107,6 +107,9 @@ class DecodeHtmlPageStockInfoMultipleDays(BaseModel, DecodedHtmlPage):
 
 class DecodeHtmlPageStockIpo(BaseModel, DecodedHtmlPage):
     code: str = Field(description="銘柄コード")
+    name: str = Field(description="銘柄名")
+    market: str = Field(description="市場")
+    industry_type: str = Field(description="33業種区分")
     manager: str = Field(description="主幹")
     stock_listing_at: str = Field(description="上場日")
     public_offering: float = Field(description="公募")
@@ -116,37 +119,39 @@ class DecodeHtmlPageStockIpo(BaseModel, DecodedHtmlPage):
     @staticmethod
     def from_dict(data: dict) -> "DecodeHtmlPageStockIpo":
         manager = ""
+        name = ""
+        market = ""
         stock_listing_at = ""
+        industry_type = ""
         public_offering = 0
         evaluation = ""
         initial_price = 0
         if "主幹" in data:
             manager = data["主幹"]
-        elif "manager" in data:
-            manager = data["manager"]
 
         if "上場" in data:
             stock_listing_at = data["上場"]
-        elif "stock_listing_at" in data:
-            stock_listing_at = data["stock_listing_at"]
+
+        if "銘柄名" in data:
+            name = data["銘柄名"]
+
+        if "市場" in data:
+            market = data["市場"]
 
         if "公募" in data:
             public_offering = data["公募"]
-        elif "public_offering" in data:
-            public_offering = data["public_offering"]
 
         if "評価" in data:
             evaluation = data["評価"]
-        elif "evaluation" in data:
-            evaluation = data["evaluation"]
 
         if "初値" in data:
             initial_price = data["初値"]
-        elif "initial_price" in data:
-            initial_price = data["initial_price"]
 
         return DecodeHtmlPageStockIpo(
             code=data["code"],
+            name=name,
+            market=market,
+            industry_type=industry_type,
             manager=manager,
             stock_listing_at=stock_listing_at,
             public_offering=convert_float(public_offering),

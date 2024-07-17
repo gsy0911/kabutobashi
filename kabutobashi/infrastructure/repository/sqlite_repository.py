@@ -61,7 +61,8 @@ class KabutobashiDatabase:
             CREATE TABLE IF NOT EXISTS brand(
                 code INTEGER NOT NULL,
                 name TEXT,
-                value REAL,
+                market TEXT,
+                industry_type TEXT,
                 PRIMARY KEY (code)
             )
             """
@@ -112,6 +113,26 @@ class KabutobashiDatabase:
         with self as conn:
             try:
                 df = pd.read_sql(f"SELECT * FROM impact WHERE dt = '{dt}' ORDER BY impact", conn)
+                return df[impact_table_columns]
+            except sqlite3.DatabaseError:
+                return None
+
+    def insert_brand_df(self, df: pd.DataFrame) -> "KabutobashiDatabase":
+        impact_table_columns = ["code", "name", "market", "industry_type"]
+        stock_table_name = "brand"
+        with self as conn:
+            df = df.reset_index(drop=True)
+            try:
+                df[impact_table_columns].to_sql(stock_table_name, conn, if_exists="append", index=False)
+            except sqlite3.IntegrityError:
+                logger.warning(f"Stock data (brand.code) already exists")
+        return self
+
+    def select_brand_df(self) -> Optional[pd.DataFrame]:
+        impact_table_columns = ["code", "name", "market", "industry_type"]
+        with self as conn:
+            try:
+                df = pd.read_sql(f"SELECT * FROM brand ORDER BY code", conn)
                 return df[impact_table_columns]
             except sqlite3.DatabaseError:
                 return None

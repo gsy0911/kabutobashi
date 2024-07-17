@@ -64,17 +64,19 @@ class UdfBlock:
     term: int = 10
     block_name: str = "udf_block"
 
-    def _process(self):
+    def _process(self) -> dict:
         return {"doubled_term": self.term * 2}
     
-    def process(self):
-        return self._process()
+    def process(self) -> BlockGlue:
+        # _process() method can be Tuple[Optional[dict], Optional[pd.DataFrame]]
+        res = self._process()
+        return BlockGlue(params=res, series=None, block_outputs={})
 
     def factory(self, glue: BlockGlue) -> "UdfBlock":
         # Omitted. In reality, processes are described.
         ...
 
-    def _factory(self, glue: BlockGlue) -> "UdfBlock":
+    def _factory(self, glue: BlockGlue) -> dict:
         # Omitted. In reality, processes are described.
         ...
 
@@ -90,61 +92,42 @@ In classes decorated with `@block`, it is not recommended to execute the `__init
 `process()` method description.
 `glue()` method description.
 
+```mermaid
+sequenceDiagram
+  autonumber
+  participant G as glue()
+  participant UC as UdfBlock::class
+  create participant S1 as factory()
+  UC->>S1: create
+  create participant S2 as _factory()
+  UC->>S2: create or defined by user
+  create participant P1 as process()
+  UC->>P1: create
+  create participant P2 as _process()
+  UC->>P2: create or defined by user
+  Note over S1: Generate udf_block_instance
+  G->>+S1: Request
+  S1->>+S2: Request
+  Note over S2: User can modify _factory()
+  S2-->>S2: get params from glue
+  S2-->>S2: get series from glue
+  S2-->>-S1: params and series
+  create participant UI as UdfBlock::instance
+  S1->>UI: UdfBlock(params, series)
+  S1->>UI: setattr params to udf_block_instance
+  S1-->>-G: udf_block_instance
+  G->>+UI: udf_block_instance.process()
+  UI->>+P1: process()
+  Note over P1: execute process()
+  P1->>P2: Request
+  Note over P2: execute user defined function
+  P2-->>P1: params or series
+  P1-->>-UI: BlockGlue(params, series)
+  UI-->>-G: block_glue_instance
+```
+
 
 Up to this point, the use of the `@block` decorator with classes such as UdfClass has described, but using the Block class on its own is not intended. Please read the following explanation of the `Flow` class for more details.
-
-### Read-Block
-
-- input
-  - params
-- output
-  - series
-
-### Crawl-Block
-
-- input
-  - params
-- output
-  - output.params
-
-### Extract-Block
-
-- input
-  - params
-- output
-  - output.params
-
-### PreProcess-Block
-
-- input
-  - series
-  - params
-- output
-  - series
-
-### Process-Block
-
-- input
-  - series
-  - params
-- output
-  - output.series
-
-### Parameterize-Block
-
-- input
-  - series
-  - params
-- output
-  - output.params
-
-### Reduce-Block
-
-- input
-  - series
-  - params
-- output
-  - params
 
 ## About `Flow`-class
 

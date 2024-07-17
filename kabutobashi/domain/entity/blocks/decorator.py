@@ -104,6 +104,7 @@ def _inner_func_private_validate_output(self, series: Optional[pd.DataFrame], pa
 def _inner_func_process(self) -> BlockGlue:
     """
     The method is NOT intended to override by users.
+    The method can be called by `cls.process()`
 
     Returns:
         BlockGlue
@@ -158,74 +159,70 @@ def _inner_func_process(self) -> BlockGlue:
 def _inner_class_func_factory(cls, glue: BlockGlue):
     """
     The method is NOT intended to override by users.
+    The method can be called by `cls.factory()`
 
     Returns:
         cls()
     """
     setattr(cls, "_glue", glue)
-    # to set parameters to cls() from glue.params
-    logger.debug(f"{cls.__name__}")
+    # get parameters from glue
     params = {}
-    if glue.params is not None:
-        params.update(glue.params.get(cls().block_name, {}))
-    # get params from other block-output
-    cls_instance = cls()
-    pre_condition_block_name = cls_instance.pre_condition_block_name
-    if pre_condition_block_name is not None:
-        block_output: Optional[BlockOutput] = glue.block_outputs.get(pre_condition_block_name)
-        if block_output is not None:
-            if block_output.params is not None:
-                params.update(block_output.params)
-    logger.debug(f"{cls.__name__}: {params.keys()}")
+    series = None
+
+    res = cls._factory(glue)
+    if type(res) is tuple:
+        if len(res) == 2:
+            if type(res[0]) is dict:
+                params, series = res
+            elif type(res[1]) is dict:
+                series, params = res
+            else:
+                raise KabutobashiBlockDecoratorReturnError(
+                    "The return values are limited to combinations of `dict` and `pd.DataFrame`."
+                )
+        else:
+            raise KabutobashiBlockDecoratorReturnError("Please limit the number of return values to two or fewer.")
+    elif type(res) is dict:
+        params = res
+    elif type(res) is pd.DataFrame:
+        series = res
+    else:
+        raise KabutobashiBlockDecoratorReturnError(f"An unexpected return type {type(res)} was returned.")
+
+    # set attributes
+    logger.debug(f"@block._factory(): {cls.__name__}: {params.keys()}")
     for k, v in params.items():
         setattr(cls, k, v)
-    return cls._factory(glue)
+    return cls(series=series, params=params)
 
 
-def _inner_class_default_private_func_factory(cls, glue: BlockGlue):
+def _inner_class_default_private_func_factory(cls, glue: BlockGlue) -> Tuple[pd.DataFrame, dict]:
     """
     Default _factory() method.
-    The method is intended to override by users.
+    Although the method is intended to override by users, usually the method is not overridden.
+    The method can be called by `cls._factory()`
 
     Returns:
         cls()
     """
     cls_instance = cls()
     block_name = cls_instance.block_name
-    pre_condition_block_name = cls_instance.pre_condition_block_name
     series_required_columns = cls_instance.series_required_columns
     params_required_keys = cls_instance.params_required_keys
     series_required_columns_mode = cls_instance.series_required_columns_mode
 
-    # glue
-    if glue.params is not None:
-        params = glue.params.get(block_name, {})
-    elif params_required_keys is not None and type(params_required_keys) is list:
-        logger.debug(f"{params_required_keys=}")
-        params = {}
-        for _, v in glue:
-            if v.params is None:
-                continue
-            params.update(v.params)
-    elif glue.block_outputs is not None:
-        params = glue.block_outputs.get(block_name, {})
-    else:
-        params = {}
+    # params
+    params = glue.get_params(
+        block_name=block_name,
+        params_required_keys=params_required_keys,
+    )
 
     # series
-    if glue.series is not None:
-        series = glue.series
-    elif series_required_columns is not None and type(series_required_columns) is list:
-        series = glue.get_series_from_required_columns(
-            required_columns=series_required_columns, series_required_columns_mode=series_required_columns_mode
-        )
-    elif glue.block_outputs is not None:
-        series = glue.block_outputs.get(pre_condition_block_name, None)
-        if series is not None:
-            series = series.series
-    else:
-        series = None
-    return cls(series=series, params=params)
+    series = glue.get_series(
+        series_required_columns=series_required_columns,
+        series_required_columns_mode=series_required_columns_mode,
+    )
+    return series, params
 
 
 def _inner_class_func_glue(cls, glue: BlockGlue) -> BlockGlue:
@@ -264,7 +261,6 @@ def _inner_repr(self):
 def _process_class(
     cls,
     block_name: str,
-    pre_condition_block_name: str,
     factory: bool,
     process: bool,
     series_required_columns: List[str | SeriesRequiredColumn],
@@ -309,7 +305,6 @@ def _process_class(
     if block_name is None:
         block_name = _to_snake_case(cls.__name__)
     setattr(cls, "block_name", block_name)
-    setattr(cls, "pre_condition_block_name", pre_condition_block_name)
     setattr(cls, "series_required_columns", series_required_columns)
     setattr(cls, "params_required_keys", params_required_keys)
     setattr(cls, "series_required_columns_mode", series_required_columns_mode)
@@ -348,7 +343,6 @@ def block(
     /,
     *,
     block_name: str = None,
-    pre_condition_block_name: str = None,
     factory: bool = False,
     process: bool = True,
     series_required_columns: List[str | SeriesRequiredColumn] = None,
@@ -360,7 +354,6 @@ def block(
     Args:
         cls: class to decorate
         block_name: BlockName
-        pre_condition_block_name:
         factory: True if _factory() method is required to implement.
         process: True if _process() method is required to implement.
         series_required_columns:
@@ -392,7 +385,6 @@ def block(
         return _process_class(
             _cls,
             block_name=block_name,
-            pre_condition_block_name=pre_condition_block_name,
             factory=factory,
             process=process,
             series_required_columns=series_required_columns,

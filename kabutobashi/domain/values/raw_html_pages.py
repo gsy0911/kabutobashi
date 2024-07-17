@@ -54,11 +54,3 @@ class RawHtmlPageStockInfo(RawHtmlPage):
 
 class RawHtmlPageStockIpo(RawHtmlPage):
     year: str
-
-
-class RawHtmlPageStockInfoMultipleDaysMain(RawHtmlPage):
-    code: Union[int, str]
-
-
-class RawHtmlPageStockInfoMultipleDaysSub(RawHtmlPage):
-    code: Union[int, str]

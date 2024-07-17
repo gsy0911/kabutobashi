@@ -1,3 +1,5 @@
+from test.conftest import DATABASE_DIR
+
 import pandas as pd
 
 from kabutobashi.domain.entity.blocks.parameterize_blocks import *
@@ -9,7 +11,11 @@ from kabutobashi.domain.entity.blocks.write_blocks import *
 from kabutobashi.domain.services.flow import Flow, FlowPath
 from kabutobashi.infrastructure.repository import KabutobashiDatabase
 
-PARAMS = {"read_sqlite3": {"code": 1439}, "default_pre_process": {"for_analysis": True}}
+PARAMS = {
+    "read_sqlite3": {"code": 1439, "database_dir": DATABASE_DIR},
+    "write_impact_sqlite3": {"database_dir": DATABASE_DIR},
+    "default_pre_process": {"for_analysis": True},
+}
 PARAMS_LIST = (
     FlowPath()
     .read_example(code=1439)
@@ -28,7 +34,7 @@ PARAMS_LIST = (
 
 
 def test_block_impact():
-    kd = KabutobashiDatabase()
+    kd = KabutobashiDatabase(database_dir=DATABASE_DIR)
     before_df = kd.select_impact_df(dt="2021-11-26")
     assert before_df.empty
 

@@ -12,7 +12,7 @@ class UdfBlock:
         return {"udf_term": 1000}
 
 
-@block(block_name="post_1_udf", pre_condition_block_name="udf")
+@block(block_name="post_1_udf")
 class Post1UdfBlock:
     post_term: int = 10
 
@@ -20,7 +20,7 @@ class Post1UdfBlock:
         return pd.DataFrame([{"post_1_udf_term": 100}])
 
 
-@block(block_name="post_2_udf", pre_condition_block_name="post_1_udf")
+@block(block_name="post_2_udf")
 class Post2UdfBlock:
     post_term: int = 10
     series: pd.DataFrame
@@ -70,4 +70,4 @@ def test_udf_block_with_flow():
     res_2_series = res.block_glue["post_2_udf"].series
     assert "post_2_udf_term" in res_2_series.columns
     # check __len__
-    assert len(res.block_glue) == 3
+    assert len(res.block_glue) == 4

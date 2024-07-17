@@ -59,53 +59,40 @@ Installation
 Concept
 =======
 
-- ``E``: Entity
-- ``VO``: ValueObject
-- ``S``: Service
-- ``A``: Aggregate
 
 .. mermaid::
 
-   graph TD;
-     subgraph Stock
-       stock[Stock:E]
-       brand[StockBrand:E]
-       record[StockRecord:E]
-       indicator[StockIndicator:E]
+   sequenceDiagram
+      participant G as glue()
+      participant UC as UdfBlock::class
+      create participant S1 as factory()
+      UC->>S1: create
+      create participant S2 as _factory()
+      UC->>S2: create or defined by user
+      create participant P1 as process()
+      UC->>P1: create
+      create participant P2 as _process()
+      UC->>P2: create or defined by user
+      Note over S1: Generate udf_block_instance
+      G->>+S1: Request
+      S1->>+S2: Request
+      Note over S2: User can modify _factory()
+      S2-->>S2: get params from glue
+      S2-->>S2: get series from glue
+      S2-->>-S1: params and series
+      create participant UI as UdfBlock::instance
+      S1->>UI: UdfBlock(params, series)
+      S1->>UI: setattr params to udf_block_instance
+      S1-->>-G: udf_block_instance
+      G->>+UI: udf_block_instance.process()
+      UI->>+P1: process()
+      Note over P1: execute process()
+      P1->>P2: Request
+      Note over P2: execute user defined function
+      P2-->>P1: params or series
+      P1-->>-UI: BlockGlue(params, series)
+      UI-->>-G: block_glue_instance
 
-       stock --> brand
-       stock --> record
-       stock --> indicator
-     end
-
-     subgraph Stock-to-Analysis
-       aggregate[StockCodeSingleAggregate:A]
-       processed[StockDataProcessed:VO]
-       estimated[StockDataEstimated:VO]
-
-       aggregate --- |Info| stock
-       aggregate --- |Method| processed
-       aggregate --- |Analysis| estimated
-     end
-
-     subgraph Repositories/Storage
-       repositories[(Storage/Database)] --- | read/write | stock
-     end
-
-     subgraph Pages
-       raw_html[RawHtml:VO]
-       decoder[Decoder:S]
-       decoded_html[DecodedHtml:VO]
-
-       raw_html --> decoder
-       decoder --> decoded_html
-       decoded_html --> repositories
-       decoded_html --> stock
-     end
-
-     subgraph Repositories/Web
-       web[[Web]] --> | crawl | raw_html
-     end
 
 
 Usage
@@ -136,21 +123,6 @@ Analysis
 
 
 
-Visualize
----------
-
-
-You can use, but Not Completed Yet.
-
-.. code-block:: python
-
-    import kabutobashi as kb
-    df = kb.example()
-    sdp = StockCodeSingleAggregate.of(entity=df, code=1375).to_processed([kb.sma, kb.macd])
-    sdp.visualize()
-
-
-
 Utilities
 ---------
 
@@ -160,15 +132,6 @@ Utilities
 
     target_date = "2020-01-01"
     date_list = kb.get_past_n_days(target_date, n=40)
-    
-
-For Users
-=========
-
-.. toctree::
-   :maxdepth: 2
-
-   sources/api
 
 
 Other

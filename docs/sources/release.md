@@ -1,5 +1,10 @@
 # Release Note
 
+## 0.8.3
+
+- ENHANCEMENT: add `database_dir` params ([#208](https://github.com/gsy0911/kabutobashi/issues/208))
+- ENHANCEMENT: remove `pre_condition_block_name` from `@block`
+
 ## 0.8.2
 
 - ENHANCEMENT: using sqlite3 when crawl and analysis ([#207](https://github.com/gsy0911/kabutobashi/issues/207))

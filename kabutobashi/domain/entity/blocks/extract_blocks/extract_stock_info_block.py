@@ -10,7 +10,7 @@ from kabutobashi.domain.services.decode_html.utils import PageDecoder
 from ..decorator import block
 
 
-@block(block_name="extract_stock_info", pre_condition_block_name="crawl_stock_info")
+@block(block_name="extract_stock_info", params_required_keys=["html_text"])
 class ExtractStockInfoBlock:
     html_text: str
 
