@@ -1,6 +1,6 @@
 import pandas as pd
 
-from kabutobashi.application import crawl_info, crawl_info_multiple, crawl_ipo
+from kabutobashi import crawl_info, crawl_info_multiple, crawl_ipo
 
 
 class TestStockInfo:

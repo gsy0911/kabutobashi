@@ -128,13 +128,9 @@ class DecodeHtmlPageStockIpo(BaseModel, DecodedHtmlPage):
         initial_price = 0
         if "主幹" in data:
             manager = data["主幹"]
-        elif "manager" in data:
-            manager = data["manager"]
 
         if "上場" in data:
             stock_listing_at = data["上場"]
-        elif "stock_listing_at" in data:
-            stock_listing_at = data["stock_listing_at"]
 
         if "銘柄名" in data:
             name = data["銘柄名"]
@@ -144,18 +140,12 @@ class DecodeHtmlPageStockIpo(BaseModel, DecodedHtmlPage):
 
         if "公募" in data:
             public_offering = data["公募"]
-        elif "public_offering" in data:
-            public_offering = data["public_offering"]
 
         if "評価" in data:
             evaluation = data["評価"]
-        elif "evaluation" in data:
-            evaluation = data["evaluation"]
 
         if "初値" in data:
             initial_price = data["初値"]
-        elif "initial_price" in data:
-            initial_price = data["initial_price"]
 
         return DecodeHtmlPageStockIpo(
             code=data["code"],
