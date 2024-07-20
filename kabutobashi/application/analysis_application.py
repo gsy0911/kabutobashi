@@ -43,4 +43,9 @@ def analysis(code: str, database_dir: str):
         WriteImpactSqlite3Block,
     ]
 
-    return Flow.initialize(params={"read_sqlite3": {"code": code, "database_dir": database_dir}}).then(blocks)
+    return Flow.initialize(
+        params={
+            "read_sqlite3": {"code": code, "database_dir": database_dir},
+            "write_impact_sqlite3": {"database_dir": database_dir},
+        }
+    ).then(blocks)

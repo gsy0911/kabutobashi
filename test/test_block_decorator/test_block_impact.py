@@ -65,7 +65,7 @@ def test_block_impact():
     assert params["impact"] == 0.151225
 
     series = res.block_glue["fully_connect"].series
-    assert_df = pd.DataFrame.from_dict({"code": [1439], "dt": ["2021-11-26"], "impact": [0.151225]})
+    assert_df = pd.DataFrame.from_dict({"code": ["1439"], "dt": ["2021-11-26"], "impact": [0.151225]})
     assert series.equals(assert_df)
 
     after_df = kd.select_impact_df(dt="2021-11-26")

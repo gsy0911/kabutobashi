@@ -1,6 +1,6 @@
 from typing import List, NoReturn, Union
 
-import requests  # type: ignore
+import httpx
 
 from kabutobashi.domain.errors import KabutobashiPageError
 from kabutobashi.domain.values import (
@@ -30,13 +30,11 @@ class HtmlPageBasicRepository(IHtmlPageRepository):
     @staticmethod
     def from_url(url: str, page_type: str) -> "RawHtmlPage":
         user_agent = UserAgent.get_user_agent_header()
-        r = requests.get(url, headers=user_agent)
+        r = httpx.get(url, headers=user_agent)
 
         if r.status_code != 200:
             raise KabutobashiPageError(url=url)
 
-        # 日本語に対応
-        r.encoding = r.apparent_encoding
         return RawHtmlPage(html=r.text, page_type=page_type, url=url)
 
     def _html_page_read(self) -> List[RawHtmlPage]:

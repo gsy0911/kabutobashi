@@ -30,7 +30,7 @@ class KabutobashiDatabase:
         drop_stock_table = "DROP TABLE IF EXISTS stock"
         create_stock_statement = """
             CREATE TABLE IF NOT EXISTS stock(
-                code INTEGER NOT NULL,
+                code TEXT NOT NULL,
                 dt TEXT NOT NULL,
                 name TEXT,
                 open REAL,
@@ -47,7 +47,7 @@ class KabutobashiDatabase:
         drop_impact_table = "DROP TABLE IF EXISTS impact"
         create_impact_statement = """
             CREATE TABLE IF NOT EXISTS impact(
-                code INTEGER NOT NULL,
+                code TEXT NOT NULL,
                 dt TEXT NOT NULL,
                 impact REAL,
                 PRIMARY KEY (code, dt)
@@ -59,7 +59,7 @@ class KabutobashiDatabase:
         drop_brand_table = "DROP TABLE IF EXISTS brand"
         create_brand_statement = """
             CREATE TABLE IF NOT EXISTS brand(
-                code INTEGER NOT NULL,
+                code TEXT NOT NULL,
                 name TEXT,
                 market TEXT,
                 industry_type TEXT,
