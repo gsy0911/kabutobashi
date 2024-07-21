@@ -113,6 +113,7 @@ class KabutobashiDatabase:
         with self as conn:
             try:
                 df = pd.read_sql(f"SELECT * FROM impact WHERE dt = '{dt}' ORDER BY impact", conn)
+                df["dt"] = df["dt"].astype(str)
                 return df[impact_table_columns]
             except sqlite3.DatabaseError:
                 return None
