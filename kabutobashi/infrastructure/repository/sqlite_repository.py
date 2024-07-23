@@ -88,7 +88,7 @@ class KabutobashiDatabase:
             try:
                 df[stock_table_columns].to_sql(stock_table_name, conn, if_exists="append", index=False)
             except sqlite3.IntegrityError:
-                logger.warning(f"Stock data (stock.code, stock.dt) already exists")
+                logger.warning(f"stock_df(stock.code, stock.dt) already exists, {df=}")
         return self
 
     def select_stock_df(self, code: str):
@@ -105,7 +105,7 @@ class KabutobashiDatabase:
             try:
                 df[impact_table_columns].to_sql(stock_table_name, conn, if_exists="append", index=False)
             except sqlite3.IntegrityError:
-                logger.warning(f"Stock data (stock.code, stock.dt) already exists")
+                logger.warning(f"impact_df(stock.code, stock.dt) already exists")
         return self
 
     def select_impact_df(self, dt: str) -> Optional[pd.DataFrame]:
@@ -126,7 +126,7 @@ class KabutobashiDatabase:
             try:
                 df[impact_table_columns].to_sql(stock_table_name, conn, if_exists="append", index=False)
             except sqlite3.IntegrityError:
-                logger.warning(f"Stock data (brand.code) already exists")
+                logger.warning(f"brand_df(brand.code) already exists")
         return self
 
     def select_brand_df(self) -> Optional[pd.DataFrame]:

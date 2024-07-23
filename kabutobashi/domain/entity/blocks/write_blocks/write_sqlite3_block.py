@@ -46,5 +46,10 @@ class WriteBrandSqlite3Block:
     database_dir: str
 
     def _process(self) -> dict:
-        KabutobashiDatabase(database_dir=self.database_dir).insert_brand_df(df=self.series)
+        db = KabutobashiDatabase(database_dir=self.database_dir)
+        current_brand_df = db.select_brand_df()
+        current_code_list = current_brand_df["code"].to_list()
+        insert_candidate_series = self.series[~self.series["code"].isin(current_code_list)]
+        if not insert_candidate_series.empty:
+            db.insert_brand_df(df=insert_candidate_series)
         return {"status": "success"}
