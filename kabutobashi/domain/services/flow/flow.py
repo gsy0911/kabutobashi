@@ -209,7 +209,7 @@ class FlowPath:
         flow_params_list.append(
             {
                 "id": "read_sqlite3",
-                "block_name": "read_example",
+                "block_name": "read_sqlite3",
                 "sequence_no": next_sequence_no,
                 "params": {"code": code, "database_dir": database_dir},
             }
@@ -226,3 +226,6 @@ class FlowPath:
 
     def dumps(self) -> List[dict]:
         return self.flow_params_list
+
+    def execute(self) -> Flow:
+        return Flow.from_json(params_list=self.flow_params_list)
