@@ -203,6 +203,19 @@ class FlowPath:
         )
         return replace(self, next_sequence_no=next_sequence_no + 1, flow_params_list=flow_params_list)
 
+    def read_sqlite3(self, code: int, database_dir) -> "FlowPath":
+        next_sequence_no = self.next_sequence_no
+        flow_params_list = self.flow_params_list
+        flow_params_list.append(
+            {
+                "id": "read_sqlite3",
+                "block_name": "read_sqlite3",
+                "sequence_no": next_sequence_no,
+                "params": {"code": code, "database_dir": database_dir},
+            }
+        )
+        return replace(self, next_sequence_no=next_sequence_no + 1, flow_params_list=flow_params_list)
+
     def apply_default_pre_process(self) -> "FlowPath":
         next_sequence_no = self.next_sequence_no
         flow_params_list = self.flow_params_list
@@ -211,8 +224,8 @@ class FlowPath:
         )
         return replace(self, next_sequence_no=next_sequence_no + 1, flow_params_list=flow_params_list)
 
-    def read(self) -> "FlowPath":
-        pass
-
     def dumps(self) -> List[dict]:
         return self.flow_params_list
+
+    def execute(self) -> Flow:
+        return Flow.from_json(params_list=self.flow_params_list)

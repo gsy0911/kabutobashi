@@ -23,6 +23,21 @@ PARAMS_LIST = (
     .pct_change()
     .dumps()
 )
+PARAMS_LIST2 = (
+    FlowPath()
+    .read_sqlite3(code=1439, database_dir=DATABASE_DIR)
+    .apply_default_pre_process()
+    .sma()
+    .macd()
+    .adx()
+    .bollinger_bands()
+    .momentum()
+    .psycho_logical()
+    .stochastics()
+    .volatility()
+    .pct_change()
+    .dumps()
+)
 
 
 def test_block_parameterize_sma():
@@ -57,6 +72,14 @@ def test_block_parameterize_sma():
     ]
     res = Flow.initialize(params=PARAMS2).then(blocks)
     params = res.block_glue["parameterize_sma"].params
+    assert params["sma_short_diff"] == 0.010209216905010062
+    assert params["sma_medium_diff"] == 0.03439245289564408
+    assert params["sma_long_diff"] == 0.04131490065439989
+    assert params["sma_long_short"] == 0.03143091563893313
+    assert params["sma_long_medium"] == 0.0071620089215007
+    assert params["sma_impact"] == 5e-05
+
+    params = Flow.from_json(params_list=PARAMS_LIST2).block_glue["parameterize_sma"].params
     assert params["sma_short_diff"] == 0.010209216905010062
     assert params["sma_medium_diff"] == 0.03439245289564408
     assert params["sma_long_diff"] == 0.04131490065439989
@@ -191,6 +214,9 @@ def test_block_parameterize_momentum():
     params = res.block_glue["parameterize_momentum"].params
     assert params["momentum_impact"] == 0.0
 
+    params = Flow.from_json(params_list=PARAMS_LIST2).block_glue["parameterize_momentum"].params
+    assert params["momentum_impact"] == 0.0
+
 
 def test_block_parameterize_psycho_logical():
     blocks = [
@@ -216,6 +242,10 @@ def test_block_parameterize_psycho_logical():
     ]
     res = Flow.initialize(params=PARAMS2).then(blocks)
     params = res.block_glue["parameterize_psycho_logical"].params
+    assert params["psycho_line"] == 0.2222222222222222
+    assert params["psycho_logical_impact"] == 2.95925
+
+    params = Flow.from_json(params_list=PARAMS_LIST2).block_glue["parameterize_psycho_logical"].params
     assert params["psycho_line"] == 0.2222222222222222
     assert params["psycho_logical_impact"] == 2.95925
 
@@ -253,6 +283,12 @@ def test_block_parameterize_stochastics():
     assert params["stochastics_sd"] == 84.23330813807003
     assert params["stochastics_impact"] == -0.48406
 
+    params = Flow.from_json(params_list=PARAMS_LIST2).block_glue["parameterize_stochastics"].params
+    assert params["stochastics_k"] == 97.3015873015873
+    assert params["stochastics_d"] == 93.9153439153439
+    assert params["stochastics_sd"] == 84.23330813807003
+    assert params["stochastics_impact"] == -0.48406
+
 
 def test_block_parameterize_volatility():
     blocks = [
@@ -276,6 +312,10 @@ def test_block_parameterize_volatility():
     ]
     res = Flow.initialize(params=PARAMS2).then(blocks)
     params = res.block_glue["parameterize_volatility"].params
+    assert params["volatility"] == 0.015477474132778526
+    assert params["close_volatility"] == 1188.063003315964
+
+    params = Flow.from_json(params_list=PARAMS_LIST2).block_glue["parameterize_volatility"].params
     assert params["volatility"] == 0.015477474132778526
     assert params["close_volatility"] == 1188.063003315964
 
@@ -308,6 +348,13 @@ def test_block_parameterize_pct_change():
     ]
     res = Flow.initialize(params=PARAMS2).then(blocks)
     params = res.block_glue["parameterize_pct_change"].params
+    assert params["pct_05"] == -0.004500275483459349
+    assert params["pct_10"] == -0.009220390832081973
+    assert params["pct_20"] == -0.01581898346743425
+    assert params["pct_30"] == -0.010848218441679503
+    assert params["pct_40"] == -0.0048062684235296756
+
+    params = Flow.from_json(params_list=PARAMS_LIST2).block_glue["parameterize_pct_change"].params
     assert params["pct_05"] == -0.004500275483459349
     assert params["pct_10"] == -0.009220390832081973
     assert params["pct_20"] == -0.01581898346743425

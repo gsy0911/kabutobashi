@@ -1,7 +1,7 @@
 from .application import analysis, crawl_info, crawl_info_multiple, crawl_ipo, decode_brand_list
 from .domain import errors
 from .domain.entity.blocks import block
-from .domain.services.flow import Flow
+from .domain.services.flow import Flow, FlowPath
 
 # methods to analysis
 from .domain.values import DecodeHtmlPageStockIpo, RawHtmlPageStockInfo, RawHtmlPageStockIpo
@@ -12,7 +12,7 @@ from .infrastructure.repository import KabutobashiDatabase
 from .utilities import get_past_n_days
 
 # comparable tuple
-VERSION = (0, 8, 4)
+VERSION = (0, 8, 5)
 # generate __version__ via VERSION tuple
 __version__ = ".".join(map(str, VERSION))
 

@@ -31,5 +31,5 @@ class FullyConnectBlock:
             + self.params["psycho_logical_impact"] * self.params.get("psycho_logical_impact_ratio", 0.1)
             + self.params["stochastics_impact"] * self.params.get("stochastics_impact_ratio", 0.1)
         )
-        df = pd.DataFrame.from_dict({"code": [self.params["code"]], "dt": [self.params["dt"]], "impact": [impact]})
+        df = pd.DataFrame.from_dict({"code": [str(self.params["code"])], "dt": [self.params["dt"]], "impact": [impact]})
         return df, {"impact": impact}
