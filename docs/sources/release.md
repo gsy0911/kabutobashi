@@ -1,5 +1,17 @@
 # Release Note
 
+## 0.8.5
+
+- ENHANCEMENT: allow to insert brand_df
+- ENHANCEMENT: add `read_sqlite3` in FlowPath
+- BUG FIX: modify test and FlowPath
+
+## 0.8.4
+
+- BUG FIX: modify Database `code` type
+- BUG FIX: remove `requests`
+- BUG FIX: add parameter to write `WriteImpactSqlite3Block`
+
 ## 0.8.3
 
 - ENHANCEMENT: add `database_dir` params ([#208](https://github.com/gsy0911/kabutobashi/issues/208))
