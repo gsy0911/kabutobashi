@@ -12,7 +12,7 @@ from .infrastructure.repository import KabutobashiDatabase
 from .utilities import get_past_n_days
 
 # comparable tuple
-VERSION = (0, 8, 4)
+VERSION = (0, 8, 5)
 # generate __version__ via VERSION tuple
 __version__ = ".".join(map(str, VERSION))
 
