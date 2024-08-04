@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from typing import Union
+from typing import List, Union
 
 import jpholiday
 
@@ -45,6 +45,19 @@ def _get_past_n_days(current_date: str, n: int, multiply: int) -> list:
     filter_holiday = [d for d in filter_weekend if not jpholiday.is_holiday(d)]
     # 文字列に日付を変えてreturn
     return list(map(lambda x: x.strftime("%Y-%m-%d"), filter_holiday[:n]))
+
+
+def get_working_days_between(start_date: str, end_date: str) -> List[str]:
+    end_date = datetime.strptime(end_date, "%Y-%m-%d")
+    start_date = datetime.strptime(start_date, "%Y-%m-%d")
+    days = (end_date - start_date).days
+    dates = []
+    for d in range(days + 1):
+        v = start_date + timedelta(days=d)
+        if v.weekday() <= 4:
+            if not jpholiday.is_holiday(v):
+                dates.append(v.strftime("%Y-%m-%d"))
+    return dates
 
 
 def replace(input_value: str) -> str:
