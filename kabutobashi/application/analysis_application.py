@@ -7,6 +7,7 @@ from kabutobashi.domain.entity.blocks.parameterize_blocks import (
     ParameterizeSmaBlock,
     ParameterizeStochasticsBlock,
 )
+from kabutobashi.domain.entity.blocks.pre_process_blocks import DefaultPreProcessBlock
 from kabutobashi.domain.entity.blocks.process_blocks import (
     ProcessAdxBlock,
     ProcessBollingerBandsBlock,
@@ -25,6 +26,7 @@ from kabutobashi.domain.services.flow import Flow
 def analysis(code: str, database_dir: str):
     blocks = [
         ReadSqlite3Block,
+        DefaultPreProcessBlock,
         ProcessSmaBlock,
         ParameterizeSmaBlock,
         ProcessMacdBlock,
