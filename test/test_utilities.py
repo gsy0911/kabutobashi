@@ -2,7 +2,7 @@ import pytest
 
 import kabutobashi as kb
 from kabutobashi.domain.errors import KabutobashiEntityError
-from kabutobashi.utilities import convert_float, convert_int, replace
+from kabutobashi.utilities import convert_float, convert_int, replace, get_working_days_between
 
 
 def test_workday():
@@ -59,3 +59,28 @@ def test_convert_float():
 
     with pytest.raises(KabutobashiEntityError):
         convert_float(input_value="a")
+
+
+def test_get_working_days_between():
+    date_list = get_working_days_between(start_date="2024-08-01", end_date="2024-08-05")
+    assert len(date_list) == 3
+    assert "2024-08-01" in date_list
+    assert "2024-08-02" in date_list
+    assert "2024-08-03" not in date_list
+    assert "2024-08-04" not in date_list
+    assert "2024-08-05" in date_list
+
+    date_list = get_working_days_between(start_date="2024-08-05", end_date="2024-08-16")
+    assert len(date_list) == 9
+    assert "2024-08-05" in date_list
+    assert "2024-08-06" in date_list
+    assert "2024-08-07" in date_list
+    assert "2024-08-08" in date_list
+    assert "2024-08-09" in date_list
+    assert "2024-08-10" not in date_list
+    assert "2024-08-11" not in date_list
+    assert "2024-08-12" not in date_list
+    assert "2024-08-13" in date_list
+    assert "2024-08-14" in date_list
+    assert "2024-08-15" in date_list
+    assert "2024-08-16" in date_list
