@@ -1,3 +1,6 @@
+from typing import List
+
+
 class KabutobashiBaseError(Exception):
     pass
 
@@ -32,6 +35,15 @@ class KabutobashiBlockParamsIsNoneError(KabutobashiBlockError):
 
 class KabutobashiBlockSeriesIsNoneError(KabutobashiBlockError):
     pass
+
+
+class KabutobashiBlockSeriesDtIsMissingError(KabutobashiBlockError):
+    def __init__(self, code: str, dt: List[str]):
+        self.code = code
+        self.dt = dt
+
+    def __str__(self):
+        return f"{self.dt} in {self.code} is missing"
 
 
 class KabutobashiBlockGlueError(KabutobashiBlockError):
