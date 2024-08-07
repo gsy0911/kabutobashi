@@ -1,5 +1,10 @@
 # Release Note
 
+## 0.8.6
+
+- ENHANCEMENT: add `get_working_days_between()`, `crawl_missing_info()`
+- BUG FIX: modify select * from `stock`
+
 ## 0.8.5
 
 - ENHANCEMENT: allow to insert brand_df

@@ -154,13 +154,13 @@ import kabutobashi as kb
 kb.KabutobashiDatabase().initialize()
 
 # add data
-kb.crawl_info_multiple(code="1375", page="1")
-kb.crawl_info_multiple(code="1375", page="2")
-kb.crawl_info_multiple(code="1375", page="etc...")
+kb.crawl_info_multiple(code="1375", page="1", database_dir="...")
+kb.crawl_info_multiple(code="1375", page="2", database_dir="...")
+kb.crawl_info_multiple(code="1375", page="etc...", database_dir="...")
 
 # add data daily
-kb.crawl_info(code="1375")
+kb.crawl_info(code="1375", database_dir="...")
 
 # analysis and add data
-kb.analysis(code="1375")
+kb.analysis(code="1375", database_dir="...")
 ```
