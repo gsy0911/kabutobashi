@@ -4,7 +4,8 @@ from typing import Tuple
 import jpholiday
 import pandas as pd
 
-from kabutobashi.utilities import convert_float, convert_int
+from kabutobashi.domain.errors import KabutobashiBlockSeriesDtIsMissingError
+from kabutobashi.utilities import convert_float, convert_int, get_working_days_between
 
 from ..decorator import block
 
@@ -42,6 +43,15 @@ class DefaultPreProcessBlock:
         except ValueError:
             return False
 
+    @staticmethod
+    def _check_dt_requirements(df: pd.DataFrame):
+        working_days = get_working_days_between(start_date=min(df["dt"]), end_date=max(df["dt"]))
+        working_dt = pd.DataFrame(working_days, columns=["dt"])
+        merged = pd.merge(df, working_dt, on="dt", how="outer")
+        missing_df = merged[merged["name"].isnull()]
+        if not missing_df.empty:
+            raise KabutobashiBlockSeriesDtIsMissingError(code=str(list(set(df["code"]))[0]), dt=list(missing_df["dt"]))
+
     def _process(self) -> Tuple[pd.DataFrame, dict]:
 
         df = self.series
@@ -53,6 +63,7 @@ class DefaultPreProcessBlock:
 
         columns = df.columns
         df["dt"] = df.index
+        df = df.reset_index(drop=True)
         df["dt"] = df["dt"].apply(self._fix_dt)
         df["passing"] = df["dt"].apply(self._is_holiday)
         df["open"] = df["open"].apply(convert_float)
@@ -67,6 +78,9 @@ class DefaultPreProcessBlock:
         if "per" in columns:
             df["per"] = df["per"].apply(convert_float)
         df = df[~df["passing"]]
+        # check dt
+        self._check_dt_requirements(df=df)
+        # remove unused column
         df.index = df["dt"]
         df = df.drop(["passing"], axis=1)
         return df, {"dt": max(df["dt"])}

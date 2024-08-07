@@ -94,7 +94,7 @@ class KabutobashiDatabase:
     def select_stock_df(self, code: str):
         stock_table_columns = ["code", "dt", "name", "open", "close", "high", "low", "volume"]
         with self as conn:
-            df = pd.read_sql(f"SELECT * FROM stock WHERE code = {code}", conn)
+            df = pd.read_sql(f"SELECT * FROM stock WHERE code = '{code}'", conn)
             return df[stock_table_columns]
 
     def insert_impact_df(self, df: pd.DataFrame) -> "KabutobashiDatabase":
