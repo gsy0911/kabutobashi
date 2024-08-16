@@ -82,5 +82,16 @@ class DefaultPreProcessBlock:
         self._check_dt_requirements(df=df)
         # remove unused column
         df.index = df["dt"]
+
+        # order by ASC
+        df = df.sort_index()
+        # fill `ffill` i.e. fill by previous value
+        df["open"] = df.apply(lambda x: x["open"] if x["volume"] > 0 else None, axis=1)
+        df["high"] = df.apply(lambda x: x["high"] if x["volume"] > 0 else None, axis=1)
+        df["low"] = df.apply(lambda x: x["low"] if x["volume"] > 0 else None, axis=1)
+        df["close"] = df.apply(lambda x: x["close"] if x["volume"] > 0 else None, axis=1)
+        df = df.ffill()
+
+        # remove unused columns
         df = df.drop(["passing"], axis=1)
         return df, {"dt": max(df["dt"])}

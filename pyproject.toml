@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "kabutobashi"
-version = "0.8.6"
+version = "0.8.7"
 description = "Analyze stock"
 authors = ["yoshiki <yoshiki0911@gmail.com>"]
 license = "MIT"
@@ -12,7 +12,7 @@ keywords = ['stock']
 python = ">=3.10,<3.13"
 pandas = "^2.2.2"
 beautifulsoup4 = "^4.12.3"
-lxml = "^5.2.2"
+lxml = "^5.3.0"
 jpholiday = "^0.1.10"
 scipy = "^1.11.3"
 pydantic = "^2.7.1"

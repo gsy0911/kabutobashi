@@ -2,7 +2,7 @@ import pytest
 
 import kabutobashi as kb
 from kabutobashi.domain.errors import KabutobashiEntityError
-from kabutobashi.utilities import convert_float, convert_int, replace, get_working_days_between
+from kabutobashi.utilities import convert_float, convert_int, get_working_days_between, replace
 
 
 def test_workday():

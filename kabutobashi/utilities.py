@@ -63,6 +63,8 @@ def get_working_days_between(start_date: str, end_date: str) -> List[str]:
 def replace(input_value: str) -> str:
     if input_value == "-":
         return "0"
+    elif input_value == "－":
+        return "0"
     elif input_value == "":
         return "0"
     return input_value.replace("---", "0").replace("円", "").replace("株", "").replace("倍", "").replace(",", "")
