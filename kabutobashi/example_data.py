@@ -18,3 +18,4 @@ def example() -> pd.DataFrame:
     """
     file_name = "example.csv.gz"
     return pd.read_csv(f"{DATA_PATH}/{file_name}")
+
